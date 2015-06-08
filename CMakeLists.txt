@@ -9,6 +9,12 @@ SET(PROJECT_SOURCE_DIR "${gst-debugger_SOURCE_DIR}/src")
 
 INCLUDE(FindPkgConfig)
 
+pkg_check_modules(GIOMM REQUIRED giomm-2.4)
+include_directories(${GIOMM_INCLUDE_DIRS})
+link_directories(${GIOMM_LIBRARY_DIRS}) 
+
+find_package(Protobuf REQUIRED)
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src/)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
