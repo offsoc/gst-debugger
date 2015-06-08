@@ -1,1 +1,2 @@
 add_subdirectory(console-client)
+add_subdirectory(protocol)

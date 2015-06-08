@@ -1,0 +1,16 @@
+message PadWatch {
+	required string pad_path = 1;
+
+	enum Toggle {
+		ENABLE = 0;
+		DISABLE = 1;
+	}
+	required Toggle toggle = 2;
+
+	enum WatchType {
+		BUFFER = 0;
+		EVENT = 1;
+		QUERY = 2;
+	}
+	required WatchType watch_type = 3;
+}
