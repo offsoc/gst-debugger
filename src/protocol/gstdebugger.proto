@@ -1,10 +1,10 @@
+enum Toggle {
+	ENABLE = 0;
+	DISABLE = 1;
+}
+
 message PadWatch {
 	required string pad_path = 1;
-
-	enum Toggle {
-		ENABLE = 0;
-		DISABLE = 1;
-	}
 	required Toggle toggle = 2;
 
 	enum WatchType {
@@ -13,4 +13,50 @@ message PadWatch {
 		QUERY = 2;
 	}
 	required WatchType watch_type = 3;
+}
+
+message LogWatch {
+	required int32 log_level = 1;
+	optional string log_category = 2;
+}
+
+message MessageWatch {
+	required string message_type = 1;
+	required Toggle toggle = 2;
+}
+
+message Command {	
+	oneof CommandValue {
+		PadWatch pad_watch = 1;
+		LogWatch log_watch = 2;
+		MessageWatch message_watch = 3;
+	}
+	
+	enum CommandType {
+		PAD_WATCH = 0;
+		LOG_WATCH = 1;
+		MESSAGE_WATCH = 2;
+	}
+	required CommandType command_type = 4; 
+}
+
+message GstreamerLog {
+	required int32 level = 1;
+	required string message = 2;
+}
+
+message GstreamerInfo {
+	enum InfoType {
+		BUFFER = 0;
+		EVENT = 1;
+		QUERY = 2;
+		MESSAGE = 3;
+		LOG = 4;
+	}
+	
+	required InfoType info_type = 1;
+	
+	oneof InfoValue {
+		GstreamerLog log = 3;
+	}
 }
