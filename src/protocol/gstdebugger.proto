@@ -26,11 +26,9 @@ message MessageWatch {
 }
 
 message Command {	
-	oneof CommandValue {
-		PadWatch pad_watch = 1;
-		LogWatch log_watch = 2;
-		MessageWatch message_watch = 3;
-	}
+	optional PadWatch pad_watch = 1;
+	optional LogWatch log_watch = 2;
+	optional MessageWatch message_watch = 3;
 	
 	enum CommandType {
 		PAD_WATCH = 0;
