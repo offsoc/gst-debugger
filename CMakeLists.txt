@@ -13,6 +13,10 @@ pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 include_directories(${GIOMM_INCLUDE_DIRS})
 link_directories(${GIOMM_LIBRARY_DIRS}) 
 
+pkg_check_modules(GIO REQUIRED gio-2.0)
+
+pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
+
 find_package(Protobuf REQUIRED)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src/)
