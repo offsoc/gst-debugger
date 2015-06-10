@@ -23,10 +23,11 @@
 #ifndef __GST_DEBUGSERVER_TRACER_H__
 #define __GST_DEBUGSERVER_TRACER_H__
 
+#include "gstdebugservertcp.h"
+
 #include <gst/gst.h>
 #define GST_USE_UNSTABLE_API
 #include <gst/gsttracer.h>
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -35,7 +36,7 @@ G_BEGIN_DECLS
 #define GST_DEBUGSERVER_TRACER(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_DEBUGSERVER_TRACER,GstDebugserverTracer))
 #define GST_DEBUGSERVER_TRACER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_LOG_TRACER,GstDebugserverTracerClass))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_DEBUGSERVER_TRACER,GstDebugserverTracerClass))
 #define GST_IS_DEBUGSERVER_TRACER(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_DEBUGSERVER_TRACER))
 #define GST_IS_DEBUGSERVER_TRACER_CLASS(klass) \
@@ -54,11 +55,9 @@ struct _GstDebugserverTracer {
   GstTracer 	 parent;
 
   /*< private >*/
-  GSocketService * service;
   gint port;
   GstPipeline * pipeline;
-
-  GHashTable * pre_push_listeners;
+  GstDebugserverTcp * tcp_server;
 };
 
 struct _GstDebugserverTracerClass {

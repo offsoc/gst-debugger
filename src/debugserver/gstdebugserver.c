@@ -57,16 +57,8 @@ static void gst_debugserver_tracer_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 static void gst_debugserver_tracer_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
-static void gst_debugserver_tracer_start_server (GstDebugserverTracer *
-    debugserver);
-static void gst_debugserver_tracer_stop_server (GstDebugserverTracer *
-    debugserver);
+
 static void gst_debugserver_tracer_finalize (GObject * obj);
-
-gboolean incoming_callback (GSocketService * service,
-    GSocketConnection * connection,
-    GObject * source_object, gpointer user_data);
-
 
 static void
 do_element_new (GstTracer * self, guint64 ts, GstElement * element)
@@ -78,119 +70,10 @@ do_element_new (GstTracer * self, guint64 ts, GstElement * element)
 }
 
 static void
-do_push_buffer_pre (GstTracer * self, guint64 ts, GstPad * pad,
-    GstBuffer * buffer)
+gst_debugserver_tracer_process_command (Command * cmd, gpointer user_data)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
-  GOutputStream *ostream = NULL;
-  gsize bytes_written;
-  GList *listeners;
-
-  listeners =
-      g_hash_table_lookup (debugserver->pre_push_listeners,
-      gst_pad_get_name (pad));
-  while (listeners != NULL) {
-    ostream = g_io_stream_get_output_stream (G_IO_STREAM (listeners->data));
-
-    g_output_stream_printf (ostream, &bytes_written, NULL,
-        NULL, "%lu\n", GST_BUFFER_PTS (buffer));
-
-    listeners = g_list_next (listeners);
-  }
+  g_print ("mam to!\n");
 }
-
-// todo key should be GstPad* type
-static void
-gst_debugserver_tracer_start_watch (GstDebugserverTracer * debugserver,
-    GSocketConnection * connection, const gchar * key)
-{
-  GList *listeners =
-      (GList *) g_hash_table_lookup (debugserver->pre_push_listeners, key);
-
-  if (listeners == NULL) {
-    listeners = g_list_append (listeners, connection);
-    g_hash_table_insert (debugserver->pre_push_listeners, g_strdup (key),
-        listeners);
-    return;
-  }
-
-  if (g_list_find (listeners, connection) == NULL) {
-    listeners = g_list_append (listeners, connection);
-    g_hash_table_replace (debugserver->pre_push_listeners, g_strdup (key),
-        listeners);
-  }
-}
-
-// todo key should be GstPad* type
-static void
-gst_debugserver_tracer_stop_watch (GstDebugserverTracer * debugserver,
-    GSocketConnection * connection, const gchar * key)
-{
-  GList *listeners =
-      (GList *) g_hash_table_lookup (debugserver->pre_push_listeners, key);
-
-  listeners = g_list_remove (listeners, connection);
-  g_hash_table_replace (debugserver->pre_push_listeners, g_strdup (key),
-      listeners);
-}
-
-static gpointer
-gst_debugserver_tracer_process_client (gpointer user_data)
-{
-  GArray *tmp = (GArray *) user_data;
-  GSocketConnection *connection = g_array_index (tmp, GSocketConnection *, 0);
-  GstDebugserverTracer *debugserver =
-      g_array_index (tmp, GstDebugserverTracer *, 1);
-  GInputStream *istream;
-  guint8 message[1024];
-  Command *command;
-  gint size;
-
-  g_array_unref (tmp);
-
-  istream = g_io_stream_get_input_stream (G_IO_STREAM (connection));
-
-  GST_DEBUG_OBJECT (debugserver, "Received connection from client!\n");
-
-  while ((size = gst_debugger_protocol_utils_read_header (istream)) > 0) {
-     assert (size <= 1024);
-     GST_DEBUG_OBJECT (debugserver, "Received message of size: %d\n", size);
-     gst_debugger_protocol_utils_read_requested_size (istream, size, message);
-     command = command__unpack (NULL, size, message);
-     if (command == NULL) {
-       g_print ("error unpacking incoming message\n");
-       continue;
-     }
-
-     g_print ("Type was: %d \n", command->command_type);
-
-     if (command->command_type == 0) {
-       g_print ("path: %s\n", command->pad_watch->pad_path);
-     }
-     else if (command->command_type == 1) {
-       g_print ("log level: %d log cat: %s \n", command->log_watch->log_level, command->log_watch->log_category);
-     }
-
-     command__free_unpacked (command, NULL);
-   }
-
-  return NULL;
-}
-
-gboolean
-incoming_callback (GSocketService * service,
-    GSocketConnection * connection, GObject * source_object, gpointer user_data)
-{
-  GArray *tmp = g_array_new (FALSE, FALSE, sizeof (gpointer));
-  g_array_insert_val (tmp, 0, connection);
-  g_array_insert_val (tmp, 1, user_data);
-  g_object_ref (connection);
-  g_thread_new ("connection",
-      (GThreadFunc) gst_debugserver_tracer_process_client, tmp);
-  return TRUE;
-}
-
-/* tracer class */
 
 static void
 gst_debugserver_tracer_class_init (GstDebugserverTracerClass * klass)
@@ -223,17 +106,16 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
 
   self->pipeline = NULL;
   self->port = DEFAULT_PORT;
-  self->pre_push_listeners = g_hash_table_new_full (g_str_hash,
-      g_str_equal, g_free, NULL);
-  gst_debugserver_tracer_start_server (self);
-
-  gst_tracing_register_hook (tracer, "pad-push-pre",
-      G_CALLBACK (do_push_buffer_pre));
 
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
 
   gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
+
+  self->tcp_server = gst_debugserver_tcp_new ();
+  self->tcp_server->process_command = gst_debugserver_tracer_process_command;
+  self->tcp_server->process_command_user_data = self;
+  gst_debugserver_tcp_start_server (self->tcp_server, self->port);
 }
 
 static void
@@ -241,8 +123,7 @@ gst_debugserver_tracer_finalize (GObject * obj)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (obj);
 
-  gst_debugserver_tracer_stop_server (debugserver);
-  g_hash_table_unref (debugserver->pre_push_listeners);
+  g_object_unref (G_OBJECT (debugserver->tcp_server));
 }
 
 static void
@@ -259,8 +140,8 @@ gst_debugserver_tracer_set_property (GObject * object, guint prop_id,
       tmp_port = g_value_get_int (value);
       if (tmp_port != debugserver->port) {
         debugserver->port = g_value_get_int (value);
-        gst_debugserver_tracer_stop_server (debugserver);
-        gst_debugserver_tracer_start_server (debugserver);
+        gst_debugserver_tcp_stop_server (debugserver->tcp_server);
+        gst_debugserver_tcp_start_server (debugserver->tcp_server, debugserver->port);
       }
       break;
     default:
@@ -284,35 +165,6 @@ gst_debugserver_tracer_get_property (GObject * object, guint prop_id,
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
-  }
-}
-
-static void
-gst_debugserver_tracer_start_server (GstDebugserverTracer * debugserver)
-{
-  GError *error = NULL;
-  debugserver->service = g_socket_service_new ();
-
-  g_socket_listener_add_inet_port ((GSocketListener *) debugserver->service,
-      debugserver->port, NULL, &error);
-
-  if (error != NULL) {
-    GST_ERROR_OBJECT (debugserver, "%s", error->message);
-    g_error_free (error);
-  }
-
-  g_signal_connect (debugserver->service,
-      "incoming", G_CALLBACK (incoming_callback), debugserver);
-
-  g_socket_service_start (debugserver->service);
-}
-
-static void
-gst_debugserver_tracer_stop_server (GstDebugserverTracer * debugserver)
-{
-  if (debugserver->service != NULL) {
-    g_socket_service_stop (debugserver->service);
-    g_hash_table_remove_all (debugserver->pre_push_listeners);
   }
 }
 
