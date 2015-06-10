@@ -32,6 +32,9 @@
 
 #include "gstdebugserver.h"
 
+#include "protocol/protocol_utils.h"
+#include "protocol/gstdebugger.pb-c.h"
+
 #include <string.h>
 
 GST_DEBUG_CATEGORY_STATIC (gst_debugserver_debug);
@@ -139,9 +142,9 @@ gst_debugserver_tracer_process_client (gpointer user_data)
   GstDebugserverTracer *debugserver =
       g_array_index (tmp, GstDebugserverTracer *, 1);
   GInputStream *istream;
-  GHashTableIter iter;
-  gpointer key, value;
-  gchar message[1024];
+  guint8 message[1024];
+  Command *command;
+  gint size;
 
   g_array_unref (tmp);
 
@@ -149,20 +152,27 @@ gst_debugserver_tracer_process_client (gpointer user_data)
 
   GST_DEBUG_OBJECT (debugserver, "Received connection from client!\n");
 
-  while (g_input_stream_read (istream, message, 1024, NULL, NULL)) {
-    g_print ("Message was: \"%s\"\n", message);
+  while ((size = gst_debugger_protocol_utils_read_header (istream)) > 0) {
+     assert (size <= 1024);
+     GST_DEBUG_OBJECT (debugserver, "Received message of size: %d\n", size);
+     gst_debugger_protocol_utils_read_requested_size (istream, size, message);
+     command = command__unpack (NULL, size, message);
+     if (command == NULL) {
+       g_print ("error unpacking incoming message\n");
+       continue;
+     }
 
-    if (strncmp (message, "start", 5) == 0) {
-      gst_debugserver_tracer_start_watch (debugserver, connection, "src");
-    } else if (strncmp (message, "stop", 4) == 0) {
-      gst_debugserver_tracer_stop_watch (debugserver, connection, "src");
-    }
-  }
+     g_print ("Type was: %d \n", command->command_type);
 
-  g_hash_table_iter_init (&iter, debugserver->pre_push_listeners);
-  while (g_hash_table_iter_next (&iter, &key, &value)) {
-    gst_debugserver_tracer_stop_watch (debugserver, connection, key);
-  }
+     if (command->command_type == 0) {
+       g_print ("path: %s\n", command->pad_watch->pad_path);
+     }
+     else if (command->command_type == 1) {
+       g_print ("log level: %d log cat: %s \n", command->log_watch->log_level, command->log_watch->log_category);
+     }
+
+     command__free_unpacked (command, NULL);
+   }
 
   return NULL;
 }
@@ -210,7 +220,7 @@ static void
 gst_debugserver_tracer_init (GstDebugserverTracer * self)
 {
   GstTracer *tracer = GST_TRACER (self);
-  g_print("start server");
+
   self->pipeline = NULL;
   self->port = DEFAULT_PORT;
   self->pre_push_listeners = g_hash_table_new_full (g_str_hash,
