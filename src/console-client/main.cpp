@@ -1,5 +1,8 @@
 #include "protocol/gstdebugger.pb.h"
 
+extern "C" {
+#include "protocol/protocol_utils.h"
+}
 #include <giomm.h>
 #include <glibmm.h>
 
@@ -7,35 +10,14 @@
 #include <thread>
 #include <iostream>
 
-static void read_requested_size(const Glib::RefPtr<Gio::InputStream>& input_stream, int requested_size, char *buffer)
-{
-	int size = 0;
-	while (size < requested_size)
-	{
-		int cnt = input_stream->read(buffer + size, requested_size-size);
-		size += cnt;
-	}
-}
-
-static int read_header(const Glib::RefPtr<Gio::InputStream>& input_stream)
-{
-	char buffer[4];
-
-	read_requested_size(input_stream, 4, buffer);
-	int size = 0;
-	for (int i = 0; i < 4; i++)
-		size &= buffer[i] << i;
-
-	return size;
-}
 
 static void read_data(const Glib::RefPtr<Gio::InputStream>& input_stream)
 {
-	char buffer[1024];
+	unsigned char buffer[1024];
 
-	int size = read_header(input_stream);
+	int size = gst_debugger_protocol_utils_read_header(input_stream->gobj());
 	assert(size <= 1024);
-	read_requested_size(input_stream, size, buffer);
+	gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer);
 
 	GstreamerInfo info;
 
@@ -65,17 +47,35 @@ int main(int argc, char **argv)
 	do {
 		std::cin >> command;
 
-		if (command == "start")
+		if (command == "send")
 		{
-			PadWatch *watch = new PadWatch();
-			watch->set_pad_path("videotestsrc:src");
-			watch->set_toggle(ENABLE);
-			watch->set_watch_type(PadWatch_WatchType_BUFFER);
+			PadWatch *pad_watch = new PadWatch();
+			pad_watch->set_pad_path("videotestsrc:src");
+			pad_watch->set_toggle(DISABLE);
+			pad_watch->set_watch_type(PadWatch_WatchType_QUERY);
 
 			Command cmd;
 			cmd.set_command_type(Command_CommandType_PAD_WATCH);
-			cmd.set_allocated_pad_watch(watch);
+			cmd.set_allocated_pad_watch(pad_watch);
+
+			uint8_t buffer[4];
+			int size = cmd.ByteSize();
+			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			connection->get_output_stream()->write(buffer, 4);
 			cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
+
+			LogWatch *log_watch = new LogWatch();
+			log_watch->set_log_category("dummy");
+			log_watch->set_log_level(10);
+
+			Command cmd2;
+			cmd2.set_command_type(Command_CommandType_LOG_WATCH);
+			cmd2.set_allocated_log_watch(log_watch);
+
+			size = cmd2.ByteSize();
+			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			connection->get_output_stream()->write(buffer, 4);
+			cmd2.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}
 	} while (command != "exit");
 
