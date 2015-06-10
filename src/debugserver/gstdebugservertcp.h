@@ -1,9 +1,6 @@
 /* GStreamer
  * Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>
  *
- * gstdebugserver.c: tracing module that sends serialized data to
- * an user.
- *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -44,7 +41,8 @@ G_BEGIN_DECLS
 typedef struct _GstDebugserverTcp GstDebugserverTcp;
 typedef struct _GstDebugserverTcpClass GstDebugserverTcpClass;
 
-typedef void (*GstDebugserverTcpProcessCommandFunction) (Command * command, gpointer user_data);
+typedef void (*GstDebugserverTcpProcessCommandFunction)
+    (Command * command, gpointer client_id, gpointer user_data);
 
 struct _GstDebugserverTcp {
   GObject parent_instance;

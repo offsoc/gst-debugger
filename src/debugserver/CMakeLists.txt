@@ -1,4 +1,8 @@
-add_library(gstdebugserver SHARED gstdebugserver.c gstdebugservertcp.c)
+add_library(gstdebugserver SHARED 
+	gstdebugserver.c
+	gstdebugservertcp.c
+	gstdebugservermessage.c
+)
 
 include_directories(${GSTREAMER_INCLUDE_DIRS})
 

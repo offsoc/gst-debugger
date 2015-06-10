@@ -24,6 +24,7 @@
 #define __GST_DEBUGSERVER_TRACER_H__
 
 #include "gstdebugservertcp.h"
+#include "gstdebugservermessage.h"
 
 #include <gst/gst.h>
 #define GST_USE_UNSTABLE_API
@@ -58,6 +59,7 @@ struct _GstDebugserverTracer {
   gint port;
   GstPipeline * pipeline;
   GstDebugserverTcp * tcp_server;
+  GstDebugserverMessage * msg_handler;
 };
 
 struct _GstDebugserverTracerClass {

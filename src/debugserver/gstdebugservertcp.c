@@ -1,9 +1,6 @@
 /* GStreamer
  * Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>
  *
- * gstdebugserver.c: tracing module that sends serialized data to
- * an user.
- *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -67,7 +64,7 @@ gst_debugserver_tcp_finalize (GObject * obj)
 }
 
 static gpointer
-gst_debugserver_tracer_process_client (gpointer user_data)
+gst_debugserver_tcp_process_client (gpointer user_data)
 {
   GArray *tmp = (GArray *) user_data;
   GSocketConnection *connection = g_array_index (tmp, GSocketConnection *, 0);
@@ -97,7 +94,7 @@ gst_debugserver_tracer_process_client (gpointer user_data)
      GST_LOG_OBJECT (tcp, "Command type: %d\n", command->command_type);
 
      if (tcp->process_command)
-       tcp->process_command (command, tcp->process_command_user_data);
+       tcp->process_command (command, connection, tcp->process_command_user_data);
 
      command__free_unpacked (command, NULL);
    }
@@ -115,7 +112,7 @@ gst_debugserver_tcp_incoming_callback (GSocketService * service,
   g_array_insert_val (tmp, 1, user_data);
   g_object_ref (connection);
   g_thread_new ("connection",
-      (GThreadFunc) gst_debugserver_tracer_process_client, tmp);
+      (GThreadFunc) gst_debugserver_tcp_process_client, tmp);
   return TRUE;
 }
 

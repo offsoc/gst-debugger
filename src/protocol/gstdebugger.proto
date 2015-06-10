@@ -21,7 +21,7 @@ message LogWatch {
 }
 
 message MessageWatch {
-	required string message_type = 1;
+	required int32 message_type = 1;
 	required Toggle toggle = 2;
 }
 

@@ -95,6 +95,21 @@ int main(int argc, char **argv)
 			connection->get_output_stream()->write(buffer, 4);
 			cmd3.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}
+		else if (command == "message")
+		{
+			MessageWatch *msg_watch = new MessageWatch();
+			msg_watch->set_message_type(16384);
+			msg_watch->set_toggle(ENABLE);
+
+			Command cmd4;
+			cmd4.set_command_type(Command_CommandType_MESSAGE_WATCH);
+			cmd4.set_allocated_message_watch(msg_watch);
+
+			size = cmd4.ByteSize();
+			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			connection->get_output_stream()->write(buffer, 4);
+			cmd4.SerializeToFileDescriptor(connection->get_socket()->get_fd());
+		}
 	} while (command != "exit");
 
 	try

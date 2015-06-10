@@ -60,23 +60,52 @@ static void gst_debugserver_tracer_get_property (GObject * object,
 
 static void gst_debugserver_tracer_finalize (GObject * obj);
 
-static void
-do_element_new (GstTracer * self, guint64 ts, GstElement * element)
+static void gst_debugserver_tracer_close_connection (GstDebugserverTracer * debugserver)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
-  if (GST_IS_PIPELINE (element)) {
-    debugserver->pipeline = GST_PIPELINE (element);
+  gst_debugserver_tcp_stop_server (debugserver->tcp_server);
+  // todo free list
+}
+
+static void
+message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
+{
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
+
+  GList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
+    GST_MESSAGE_TYPE (message));
+
+  while (clients != NULL) {
+     // todo send message to client
   }
 }
 
 static void
-gst_debugserver_tracer_process_command (Command * cmd, gpointer user_data)
+do_element_new (GstTracer * self, guint64 ts, GstElement * element)
+{
+  GstBus *bus;
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
+  if (GST_IS_PIPELINE (element)) {
+    debugserver->pipeline = GST_PIPELINE (element);
+    bus = gst_pipeline_get_bus (debugserver->pipeline);
+    gst_bus_add_signal_watch (bus);
+    g_signal_connect (bus, "message", G_CALLBACK (message_broadcaster), debugserver);
+  }
+}
+
+static void
+gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
+  gpointer user_data)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
 
   switch (cmd->command_type) {
   case COMMAND__COMMAND_TYPE__LOG_THRESHOLD:
     gst_debug_set_threshold_from_string (cmd->log_threshold->list, cmd->log_threshold->overwrite);
+    break;
+  case COMMAND__COMMAND_TYPE__MESSAGE_WATCH:
+    gst_debugserver_message_set_watch (debugserver->msg_handler,
+        cmd->message_watch->toggle == TOGGLE__ENABLE,
+        cmd->message_watch->message_type, client_id);
     break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
@@ -114,6 +143,7 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
 
   self->pipeline = NULL;
   self->port = DEFAULT_PORT;
+  self->msg_handler = gst_debugserver_message_new ();
 
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
@@ -131,6 +161,8 @@ gst_debugserver_tracer_finalize (GObject * obj)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (obj);
 
+  gst_debugserver_message_free (debugserver->msg_handler);
+  gst_debugserver_tracer_close_connection (debugserver);
   g_object_unref (G_OBJECT (debugserver->tcp_server));
 }
 
@@ -148,7 +180,7 @@ gst_debugserver_tracer_set_property (GObject * object, guint prop_id,
       tmp_port = g_value_get_int (value);
       if (tmp_port != debugserver->port) {
         debugserver->port = g_value_get_int (value);
-        gst_debugserver_tcp_stop_server (debugserver->tcp_server);
+        gst_debugserver_tracer_close_connection (debugserver);
         gst_debugserver_tcp_start_server (debugserver->tcp_server, debugserver->port);
       }
       break;
