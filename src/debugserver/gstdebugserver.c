@@ -72,7 +72,15 @@ do_element_new (GstTracer * self, guint64 ts, GstElement * element)
 static void
 gst_debugserver_tracer_process_command (Command * cmd, gpointer user_data)
 {
-  g_print ("mam to!\n");
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
+
+  switch (cmd->command_type) {
+  case COMMAND__COMMAND_TYPE__LOG_THRESHOLD:
+    gst_debug_set_threshold_from_string (cmd->log_threshold->list, cmd->log_threshold->overwrite);
+    break;
+  default:
+    GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
+  }
 }
 
 static void

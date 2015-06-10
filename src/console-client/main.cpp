@@ -43,7 +43,8 @@ int main(int argc, char **argv)
 	std::thread th(read_data, input_stream);
 
 	std::string command;
-
+	uint8_t buffer[4];
+	int size;
 	do {
 		std::cin >> command;
 
@@ -58,8 +59,7 @@ int main(int argc, char **argv)
 			cmd.set_command_type(Command_CommandType_PAD_WATCH);
 			cmd.set_allocated_pad_watch(pad_watch);
 
-			uint8_t buffer[4];
-			int size = cmd.ByteSize();
+			size = cmd.ByteSize();
 			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
@@ -76,6 +76,24 @@ int main(int argc, char **argv)
 			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd2.SerializeToFileDescriptor(connection->get_socket()->get_fd());
+		}
+		else if (command == "category")
+		{
+			std::string cat_str;
+			std::cin >> cat_str;
+
+			LogThreshold *log_threshold = new LogThreshold();
+			log_threshold->set_list(cat_str);
+			log_threshold->set_overwrite(1);
+
+			Command cmd3;
+			cmd3.set_command_type(Command_CommandType_LOG_THRESHOLD);
+			cmd3.set_allocated_log_threshold(log_threshold);
+
+			size = cmd3.ByteSize();
+			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			connection->get_output_stream()->write(buffer, 4);
+			cmd3.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}
 	} while (command != "exit");
 

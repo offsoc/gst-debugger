@@ -25,17 +25,24 @@ message MessageWatch {
 	required Toggle toggle = 2;
 }
 
+message LogThreshold {
+	required string list = 1;
+	required bool overwrite = 2;
+}
+
 message Command {	
 	optional PadWatch pad_watch = 1;
 	optional LogWatch log_watch = 2;
 	optional MessageWatch message_watch = 3;
+	optional LogThreshold log_threshold = 4;
 	
 	enum CommandType {
 		PAD_WATCH = 0;
 		LOG_WATCH = 1;
 		MESSAGE_WATCH = 2;
+		LOG_THRESHOLD = 3;
 	}
-	required CommandType command_type = 4; 
+	required CommandType command_type = 5;
 }
 
 message GstreamerLog {
