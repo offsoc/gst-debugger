@@ -14,4 +14,8 @@ gboolean gst_debugger_protocol_utils_read_requested_size (GInputStream * istream
 
 gint gst_debugger_protocol_utils_read_header (GInputStream * istream);
 
+void gst_debugger_protocol_utils_serialize_integer (gint value, guint8 * buffer, gint size);
+
+gint gst_debugger_protocol_utils_deserialize_integer (guint8 * buffer, gint size);
+
 #endif /* PROTOCOL_UTILS_H_ */
