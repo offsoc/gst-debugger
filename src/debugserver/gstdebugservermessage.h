@@ -46,6 +46,9 @@ void gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
 GList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
   GstMessageType msg_type);
 
+gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
+  guint8 * buffer, gint max_size);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGSERVER_MESSAGE_H__ */

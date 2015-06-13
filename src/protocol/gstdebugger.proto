@@ -61,7 +61,5 @@ message GstreamerInfo {
 	
 	required InfoType info_type = 1;
 	
-	oneof InfoValue {
-		GstreamerLog log = 3;
-	}
+	optional GstreamerLog log = 2;
 }

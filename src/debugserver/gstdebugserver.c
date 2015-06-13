@@ -32,9 +32,6 @@
 
 #include "gstdebugserver.h"
 
-#include "protocol/protocol_utils.h"
-#include "protocol/gstdebugger.pb-c.h"
-
 #include <string.h>
 
 GST_DEBUG_CATEGORY_STATIC (gst_debugserver_debug);
@@ -70,12 +67,18 @@ static void
 message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-
+  GSocketConnection *connection;
   GList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
     GST_MESSAGE_TYPE (message));
+  gsize size;
+  guint8 buff[1024];
 
   while (clients != NULL) {
-     // todo send message to client
+    connection = (GSocketConnection*)clients->data;
+    size = gst_debugserver_message_prepare_buffer (message, buff, 1024);
+    gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+      buff, size);
+    clients = clients->next;
   }
 }
 

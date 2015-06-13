@@ -18,6 +18,9 @@
  */
 
 #include "gstdebugservermessage.h"
+#include "protocol/gstdebugger.pb-c.h"
+
+#include <assert.h>
 
 GstDebugserverMessage * gst_debugserver_message_new (void)
 {
@@ -76,4 +79,17 @@ void gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
   } else {
     gst_debugserver_message_remove_watch (msg, msg_type, client_info);
   }
+}
+
+gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
+  guint8 * buffer, gint max_size)
+{
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  gint size = gstreamer_info__get_packed_size (&info);
+
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE;
+  assert(size <= max_size);
+  gstreamer_info__pack (&info, buffer);
+
+  return size;
 }

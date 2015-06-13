@@ -145,3 +145,27 @@ gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp)
   }
 }
 
+gboolean gst_debugserver_tcp_send_packet (GSocket * socket, guint8 * buffer,
+  gint size)
+{
+  GError *err = NULL;
+  guint8 size_buffer[4];
+
+  gst_debugger_protocol_utils_serialize_integer (size, size_buffer, 4);
+  g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);
+
+  if (err) {
+    g_print ("cannot send size of data: %s\n", err->message);
+    g_error_free (err);
+    return FALSE;
+  }
+
+  g_socket_send (socket, (gchar*)buffer, size, NULL, &err);
+  if (err) {
+    g_print ("cannot send data: %s\n", err->message);
+    g_error_free (err);
+    return FALSE;
+  }
+
+  return TRUE;
+}
