@@ -57,6 +57,12 @@ static void gst_debugserver_tracer_get_property (GObject * object,
 
 static void gst_debugserver_tracer_finalize (GObject * obj);
 
+static void
+gst_debugserver_tracer_log_function (GstDebugCategory * category,
+    GstDebugLevel level, const gchar * file, const gchar * function, gint line,
+    GObject * object, GstDebugMessage * message, gpointer user_data)
+    G_GNUC_NO_INSTRUMENT;
+
 static void gst_debugserver_tracer_close_connection (GstDebugserverTracer * debugserver)
 {
   gst_debugserver_tcp_stop_server (debugserver->tcp_server);
@@ -106,10 +112,14 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     gst_debug_set_threshold_from_string (cmd->log_threshold->list, cmd->log_threshold->overwrite);
     break;
   case COMMAND__COMMAND_TYPE__MESSAGE_WATCH:
-    gst_debugserver_message_set_watch (debugserver->msg_handler,
-        cmd->message_watch->toggle == TOGGLE__ENABLE,
-        cmd->message_watch->message_type, client_id);
-    break;
+      gst_debugserver_message_set_watch (debugserver->msg_handler,
+          cmd->message_watch->toggle == TOGGLE__ENABLE,
+          cmd->message_watch->message_type, client_id);
+      break;
+  case COMMAND__COMMAND_TYPE__LOG_WATCH:
+      gst_debugserver_log_set_watch (debugserver->log_handler,
+          cmd->log_watch->toggle == TOGGLE__ENABLE, client_id);
+      break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
   }
@@ -134,9 +144,20 @@ static void
 gst_debugserver_tracer_log_function (GstDebugCategory * category,
     GstDebugLevel level, const gchar * file, const gchar * function, gint line,
     GObject * object, GstDebugMessage * message, gpointer user_data)
-    //G_GNUC_NO_INSTRUMENT todo
 {
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
+  GSocketConnection *connection;
+  GSList *clients = gst_debugserver_log_get_clients (debugserver->log_handler);
+  gsize size;
+  guint8 buff[1024];
 
+  while (clients != NULL) {
+    connection = (GSocketConnection*)clients->data;
+    size = gst_debugserver_log_prepare_buffer (message, buff, 1024);
+    gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+      buff, size);
+    clients = clients->next;
+  }
 }
 
 static void
@@ -147,6 +168,7 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   self->pipeline = NULL;
   self->port = DEFAULT_PORT;
   self->msg_handler = gst_debugserver_message_new ();
+  self->log_handler = gst_debugserver_log_new ();
 
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
@@ -164,7 +186,10 @@ gst_debugserver_tracer_finalize (GObject * obj)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (obj);
 
+  gst_debug_remove_log_function (gst_debugserver_tracer_log_function);
+
   gst_debugserver_message_free (debugserver->msg_handler);
+  gst_debugserver_log_free (debugserver->log_handler);
   gst_debugserver_tracer_close_connection (debugserver);
   g_object_unref (G_OBJECT (debugserver->tcp_server));
 }
