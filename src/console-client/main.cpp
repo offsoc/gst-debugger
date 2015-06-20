@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 			cmd.set_allocated_pad_watch(pad_watch);
 
 			size = cmd.ByteSize();
-			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 			cmd2.set_allocated_log_watch(log_watch);
 
 			size = cmd2.ByteSize();
-			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd2.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 			cmd3.set_allocated_log_threshold(log_threshold);
 
 			size = cmd3.ByteSize();
-			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd3.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 			cmd4.set_allocated_message_watch(msg_watch);
 
 			size = cmd4.ByteSize();
-			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd4.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 			cmd4.set_allocated_log_watch(log_watch);
 
 			size = cmd4.ByteSize();
-			gst_debugger_protocol_utils_serialize_integer(size, buffer, 4);
+			gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
 			connection->get_output_stream()->write(buffer, 4);
 			cmd4.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 		}

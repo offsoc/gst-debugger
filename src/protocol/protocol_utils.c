@@ -1,26 +1,42 @@
 #include "protocol_utils.h"
 
-void
-gst_debugger_protocol_utils_serialize_integer (gint value, gchar * buffer, gint size)
-{
-  gint i;
-  for (i = 0; i < size; i++) {
-    buffer[i] = value % 256;
-    value /= 256;
+#define SESRIALIZER \
+  gint i; \
+  for (i = 0; i < size; i++) { \
+    buffer[i] = value % 256; \
+    value /= 256; \
   }
+
+#define DESERIALIZER \
+  gint value = 0, i; \
+  for (i = size - 1; i >= 0; i--) { \
+    value *= 256; \
+    value += buffer[i]; \
+  } \
+  return value;
+
+void
+gst_debugger_protocol_utils_serialize_integer64 (gint64 value, gchar * buffer, gint size)
+{
+  SESRIALIZER
 }
 
-gint
-gst_debugger_protocol_utils_deserialize_integer (gchar * buffer, gint size)
+void
+gst_debugger_protocol_utils_serialize_uinteger64 (guint64 value, gchar * buffer, gint size)
 {
-  gint value = 0, i;
+  SESRIALIZER
+}
 
-  for (i = size - 1; i >= 0; i--) {
-    value *= 256;
-    value += buffer[i];
-  }
+gint64
+gst_debugger_protocol_utils_deserialize_integer64 (gchar * buffer, gint size)
+{
+  DESERIALIZER
+}
 
-  return value;
+guint64
+gst_debugger_protocol_utils_deserialize_uinteger64 (gchar * buffer, gint size)
+{
+  DESERIALIZER
 }
 
 gboolean
@@ -48,5 +64,5 @@ gst_debugger_protocol_utils_read_header (GInputStream * istream)
     return -1;
   }
 
-  return gst_debugger_protocol_utils_deserialize_integer (buffer, 4);
+  return gst_debugger_protocol_utils_deserialize_integer64 (buffer, 4);
 }

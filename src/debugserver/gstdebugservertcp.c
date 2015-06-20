@@ -151,7 +151,7 @@ gboolean gst_debugserver_tcp_send_packet (GSocket * socket, gchar * buffer,
   GError *err = NULL;
   gchar size_buffer[4];
 
-  gst_debugger_protocol_utils_serialize_integer (size, size_buffer, 4);
+  gst_debugger_protocol_utils_serialize_integer64 (size, size_buffer, 4);
   g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);
 
   if (err) {

@@ -12,5 +12,7 @@
 
 gint gst_query_serialize(GstQuery * query, gchar * buffer, gint size);
 
+gint gst_event_serialize(GstEvent * event, gchar * buffer, gint size);
+
 
 #endif /* SRC_GST_SERIALIZATION_SERIALIZER_H_ */
