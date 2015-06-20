@@ -23,6 +23,7 @@ pkg_check_modules(GIO REQUIRED gio-2.0)
 link_directories(${GIO_LIBRARY_DIRS}) 
 
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
+include_directories(${GSTREAMER_INCLUDE_DIRS})
 
 find_package(Protobuf REQUIRED)
 
