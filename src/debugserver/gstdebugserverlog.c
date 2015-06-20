@@ -52,7 +52,7 @@ GSList* gst_debugserver_log_get_clients (GstDebugserverLog * log)
 }
 
 gint gst_debugserver_log_prepare_buffer (GstDebugMessage * gst_debug_msg,
-  guint8 * buffer, gint max_size)
+  gchar * buffer, gint max_size)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   GstreamerLog log = GSTREAMER_LOG__INIT;
@@ -64,7 +64,7 @@ gint gst_debugserver_log_prepare_buffer (GstDebugMessage * gst_debug_msg,
   info.log = &log;
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= max_size);
-  gstreamer_info__pack (&info, buffer);
+  gstreamer_info__pack (&info, (guint8*)buffer);
 
   return size;
 }

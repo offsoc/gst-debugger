@@ -71,7 +71,7 @@ gst_debugserver_tcp_process_client (gpointer user_data)
   GstDebugserverTcp *tcp =
       g_array_index (tmp, GstDebugserverTcp*, 1);
   GInputStream *istream;
-  guint8 message[1024];
+  gchar message[1024];
   Command *command;
   gint size;
 
@@ -85,7 +85,7 @@ gst_debugserver_tcp_process_client (gpointer user_data)
      assert (size <= 1024);
      GST_DEBUG_OBJECT (tcp, "Received message of size: %d\n", size);
      gst_debugger_protocol_utils_read_requested_size (istream, size, message);
-     command = command__unpack (NULL, size, message);
+     command = command__unpack (NULL, size, (guint8*)message);
      if (command == NULL) {
        g_print ("error unpacking incoming message\n");
        continue;
@@ -145,11 +145,11 @@ gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp)
   }
 }
 
-gboolean gst_debugserver_tcp_send_packet (GSocket * socket, guint8 * buffer,
+gboolean gst_debugserver_tcp_send_packet (GSocket * socket, gchar * buffer,
   gint size)
 {
   GError *err = NULL;
-  guint8 size_buffer[4];
+  gchar size_buffer[4];
 
   gst_debugger_protocol_utils_serialize_integer (size, size_buffer, 4);
   g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);

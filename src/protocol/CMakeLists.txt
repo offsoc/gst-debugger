@@ -1,6 +1,6 @@
 PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders gstdebugger.proto)
 
-set (PROTOCOL_FILES protocol_utils.c serializer.c)
+set (PROTOCOL_FILES protocol_utils.c serializer.c deserializer.c)
 
 add_library(gst-debugger-protocol-cpp STATIC ${PROTOCOL_FILES} ${ProtoSources} ${ProtoHeaders})
 add_library(gst-debugger-protocol-c STATIC ${PROTOCOL_FILES} gstdebugger.pb-c.c gstdebugger.pb-c.h)

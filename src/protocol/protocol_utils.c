@@ -1,7 +1,7 @@
 #include "protocol_utils.h"
 
 void
-gst_debugger_protocol_utils_serialize_integer (gint value, guint8 * buffer, gint size)
+gst_debugger_protocol_utils_serialize_integer (gint value, gchar * buffer, gint size)
 {
   gint i;
   for (i = 0; i < size; i++) {
@@ -11,7 +11,7 @@ gst_debugger_protocol_utils_serialize_integer (gint value, guint8 * buffer, gint
 }
 
 gint
-gst_debugger_protocol_utils_deserialize_integer (guint8 * buffer, gint size)
+gst_debugger_protocol_utils_deserialize_integer (gchar * buffer, gint size)
 {
   gint value = 0, i;
 
@@ -24,7 +24,7 @@ gst_debugger_protocol_utils_deserialize_integer (guint8 * buffer, gint size)
 }
 
 gboolean
-gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint requested_size, guint8 * buffer)
+gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint requested_size, gchar * buffer)
 {
   gint size = 0;
   gint cnt = 0;
@@ -42,7 +42,7 @@ gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint re
 gint
 gst_debugger_protocol_utils_read_header (GInputStream * istream)
 {
-  guint8 buffer[4];
+  gchar buffer[4];
 
   if (gst_debugger_protocol_utils_read_requested_size(istream, 4, buffer) == FALSE) {
     return -1;

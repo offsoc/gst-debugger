@@ -77,7 +77,7 @@ message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
   GList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
     GST_MESSAGE_TYPE (message));
   gsize size;
-  guint8 buff[1024];
+  gchar buff[1024];
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
@@ -149,7 +149,7 @@ gst_debugserver_tracer_log_function (GstDebugCategory * category,
   GSocketConnection *connection;
   GSList *clients = gst_debugserver_log_get_clients (debugserver->log_handler);
   gsize size;
-  guint8 buff[1024];
+  gchar buff[1024];
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;

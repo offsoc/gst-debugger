@@ -13,7 +13,7 @@ extern "C" {
 
 static void read_data(const Glib::RefPtr<Gio::InputStream>& input_stream)
 {
-	unsigned char buffer[1024];
+	char buffer[1024];
 
 	//while (true)
 	{
@@ -31,6 +31,8 @@ static void read_data(const Glib::RefPtr<Gio::InputStream>& input_stream)
 		{
 		case GstreamerInfo_InfoType_LOG:
 			std::cout << info.log().message() << std::endl;
+			break;
+		default:
 			break;
 		}
 	}
@@ -53,7 +55,7 @@ int main(int argc, char **argv)
 	std::thread th(read_data, input_stream);
 
 	std::string command;
-	uint8_t buffer[4];
+	char buffer[4];
 	int size;
 	do {
 		std::cin >> command;

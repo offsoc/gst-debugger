@@ -10,7 +10,7 @@
 
 #include <gst/gst.h>
 
-gint gst_query_serialize(GstQuery * query, guint8 * buffer, gint size);
+gint gst_query_serialize(GstQuery * query, gchar * buffer, gint size);
 
 
 #endif /* SRC_GST_SERIALIZATION_SERIALIZER_H_ */

@@ -82,7 +82,7 @@ void gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
 }
 
 gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
-  guint8 * buffer, gint max_size)
+  gchar * buffer, gint max_size)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   gint size;
@@ -90,7 +90,7 @@ gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
   info.info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE;
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= max_size);
-  gstreamer_info__pack (&info, buffer);
+  gstreamer_info__pack (&info, (guint8*)buffer);
 
   return size;
 }

@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-gint gst_query_serialize (GstQuery * query, guint8 * buffer, gint size)
+gint gst_query_serialize (GstQuery * query, gchar * buffer, gint size)
 {
   const GstStructure * q_structure;
   gchar * str;
@@ -21,16 +21,15 @@ gint gst_query_serialize (GstQuery * query, guint8 * buffer, gint size)
   q_structure = gst_query_get_structure (query);
 
   str = gst_structure_to_string (q_structure);
-  str_size = strlen (str);
+  str_size = strlen (str) + 1;
   type_size = 4;
-  total_size = type_size + str_size + 4;
+  total_size = type_size + str_size;
   if (total_size > size) {
     goto finalize;
   }
-  gst_debugger_protocol_utils_serialize_integer (total_size, buffer, 4);
 
-  gst_debugger_protocol_utils_serialize_integer (query->type, buffer + 4, type_size);
-  memcpy (buffer + type_size + 4, str, str_size);
+  gst_debugger_protocol_utils_serialize_integer (query->type, buffer, type_size);
+  memcpy (buffer + type_size, str, str_size);
 
 finalize:
   g_free (str);

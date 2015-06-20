@@ -66,7 +66,7 @@ void gst_debugserver_tcp_start_server (GstDebugserverTcp * tcp, guint port);
 
 void gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp);
 
-gboolean gst_debugserver_tcp_send_packet (GSocket * socket, guint8 * buffer, gint size);
+gboolean gst_debugserver_tcp_send_packet (GSocket * socket, gchar * buffer, gint size);
 
 G_GNUC_INTERNAL GType gst_debugserver_tcp_get_type (void);
 

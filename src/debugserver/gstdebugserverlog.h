@@ -36,7 +36,7 @@ GstDebugserverLog * gst_debugserver_log_new (void);
 void gst_debugserver_log_free (GstDebugserverLog * log);
 
 gint gst_debugserver_log_prepare_buffer (GstDebugMessage * gst_debug_msg,
-  guint8 * buffer, gint max_size);
+  gchar * buffer, gint max_size);
 
 GSList* gst_debugserver_log_get_clients (GstDebugserverLog * log);
 
