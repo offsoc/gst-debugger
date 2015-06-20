@@ -5,14 +5,14 @@
  *      Author: mkolny
  */
 
-#include <iostream>
+#include <gtest/gtest.h>
 extern "C" {
 #include "protocol/serializer.h"
 #include "protocol/deserializer.h"
 #include "protocol/protocol_utils.h"
 }
 
-void query_serialization()
+TEST(SerializerTest, QuerySerialization)
 {
 	GstQuery * q = gst_query_new_duration (GST_FORMAT_PERCENT);
 	gst_query_set_duration(q, GST_FORMAT_PERCENT, 59);
@@ -33,13 +33,17 @@ void query_serialization()
 	GstFormat fmt;
 	gint64 duration;
 	gst_query_parse_duration(nq, &fmt, &duration);
-	std::cout << gst_query_type_get_name(nq->type) << " " << fmt << " " << duration<< std::endl;
 	gst_query_unref(nq);
 	if (need_free)
 		free(tmp);
+
+	ASSERT_EQ(GST_QUERY_DURATION, nq->type);
+	ASSERT_EQ(GST_FORMAT_PERCENT, fmt);
+	ASSERT_EQ(59, duration);
+
 }
 
-void event_serialization()
+TEST(SerializerTest, EventSerialization)
 {
 	GstEvent *event = gst_event_new_buffer_size(GST_FORMAT_BYTES, 500, 102314, TRUE);
 	gchar st_b[1024];
@@ -60,18 +64,13 @@ void event_serialization()
 	gint64 minsize, maxsize;
 	gboolean async;
 	gst_event_parse_buffer_size(ne, &fmt, &minsize, &maxsize, &async);
-	std::cout << gst_event_type_get_name(ne->type) << " " << fmt << " " << minsize << " " << maxsize << " " << async << std::endl;
 	gst_event_unref(ne);
 	if (need_free)
 		free(tmp);
-}
 
-int main (int argc, char **argv)
-{
-	gst_init(&argc, &argv);
-
-	query_serialization();
-	event_serialization();
-
-	return 0;
+	ASSERT_EQ(GST_EVENT_BUFFERSIZE, ne->type);
+	ASSERT_EQ(GST_FORMAT_BYTES, fmt);
+	ASSERT_EQ(500, minsize);
+	ASSERT_EQ(102314, maxsize);
+	ASSERT_EQ(TRUE, async);
 }
