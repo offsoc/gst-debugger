@@ -33,7 +33,7 @@ GstEvent* gst_event_deserialize (gchar * buffer, gint size)
   guint32 seqnum;
   GstEvent *event;
   GstStructure *e_structure;
-  gint xx = strlen (buffer+16) + 17;
+
   if (strlen (buffer+16) + 17 != (guint)size) {
     return NULL;
   }

@@ -1,4 +1,5 @@
 add_subdirectory(console-client)
 add_subdirectory(protocol)
 add_subdirectory(debugserver)
+add_subdirectory(gst-debugger)
 add_subdirectory(tests)
