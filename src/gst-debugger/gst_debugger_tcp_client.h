@@ -10,6 +10,7 @@
 
 #include "protocol/gstdebugger.pb.h"
 
+#include <sigc++/sigc++.h>
 #include <giomm.h>
 
 #include <thread>
@@ -18,7 +19,7 @@
 class GstDebuggerTcpClient
 {
 public:
-	typedef std::function<void(const GstreamerInfo& info)> frame_received_function;
+	typedef sigc::signal1<void, const GstreamerInfo&> frame_received_slot;
 
 private:
 	Glib::RefPtr<Gio::SocketClient> client;
@@ -27,16 +28,17 @@ private:
 	bool connected = false;
 	std::thread reader;
 
-	frame_received_function frame_received_handler;
-
 	void read_data();
 
 public:
-	void connect(const std::string &address, int port);
-	void disconnect();
+	bool connect(const std::string &address, int port);
+	bool disconnect();
 	void write_data(char *data, int size);
 
-	void set_frame_received_handler(frame_received_function handler);
+	bool is_connected() const { return connection && connection->is_connected(); }
+
+	sigc::signal1<void, bool> signal_status_changed;
+	frame_received_slot signal_frame_received;
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_DEBUGGER_TCP_CLIENT_H_ */

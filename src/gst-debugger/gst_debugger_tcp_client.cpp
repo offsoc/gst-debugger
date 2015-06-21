@@ -13,20 +13,24 @@ extern "C" {
 
 #include <cassert>
 
-void GstDebuggerTcpClient::connect(const std::string &address, int port)
+bool GstDebuggerTcpClient::connect(const std::string &address, int port)
 {
-	client = Gio::SocketClient::create();
-	connection = client->connect_to_host(address, port);
-	connected = true;
+	try
+	{
+		client = Gio::SocketClient::create();
+		connection = client->connect_to_host(address, port);
+		connected = true;
 
-	reader = std::thread([this]{
-		read_data();
-	});
-}
-
-void GstDebuggerTcpClient::set_frame_received_handler(frame_received_function handler)
-{
-	frame_received_handler = handler;
+		reader = std::thread([this]{
+			read_data();
+		});
+		signal_status_changed(true);
+		return true;
+	}
+	catch (const Gio::Error &)
+	{
+		return false;
+	}
 }
 
 void GstDebuggerTcpClient::read_data()
@@ -36,20 +40,28 @@ void GstDebuggerTcpClient::read_data()
 	while (connected)
 	{
 		int size = gst_debugger_protocol_utils_read_header(input_stream->gobj());
+
+		if (size < 0)
+			break;
+
 		assert(size <= 1024);
 		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer);
 
 		GstreamerInfo info;
 		info.ParseFromArray(buffer, size);
-		frame_received_handler(info);
+		signal_frame_received(info);
 	}
+
+	signal_status_changed(false);
+	connected = false;
 }
 
-void GstDebuggerTcpClient::disconnect()
+bool GstDebuggerTcpClient::disconnect()
 {
 	connected = false;
-	connection->close();
+	auto ok = connection->close();
 	reader.join();
+	return ok;
 }
 
 void GstDebuggerTcpClient::write_data(char *data, int size)

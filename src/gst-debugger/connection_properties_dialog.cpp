@@ -29,7 +29,7 @@ void ConnectionPropertiesDialog::pingButton_click_cb()
 	auto client = Gio::SocketClient::create();
 	try
 	{
-		auto connection = client->connect_to_host(ip_address_entry->get_text(), std::stoi(port_entry->get_text()));
+		auto connection = client->connect_to_host(get_ip_address(), get_port());
 		if (connection->is_connected())
 		{
 			Gtk::MessageDialog dialog("Info");
@@ -48,3 +48,12 @@ void ConnectionPropertiesDialog::pingButton_click_cb()
 	}
 }
 
+int ConnectionPropertiesDialog::get_port() const
+{
+	return std::stoi(port_entry->get_text());
+}
+
+std::string ConnectionPropertiesDialog::get_ip_address() const
+{
+	return ip_address_entry->get_text();
+}

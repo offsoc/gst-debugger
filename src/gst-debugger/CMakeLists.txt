@@ -5,6 +5,16 @@ add_custom_command(
 	DEPENDS ui/gst-debugger.glade
 )
 
-add_executable(gst-debugger main.cpp main_window.cpp connection_properties_dialog.cpp gst-debugger.ui.h)
+add_executable(gst-debugger
+	main.cpp
+	main_window.cpp
+	connection_properties_dialog.cpp
+	gst_debugger_tcp_client.cpp
+	gst-debugger.ui.h
+)
 
-target_link_libraries(gst-debugger ${GTKMM_LIBRARIES})
+target_link_libraries(gst-debugger
+	gst-debugger-protocol-cpp
+	${GIOMM_LIBRARIES}
+	${GTKMM_LIBRARIES}
+)

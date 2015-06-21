@@ -21,6 +21,9 @@ class ConnectionPropertiesDialog : public Gtk::Dialog
 
 public:
 	ConnectionPropertiesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+
+	int get_port() const;
+	std::string get_ip_address() const;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONNECTION_PROPERTIES_DIALOG_H_ */
