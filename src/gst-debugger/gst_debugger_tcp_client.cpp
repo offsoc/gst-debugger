@@ -72,6 +72,9 @@ void GstDebuggerTcpClient::write_data(char *data, int size)
 
 void GstDebuggerTcpClient::send_command(const Command &cmd)
 {
+	if (!is_connected())
+		throw Gio::Error(Gio::Error::FAILED, "No connection!");
+
 	char buffer[4];
 	auto size = cmd.ByteSize();
 	gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);

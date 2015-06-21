@@ -16,9 +16,9 @@ message PadWatch {
 }
 
 message LogWatch {
-	required int32 log_level = 1;
+	required int32 log_level = 1; // not supported yet
 	required Toggle toggle = 2;
-	optional string log_category = 3;
+	optional string log_category = 3; // not supported yet
 }
 
 message MessageWatch {
