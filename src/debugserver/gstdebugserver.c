@@ -153,7 +153,8 @@ gst_debugserver_tracer_log_function (GstDebugCategory * category,
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_log_prepare_buffer (message, buff, 1024);
+    size = gst_debugserver_log_prepare_buffer (category, level, file, function,
+      line, object, message, buff, 1024);
     gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
       buff, size);
     clients = clients->next;

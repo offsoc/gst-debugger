@@ -51,15 +51,21 @@ GSList* gst_debugserver_log_get_clients (GstDebugserverLog * log)
   return log->clients;
 }
 
-gint gst_debugserver_log_prepare_buffer (GstDebugMessage * gst_debug_msg,
-  gchar * buffer, gint max_size)
+gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
+  GstDebugLevel level, const gchar * file, const gchar * function, gint line,
+  GObject * object, GstDebugMessage * message, gchar * buffer, gint max_size)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   GstreamerLog log = GSTREAMER_LOG__INIT;
   gint size;
 
-  log.level = 0; //todo
-  log.message = g_strdup (gst_debug_message_get (gst_debug_msg));
+  log.level = (gint)level;
+  log.category_name = g_strdup (gst_debug_category_get_name (category));
+  log.file = g_strdup (file);
+  log.function = g_strdup (function);
+  log.line = line;
+  log.object_path = g_strdup ("todo");
+  log.message = g_strdup (gst_debug_message_get (message));
   info.info_type = GSTREAMER_INFO__INFO_TYPE__LOG;
   info.log = &log;
   size = gstreamer_info__get_packed_size (&info);
