@@ -11,7 +11,7 @@
   gint value = 0, i; \
   for (i = size - 1; i >= 0; i--) { \
     value *= 256; \
-    value += buffer[i]; \
+    value += (unsigned char)buffer[i]; \
   } \
   return value;
 

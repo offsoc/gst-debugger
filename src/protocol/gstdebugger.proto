@@ -48,7 +48,12 @@ message Command {
 
 message GstreamerLog {
 	required int32 level = 1;
-	required string message = 2;
+	required string category_name = 2;
+	required string file = 3;
+	required string function = 4;
+	required int32 line = 5;
+	required string object_path = 6;
+	required string message = 7;
 }
 
 message GstreamerInfo {
