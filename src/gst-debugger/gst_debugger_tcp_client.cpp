@@ -69,3 +69,12 @@ void GstDebuggerTcpClient::write_data(char *data, int size)
 	auto stream = connection->get_output_stream();
 	stream->write(data, size);
 }
+
+void GstDebuggerTcpClient::send_command(const Command &cmd)
+{
+	char buffer[4];
+	auto size = cmd.ByteSize();
+	gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
+	connection->get_output_stream()->write(buffer, 4);
+	cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
+}

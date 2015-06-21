@@ -34,6 +34,7 @@ public:
 	bool connect(const std::string &address, int port);
 	bool disconnect();
 	void write_data(char *data, int size);
+	void send_command(const Command &cmd);
 
 	bool is_connected() const { return connection && connection->is_connected(); }
 
