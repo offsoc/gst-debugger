@@ -26,6 +26,10 @@ message MessageWatch {
 	required Toggle toggle = 2;
 }
 
+message DebugCategoryList {
+	required string list = 1;
+}
+
 message LogThreshold {
 	required string list = 1;
 	required bool overwrite = 2;
@@ -42,8 +46,9 @@ message Command {
 		LOG_WATCH = 1;
 		MESSAGE_WATCH = 2;
 		LOG_THRESHOLD = 3;
+		DEBUG_CATEGORIES=4;
 	}
-	required CommandType command_type = 5;
+	required CommandType command_type = 6;
 }
 
 message GstreamerLog {
@@ -63,9 +68,11 @@ message GstreamerInfo {
 		QUERY = 2;
 		MESSAGE = 3;
 		LOG = 4;
+		DEBUG_CATEGORIES = 5;
 	}
 	
 	required InfoType info_type = 1;
 	
 	optional GstreamerLog log = 2;
+	optional DebugCategoryList debug_categories = 3;
 }
