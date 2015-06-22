@@ -20,6 +20,7 @@ class MainWindow : public Gtk::Window
 	void connection_status_changed(bool connected);
 	void setThresholdButton_clicked_cb();
 	void watchLogCheckButton_toggled_cb();
+	void refreshDebugCategoriesButton_clicked_cb();
 
 	GstDebuggerTcpClient client;
 
@@ -32,6 +33,8 @@ class MainWindow : public Gtk::Window
 	Gtk::Entry *log_threshold_entry;
 	Gtk::CheckButton *overwrite_current_threshold_check_button;
 	Gtk::CheckButton *watch_log_check_button;
+	Gtk::ComboBoxText *debug_categories_combo_box_text;
+	Gtk::Button *refresh_debug_categories_button;
 
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

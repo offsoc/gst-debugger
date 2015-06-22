@@ -25,13 +25,32 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	builder->get_widget_derived("connectionPropertiesDialog", connection_properties_dialog);
 	builder->get_widget("mainStatusbar", main_statusbar);
+	builder->get_widget("debugCategoriesComboBoxText", debug_categories_combo_box_text);
 
 	builder->get_widget("watchLogCheckButton", watch_log_check_button);
 	watch_log_check_button->signal_toggled().connect(sigc::mem_fun(*this, &MainWindow::watchLogCheckButton_toggled_cb));
 
+	builder->get_widget("refreshDebugCategoriesButton", refresh_debug_categories_button);
+	refresh_debug_categories_button->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::refreshDebugCategoriesButton_clicked_cb));
+
 	client.signal_status_changed.connect(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
-	client.signal_frame_received.connect([](const GstreamerInfo &info){
+	client.signal_frame_received.connect([this](const GstreamerInfo &info){
 		// todo
+		if (info.info_type() == GstreamerInfo_InfoType_DEBUG_CATEGORIES)
+		{
+			debug_categories_combo_box_text->remove_all();
+			std::string data = info.debug_categories().list();
+			std::size_t pos;
+			bool cnt = false;
+			while ((pos = data.find(';')) != std::string::npos)
+			{
+				debug_categories_combo_box_text->append(data.substr(0, pos));
+				data = data.substr(pos+1);
+				cnt = true;
+			}
+			if (cnt)
+				debug_categories_combo_box_text->set_active(0);
+		}
 	});
 	connection_status_changed(false);
 }
@@ -85,5 +104,12 @@ void MainWindow::watchLogCheckButton_toggled_cb()
 	log_watch->set_log_level(10); // todo
 	cmd.set_command_type(Command_CommandType_LOG_WATCH);
 	cmd.set_allocated_log_watch(log_watch);
+	client.send_command(cmd);
+}
+
+void MainWindow::refreshDebugCategoriesButton_clicked_cb()
+{
+	Command cmd;
+	cmd.set_command_type(Command_CommandType_DEBUG_CATEGORIES);
 	client.send_command(cmd);
 }
