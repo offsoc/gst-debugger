@@ -20,6 +20,8 @@
 #include "gstdebugserverlog.h"
 #include "protocol/gstdebugger.pb-c.h"
 
+#include <string.h>
+
 GstDebugserverLog * gst_debugserver_log_new (void)
 {
   GstDebugserverLog *log = (GstDebugserverLog*)g_malloc (sizeof(GstDebugserverLog));
@@ -73,4 +75,42 @@ gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
   gstreamer_info__pack (&info, (guint8*)buffer);
 
   return size;
+}
+
+static gint
+sort_by_category_name (gconstpointer a, gconstpointer b)
+{
+  return strcmp (gst_debug_category_get_name ((GstDebugCategory *) a),
+      gst_debug_category_get_name ((GstDebugCategory *) b));
+}
+
+gint gst_debugserver_log_prepare_categories_buffer (gchar * buffer, gint max_size)
+{
+  GSList *tmp, *all_categories = gst_debug_get_all_categories ();
+  GString *categories = g_string_new (NULL);
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  DebugCategoryList category_list = DEBUG_CATEGORY_LIST__INIT;
+  gint size;
+
+  tmp = all_categories = g_slist_sort (all_categories, sort_by_category_name);
+
+  while (tmp) {
+    GstDebugCategory *cat = (GstDebugCategory *) tmp->data;
+    g_string_append (categories, gst_debug_category_get_name (cat));
+    g_string_append_c (categories, ';');
+    tmp = g_slist_next (tmp);
+  }
+
+  category_list.list = g_strdup (categories->str);
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__DEBUG_CATEGORIES;
+  info.debug_categories = &category_list;
+  size = gstreamer_info__get_packed_size (&info);
+  assert(size <= max_size);
+  gstreamer_info__pack (&info, (guint8*)buffer);
+
+  g_string_free (categories, TRUE);
+  g_slist_free (all_categories);
+
+  return size;
+
 }

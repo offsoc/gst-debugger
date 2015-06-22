@@ -44,6 +44,8 @@ GSList* gst_debugserver_log_get_clients (GstDebugserverLog * log);
 void gst_debugserver_log_set_watch (GstDebugserverLog * log, gboolean enable,
   gpointer client_info);
 
+gint gst_debugserver_log_prepare_categories_buffer (gchar * buffer, gint max_size);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGSERVER_LOG_H__ */

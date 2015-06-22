@@ -102,6 +102,18 @@ do_element_new (GstTracer * self, guint64 ts, GstElement * element)
 }
 
 static void
+gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpointer client_id)
+{
+  gchar buffer[1024];
+  gint size;
+  GSocketConnection *connection = (GSocketConnection*) client_id;
+
+  size = gst_debugserver_log_prepare_categories_buffer (buffer, 1024);
+  gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+    buffer, size);
+}
+
+static void
 gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   gpointer user_data)
 {
@@ -119,6 +131,9 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   case COMMAND__COMMAND_TYPE__LOG_WATCH:
       gst_debugserver_log_set_watch (debugserver->log_handler,
           cmd->log_watch->toggle == TOGGLE__ENABLE, client_id);
+      break;
+  case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
+      gst_debugserver_tracer_send_categories (debugserver, client_id);
       break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
