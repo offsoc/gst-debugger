@@ -13,6 +13,24 @@
 
 #include <gtkmm.h>
 
+class GstreamerLogModelColumns : public Gtk::TreeModel::ColumnRecord
+{
+public:
+
+	GstreamerLogModelColumns() {
+		add(level); add(category_name); add(file);
+		add(function); add(line); add(object_path); add(message);
+	}
+
+	Gtk::TreeModelColumn<gint32> level;
+	Gtk::TreeModelColumn<Glib::ustring> category_name;
+	Gtk::TreeModelColumn<Glib::ustring> file;
+	Gtk::TreeModelColumn<Glib::ustring> function;
+	Gtk::TreeModelColumn<gint32> line;
+	Gtk::TreeModelColumn<Glib::ustring> object_path;
+	Gtk::TreeModelColumn<Glib::ustring> message;
+};
+
 class MainWindow : public Gtk::Window
 {
 	void connectionPropertiesMenuItem_activate_cb();
@@ -35,6 +53,15 @@ class MainWindow : public Gtk::Window
 	Gtk::CheckButton *watch_log_check_button;
 	Gtk::ComboBoxText *debug_categories_combo_box_text;
 	Gtk::Button *refresh_debug_categories_button;
+	Gtk::TreeView *log_messages_tree_view;
+	Gtk::Button *clear_message_logs_button;
+
+	GstreamerLogModelColumns model_columns;
+	Glib::RefPtr<Gtk::ListStore> model;
+
+	Glib::Dispatcher dispatcher;
+
+	GstreamerInfo info;
 
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

@@ -35,7 +35,23 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	client.signal_status_changed.connect(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
 	client.signal_frame_received.connect([this](const GstreamerInfo &info){
-		// todo
+		this->info = info;
+		dispatcher.emit();
+	});
+	connection_status_changed(false);
+
+	builder->get_widget("logMessagesTreeView", log_messages_tree_view);
+	model = Gtk::ListStore::create(model_columns);
+	log_messages_tree_view->set_model(model);
+	log_messages_tree_view->append_column("Level", model_columns.level);
+	log_messages_tree_view->append_column("Category", model_columns.category_name);
+	log_messages_tree_view->append_column("File", model_columns.file);
+	log_messages_tree_view->append_column("Function", model_columns.function);
+	log_messages_tree_view->append_column("Line", model_columns.line);
+	log_messages_tree_view->append_column("Object", model_columns.object_path);
+	log_messages_tree_view->append_column("Message", model_columns.message);
+
+	dispatcher.connect([this]{
 		if (info.info_type() == GstreamerInfo_InfoType_DEBUG_CATEGORIES)
 		{
 			debug_categories_combo_box_text->remove_all();
@@ -51,8 +67,25 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 			if (cnt)
 				debug_categories_combo_box_text->set_active(0);
 		}
+		else if (info.info_type() == GstreamerInfo_InfoType_LOG)
+		{
+			Gtk::TreeModel::Row row = *(model->append());
+			auto gstlog = info.log();
+			row[model_columns.level] = gstlog.level();
+			row[model_columns.category_name] = gstlog.category_name();
+			row[model_columns.file] = gstlog.file();
+			row[model_columns.function] = gstlog.function();
+			row[model_columns.line] = gstlog.line();
+			row[model_columns.object_path] = gstlog.object_path();
+			row[model_columns.message] = gstlog.message();
+		}
 	});
-	connection_status_changed(false);
+
+	builder->get_widget("clearMessageLogsButton", clear_message_logs_button);
+	clear_message_logs_button->signal_clicked().connect([this] {
+		model->clear();
+	});
+
 }
 
 void MainWindow::connectionPropertiesMenuItem_activate_cb()
