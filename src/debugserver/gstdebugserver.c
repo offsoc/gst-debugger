@@ -114,6 +114,15 @@ gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpoi
 }
 
 static void
+gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_data)
+{
+  GstDebugserverTracer *debugserver =GST_DEBUGSERVER_TRACER (user_data);
+
+  gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
+  //todo message
+}
+
+static void
 gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   gpointer user_data)
 {
@@ -194,6 +203,8 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   self->tcp_server = gst_debugserver_tcp_new ();
   self->tcp_server->process_command = gst_debugserver_tracer_process_command;
   self->tcp_server->process_command_user_data = self;
+  self->tcp_server->client_disconnected = gst_debugserver_tracer_client_disconnected;
+  self->tcp_server->client_disconnected_user_data = self;
   gst_debugserver_tcp_start_server (self->tcp_server, self->port);
 }
 

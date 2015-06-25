@@ -49,6 +49,8 @@ gst_debugserver_tcp_init (GstDebugserverTcp * self)
   self->service = NULL;
   self->process_command = NULL;
   self->process_command_user_data = NULL;
+  self->client_disconnected = NULL;
+  self->client_disconnected_user_data = NULL;
 }
 
 GstDebugserverTcp * gst_debugserver_tcp_new (void)
@@ -98,6 +100,10 @@ gst_debugserver_tcp_process_client (gpointer user_data)
 
      command__free_unpacked (command, NULL);
    }
+
+  if (tcp->client_disconnected)
+    tcp->client_disconnected (connection, tcp->client_disconnected_user_data);
+  GST_LOG_OBJECT (tcp, "Client disconnected");
 
   return NULL;
 }
