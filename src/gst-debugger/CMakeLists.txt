@@ -10,6 +10,7 @@ add_executable(gst-debugger
 	main_window.cpp
 	connection_properties_dialog.cpp
 	gst_debugger_tcp_client.cpp
+	gst_log_module.cpp
 	gst-debugger.ui.h
 )
 
