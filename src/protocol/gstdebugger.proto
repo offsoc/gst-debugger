@@ -61,6 +61,10 @@ message GstreamerLog {
 	required string message = 7;
 }
 
+message GstreamerEvent {
+	required bytes payload = 1;
+}
+
 message GstreamerInfo {
 	enum InfoType {
 		BUFFER = 0;
@@ -75,4 +79,5 @@ message GstreamerInfo {
 	
 	optional GstreamerLog log = 2;
 	optional DebugCategoryList debug_categories = 3;
+	optional GstreamerEvent event = 4;
 }

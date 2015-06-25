@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-GstQuery* gst_query_deserialize (gchar * buffer, gint size)
+GstQuery* gst_query_deserialize (const gchar * buffer, gint size)
 {
   GstQueryType type;
   GstStructure *structure;
@@ -26,7 +26,7 @@ GstQuery* gst_query_deserialize (gchar * buffer, gint size)
   return gst_query_new_custom (type, structure);
 }
 
-GstEvent* gst_event_deserialize (gchar * buffer, gint size)
+GstEvent* gst_event_deserialize (const gchar * buffer, gint size)
 {
   GstEventType type;
   guint64 timestamp;
