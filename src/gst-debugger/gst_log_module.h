@@ -10,7 +10,6 @@
 
 #include "gst_debugger_tcp_client.h"
 #include "frame_receiver.h"
-#include "protocol/gstdebugger.pb.h"
 
 #include <gtkmm.h>
 
