@@ -43,10 +43,12 @@ class GstLogModule : public FrameReceiver
 	Gtk::TreeView *log_messages_tree_view;
 	Gtk::Button *clear_message_logs_button;
 	Gtk::Button *set_threshold_button;
+	Gtk::Button *save_message_logs_button;
 
 	void setThresholdButton_clicked_cb();
 	void watchLogCheckButton_toggled_cb();
 	void refreshDebugCategoriesButton_clicked_cb();
+	void saveMessageLogsButton_clicked_cb();
 
 	void update_debug_categories();
 	void append_log_entry();

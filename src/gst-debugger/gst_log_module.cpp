@@ -6,6 +6,7 @@
  */
 
 #include "gst_log_module.h"
+#include <fstream>
 
 GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
 : client(client)
@@ -23,6 +24,9 @@ GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std:
 
 	builder->get_widget("refreshDebugCategoriesButton", refresh_debug_categories_button);
 	refresh_debug_categories_button->signal_clicked().connect(sigc::mem_fun(*this, &GstLogModule::refreshDebugCategoriesButton_clicked_cb));
+
+	builder->get_widget("saveMessageLogsButton", save_message_logs_button);
+	save_message_logs_button->signal_clicked().connect(sigc::mem_fun(*this, &GstLogModule::saveMessageLogsButton_clicked_cb));
 
 	builder->get_widget("clearMessageLogsButton", clear_message_logs_button);
 	clear_message_logs_button->signal_clicked().connect([this] {
@@ -61,6 +65,40 @@ void GstLogModule::watchLogCheckButton_toggled_cb()
 	cmd.set_command_type(Command_CommandType_LOG_WATCH);
 	cmd.set_allocated_log_watch(log_watch);
 	client->send_command(cmd);
+}
+
+void GstLogModule::saveMessageLogsButton_clicked_cb()
+{
+	Gtk::FileChooserDialog dialog("Please choose a folder",
+			Gtk::FILE_CHOOSER_ACTION_SAVE);
+
+	dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+	dialog.add_button("OK", Gtk::RESPONSE_OK);
+
+	int result = dialog.run();
+
+	//Handle the response:
+	switch(result)
+	{
+	case Gtk::RESPONSE_CANCEL:
+		return;
+	default:
+		break;
+	}
+
+	std::ofstream file(dialog.get_filename());
+
+	for (auto row : model->children())
+	{
+		file << row[model_columns.level] << "\t"
+				<< row[model_columns.level] << "\t"
+				<< row[model_columns.category_name] << "\t"
+				<< row[model_columns.file] << "\t"
+				<< row[model_columns.function] << "\t"
+				<< row[model_columns.line] << "\t"
+				<< row[model_columns.object_path] << "\t"
+				<< row[model_columns.message] << std::endl;
+	}
 }
 
 void GstLogModule::refreshDebugCategoriesButton_clicked_cb()
