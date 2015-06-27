@@ -102,6 +102,24 @@ do_element_new (GstTracer * self, guint64 ts, GstElement * element)
 }
 
 static void
+do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
+{
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
+  GSocketConnection *connection;
+  GSList *clients = gst_debugserver_event_get_clients (debugserver->event_handler);
+  gsize size;
+  gchar buff[1024];
+
+  while (clients != NULL) {
+    connection = (GSocketConnection*)clients->data;
+    size = gst_debugserver_event_prepare_buffer (event, buff, 1024);
+    gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+      buff, size);
+    clients = clients->next;
+  }
+}
+
+static void
 gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpointer client_id)
 {
   gchar buffer[1024];
@@ -119,6 +137,7 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
   GstDebugserverTracer *debugserver =GST_DEBUGSERVER_TRACER (user_data);
 
   gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
+  gst_debugserver_event_set_watch (debugserver->event_handler, FALSE, client_id);
   //todo message
 }
 
@@ -133,13 +152,17 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     gst_debug_set_threshold_from_string (cmd->log_threshold->list, cmd->log_threshold->overwrite);
     break;
   case COMMAND__COMMAND_TYPE__MESSAGE_WATCH:
-      gst_debugserver_message_set_watch (debugserver->msg_handler,
+    gst_debugserver_message_set_watch (debugserver->msg_handler,
           cmd->message_watch->toggle == TOGGLE__ENABLE,
           cmd->message_watch->message_type, client_id);
-      break;
+    break;
   case COMMAND__COMMAND_TYPE__LOG_WATCH:
-      gst_debugserver_log_set_watch (debugserver->log_handler,
+    gst_debugserver_log_set_watch (debugserver->log_handler,
           cmd->log_watch->toggle == TOGGLE__ENABLE, client_id);
+    break;
+  case COMMAND__COMMAND_TYPE__PAD_WATCH:
+    gst_debugserver_event_set_watch (debugserver->event_handler,
+          cmd->pad_watch->toggle == TOGGLE__ENABLE, client_id);
       break;
   case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
       gst_debugserver_tracer_send_categories (debugserver, client_id);
@@ -194,9 +217,12 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   self->port = DEFAULT_PORT;
   self->msg_handler = gst_debugserver_message_new ();
   self->log_handler = gst_debugserver_log_new ();
+  self->event_handler = gst_debugserver_event_new ();
 
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
+  gst_tracing_register_hook (tracer, "pad-push-event-pre",
+      G_CALLBACK (do_push_event_pre));
 
   gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
 
@@ -217,6 +243,7 @@ gst_debugserver_tracer_finalize (GObject * obj)
 
   gst_debugserver_message_free (debugserver->msg_handler);
   gst_debugserver_log_free (debugserver->log_handler);
+  gst_debugserver_event_free (debugserver->event_handler);
   gst_debugserver_tracer_close_connection (debugserver);
   g_object_unref (G_OBJECT (debugserver->tcp_server));
 }
