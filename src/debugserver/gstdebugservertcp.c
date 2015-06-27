@@ -55,7 +55,9 @@ gst_debugserver_tcp_init (GstDebugserverTcp * self)
 
 GstDebugserverTcp * gst_debugserver_tcp_new (void)
 {
-  return g_object_new (GST_TYPE_DEBUGSERVER_TCP, NULL);
+  GstDebugserverTcp * tcp = g_object_new (GST_TYPE_DEBUGSERVER_TCP, NULL);
+  tcp->clients = NULL;
+  return tcp;
 }
 
 static void
@@ -63,6 +65,7 @@ gst_debugserver_tcp_finalize (GObject * obj)
 {
   GstDebugserverTcp * tcp = GST_DEBUGSERVER_TCP (obj);
   gst_debugserver_tcp_stop_server (tcp);
+  g_slist_free_full (tcp->clients, g_free);
 }
 
 static gpointer
@@ -108,12 +111,20 @@ gst_debugserver_tcp_process_client (gpointer user_data)
   return NULL;
 }
 
+static void gst_debugserver_tcp_add_client (GstDebugserverTcp * tcp, GSocketConnection * connection)
+{
+  TcpClient *client = (TcpClient*) g_malloc (sizeof (TcpClient));
+  client->connection = connection;
+  g_mutex_init (&client->mutex);
+  tcp->clients = g_slist_append (tcp->clients, client);
+}
 
 static gboolean
 gst_debugserver_tcp_incoming_callback (GSocketService * service,
     GSocketConnection * connection, GObject * source_object, gpointer user_data)
 {
   GArray *tmp = g_array_new (FALSE, FALSE, sizeof (gpointer));
+  gst_debugserver_tcp_add_client (GST_DEBUGSERVER_TCP (user_data), connection);
   g_array_insert_val (tmp, 0, connection);
   g_array_insert_val (tmp, 1, user_data);
   g_object_ref (connection);
@@ -151,22 +162,45 @@ gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp)
   }
 }
 
-gboolean gst_debugserver_tcp_send_packet (GSocket * socket, gchar * buffer,
-  gint size)
+static TcpClient* gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConnection * connection)
+{
+  GSList *client_list = tcp->clients;
+  TcpClient *client;
+
+  while (client_list != NULL) {
+    client = (TcpClient*) client_list->data;
+    if (client->connection == connection) {
+      return client;
+    }
+    client_list = g_slist_next (client_list);
+  }
+  return NULL;
+}
+
+gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnection * connection,
+  gchar * buffer, gint size)
 {
   GError *err = NULL;
   gchar size_buffer[4];
+  GSocket *socket;
+  TcpClient *client;
 
+  client = gst_debugserver_tcp_find_client (tcp, connection);
+  assert (client != NULL);
+  socket = g_socket_connection_get_socket (connection);
   gst_debugger_protocol_utils_serialize_integer64 (size, size_buffer, 4);
-  g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);
 
+  g_mutex_lock (&client->mutex);
+  g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);
   if (err) {
+    g_mutex_unlock (&client->mutex);
     g_print ("cannot send size of data: %s\n", err->message);
     g_error_free (err);
     return FALSE;
   }
 
   g_socket_send (socket, (gchar*)buffer, size, NULL, &err);
+  g_mutex_unlock (&client->mutex);
   if (err) {
     g_print ("cannot send data: %s\n", err->message);
     g_error_free (err);

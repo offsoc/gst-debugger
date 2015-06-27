@@ -47,6 +47,11 @@ typedef void (*GstDebugserverTcpProcessCommandFunction)
 typedef void (*GstDebugserverTcpClientDisconnected)
     (gpointer client_id, gpointer user_data);
 
+typedef struct _TcpClient {
+  GSocketConnection * connection;
+  GMutex mutex;
+} TcpClient;
+
 struct _GstDebugserverTcp {
   GObject parent_instance;
 
@@ -59,6 +64,7 @@ struct _GstDebugserverTcp {
   /*< private >*/
   GSocketService * service;
   guint port;
+  GSList * clients;
 };
 
 struct _GstDebugserverTcpClass
@@ -72,7 +78,8 @@ void gst_debugserver_tcp_start_server (GstDebugserverTcp * tcp, guint port);
 
 void gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp);
 
-gboolean gst_debugserver_tcp_send_packet (GSocket * socket, gchar * buffer, gint size);
+gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnection * connection,
+  gchar * buffer, gint size);
 
 G_GNUC_INTERNAL GType gst_debugserver_tcp_get_type (void);
 

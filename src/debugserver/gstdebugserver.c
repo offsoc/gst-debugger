@@ -82,7 +82,7 @@ message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
     size = gst_debugserver_message_prepare_buffer (message, buff, 1024);
-    gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+    gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
       buff, size);
     clients = clients->next;
   }
@@ -113,7 +113,7 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
     size = gst_debugserver_event_prepare_buffer (event, buff, 1024);
-    gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+    gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
       buff, size);
     clients = clients->next;
   }
@@ -127,14 +127,14 @@ gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpoi
   GSocketConnection *connection = (GSocketConnection*) client_id;
 
   size = gst_debugserver_log_prepare_categories_buffer (buffer, 1024);
-  gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+  gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
     buffer, size);
 }
 
 static void
 gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_data)
 {
-  GstDebugserverTracer *debugserver =GST_DEBUGSERVER_TRACER (user_data);
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
 
   gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
   gst_debugserver_event_set_watch (debugserver->event_handler, FALSE, client_id);
@@ -202,7 +202,7 @@ gst_debugserver_tracer_log_function (GstDebugCategory * category,
     connection = (GSocketConnection*)clients->data;
     size = gst_debugserver_log_prepare_buffer (category, level, file, function,
       line, object, message, buff, 1024);
-    gst_debugserver_tcp_send_packet (g_socket_connection_get_socket (connection),
+    gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
       buff, size);
     clients = clients->next;
   }
