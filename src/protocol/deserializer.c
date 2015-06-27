@@ -15,7 +15,7 @@ GstQuery* gst_query_deserialize (const gchar * buffer, gint size)
   GstQueryType type;
   GstStructure *structure;
 
-  if (strlen (buffer+4) + 5 != (guint)size) {
+  if (strlen (buffer+4) + 4 != (guint)size) {
     return NULL;
   }
 
@@ -34,7 +34,7 @@ GstEvent* gst_event_deserialize (const gchar * buffer, gint size)
   GstEvent *event;
   GstStructure *e_structure;
 
-  if (strlen (buffer+16) + 17 != (guint)size) {
+  if (strlen (buffer+16) + 16 != (guint)size) {
     return NULL;
   }
 
