@@ -19,4 +19,5 @@ target_link_libraries(gst-debugger
 	gst-debugger-protocol-cpp
 	${GIOMM_LIBRARIES}
 	${GTKMM_LIBRARIES}
+	${GSTMM_LIBRARIES}
 )

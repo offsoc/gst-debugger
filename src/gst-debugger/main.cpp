@@ -9,9 +9,11 @@
 #include "main_window.h"
 
 #include <gtkmm.h>
+#include <gstreamermm.h>
 
 int main(int argc, char** argv)
 {
+	Gst::init(argc, argv);
 	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "number.plate.recognition");
 
 	Glib::RefPtr<Gtk::Builder> builder =

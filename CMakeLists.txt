@@ -19,6 +19,10 @@ pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 include_directories(${GIOMM_INCLUDE_DIRS})
 link_directories(${GIOMM_LIBRARY_DIRS}) 
 
+pkg_check_modules(GSTMM REQUIRED gstreamermm-1.0)
+include_directories(${GSTMM_INCLUDE_DIRS})
+link_directories(${GSTMM_LIBRARY_DIRS}) 
+
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS}) 
