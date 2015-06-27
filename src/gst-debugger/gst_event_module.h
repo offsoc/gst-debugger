@@ -30,6 +30,7 @@ class GstEventModule : public FrameReceiver
 	std::shared_ptr<GstDebuggerTcpClient> client;
 
 	Gtk::TreeView *event_list_tree_view;
+	Gtk::Button *start_watching_events_button;
 
 	Glib::RefPtr<Gtk::ListStore> event_list_model;
 	EventListModelColumns event_list_model_columns;
@@ -37,6 +38,8 @@ class GstEventModule : public FrameReceiver
 	void process_frame() override;
 
 	void append_event_entry();
+
+	void startWatchingEventsButton_click_cb();
 
 public:
 	GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client);
