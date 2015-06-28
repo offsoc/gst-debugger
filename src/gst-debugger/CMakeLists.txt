@@ -1,3 +1,5 @@
+add_subdirectory(gvalue-converter)
+
 add_custom_command(
 	OUTPUT gst-debugger.ui.h
 	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ui/gst-debugger.glade gst-debugger.glade
@@ -17,6 +19,7 @@ add_executable(gst-debugger
 
 target_link_libraries(gst-debugger
 	gst-debugger-protocol-cpp
+	gvalue-converter
 	${GIOMM_LIBRARIES}
 	${GTKMM_LIBRARIES}
 	${GSTMM_LIBRARIES}

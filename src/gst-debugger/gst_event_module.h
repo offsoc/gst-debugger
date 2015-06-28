@@ -12,34 +12,54 @@
 #include "frame_receiver.h"
 
 #include <gtkmm.h>
+#include <gstreamermm.h>
 
 class EventListModelColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
 	EventListModelColumns() {
-		add(type); add(timestamp); add(seqnum);\
+		add(type); add(timestamp); add(seqnum); add(event);
 	}
 
 	Gtk::TreeModelColumn<gint32> type;
 	Gtk::TreeModelColumn<guint64> timestamp;
 	Gtk::TreeModelColumn<guint64> seqnum;
+	Gtk::TreeModelColumn<GstEvent*> event;
 };
+
+class EventDetailsModelColumns : public Gtk::TreeModel::ColumnRecord
+{
+public:
+	EventDetailsModelColumns() {
+		add(name); add(value);
+	}
+
+	Gtk::TreeModelColumn<Glib::ustring> name;
+	Gtk::TreeModelColumn<Glib::ustring> value;
+};
+
 
 class GstEventModule : public FrameReceiver
 {
 	std::shared_ptr<GstDebuggerTcpClient> client;
 
 	Gtk::TreeView *event_list_tree_view;
+	Gtk::TreeView *event_details_tree_view;
 	Gtk::Button *start_watching_events_button;
 
 	Glib::RefPtr<Gtk::ListStore> event_list_model;
 	EventListModelColumns event_list_model_columns;
 
+	Glib::RefPtr<Gtk::TreeStore> event_details_model;
+	EventDetailsModelColumns event_details_model_columns;
+
 	void process_frame() override;
 
 	void append_event_entry();
+	void display_event_details(const Glib::RefPtr<Gst::Event>& event);
 
 	void startWatchingEventsButton_click_cb();
+	void eventListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
 
 public:
 	GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client);
