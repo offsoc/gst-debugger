@@ -10,12 +10,17 @@
 
 #include "gvalue_base.h"
 
+#include <vector>
+#include <utility>
+
 class GValueEnum : public GValueBase
 {
 public:
 	GValueEnum(GValue* gobj);
 
 	std::string to_string() const override;
+
+	static std::vector<std::pair<int, std::string>> get_values(GType type);
 };
 
 #endif /* SRC_GST_DEBUGGER_GVALUE_CONVERTER_GVALUE_ENUM_H_ */

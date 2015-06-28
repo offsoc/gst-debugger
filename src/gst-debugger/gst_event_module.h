@@ -38,6 +38,15 @@ public:
 	Gtk::TreeModelColumn<Glib::ustring> value;
 };
 
+class EventTypesModelColumns : public Gtk::TreeModel::ColumnRecord
+{
+public:
+	EventTypesModelColumns()
+	{add(type_name); add(type_id);}
+
+	Gtk::TreeModelColumn<int> type_id;
+	Gtk::TreeModelColumn<Glib::ustring> type_name;
+};
 
 class GstEventModule : public FrameReceiver
 {
@@ -46,12 +55,17 @@ class GstEventModule : public FrameReceiver
 	Gtk::TreeView *event_list_tree_view;
 	Gtk::TreeView *event_details_tree_view;
 	Gtk::Button *start_watching_events_button;
+	Gtk::ComboBox *event_types_combobox;
+	Gtk::Entry *event_pad_path_entry;
 
 	Glib::RefPtr<Gtk::ListStore> event_list_model;
 	EventListModelColumns event_list_model_columns;
 
 	Glib::RefPtr<Gtk::TreeStore> event_details_model;
 	EventDetailsModelColumns event_details_model_columns;
+
+	EventTypesModelColumns event_types_model_columns;
+	Glib::RefPtr<Gtk::ListStore> event_types_model;
 
 	void process_frame() override;
 

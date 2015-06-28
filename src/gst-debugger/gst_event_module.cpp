@@ -8,6 +8,7 @@
 #include "gst_event_module.h"
 #include "sigc++lambdahack.h"
 #include "gvalue-converter/gvalue_base.h"
+#include "gvalue-converter/gvalue_enum.h"
 
 extern "C" {
 #include "protocol/deserializer.h"
@@ -24,6 +25,8 @@ GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const 
 	event_list_tree_view->append_column("Timestamp", event_list_model_columns.timestamp);
 	event_list_tree_view->append_column("Sequence number", event_list_model_columns.seqnum);
 
+	builder->get_widget("eventPadPathEntry", event_pad_path_entry);
+
 	builder->get_widget("eventDetailsTreeView", event_details_tree_view);
 	event_details_model = Gtk::TreeStore::create(event_details_model_columns);
 	event_details_tree_view->set_model(event_details_model);
@@ -32,6 +35,22 @@ GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const 
 
 	builder->get_widget("startWatchingEventsButton", start_watching_events_button);
 	start_watching_events_button->signal_clicked().connect(sigc::mem_fun(*this, &GstEventModule::startWatchingEventsButton_click_cb));
+
+	builder->get_widget("eventTypesComboBox", event_types_combobox);
+	event_types_model = Gtk::ListStore::create(event_types_model_columns);
+	event_types_combobox->set_model(event_types_model);
+	event_types_combobox->pack_start(event_types_model_columns.type_name);
+
+	for (auto val : GValueEnum::get_values(gst_event_type_get_type()))
+	{
+		Gtk::TreeModel::Row row = *(event_types_model->append());
+		row[event_types_model_columns.type_id] = val.first;
+		row[event_types_model_columns.type_name] = val.second;
+	}
+	if (event_types_model->children().size() > 0)
+	{
+		event_types_combobox->set_active(0);
+	}
 }
 
 void GstEventModule::process_frame()
@@ -67,11 +86,20 @@ void GstEventModule::append_event_entry()
 
 void GstEventModule::startWatchingEventsButton_click_cb()
 {
+	Gtk::TreeModel::iterator iter = event_types_combobox->get_active();
+	if (!iter)
+		return;
+
+	Gtk::TreeModel::Row row = *iter;
+	if (!row)
+		return;
+
 	Command cmd;
 	PadWatch *pad_watch = new PadWatch();
 	pad_watch->set_toggle(ENABLE);
 	pad_watch->set_watch_type(PadWatch_WatchType_EVENT);
-	pad_watch->set_pad_path("todo"); // todo
+	pad_watch->set_pad_path(event_pad_path_entry->get_text());
+	pad_watch->set_event_type(row[event_types_model_columns.type_id]);
 	cmd.set_command_type(Command_CommandType_PAD_WATCH);
 	cmd.set_allocated_pad_watch(pad_watch);
 	client->send_command(cmd);
