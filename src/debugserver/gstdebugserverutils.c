@@ -18,10 +18,17 @@
  */
 
 #include "gstdebugserverutils.h"
+
 #include <glib.h>
+
+#include <string.h>
 
 GstPad* gst_debugserver_utils_find_pad (GstPipeline * start, gchar * pad_path)
 {
+  if (pad_path == NULL || strlen (pad_path) == 0) {
+    return NULL;
+  }
+
   gchar ** tokens = g_strsplit (pad_path, ":", -1);
   gint i, size;
   GstElement * sp = GST_ELEMENT (start);

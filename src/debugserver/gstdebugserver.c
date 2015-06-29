@@ -31,6 +31,7 @@
 #endif
 
 #include "gstdebugserver.h"
+#include "gstdebugserverutils.h"
 
 #include <string.h>
 
@@ -106,7 +107,8 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
   GSocketConnection *connection;
-  GSList *clients = gst_debugserver_event_get_clients (debugserver->event_handler);
+  GSList *clients = gst_debugserver_event_get_clients (debugserver->event_handler,
+    pad, event);
   gsize size;
   gchar buff[1024];
 
@@ -137,7 +139,8 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
 
   gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
-  gst_debugserver_event_set_watch (debugserver->event_handler, FALSE, client_id);
+  gst_debugserver_event_set_watch (debugserver->event_handler, FALSE, NULL,
+    -1, client_id);
   //todo message
 }
 
@@ -161,9 +164,13 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
           cmd->log_watch->toggle == TOGGLE__ENABLE, client_id);
     break;
   case COMMAND__COMMAND_TYPE__PAD_WATCH:
-    gst_debugserver_event_set_watch (debugserver->event_handler,
-          cmd->pad_watch->toggle == TOGGLE__ENABLE, client_id);
-      break;
+    if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__EVENT) {
+      gst_debugserver_event_set_watch (debugserver->event_handler,
+            cmd->pad_watch->toggle == TOGGLE__ENABLE,
+            gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
+            cmd->pad_watch->event_type, client_id);
+    }
+    break;
   case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
       gst_debugserver_tracer_send_categories (debugserver, client_id);
       break;

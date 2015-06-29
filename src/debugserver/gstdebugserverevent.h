@@ -27,8 +27,13 @@ G_BEGIN_DECLS
 
 typedef struct _GstDebugserverEvent GstDebugserverEvent;
 
+typedef struct _EventWatch {
+  gint event_type;
+  GstPad * pad;
+} EventWatch;
+
 struct _GstDebugserverEvent {
-  GSList *clients;
+  GHashTable * watches;
 };
 
 GstDebugserverEvent * gst_debugserver_event_new (void);
@@ -37,10 +42,11 @@ void gst_debugserver_event_free (GstDebugserverEvent * evt);
 
 gint gst_debugserver_event_prepare_buffer (GstEvent * event, gchar * buffer, gint max_size);
 
-GSList* gst_debugserver_event_get_clients (GstDebugserverEvent * evt);
+GSList* gst_debugserver_event_get_clients (GstDebugserverEvent * evt, GstPad * pad,
+  GstEvent * event);
 
 void gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
-  gpointer client_info);
+  GstPad * pad, gint event_type, gpointer client_info);
 
 G_END_DECLS
 
