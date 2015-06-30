@@ -74,6 +74,7 @@ message GstreamerInfo {
 		MESSAGE = 3;
 		LOG = 4;
 		DEBUG_CATEGORIES = 5;
+		PAD_WATCH_CONFIRMATION = 6;
 	}
 	
 	required InfoType info_type = 1;
@@ -81,4 +82,5 @@ message GstreamerInfo {
 	optional GstreamerLog log = 2;
 	optional DebugCategoryList debug_categories = 3;
 	optional GstreamerEvent event = 4;
+	optional PadWatch confirmation = 5;
 }
