@@ -44,6 +44,26 @@ void gst_debugserver_event_free (GstDebugserverEvent * evt)
   g_free (evt);
 }
 
+gint gst_debugserver_event_prepare_confirmation_buffer (gchar * pad_path, gint event_type,
+  gboolean toggle, gchar * buffer, gint max_size)
+{
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  PadWatch pad_watch = PAD_WATCH__INIT;
+  gint size;
+  pad_watch.pad_path = g_strdup (pad_path);
+  pad_watch.toggle = toggle;
+  pad_watch.watch_type = PAD_WATCH__WATCH_TYPE__EVENT;
+  pad_watch.has_event_type = 1;
+  pad_watch.event_type = event_type;
+  info.confirmation = &pad_watch;
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__PAD_WATCH_CONFIRMATION;
+
+  size = gstreamer_info__get_packed_size (&info);
+  assert(size <= max_size);
+  gstreamer_info__pack (&info, (guint8*)buffer);
+  return size;
+}
+
 gint gst_debugserver_event_prepare_buffer (GstEvent * event, gchar * buffer, gint max_size)
 {
   gchar buff[1024];
@@ -115,7 +135,7 @@ static gint event_watch_compare (gconstpointer a, gconstpointer b)
   }
 }
 
-void gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
+gboolean gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
   GstPad * pad, gint event_type, gpointer client_info)
 {
   if (enable == TRUE) {
@@ -126,22 +146,27 @@ void gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable
     if (watches == NULL) {
       watches = g_slist_append (watches, watch);
       g_hash_table_insert (evt->watches, client_info, watches);
-      return;
+      return TRUE;
     } else if (g_slist_find_custom (watches, watch, event_watch_compare) != NULL) {
-      return;
+      return FALSE;
     }
 
     watches = g_slist_append (watches, watch);
     g_hash_table_replace (evt->watches, client_info, watches);
+    return TRUE;
   } else {
     GSList *list = g_hash_table_lookup (evt->watches, client_info);
     if (list == NULL) {
-      return;
+      return FALSE;
     }
     EventWatch w; w.pad = pad; w.event_type = event_type;
     GSList *link = g_slist_find_custom (list, &w, event_watch_compare);
+    if (link == NULL) {
+      return FALSE;
+    }
     g_free (link->data);
     list = g_slist_delete_link (list, link);
     g_hash_table_replace (evt->watches, client_info, list);
+    return TRUE;
   }
 }

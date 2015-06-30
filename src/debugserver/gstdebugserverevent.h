@@ -40,12 +40,15 @@ GstDebugserverEvent * gst_debugserver_event_new (void);
 
 void gst_debugserver_event_free (GstDebugserverEvent * evt);
 
+gint gst_debugserver_event_prepare_confirmation_buffer (gchar * pad_path, gint event_type,
+  gboolean toggle, gchar * buffer, gint max_size);
+
 gint gst_debugserver_event_prepare_buffer (GstEvent * event, gchar * buffer, gint max_size);
 
 GSList* gst_debugserver_event_get_clients (GstDebugserverEvent * evt, GstPad * pad,
   GstEvent * event);
 
-void gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
+gboolean gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
   GstPad * pad, gint event_type, gpointer client_info);
 
 G_END_DECLS

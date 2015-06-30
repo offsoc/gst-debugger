@@ -148,6 +148,8 @@ static void
 gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   gpointer user_data)
 {
+  gchar buff[1024];
+  gint size;
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
 
   switch (cmd->command_type) {
@@ -164,11 +166,17 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
           cmd->log_watch->toggle == TOGGLE__ENABLE, client_id);
     break;
   case COMMAND__COMMAND_TYPE__PAD_WATCH:
+    // todo refactor - too complicated
     if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__EVENT) {
-      gst_debugserver_event_set_watch (debugserver->event_handler,
+      if (gst_debugserver_event_set_watch (debugserver->event_handler,
             cmd->pad_watch->toggle == TOGGLE__ENABLE,
             gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
-            cmd->pad_watch->event_type, client_id);
+            cmd->pad_watch->event_type, client_id)) {
+        size = gst_debugserver_event_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
+          cmd->pad_watch->event_type, cmd->pad_watch->toggle, buff, 1024);
+        gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
+          buff, size);
+      }
     }
     break;
   case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
