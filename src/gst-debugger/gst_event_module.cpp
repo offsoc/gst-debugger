@@ -17,6 +17,12 @@ extern "C" {
 GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
 : client(client)
 {
+	builder->get_widget("anyPathCheckButton", any_path_check_button);
+	any_path_check_button->signal_toggled().connect([this] { event_pad_path_entry->set_sensitive(!any_path_check_button->get_active()); });
+
+	builder->get_widget("anyEventCheckButton", any_event_check_button);
+	any_event_check_button->signal_toggled().connect([this] { event_types_combobox->set_sensitive(!any_event_check_button->get_active()); });
+
 	builder->get_widget("eventListTreeView", event_list_tree_view);
 	event_list_tree_view->signal_row_activated().connect(sigc::mem_fun(*this, &GstEventModule::eventListTreeView_row_activated_cb));
 	event_list_model = Gtk::ListStore::create(event_list_model_columns);
@@ -24,6 +30,12 @@ GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const 
 	event_list_tree_view->append_column("Type", event_list_model_columns.type);
 	event_list_tree_view->append_column("Timestamp", event_list_model_columns.timestamp);
 	event_list_tree_view->append_column("Sequence number", event_list_model_columns.seqnum);
+
+	builder->get_widget("existingEventHooksTreeView", existing_hooks_tree_view);
+	event_hooks_model = Gtk::ListStore::create(event_hooks_model_columns);
+	existing_hooks_tree_view->set_model(event_hooks_model);
+	existing_hooks_tree_view->append_column("Pad path", event_hooks_model_columns.pad_path);
+	existing_hooks_tree_view->append_column("Event type", event_hooks_model_columns.event_type);
 
 	builder->get_widget("eventPadPathEntry", event_pad_path_entry);
 
@@ -35,6 +47,9 @@ GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const 
 
 	builder->get_widget("startWatchingEventsButton", start_watching_events_button);
 	start_watching_events_button->signal_clicked().connect(sigc::mem_fun(*this, &GstEventModule::startWatchingEventsButton_click_cb));
+
+	builder->get_widget("stopWatchingEventsButton", stop_watching_events_button);
+	stop_watching_events_button->signal_clicked().connect(sigc::mem_fun(*this, &GstEventModule::stopWatchingEventsButton_click_cb));
 
 	builder->get_widget("eventTypesComboBox", event_types_combobox);
 	event_types_model = Gtk::ListStore::create(event_types_model_columns);
@@ -60,8 +75,39 @@ void GstEventModule::process_frame()
 	case GstreamerInfo_InfoType_EVENT:
 		append_event_entry();
 		break;
+	case GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION:
+		update_hook_list();
+		break;
 	default:
 		break;
+	}
+}
+
+void GstEventModule::update_hook_list()
+{
+	auto conf = info.confirmation();
+
+	if (conf.watch_type() != PadWatch_WatchType_EVENT)
+		return;
+
+	if (conf.toggle() == ENABLE)
+	{
+		Gtk::TreeModel::Row row = *(event_hooks_model->append());
+		row[event_hooks_model_columns.pad_path] = conf.pad_path();
+		row[event_hooks_model_columns.event_type] = conf.event_type();
+	}
+	else
+	{
+		for (auto iter = event_hooks_model->children().begin();
+				iter != event_hooks_model->children().end(); ++iter)
+		{
+			if ((*iter)[event_hooks_model_columns.pad_path] == conf.pad_path() &&
+					(*iter)[event_hooks_model_columns.event_type] == conf.event_type())
+			{
+				event_hooks_model->erase(iter);
+				break;
+			}
+		}
 	}
 }
 
@@ -84,25 +130,43 @@ void GstEventModule::append_event_entry()
 	row[event_list_model_columns.event] = event;
 }
 
-void GstEventModule::startWatchingEventsButton_click_cb()
+void GstEventModule::send_start_stop_command(bool enable)
 {
-	Gtk::TreeModel::iterator iter = event_types_combobox->get_active();
-	if (!iter)
-		return;
+	int event_type = -1;
 
-	Gtk::TreeModel::Row row = *iter;
-	if (!row)
-		return;
+	if (!any_event_check_button->get_active())
+	{
+		Gtk::TreeModel::iterator iter = event_types_combobox->get_active();
+		if (!iter)
+			return;
+
+		Gtk::TreeModel::Row row = *iter;
+		if (!row)
+			return;
+		event_type = row[event_types_model_columns.type_id];
+	}
+
+	std::string pad_path = any_path_check_button->get_active() ? Glib::ustring() : event_pad_path_entry->get_text();
 
 	Command cmd;
 	PadWatch *pad_watch = new PadWatch();
-	pad_watch->set_toggle(ENABLE);
+	pad_watch->set_toggle(enable ? ENABLE : DISABLE);
 	pad_watch->set_watch_type(PadWatch_WatchType_EVENT);
-	pad_watch->set_pad_path(event_pad_path_entry->get_text());
-	pad_watch->set_event_type(row[event_types_model_columns.type_id]);
+	pad_watch->set_pad_path(pad_path);
+	pad_watch->set_event_type(event_type);
 	cmd.set_command_type(Command_CommandType_PAD_WATCH);
 	cmd.set_allocated_pad_watch(pad_watch);
 	client->send_command(cmd);
+}
+
+void GstEventModule::startWatchingEventsButton_click_cb()
+{
+	send_start_stop_command(true);
+}
+
+void GstEventModule::stopWatchingEventsButton_click_cb()
+{
+	send_start_stop_command(false);
 }
 
 void GstEventModule::eventListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)
