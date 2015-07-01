@@ -23,4 +23,5 @@ target_link_libraries(gst-debugger
 	${GIOMM_LIBRARIES}
 	${GTKMM_LIBRARIES}
 	${GSTMM_LIBRARIES}
+	-pthread
 )
