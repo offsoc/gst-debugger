@@ -689,11 +689,18 @@
                     <property name="position">130</property>
                     <property name="position_set">True</property>
                     <child>
-                      <object class="GtkTreeView" id="QueryListTreeView">
+                      <object class="GtkScrolledWindow" id="scrolledwindow5">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="treeview-selection7"/>
+                        <property name="shadow_type">in</property>
+                        <child>
+                          <object class="GtkTreeView" id="QueryListTreeView">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection" id="treeview-selection7"/>
+                            </child>
+                          </object>
                         </child>
                       </object>
                       <packing>
@@ -702,11 +709,18 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkTreeView" id="detailsQueryTreeView">
+                      <object class="GtkScrolledWindow" id="scrolledwindow6">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="treeview-selection8"/>
+                        <property name="shadow_type">in</property>
+                        <child>
+                          <object class="GtkTreeView" id="detailsQueryTreeView">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection" id="treeview-selection8"/>
+                            </child>
+                          </object>
                         </child>
                       </object>
                       <packing>

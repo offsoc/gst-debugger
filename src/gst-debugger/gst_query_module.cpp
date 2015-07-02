@@ -38,11 +38,11 @@ void GstQueryModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
 {
 	GstQEModule::display_qe_details(qe);
 
-	Glib::RefPtr<Gst::Query> event = event.cast_static(qe);
+	Glib::RefPtr<Gst::Query> query = query.cast_static(qe);
 
-	append_details_row("event type", Gst::Enums::get_name(event->get_query_type()));
+	append_details_row("query type", Gst::Enums::get_name(query->get_query_type()));
 
-	auto structure = event->get_structure();
+	auto structure = query->get_structure();
 	append_details_from_structure(structure);
 }
 

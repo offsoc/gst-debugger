@@ -81,7 +81,7 @@ void GstQEModule::update_hook_list()
 	{
 		Gtk::TreeModel::Row row = *(qe_hooks_model->append());
 		row[qe_hooks_model_columns.pad_path] = conf.pad_path();
-		row[qe_hooks_model_columns.qe_type] = conf.event_type();
+		row[qe_hooks_model_columns.qe_type] = conf.qe_type();
 	}
 	else
 	{
@@ -89,7 +89,7 @@ void GstQEModule::update_hook_list()
 				iter != qe_hooks_model->children().end(); ++iter)
 		{
 			if ((*iter)[qe_hooks_model_columns.pad_path] == conf.pad_path() &&
-					(*iter)[qe_hooks_model_columns.qe_type] == conf.event_type())
+					(*iter)[qe_hooks_model_columns.qe_type] == conf.qe_type())
 			{
 				qe_hooks_model->erase(iter);
 				break;
@@ -100,7 +100,7 @@ void GstQEModule::update_hook_list()
 
 void GstQEModule::send_start_stop_command(bool enable)
 {
-	int event_type = -1;
+	int qe_type = -1;
 
 	if (!any_qe_check_button->get_active())
 	{
@@ -111,7 +111,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 		Gtk::TreeModel::Row row = *iter;
 		if (!row)
 			return;
-		event_type = row[qe_types_model_columns.type_id];
+		qe_type = row[qe_types_model_columns.type_id];
 	}
 
 	std::string pad_path = any_path_check_button->get_active() ? Glib::ustring() : qe_pad_path_entry->get_text();
@@ -121,7 +121,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 	pad_watch->set_toggle(enable ? ENABLE : DISABLE);
 	pad_watch->set_watch_type(watch_type);
 	pad_watch->set_pad_path(pad_path);
-	pad_watch->set_event_type(event_type);
+	pad_watch->set_qe_type(qe_type);
 	cmd.set_command_type(Command_CommandType_PAD_WATCH);
 	cmd.set_allocated_pad_watch(pad_watch);
 	client->send_command(cmd);
@@ -154,6 +154,9 @@ void GstQEModule::append_details_row(const std::string &name, const std::string 
 
 void GstQEModule::append_details_from_structure(Gst::Structure& structure)
 {
+	if (!structure.gobj())
+		return;
+
 	structure.foreach([structure, this](const Glib::ustring &name, const Glib::ValueBase &value) -> bool {
 		auto gvalue = GValueBase::build_gvalue(const_cast<GValue*>(value.gobj()));
 		if (gvalue == nullptr)

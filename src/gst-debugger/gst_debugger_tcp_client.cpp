@@ -46,7 +46,6 @@ void GstDebuggerTcpClient::read_data()
 
 		assert(size <= 1024);
 		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer);
-
 		GstreamerInfo info;
 		info.ParseFromArray(buffer, size);
 		signal_frame_received(info);

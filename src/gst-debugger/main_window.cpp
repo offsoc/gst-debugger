@@ -34,6 +34,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	connection_status_changed(false);
 	data_receivers.push_back(log_module);
 	data_receivers.push_back(event_module);
+	data_receivers.push_back(query_module);
 }
 
 void MainWindow::connectionPropertiesMenuItem_activate_cb()
