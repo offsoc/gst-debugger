@@ -14,6 +14,7 @@ add_executable(gst-debugger
 	gst_debugger_tcp_client.cpp
 	gst_log_module.cpp
 	gst_event_module.cpp
+	gst_qe_module.cpp
 	gst-debugger.ui.h
 )
 
