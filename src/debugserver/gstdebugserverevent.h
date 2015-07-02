@@ -20,36 +20,39 @@
 #ifndef __GST_DEBUGSERVER_EVENT_H__
 #define __GST_DEBUGSERVER_EVENT_H__
 
+#include "protocol/gstdebugger.pb-c.h"
+
 #include <gst/gst.h>
 #include <glib.h>
 
 G_BEGIN_DECLS
 
-typedef struct _GstDebugserverEvent GstDebugserverEvent;
+typedef struct _GstDebugserverQE GstDebugserverQE;
 
-typedef struct _EventWatch {
-  gint event_type;
+typedef struct _QEWatch {
+  gint qe_type;
   GstPad * pad;
-} EventWatch;
+} QEWatch;
 
-struct _GstDebugserverEvent {
+typedef struct _GstDebugserverQE {
   GHashTable * watches;
-};
+} GstDebugserverQE;
 
-GstDebugserverEvent * gst_debugserver_event_new (void);
+GstDebugserverQE * gst_debugserver_qe_new (void);
 
-void gst_debugserver_event_free (GstDebugserverEvent * evt);
+void gst_debugserver_qe_free (GstDebugserverQE * qe);
 
-gint gst_debugserver_event_prepare_confirmation_buffer (gchar * pad_path, gint event_type,
-  gboolean toggle, gchar * buffer, gint max_size);
+gint gst_debugserver_qe_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
+  gboolean toggle, gchar * buffer, gint max_size, PadWatch__WatchType type);
 
-gint gst_debugserver_event_prepare_buffer (GstEvent * event, gchar * buffer, gint max_size);
+gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,
+  GstPad * pad, gint qe_type, gpointer client_info);
 
-GSList* gst_debugserver_event_get_clients (GstDebugserverEvent * evt, GstPad * pad,
-  GstEvent * event);
+GSList* gst_debugserver_qe_get_clients (GstDebugserverQE * qe, GstPad * pad,
+  gint type);
 
-gboolean gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
-  GstPad * pad, gint event_type, gpointer client_info);
+gint gst_debugserver_qeb_prepare_buffer (GstMiniObject * miniobj, gchar * buffer,
+  gint max_size);
 
 G_END_DECLS
 

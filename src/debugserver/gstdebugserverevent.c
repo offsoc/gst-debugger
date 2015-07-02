@@ -23,38 +23,38 @@
 
 #include <string.h>
 
-GstDebugserverEvent * gst_debugserver_event_new (void)
+GstDebugserverQE * gst_debugserver_qe_new (void)
 {
-  GstDebugserverEvent *evt = (GstDebugserverEvent*)g_malloc (sizeof(GstDebugserverEvent));
-  evt->watches = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
+  GstDebugserverQE *qe = (GstDebugserverQE*)g_malloc (sizeof(GstDebugserverQE));
+  qe->watches = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 
-  return evt;
+  return qe;
 }
 
-static void gst_debugserver_event_clean_client (gpointer key, gpointer value,
+static void gst_debugserver_qe_clean_client (gpointer key, gpointer value,
   gpointer user_data)
 {
   g_slist_free_full (value, g_free);
 }
 
-void gst_debugserver_event_free (GstDebugserverEvent * evt)
+void gst_debugserver_qe_free (GstDebugserverQE * qe)
 {
-  g_hash_table_foreach (evt->watches, gst_debugserver_event_clean_client, NULL);
-  g_hash_table_destroy (evt->watches);
-  g_free (evt);
+  g_hash_table_foreach (qe->watches, gst_debugserver_qe_clean_client, NULL);
+  g_hash_table_destroy (qe->watches);
+  g_free (qe);
 }
 
-gint gst_debugserver_event_prepare_confirmation_buffer (gchar * pad_path, gint event_type,
-  gboolean toggle, gchar * buffer, gint max_size)
+gint gst_debugserver_qe_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
+  gboolean toggle, gchar * buffer, gint max_size, PadWatch__WatchType type)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   PadWatch pad_watch = PAD_WATCH__INIT;
   gint size;
   pad_watch.pad_path = g_strdup (pad_path);
   pad_watch.toggle = toggle;
-  pad_watch.watch_type = PAD_WATCH__WATCH_TYPE__EVENT;
-  pad_watch.has_event_type = 1;
-  pad_watch.event_type = event_type;
+  pad_watch.watch_type = type;
+  pad_watch.has_qe_type = 1;
+  pad_watch.qe_type = qe_type;
   info.confirmation = &pad_watch;
   info.info_type = GSTREAMER_INFO__INFO_TYPE__PAD_WATCH_CONFIRMATION;
 
@@ -64,42 +64,50 @@ gint gst_debugserver_event_prepare_confirmation_buffer (gchar * pad_path, gint e
   return size;
 }
 
-gint gst_debugserver_event_prepare_buffer (GstEvent * event, gchar * buffer, gint max_size)
+gint gst_debugserver_qeb_prepare_buffer (GstMiniObject * miniobj, gchar * buffer, gint max_size)
 {
   gchar buff[1024];
   // todo verify max_size
-  gint size = gst_event_serialize (event, buff, max_size);
+  gint size;
+  GstreamerInfo__InfoType info_type;
+  if (GST_IS_QUERY (miniobj)) {
+    size = gst_query_serialize (GST_QUERY (miniobj), buff, max_size);
+    info_type = GSTREAMER_INFO__INFO_TYPE__QUERY;
+  } else if (GST_IS_EVENT (miniobj)) {
+    size = gst_event_serialize (GST_EVENT (miniobj), buff, max_size);
+    info_type = GSTREAMER_INFO__INFO_TYPE__EVENT;
+  }
   GstreamerInfo info = GSTREAMER_INFO__INIT;
-  GstreamerEvent evt = GSTREAMER_EVENT__INIT;
+  GstreamerQEB evt = GSTREAMER_QEB__INIT;
   evt.payload.len = size;
   evt.payload.data = (uint8_t*)g_malloc (size);
   memcpy (evt.payload.data, buff, size);
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__EVENT;
-  info.event = &evt;
-
+  info.info_type = info_type;
+  info.qeb = &evt;
+  size = gstreamer_info__get_packed_size (&info);
   assert(size <= max_size);
   gstreamer_info__pack (&info, (guint8*)buffer);
   return size;
 }
 
-static void gst_debugserver_event_append_client (gpointer key, gpointer value,
+static void gst_debugserver_qe_append_client (gpointer key, gpointer value,
   gpointer user_data)
 {
   GArray *tmp = (GArray *) user_data;
   GSList **clients = g_array_index (tmp, GSList**, 0);
-  GstEvent *event = g_array_index (tmp, GstEvent*, 1);
+  gint type = g_array_index (tmp, gint, 1);
   GstPad *pad = g_array_index (tmp, GstPad*, 2);
   GSList * watches = (GSList*) value;
-  EventWatch *watch;
-  gboolean pad_ok, event_type_ok;
+  QEWatch *watch;
+  gboolean pad_ok, type_ok;
 
   while (watches != NULL) {
-    watch = (EventWatch*)watches->data;
+    watch = (QEWatch*)watches->data;
     pad_ok = watch->pad == NULL || watch->pad == pad;
-    event_type_ok = watch->event_type == -1 ||
-      GST_EVENT_TYPE (event) == (guint) watch->event_type;
+    type_ok = watch->qe_type == -1 ||
+      type == watch->qe_type;
 
-    if (pad_ok && event_type_ok) {
+    if (pad_ok && type_ok) {
       *clients = g_slist_append (*clients, key);
       break;
     }
@@ -107,47 +115,47 @@ static void gst_debugserver_event_append_client (gpointer key, gpointer value,
   }
 }
 
-GSList* gst_debugserver_event_get_clients (GstDebugserverEvent * evt, GstPad * pad,
-  GstEvent * event)
+GSList* gst_debugserver_qe_get_clients (GstDebugserverQE * evt, GstPad * pad,
+  gint type)
 {
   GSList * clients = NULL;
   GSList ** ptr_clients = &clients;
   GArray *tmp = g_array_new (FALSE, FALSE, sizeof (gpointer));
   g_array_insert_val (tmp, 0, ptr_clients);
-  g_array_insert_val (tmp, 1, event);
+  g_array_insert_val (tmp, 1, type);
   g_array_insert_val (tmp, 2, pad);
 
-  g_hash_table_foreach (evt->watches, gst_debugserver_event_append_client, tmp);
+  g_hash_table_foreach (evt->watches, gst_debugserver_qe_append_client, tmp);
   g_array_unref (tmp);
 
   return clients;
 }
 
-static gint event_watch_compare (gconstpointer a, gconstpointer b)
+static gint qe_watch_compare (gconstpointer a, gconstpointer b)
 {
-  EventWatch *a1 = (EventWatch*) a;
-  EventWatch *b1 = (EventWatch*) b;
+  QEWatch *a1 = (QEWatch*) a;
+  QEWatch *b1 = (QEWatch*) b;
 
-  if (a1->event_type == b1->event_type && a1->pad == b1->pad) {
+  if (a1->qe_type == b1->qe_type && a1->pad == b1->pad) {
     return 0;
   } else {
     return 1;
   }
 }
 
-gboolean gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean enable,
-  GstPad * pad, gint event_type, gpointer client_info)
+gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * evt, gboolean enable,
+  GstPad * pad, gint type, gpointer client_info)
 {
   if (enable == TRUE) {
-    EventWatch *watch = g_malloc (sizeof (EventWatch));
-    watch->event_type = event_type;
+	  QEWatch *watch = g_malloc (sizeof (QEWatch));
+    watch->qe_type = type;
     watch->pad = pad;
     GSList *watches = g_hash_table_lookup (evt->watches, client_info);
     if (watches == NULL) {
       watches = g_slist_append (watches, watch);
       g_hash_table_insert (evt->watches, client_info, watches);
       return TRUE;
-    } else if (g_slist_find_custom (watches, watch, event_watch_compare) != NULL) {
+    } else if (g_slist_find_custom (watches, watch, qe_watch_compare) != NULL) {
       return FALSE;
     }
 
@@ -159,8 +167,8 @@ gboolean gst_debugserver_event_set_watch (GstDebugserverEvent * evt, gboolean en
     if (list == NULL) {
       return FALSE;
     }
-    EventWatch w; w.pad = pad; w.event_type = event_type;
-    GSList *link = g_slist_find_custom (list, &w, event_watch_compare);
+    QEWatch w; w.pad = pad; w.qe_type = type;
+    GSList *link = g_slist_find_custom (list, &w, qe_watch_compare);
     if (link == NULL) {
       return FALSE;
     }

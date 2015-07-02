@@ -63,7 +63,8 @@ struct _GstDebugserverTracer {
   GstDebugserverTcp * tcp_server;
   GstDebugserverMessage * msg_handler;
   GstDebugserverLog * log_handler;
-  GstDebugserverEvent * event_handler;
+  GstDebugserverQE * event_handler;
+  GstDebugserverQE * query_handler;
 };
 
 struct _GstDebugserverTracerClass {
