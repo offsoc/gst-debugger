@@ -12,6 +12,7 @@
 #include "connection_properties_dialog.h"
 #include "gst_log_module.h"
 #include "gst_event_module.h"
+#include "gst_query_module.h"
 #include "frame_receiver.h"
 
 #include <gtkmm.h>
@@ -33,6 +34,7 @@ class MainWindow : public Gtk::Window
 	std::vector<std::shared_ptr<FrameReceiver>> data_receivers;
 	std::shared_ptr<GstLogModule> log_module;
 	std::shared_ptr<GstEventModule> event_module;
+	std::shared_ptr<GstQueryModule> query_module;
 
 	GstreamerInfo info;
 

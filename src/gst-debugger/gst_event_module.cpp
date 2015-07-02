@@ -6,37 +6,20 @@
  */
 
 #include "gst_event_module.h"
-#include "sigc++lambdahack.h"
-#include "gvalue-converter/gvalue_base.h"
-#include "gvalue-converter/gvalue_enum.h"
 
 extern "C" {
 #include "protocol/deserializer.h"
 }
 
 GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
-: GstQEModule("Event", gst_event_type_get_type(), builder, client)
+: GstQEModule(GstreamerInfo_InfoType_EVENT, PadWatch_WatchType_EVENT,
+		"Event", gst_event_type_get_type(), builder, client)
 {
-}
-
-void GstEventModule::process_frame()
-{
-	switch (info.info_type())
-	{
-	case GstreamerInfo_InfoType_EVENT:
-		append_qe_entry();
-		break;
-	case GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION:
-		update_hook_list();
-		break;
-	default:
-		break;
-	}
 }
 
 void GstEventModule::append_qe_entry()
 {
-	auto gstevt = info.event();
+	auto gstevt = info.qeb();
 
 	GstEvent *event = gst_event_deserialize(gstevt.payload().c_str(), gstevt.payload().length());
 
@@ -71,12 +54,3 @@ void GstEventModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
 	append_details_from_structure(structure);
 }
 
-void GstEventModule::startWatchingQEButton_click_cb()
-{
-	send_start_stop_command(true, PadWatch_WatchType_EVENT);
-}
-
-void GstEventModule::stopWatchingQEButton_click_cb()
-{
-	send_start_stop_command(false, PadWatch_WatchType_EVENT);
-}

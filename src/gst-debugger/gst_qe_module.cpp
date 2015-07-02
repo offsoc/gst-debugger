@@ -14,8 +14,12 @@ extern "C" {
 #include "protocol/deserializer.h"
 }
 
-GstQEModule::GstQEModule(const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
-: client(client)
+GstQEModule::GstQEModule(GstreamerInfo_InfoType info_type, PadWatch_WatchType watch_type,
+		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
+		const std::shared_ptr<GstDebuggerTcpClient>& client)
+: client(client),
+  info_type(info_type),
+  watch_type(watch_type)
 {
 	builder->get_widget("any" + qe_name + "PathCheckButton", any_path_check_button);
 	any_path_check_button->signal_toggled().connect([this] { qe_pad_path_entry->set_sensitive(!any_path_check_button->get_active()); });
@@ -70,7 +74,7 @@ void GstQEModule::update_hook_list()
 {
 	auto conf = info.confirmation();
 
-	if (conf.watch_type() != PadWatch_WatchType_EVENT)
+	if (conf.watch_type() != watch_type)
 		return;
 
 	if (conf.toggle() == ENABLE)
@@ -94,7 +98,7 @@ void GstQEModule::update_hook_list()
 	}
 }
 
-void GstQEModule::send_start_stop_command(bool enable, PadWatch_WatchType watch_type)
+void GstQEModule::send_start_stop_command(bool enable)
 {
 	int event_type = -1;
 
@@ -162,3 +166,22 @@ void GstQEModule::append_details_from_structure(Gst::Structure& structure)
 		return true;
 	});
 }
+
+void GstQEModule::process_frame()
+{
+	if (info.info_type() == info_type)
+		append_qe_entry();
+	else if (info.info_type() == GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION)
+		update_hook_list();
+}
+
+void GstQEModule::startWatchingQEButton_click_cb()
+{
+	send_start_stop_command(true);
+}
+
+void GstQEModule::stopWatchingQEButton_click_cb()
+{
+	send_start_stop_command(false);
+}
+

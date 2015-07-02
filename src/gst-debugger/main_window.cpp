@@ -13,7 +13,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   client(std::make_shared<GstDebuggerTcpClient>()),
   dispatcher(std::make_shared<Glib::Dispatcher>()),
   log_module(std::make_shared<GstLogModule>(builder, client)),
-  event_module(std::make_shared<GstEventModule>(builder, client))
+  event_module(std::make_shared<GstEventModule>(builder, client)),
+  query_module(std::make_shared<GstQueryModule>(builder, client))
 {
 	builder->get_widget("connectionPropertiesMenuItem", connection_properties);
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));

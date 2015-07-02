@@ -84,22 +84,29 @@ protected:
 	QETypesModelColumns qe_types_model_columns;
 	Glib::RefPtr<Gtk::ListStore> qe_types_model;
 
+	GstreamerInfo_InfoType info_type;
+	PadWatch_WatchType watch_type;
 
+	void process_frame() override;
+
+	virtual void append_qe_entry() = 0;
 
 	void update_hook_list();
-	void send_start_stop_command(bool enable, PadWatch_WatchType watch_type);
+	void send_start_stop_command(bool enable);
 	virtual void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe);
 
 	void append_details_row(const std::string &name, const std::string &value);
 	void append_details_from_structure(Gst::Structure& structure);
 
-	virtual void startWatchingQEButton_click_cb() = 0;
-	virtual void stopWatchingQEButton_click_cb() = 0;
+	void startWatchingQEButton_click_cb();
+	void stopWatchingQEButton_click_cb();
 
 	void qeListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
 
 public:
-	GstQEModule(const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client);
+	GstQEModule(GstreamerInfo_InfoType info_type, PadWatch_WatchType watch_type,
+			const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
+			const std::shared_ptr<GstDebuggerTcpClient>& client);
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_QE_MODULE_H_ */
