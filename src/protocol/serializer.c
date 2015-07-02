@@ -13,12 +13,11 @@
 
 gint gst_query_serialize (GstQuery * query, gchar * buffer, gint size)
 {
-  const GstStructure * q_structure;
   gchar * str;
   gint str_len;
   gint type_size;
   gint total_size;
-  q_structure = gst_query_get_structure (query);
+  const GstStructure * q_structure = gst_query_get_structure (query);
 
   str = gst_structure_to_string (q_structure);
   str_len = strlen (str) + 1;
@@ -41,7 +40,7 @@ gint gst_event_serialize (GstEvent * event, gchar * buffer, gint size)
   gint total_size;
   gchar *evt_str;
   gint str_len;
-  GstStructure *e_structure = gst_event_get_structure (event);
+  const GstStructure *e_structure = gst_event_get_structure (event);
 
   evt_str = gst_structure_to_string (e_structure);
   str_len = strlen (evt_str)+1;

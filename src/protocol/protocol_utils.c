@@ -28,13 +28,13 @@ gst_debugger_protocol_utils_serialize_uinteger64 (guint64 value, gchar * buffer,
 }
 
 gint64
-gst_debugger_protocol_utils_deserialize_integer64 (gchar * buffer, gint size)
+gst_debugger_protocol_utils_deserialize_integer64 (const gchar * buffer, gint size)
 {
   DESERIALIZER
 }
 
 guint64
-gst_debugger_protocol_utils_deserialize_uinteger64 (gchar * buffer, gint size)
+gst_debugger_protocol_utils_deserialize_uinteger64 (const gchar * buffer, gint size)
 {
   DESERIALIZER
 }
