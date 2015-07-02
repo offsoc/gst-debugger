@@ -15,10 +15,6 @@ GstQuery* gst_query_deserialize (const gchar * buffer, gint size)
   GstQueryType type;
   GstStructure *structure;
 
-  if (strlen (buffer+4) + 4 != (guint)size) {
-    return NULL;
-  }
-
   type = (GstQueryType)gst_debugger_protocol_utils_deserialize_integer64 (buffer, 4);
 
   structure = gst_structure_from_string (buffer+4, NULL);
@@ -33,10 +29,6 @@ GstEvent* gst_event_deserialize (const gchar * buffer, gint size)
   guint32 seqnum;
   GstEvent *event;
   GstStructure *e_structure;
-
-  if (strlen (buffer+16) + 16 != (guint)size) {
-    return NULL;
-  }
 
   type = (GstEventType)gst_debugger_protocol_utils_deserialize_integer64 (buffer, 4);
   timestamp = gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+4, 8);

@@ -13,7 +13,7 @@ message PadWatch {
 		QUERY = 2;
 	}
 	required WatchType watch_type = 3;
-	optional int32 event_type = 4;
+	optional int32 qe_type = 4;
 }
 
 message LogWatch {
