@@ -26,9 +26,9 @@
 #include "gstdebugservertcp.h"
 #include "gstdebugservermessage.h"
 #include "gstdebugserverlog.h"
-#include "gstdebugserverevent.h"
-
 #include <gst/gst.h>
+
+#include "gstdebugserverqe.h"
 #define GST_USE_UNSTABLE_API
 #include <gst/gsttracer.h>
 

@@ -17,11 +17,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "gstdebugserverevent.h"
 #include "protocol/serializer.h"
 #include "protocol/gstdebugger.pb-c.h"
 
 #include <string.h>
+#include "gstdebugserverqe.h"
 
 GstDebugserverQE * gst_debugserver_qe_new (void)
 {

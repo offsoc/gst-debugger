@@ -3,7 +3,7 @@ add_library(gstdebugserver SHARED
 	gstdebugservertcp.c
 	gstdebugservermessage.c
 	gstdebugserverlog.c
-	gstdebugserverevent.c
+	gstdebugserverqe.c
 	gstdebugserverutils.c
 )
 
