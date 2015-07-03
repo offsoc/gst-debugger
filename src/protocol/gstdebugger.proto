@@ -64,7 +64,7 @@ message GstreamerLog {
 	required string message = 7;
 }
 
-message GstreamerQEB {
+message GstreamerQEBM {
 	required bytes payload = 1;
 }
 
@@ -77,12 +77,14 @@ message GstreamerInfo {
 		LOG = 4;
 		DEBUG_CATEGORIES = 5;
 		PAD_WATCH_CONFIRMATION = 6;
+		MESSAGE_CONFIRMATION = 7;
 	}
 	
 	required InfoType info_type = 1;
 	
 	optional GstreamerLog log = 2;
 	optional DebugCategoryList debug_categories = 3;
-	optional GstreamerQEB qeb = 4;
+	optional GstreamerQEBM qebm = 4;
 	optional PadWatch confirmation = 5;
+	optional MessageWatch bus_msg_confirmation = 6;
 }
