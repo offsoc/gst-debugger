@@ -19,7 +19,7 @@ GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder, const 
 
 void GstQueryModule::append_qe_entry()
 {
-	auto gstquery = info.qeb();
+	auto gstquery = info.qebm();
 
 	GstQuery *query = gst_query_deserialize(gstquery.payload().c_str(), gstquery.payload().length());
 

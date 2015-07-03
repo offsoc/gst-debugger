@@ -19,7 +19,7 @@ GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const 
 
 void GstEventModule::append_qe_entry()
 {
-	auto gstevt = info.qeb();
+	auto gstevt = info.qebm();
 
 	GstEvent *event = gst_event_deserialize(gstevt.payload().c_str(), gstevt.payload().length());
 
