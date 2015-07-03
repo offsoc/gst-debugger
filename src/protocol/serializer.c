@@ -59,3 +59,30 @@ finalize:
   g_free (evt_str);
   return total_size;
 }
+
+gint gst_message_serialize(GstMessage * message, gchar * buffer, gint size)
+{
+  gint total_size;
+  gchar *evt_str;
+  gint str_len;
+  const GstStructure *m_structure = gst_message_get_structure (message);
+
+  evt_str = gst_structure_to_string (m_structure);
+  str_len = strlen (evt_str)+1;
+  total_size = str_len + 16;
+
+  if (total_size > size) {
+    goto finalize;
+  }
+
+  gst_debugger_protocol_utils_serialize_integer64 (message->type, buffer, 4);
+  gst_debugger_protocol_utils_serialize_uinteger64(message->timestamp, buffer+4, 8);
+  // todo object path (GstMessage::src)
+  gst_debugger_protocol_utils_serialize_uinteger64(message->seqnum, buffer+12, 4);
+
+  memcpy (buffer + 16, evt_str, str_len);
+
+  finalize:
+  g_free (evt_str);
+  return total_size;
+}

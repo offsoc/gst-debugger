@@ -41,3 +41,23 @@ GstEvent* gst_event_deserialize (const gchar * buffer, gint size)
   return event;
 }
 
+GstMessage* gst_message_deserialize (const gchar * buffer, gint size)
+{
+  GstMessageType type;
+  guint64 timestamp;
+  guint32 seqnum;
+  GstMessage *message;
+  GstStructure *m_structure;
+
+  type = (GstMessageType)gst_debugger_protocol_utils_deserialize_integer64 (buffer, 4);
+  timestamp = gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+4, 8);
+  seqnum = gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+12, 4);
+  m_structure = gst_structure_from_string (buffer+16, NULL);
+  // todo read object
+  message = gst_message_new_custom (type, NULL, m_structure);
+  gst_message_set_seqnum (message, seqnum);
+  message->timestamp = timestamp;
+
+  return message;
+}
+
