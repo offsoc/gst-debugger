@@ -20,6 +20,8 @@
 #ifndef __GST_DEBUGSERVER_MESSAGE_H__
 #define __GST_DEBUGSERVER_MESSAGE_H__
 
+#include "protocol/gstdebugger.pb-c.h"
+
 #include <gst/gst.h>
 #include <glib.h>
 
@@ -34,19 +36,22 @@ struct _GstDebugserverMessage {
 GstDebugserverMessage * gst_debugserver_message_new (void);
 void gst_debugserver_message_free (GstDebugserverMessage * msg);
 
-void gst_debugserver_message_add_watch (GstDebugserverMessage * msg,
+gboolean gst_debugserver_message_add_watch (GstDebugserverMessage * msg,
   GstMessageType msg_type, gpointer client_info);
 
-void gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
+gboolean gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
   GstMessageType msg_type, gpointer client_info);
 
-void gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
+gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
   gboolean enable, GstMessageType msg_type, gpointer client_info);
 
 GList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
   GstMessageType msg_type);
 
 gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
+  gchar * buffer, gint max_size);
+
+gint gst_debugserver_message_prepare_confirmation_buffer (MessageWatch *msg_watch,
   gchar * buffer, gint max_size);
 
 G_END_DECLS

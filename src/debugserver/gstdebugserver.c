@@ -77,16 +77,19 @@ message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
   GSocketConnection *connection;
   GList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
     GST_MESSAGE_TYPE (message));
+  GList *cl_tmp = clients;
   gsize size;
   gchar buff[1024];
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_message_prepare_buffer (message, buff, 1024);
+    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (message), buff, 1024);
     gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
       buff, size);
     clients = clients->next;
   }
+
+  g_list_free (cl_tmp);
 }
 
 static void
@@ -114,7 +117,7 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qeb_prepare_buffer (GST_MINI_OBJECT (event), buff, 1024);
+    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (event), buff, 1024);
     gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
       buff, size);
     clients = clients->next;
@@ -133,7 +136,7 @@ do_pad_query_pre (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query)
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qeb_prepare_buffer (GST_MINI_OBJECT (query), buff, 1024);
+    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (query), buff, 1024);
     gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
       buff, size);
     clients = clients->next;
@@ -178,9 +181,14 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     gst_debug_set_threshold_from_string (cmd->log_threshold->list, cmd->log_threshold->overwrite);
     break;
   case COMMAND__COMMAND_TYPE__MESSAGE_WATCH:
-    gst_debugserver_message_set_watch (debugserver->msg_handler,
+    if (gst_debugserver_message_set_watch (debugserver->msg_handler,
           cmd->message_watch->toggle == TOGGLE__ENABLE,
-          cmd->message_watch->message_type, client_id);
+          cmd->message_watch->message_type, client_id)) {
+      size = gst_debugserver_message_prepare_confirmation_buffer (cmd->message_watch,
+        buff, 1024);
+      gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
+        buff, size);
+    }
     break;
   case COMMAND__COMMAND_TYPE__LOG_WATCH:
     gst_debugserver_log_set_watch (debugserver->log_handler,

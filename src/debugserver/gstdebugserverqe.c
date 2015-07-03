@@ -64,7 +64,7 @@ gint gst_debugserver_qe_prepare_confirmation_buffer (gchar * pad_path, gint qe_t
   return size;
 }
 
-gint gst_debugserver_qeb_prepare_buffer (GstMiniObject * miniobj, gchar * buffer, gint max_size)
+gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffer, gint max_size)
 {
   gchar buff[1024];
   // todo verify max_size
@@ -76,14 +76,18 @@ gint gst_debugserver_qeb_prepare_buffer (GstMiniObject * miniobj, gchar * buffer
   } else if (GST_IS_EVENT (miniobj)) {
     size = gst_event_serialize (GST_EVENT (miniobj), buff, max_size);
     info_type = GSTREAMER_INFO__INFO_TYPE__EVENT;
+  } else if (GST_IS_MESSAGE (miniobj)) {
+    size = gst_message_serialize (GST_MESSAGE (miniobj), buff, max_size);
+    info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE;
   }
+
   GstreamerInfo info = GSTREAMER_INFO__INIT;
-  GstreamerQEB evt = GSTREAMER_QEB__INIT;
+  GstreamerQEBM evt = GSTREAMER_QEBM__INIT;
   evt.payload.len = size;
   evt.payload.data = (uint8_t*)g_malloc (size);
   memcpy (evt.payload.data, buff, size);
   info.info_type = info_type;
-  info.qeb = &evt;
+  info.qebm = &evt;
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= max_size);
   gstreamer_info__pack (&info, (guint8*)buffer);
