@@ -1,8 +1,6 @@
 #include "protocol/gstdebugger.pb.h"
-
-extern "C" {
 #include "protocol/protocol_utils.h"
-}
+
 #include <giomm.h>
 #include <glibmm.h>
 

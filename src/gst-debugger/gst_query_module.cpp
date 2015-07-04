@@ -6,10 +6,7 @@
  */
 
 #include "gst_query_module.h"
-
-extern "C" {
 #include "protocol/deserializer.h"
-}
 
 GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
 : GstQEModule(GstreamerInfo_InfoType_QUERY, PadWatch_WatchType_QUERY,

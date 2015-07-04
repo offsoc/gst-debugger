@@ -8,10 +8,7 @@
 #include "gst_message_module.h"
 #include "gvalue-converter/gvalue_enum.h"
 #include "sigc++lambdahack.h"
-
-extern "C" {
 #include "protocol/deserializer.h"
-}
 
 #include <gstreamermm.h>
 

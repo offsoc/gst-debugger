@@ -6,11 +6,9 @@
  */
 
 #include <gtest/gtest.h>
-extern "C" {
 #include "protocol/serializer.h"
 #include "protocol/deserializer.h"
 #include "protocol/protocol_utils.h"
-}
 
 TEST(SerializerTest, QuerySerialization)
 {

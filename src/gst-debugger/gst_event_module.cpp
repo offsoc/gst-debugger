@@ -6,10 +6,7 @@
  */
 
 #include "gst_event_module.h"
-
-extern "C" {
 #include "protocol/deserializer.h"
-}
 
 GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
 : GstQEModule(GstreamerInfo_InfoType_EVENT, PadWatch_WatchType_EVENT,

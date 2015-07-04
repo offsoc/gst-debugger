@@ -9,10 +9,7 @@
 #include "sigc++lambdahack.h"
 #include "gvalue-converter/gvalue_base.h"
 #include "gvalue-converter/gvalue_enum.h"
-
-extern "C" {
 #include "protocol/deserializer.h"
-}
 
 GstQEModule::GstQEModule(GstreamerInfo_InfoType info_type, PadWatch_WatchType watch_type,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,

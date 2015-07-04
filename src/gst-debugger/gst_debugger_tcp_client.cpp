@@ -6,10 +6,7 @@
  */
 
 #include "gst_debugger_tcp_client.h"
-
-extern "C" {
 #include "protocol/protocol_utils.h"
-}
 
 #include <cassert>
 
