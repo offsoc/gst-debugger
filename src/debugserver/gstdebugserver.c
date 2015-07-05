@@ -144,6 +144,27 @@ do_pad_query_pre (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query)
 }
 
 static void
+do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
+{
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
+  GSocketConnection *connection;
+  GList *clients = gst_debugserver_buffer_get_clients (debugserver->buffer_handler,
+    pad);
+  gsize size;
+  gchar buff[1024];
+
+  while (clients != NULL) {
+    connection = (GSocketConnection*)clients->data;
+    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), buff, 1024);
+    gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
+      buff, size);
+    clients = clients->next;
+  }
+
+  g_list_free (clients);
+}
+
+static void
 gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpointer client_id)
 {
   gchar buffer[1024];
@@ -161,10 +182,13 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
 
   gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
+  // todo this methods remove only one watch
   gst_debugserver_qe_set_watch (debugserver->event_handler, FALSE, NULL,
     -1, client_id);
   gst_debugserver_qe_set_watch (debugserver->query_handler, FALSE, NULL,
     -1, client_id);
+  gst_debugserver_buffer_set_watch (debugserver->buffer_handler, FALSE, NULL,
+    client_id);
   //todo message
 }
 
@@ -201,7 +225,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
             cmd->pad_watch->toggle == TOGGLE__ENABLE,
             gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
             cmd->pad_watch->qe_type, client_id)) {
-        size = gst_debugserver_qe_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
+        size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
           cmd->pad_watch->qe_type, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__EVENT);
         gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
           buff, size);
@@ -211,8 +235,18 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
               cmd->pad_watch->toggle == TOGGLE__ENABLE,
               gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
               cmd->pad_watch->qe_type, client_id)) {
-          size = gst_debugserver_qe_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
+          size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
             cmd->pad_watch->qe_type, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__QUERY);
+          gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
+            buff, size);
+        }
+      } else if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__BUFFER) {
+        if (gst_debugserver_buffer_set_watch (debugserver->buffer_handler,
+              cmd->pad_watch->toggle == TOGGLE__ENABLE,
+              gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
+              client_id)) {
+          size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
+            -1, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__BUFFER);
           gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
             buff, size);
         }
@@ -273,6 +307,7 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   self->log_handler = gst_debugserver_log_new ();
   self->event_handler = gst_debugserver_qe_new ();
   self->query_handler = gst_debugserver_qe_new ();
+  self->buffer_handler = gst_debugserver_buffer_new ();
 
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
@@ -280,6 +315,8 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
       G_CALLBACK (do_push_event_pre));
   gst_tracing_register_hook (tracer, "pad-query-pre",
       G_CALLBACK (do_pad_query_pre));
+  gst_tracing_register_hook (tracer, "pad-push-pre",
+      G_CALLBACK (do_pad_push_pre));
 
   gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
 
@@ -302,6 +339,7 @@ gst_debugserver_tracer_finalize (GObject * obj)
   gst_debugserver_log_free (debugserver->log_handler);
   gst_debugserver_qe_free (debugserver->event_handler);
   gst_debugserver_qe_free (debugserver->query_handler);
+  gst_debugserver_buffer_free (debugserver->buffer_handler);
   gst_debugserver_tracer_close_connection (debugserver);
   g_object_unref (G_OBJECT (debugserver->tcp_server));
 }

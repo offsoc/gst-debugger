@@ -42,7 +42,7 @@ GstDebugserverQE * gst_debugserver_qe_new (void);
 
 void gst_debugserver_qe_free (GstDebugserverQE * qe);
 
-gint gst_debugserver_qe_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
+gint gst_debugserver_qeb_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
   gboolean toggle, gchar * buffer, gint max_size, PadWatch__WatchType type);
 
 gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,

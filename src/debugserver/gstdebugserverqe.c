@@ -44,7 +44,7 @@ void gst_debugserver_qe_free (GstDebugserverQE * qe)
   g_free (qe);
 }
 
-gint gst_debugserver_qe_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
+gint gst_debugserver_qeb_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
   gboolean toggle, gchar * buffer, gint max_size, PadWatch__WatchType type)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
@@ -79,6 +79,9 @@ gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffe
   } else if (GST_IS_MESSAGE (miniobj)) {
     size = gst_message_serialize (GST_MESSAGE (miniobj), buff, max_size);
     info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE;
+  } else if (GST_IS_BUFFER (miniobj)) {
+    size = gst_buffer_serialize (GST_BUFFER (miniobj), buff, max_size);
+    info_type = GSTREAMER_INFO__INFO_TYPE__BUFFER;
   }
 
   GstreamerInfo info = GSTREAMER_INFO__INIT;

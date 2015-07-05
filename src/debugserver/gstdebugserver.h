@@ -26,9 +26,11 @@
 #include "gstdebugservertcp.h"
 #include "gstdebugservermessage.h"
 #include "gstdebugserverlog.h"
+#include "gstdebugserverbuffer.h"
+#include "gstdebugserverqe.h"
+
 #include <gst/gst.h>
 
-#include "gstdebugserverqe.h"
 #define GST_USE_UNSTABLE_API
 #include <gst/gsttracer.h>
 
@@ -65,6 +67,7 @@ struct _GstDebugserverTracer {
   GstDebugserverLog * log_handler;
   GstDebugserverQE * event_handler;
   GstDebugserverQE * query_handler;
+  GstDebugserverBuffer * buffer_handler;
 };
 
 struct _GstDebugserverTracerClass {
