@@ -572,40 +572,16 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box7">
+                      <object class="GtkButton" id="startWatchingEventButton">
+                        <property name="label" translatable="yes">Start</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkButton" id="startWatchingEventButton">
-                            <property name="label" translatable="yes">Start</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="stopWatchingEventButton">
-                            <property name="label" translatable="yes">Stop</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">5</property>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                     <child>
@@ -841,35 +817,11 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box14">
+                      <object class="GtkButton" id="startWatchingQueryButton">
+                        <property name="label" translatable="yes">Start</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkButton" id="startWatchingQueryButton">
-                            <property name="label" translatable="yes">Start</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkButton" id="stopWatchingQueryButton">
-                            <property name="label" translatable="yes">Stop</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -954,7 +906,7 @@
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
                         <child>
-                          <object class="GtkTreeView" id="MessageListTreeView">
+                          <object class="GtkTreeView" id="BusMessageListTreeView">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <child internal-child="selection">
@@ -974,7 +926,7 @@
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
                         <child>
-                          <object class="GtkTreeView" id="detailsMessageTreeView">
+                          <object class="GtkTreeView" id="detailsBusMessageTreeView">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <child internal-child="selection">
@@ -1001,10 +953,37 @@
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel" id="label15">
+                      <object class="GtkBox" id="box7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Message types:</property>
+                        <child>
+                          <object class="GtkLabel" id="label15">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Message types:</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="anyBusMessageCheckButton">
+                            <property name="label" translatable="yes">any message</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="xalign">0</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1013,7 +992,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="busMessageTypesComboBox">
+                      <object class="GtkComboBox" id="typesBusMessageComboBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -1024,7 +1003,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="startBusMessageButton">
+                      <object class="GtkButton" id="startWatchingBusMessageButton">
                         <property name="label" translatable="yes">Start</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -1054,7 +1033,7 @@
                         <property name="can_focus">True</property>
                         <property name="shadow_type">in</property>
                         <child>
-                          <object class="GtkTreeView" id="existingMessageHooksTreeView">
+                          <object class="GtkTreeView" id="existingBusMessageHooksTreeView">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <child internal-child="selection">
@@ -1070,7 +1049,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button3">
+                      <object class="GtkButton" id="removeSelectedBusMessageHook">
                         <property name="label" translatable="yes">Remove selected</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>

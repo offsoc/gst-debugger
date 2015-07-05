@@ -9,7 +9,7 @@
 #include "protocol/deserializer.h"
 
 GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
-: GstQEModule(GstreamerInfo_InfoType_EVENT, PadWatch_WatchType_EVENT,
+: GstQEModule(true, true, GstreamerInfo_InfoType_EVENT,
 		"Event", gst_event_type_get_type(), builder, client)
 {
 }

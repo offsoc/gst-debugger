@@ -11,18 +11,41 @@
 #include "gvalue-converter/gvalue_enum.h"
 #include "protocol/deserializer.h"
 
-GstQEModule::GstQEModule(GstreamerInfo_InfoType info_type, PadWatch_WatchType watch_type,
+GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
+		GstreamerInfo_InfoType info_type,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
 		const std::shared_ptr<GstDebuggerTcpClient>& client)
 : client(client),
-  info_type(info_type),
-  watch_type(watch_type)
+  info_type(info_type)
 {
-	builder->get_widget("any" + qe_name + "PathCheckButton", any_path_check_button);
-	any_path_check_button->signal_toggled().connect([this] { qe_pad_path_entry->set_sensitive(!any_path_check_button->get_active()); });
+	if (pad_path_module)
+	{
+		builder->get_widget("any" + qe_name + "PathCheckButton", any_path_check_button);
+		any_path_check_button->signal_toggled().connect([this] { qe_pad_path_entry->set_sensitive(!any_path_check_button->get_active()); });
+		builder->get_widget("pad" + qe_name + "PathEntry", qe_pad_path_entry);
+	}
 
-	builder->get_widget("any" + qe_name + "CheckButton", any_qe_check_button);
-	any_qe_check_button->signal_toggled().connect([this] { qe_types_combobox->set_sensitive(!any_qe_check_button->get_active()); });
+	if (type_module)
+	{
+		builder->get_widget("any" + qe_name + "CheckButton", any_qe_check_button);
+		any_qe_check_button->signal_toggled().connect([this] { qe_types_combobox->set_sensitive(!any_qe_check_button->get_active()); });
+
+		builder->get_widget("types" + qe_name + "ComboBox", qe_types_combobox);
+		qe_types_model = Gtk::ListStore::create(qe_types_model_columns);
+		qe_types_combobox->set_model(qe_types_model);
+		qe_types_combobox->pack_start(qe_types_model_columns.type_name);
+
+		for (auto val : GValueEnum::get_values(qe_gtype))
+		{
+			Gtk::TreeModel::Row row = *(qe_types_model->append());
+			row[qe_types_model_columns.type_id] = val.first;
+			row[qe_types_model_columns.type_name] = val.second;
+		}
+		if (qe_types_model->children().size() > 0)
+		{
+			qe_types_combobox->set_active(0);
+		}
+	}
 
 	builder->get_widget(qe_name + "ListTreeView", qe_list_tree_view);
 	qe_list_tree_view->signal_row_activated().connect(sigc::mem_fun(*this, &GstQEModule::qeListTreeView_row_activated_cb));
@@ -36,8 +59,6 @@ GstQEModule::GstQEModule(GstreamerInfo_InfoType info_type, PadWatch_WatchType wa
 	existing_hooks_tree_view->append_column("Pad path", qe_hooks_model_columns.pad_path);
 	existing_hooks_tree_view->append_column(qe_name + " type", qe_hooks_model_columns.qe_type);
 
-	builder->get_widget("pad" + qe_name + "PathEntry", qe_pad_path_entry);
-
 	builder->get_widget("details" + qe_name + "TreeView", qe_details_tree_view);
 	qe_details_model = Gtk::TreeStore::create(qe_details_model_columns);
 	qe_details_tree_view->set_model(qe_details_model);
@@ -46,24 +67,20 @@ GstQEModule::GstQEModule(GstreamerInfo_InfoType info_type, PadWatch_WatchType wa
 
 	builder->get_widget("startWatching" + qe_name + "Button", start_watching_qe_button);
 	start_watching_qe_button->signal_clicked().connect(sigc::mem_fun(*this, &GstQEModule::startWatchingQEButton_click_cb));
+}
 
-	builder->get_widget("stopWatching" + qe_name + "Button", stop_watching_qe_button);
-	stop_watching_qe_button->signal_clicked().connect(sigc::mem_fun(*this, &GstQEModule::stopWatchingQEButton_click_cb));
-
-	builder->get_widget("types" + qe_name + "ComboBox", qe_types_combobox);
-	qe_types_model = Gtk::ListStore::create(qe_types_model_columns);
-	qe_types_combobox->set_model(qe_types_model);
-	qe_types_combobox->pack_start(qe_types_model_columns.type_name);
-
-	for (auto val : GValueEnum::get_values(qe_gtype))
+PadWatch_WatchType GstQEModule::get_watch_type() const
+{
+	switch (info.info_type())
 	{
-		Gtk::TreeModel::Row row = *(qe_types_model->append());
-		row[qe_types_model_columns.type_id] = val.first;
-		row[qe_types_model_columns.type_name] = val.second;
-	}
-	if (qe_types_model->children().size() > 0)
-	{
-		qe_types_combobox->set_active(0);
+	case GstreamerInfo_InfoType_BUFFER:
+		return PadWatch_WatchType_BUFFER;
+	case GstreamerInfo_InfoType_EVENT:
+		return PadWatch_WatchType_EVENT;
+	case GstreamerInfo_InfoType_QUERY:
+		return PadWatch_WatchType_QUERY;
+	default:
+		return (PadWatch_WatchType)-1;
 	}
 }
 
@@ -71,7 +88,7 @@ void GstQEModule::update_hook_list()
 {
 	auto conf = info.confirmation();
 
-	if (conf.watch_type() != watch_type)
+	if (conf.watch_type() != get_watch_type())
 		return;
 
 	if (conf.toggle() == ENABLE)
@@ -116,7 +133,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 	Command cmd;
 	PadWatch *pad_watch = new PadWatch();
 	pad_watch->set_toggle(enable ? ENABLE : DISABLE);
-	pad_watch->set_watch_type(watch_type);
+	pad_watch->set_watch_type(get_watch_type());
 	pad_watch->set_pad_path(pad_path);
 	pad_watch->set_qe_type(qe_type);
 	cmd.set_command_type(Command_CommandType_PAD_WATCH);
@@ -171,7 +188,8 @@ void GstQEModule::process_frame()
 {
 	if (info.info_type() == info_type)
 		append_qe_entry();
-	else if (info.info_type() == GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION)
+	else if (info.info_type() == GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION ||
+			info.info_type() == GstreamerInfo_InfoType_MESSAGE_CONFIRMATION)
 		update_hook_list();
 }
 

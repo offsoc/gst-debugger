@@ -14,83 +14,71 @@
 
 GstMessageModule::GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder,
 		const std::shared_ptr<GstDebuggerTcpClient>& client)
-: client(client)
+: GstQEModule(true, false, GstreamerInfo_InfoType_MESSAGE,
+		"BusMessage", gst_message_type_get_type(), builder, client)
 {
-	builder->get_widget("busMessageTypesComboBox", bus_message_types_combo_box);
-	message_types_model = Gtk::ListStore::create(message_types_model_columns);
-	bus_message_types_combo_box->set_model(message_types_model);
-	bus_message_types_combo_box->pack_start(message_types_model_columns.type_name);
 
-	for (auto val : GValueEnum::get_values(gst_message_type_get_type()))
+}
+void GstMessageModule::append_qe_entry()
+{
+	auto gstmsg = info.qebm();
+
+	GstMessage *msg= gst_message_deserialize(gstmsg.payload().c_str(), gstmsg.payload().length());
+
+	if (msg == NULL)
 	{
-		Gtk::TreeModel::Row row = *(message_types_model->append());
-		row[message_types_model_columns.type_id] = val.first;
-		row[message_types_model_columns.type_name] = val.second;
-	}
-	if (message_types_model->children().size() > 0)
-	{
-		bus_message_types_combo_box->set_active(0);
+		// todo log about it
+		return;
 	}
 
-	builder->get_widget("startBusMessageButton", start_bus_message_button);
-	start_bus_message_button->signal_clicked().connect(sigc::mem_fun(*this, &GstMessageModule::startBusMessageButton_clicked_cb));
-
-	builder->get_widget("existingMessageHooksTreeView", existing_message_hooks_tree_view);
-	message_hooks_model = Gtk::ListStore::create(message_hooks_model_columns);
-	existing_message_hooks_tree_view->set_model(message_hooks_model);
-	existing_message_hooks_tree_view->append_column("Message type", message_hooks_model_columns.type);
-
-	builder->get_widget("MessageListTreeView", message_list_tree_view);
-	message_list_tree_view->signal_row_activated().connect(sigc::mem_fun(*this, &GstMessageModule::MessageListTreeView_row_activated_cb));
-	msg_list_model = Gtk::ListStore::create(msg_list_model_columns);
-	message_list_tree_view->set_model(msg_list_model);
-	message_list_tree_view->append_column("Type", msg_list_model_columns.type);
-
-	builder->get_widget("detailsMessageTreeView", message_details_tree_view);
-	msg_details_model = Gtk::TreeStore::create(msg_details_model_columns);
-	message_details_tree_view->set_model(msg_details_model);
-	message_details_tree_view->append_column("Name", msg_details_model_columns.name);
-	message_details_tree_view->append_column("Value", msg_details_model_columns.value);
+	Gtk::TreeModel::Row row = *(qe_list_model->append());
+	row[qe_list_model_columns.type] = msg->type;
+	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(msg);
 }
 
-void GstMessageModule::process_frame()
+void GstMessageModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
 {
-	if (info.info_type() == GstreamerInfo_InfoType_MESSAGE)
-		append_message_entry();
-	else if (info.info_type() == GstreamerInfo_InfoType_MESSAGE_CONFIRMATION)
-		update_hook_list();
-}
+	GstQEModule::display_qe_details(qe);
 
-void GstMessageModule::append_message_entry()
-{
-	GstMessage *msg = gst_message_deserialize (info.qebm().payload().c_str(),
-			info.qebm().payload().length());
+	Glib::RefPtr<Gst::Message> message = message.cast_static(qe);
 
-	Gtk::TreeModel::Row row = *(msg_list_model->append());
-	row[msg_list_model_columns.type] = msg->type;
-	row[msg_list_model_columns.qe] = GST_MINI_OBJECT(msg);
+	append_details_row("message type", Gst::Enums::get_name(message->get_message_type()));
+	{
+		gchar buffer[20];
+		snprintf(buffer, 20, "%" GST_TIME_FORMAT, GST_TIME_ARGS(message->get_timestamp()));
+		append_details_row("message timestamp", buffer);
+	}
+	append_details_row("message sequence number", std::to_string(message->get_seqnum()));
+	append_details_row("object", "todo");
+
+	auto structure = message->get_structure();
+	append_details_from_structure(structure);
 }
 
 void GstMessageModule::update_hook_list()
 {
 	auto msg_watch = info.bus_msg_confirmation();
 
-	Gtk::TreeModel::Row row = *(message_hooks_model->append());
-	row[message_hooks_model_columns.type] = msg_watch.message_type();
+	Gtk::TreeModel::Row row = *(qe_hooks_model->append());
+	row[qe_hooks_model_columns.qe_type] = msg_watch.message_type();
 }
 
-void GstMessageModule::startBusMessageButton_clicked_cb()
+void GstMessageModule::send_start_stop_command(bool enable)
 {
+	int msg_type = -1;
 
-	Gtk::TreeModel::iterator iter = bus_message_types_combo_box->get_active();
-	if (!iter)
-		return;
+	if (!any_qe_check_button->get_active())
+	{
+		Gtk::TreeModel::iterator iter = qe_types_combobox->get_active();
+		if (!iter)
+			return;
 
-	Gtk::TreeModel::Row row = *iter;
-	if (!row)
-		return;
+		Gtk::TreeModel::Row row = *iter;
+		if (!row)
+			return;
 
-	int msg_type = row[message_types_model_columns.type_id];
+		msg_type = row[qe_types_model_columns.type_id];
+	}
 
 	MessageWatch *msg_watch = new MessageWatch();
 	msg_watch->set_message_type(msg_type);
@@ -100,61 +88,4 @@ void GstMessageModule::startBusMessageButton_clicked_cb()
 	cmd.set_allocated_message_watch(msg_watch);
 
 	client->send_command(cmd);
-}
-
-void GstMessageModule::append_details_row(const std::string &name, const std::string &value)
-{
-	Gtk::TreeModel::Row row = *(msg_details_model->append());
-	row[msg_details_model_columns.name] = name;
-	row[msg_details_model_columns.value] = value;
-}
-
-void GstMessageModule::append_details_from_structure(Gst::Structure& structure)
-{
-	if (!structure.gobj())
-		return;
-
-	structure.foreach([structure, this](const Glib::ustring &name, const Glib::ValueBase &value) -> bool {
-		auto gvalue = GValueBase::build_gvalue(const_cast<GValue*>(value.gobj()));
-		if (gvalue == nullptr)
-			append_details_row(name, std::string("<unsupported type ") + g_type_name(G_VALUE_TYPE(value.gobj())) + ">");
-		else
-		{
-			append_details_row(name, gvalue->to_string());
-			delete gvalue;
-		}
-		return true;
-	});
-}
-
-void GstMessageModule::MessageListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)
-{
-	Gtk::TreeModel::iterator iter = msg_list_model->get_iter(path);
-	if (!iter)
-	{
-		return;
-	}
-
-	Gtk::TreeModel::Row row = *iter;
-	GstMiniObject *miniobj = row[msg_list_model_columns.qe];
-	Glib::RefPtr<Gst::Message> message = Glib::wrap(GST_MESSAGE(miniobj), true);
-
-	msg_details_model->clear();
-
-	auto append_details_row = [this] (const std::string &name, const std::string &value) {
-		Gtk::TreeModel::Row row = *(msg_details_model->append());
-		row[msg_details_model_columns.name] = name;
-		row[msg_details_model_columns.value] = value;
-	};
-
-	append_details_row("event type", Gst::Enums::get_name(message->get_message_type()));
-	{
-		gchar buffer[20];
-		snprintf(buffer, 20, "%" GST_TIME_FORMAT, GST_TIME_ARGS(message->get_timestamp()));
-		append_details_row("event timestamp", buffer);
-	}
-	append_details_row("event sequence number", std::to_string(message->get_seqnum()));
-
-	auto structure = message->get_structure();
-	append_details_from_structure(structure);
 }
