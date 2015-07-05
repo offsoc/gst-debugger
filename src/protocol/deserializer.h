@@ -18,6 +18,8 @@ GstEvent* gst_event_deserialize (const gchar * buffer, gint size);
 
 GstMessage* gst_message_deserialize (const gchar * buffer, gint size);
 
+GstBuffer* gst_buffer_deserialize (const gchar * buffer, gint size);
+
 G_END_DECLS
 
 #endif /* SRC_PROTOCOL_DESERIALIZER_H_ */

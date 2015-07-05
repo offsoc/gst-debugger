@@ -63,12 +63,12 @@ finalize:
 gint gst_message_serialize(GstMessage * message, gchar * buffer, gint size)
 {
   gint total_size;
-  gchar *evt_str;
+  gchar *msg_str;
   gint str_len;
   const GstStructure *m_structure = gst_message_get_structure (message);
 
-  evt_str = gst_structure_to_string (m_structure);
-  str_len = strlen (evt_str)+1;
+  msg_str = gst_structure_to_string (m_structure);
+  str_len = strlen (msg_str)+1;
   total_size = str_len + 16;
 
   if (total_size > size) {
@@ -80,9 +80,31 @@ gint gst_message_serialize(GstMessage * message, gchar * buffer, gint size)
   // todo object path (GstMessage::src)
   gst_debugger_protocol_utils_serialize_uinteger64(message->seqnum, buffer+12, 4);
 
-  memcpy (buffer + 16, evt_str, str_len);
+  memcpy (buffer + 16, msg_str, str_len);
 
   finalize:
-  g_free (evt_str);
+  g_free (msg_str);
+  return total_size;
+}
+
+gint gst_buffer_serialize(GstBuffer * gstbuffer, gchar * buffer, gint size)
+{
+  gint buff_size = gst_buffer_get_size(gstbuffer);
+  gint total_size = 44 + buff_size;
+
+  if (total_size > size) {
+    goto finalize;
+  }
+
+  gst_debugger_protocol_utils_serialize_uinteger64 (GST_BUFFER_PTS (gstbuffer), buffer, 8);
+  gst_debugger_protocol_utils_serialize_uinteger64 (GST_BUFFER_DTS (gstbuffer), buffer+8, 8);
+  gst_debugger_protocol_utils_serialize_uinteger64 (GST_BUFFER_DURATION (gstbuffer), buffer+16, 8);
+  gst_debugger_protocol_utils_serialize_uinteger64 (GST_BUFFER_OFFSET (gstbuffer), buffer+24, 8);
+  gst_debugger_protocol_utils_serialize_uinteger64 (GST_BUFFER_OFFSET_END (gstbuffer), buffer+32, 8);
+  gst_debugger_protocol_utils_serialize_uinteger64 (GST_BUFFER_FLAGS (gstbuffer), buffer+40, 4);
+
+  gst_buffer_extract(gstbuffer, 0, buffer + 44, buff_size);
+
+finalize:
   return total_size;
 }

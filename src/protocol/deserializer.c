@@ -9,6 +9,7 @@
 #include "protocol_utils.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 GstQuery* gst_query_deserialize (const gchar * buffer, gint size)
 {
@@ -59,5 +60,31 @@ GstMessage* gst_message_deserialize (const gchar * buffer, gint size)
   message->timestamp = timestamp;
 
   return message;
+}
+
+GstBuffer* gst_buffer_deserialize (const gchar * buffer, gint size)
+{
+  GstBuffer *gstbuffer;
+  gchar *data;
+
+  data = (gchar*) malloc (size);
+  memcpy (data, buffer+44, size-44);
+
+  gstbuffer = gst_buffer_new_wrapped (data, size - 44);
+
+  GST_BUFFER_PTS (gstbuffer) =
+    gst_debugger_protocol_utils_deserialize_uinteger64 (buffer, 8);
+  GST_BUFFER_DTS (gstbuffer) =
+    gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+8, 8);
+  GST_BUFFER_DURATION (gstbuffer) =
+    gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+16, 8);
+  GST_BUFFER_OFFSET (gstbuffer) =
+    gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+24, 8);
+  GST_BUFFER_OFFSET_END (gstbuffer) =
+    gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+32, 8);
+  GST_BUFFER_FLAGS (gstbuffer) =
+    gst_debugger_protocol_utils_deserialize_uinteger64 (buffer+40, 4);
+
+  return gstbuffer;
 }
 
