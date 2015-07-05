@@ -55,6 +55,8 @@ protected:
 
 	GstreamerInfo_InfoType info_type;
 
+	bool type_module;
+
 	void process_frame() override;
 
 	virtual void append_qe_entry() = 0;

@@ -14,6 +14,7 @@
 #include "gst_event_module.h"
 #include "gst_query_module.h"
 #include "gst_message_module.h"
+#include "gst_buffer_module.h"
 #include "frame_receiver.h"
 
 #include <gtkmm.h>
@@ -37,6 +38,7 @@ class MainWindow : public Gtk::Window
 	std::shared_ptr<GstEventModule> event_module;
 	std::shared_ptr<GstQueryModule> query_module;
 	std::shared_ptr<GstMessageModule> message_module;
+	std::shared_ptr<GstBufferModule> buffer_module;
 
 	GstreamerInfo info;
 

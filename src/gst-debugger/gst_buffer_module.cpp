@@ -8,9 +8,12 @@
 #include "gst_buffer_module.h"
 #include "protocol/deserializer.h"
 
+#include <sstream>
+#include <iomanip>
+
 GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
-: GstQEModule(true, true, GstreamerInfo_InfoType_QUERY,
-		"Query", gst_query_type_get_type(), builder, client)
+: GstQEModule(false, true, GstreamerInfo_InfoType_BUFFER,
+		"Buffer", gst_query_type_get_type(), builder, client)
 {
 }
 
@@ -43,5 +46,21 @@ void GstBufferModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe
 	append_details_row("offset", std::to_string(buffer->get_offset()));
 	append_details_row("offset_end", std::to_string(buffer->get_offset_end()));
 	append_details_row("size", std::to_string(buffer->get_size()));
-	append_details_row("", std::to_string(buffer->get_size()));
+	append_details_row("flags", std::to_string(buffer->get_flags()));
+
+	Glib::RefPtr<Gst::MapInfo> map_info(new Gst::MapInfo());
+	buffer->map(map_info, Gst::MAP_READ);
+
+	std::ostringstream ss;
+	ss << std::hex << std::setfill('0');
+
+	for (std::size_t i = 0; i < buffer->get_size(); i++)
+	{
+		if (i != 0 && i % 16 == 0)
+			ss << std::endl;
+		ss << std::setw(2) << static_cast<int>(map_info->get_data()[i]) << " ";
+	}
+
+	append_details_row("data", ss.str());
+	buffer->unmap(map_info);
 }

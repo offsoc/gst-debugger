@@ -15,7 +15,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   log_module(std::make_shared<GstLogModule>(builder, client)),
   event_module(std::make_shared<GstEventModule>(builder, client)),
   query_module(std::make_shared<GstQueryModule>(builder, client)),
-  message_module(std::make_shared<GstMessageModule>(builder, client))
+  message_module(std::make_shared<GstMessageModule>(builder, client)),
+  buffer_module(std::make_shared<GstBufferModule>(builder, client))
 {
 	builder->get_widget("connectionPropertiesMenuItem", connection_properties);
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));
@@ -37,6 +38,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	data_receivers.push_back(event_module);
 	data_receivers.push_back(query_module);
 	data_receivers.push_back(message_module);
+	data_receivers.push_back(buffer_module);
 }
 
 void MainWindow::connectionPropertiesMenuItem_activate_cb()

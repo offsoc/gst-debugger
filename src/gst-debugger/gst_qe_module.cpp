@@ -16,7 +16,8 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
 		const std::shared_ptr<GstDebuggerTcpClient>& client)
 : client(client),
-  info_type(info_type)
+  info_type(info_type),
+  type_module(type_module)
 {
 	if (pad_path_module)
 	{
@@ -116,7 +117,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 {
 	int qe_type = -1;
 
-	if (!any_qe_check_button->get_active())
+	if (type_module && !any_qe_check_button->get_active())
 	{
 		Gtk::TreeModel::iterator iter = qe_types_combobox->get_active();
 		if (!iter)
