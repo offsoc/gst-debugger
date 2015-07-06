@@ -19,11 +19,16 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
   info_type(info_type),
   type_module(type_module)
 {
+	builder->get_widget("existing" + qe_name + "HooksTreeView", existing_hooks_tree_view);
+	qe_hooks_model = Gtk::ListStore::create(qe_hooks_model_columns);
+	existing_hooks_tree_view->set_model(qe_hooks_model);
+
 	if (pad_path_module)
 	{
 		builder->get_widget("any" + qe_name + "PathCheckButton", any_path_check_button);
 		any_path_check_button->signal_toggled().connect([this] { qe_pad_path_entry->set_sensitive(!any_path_check_button->get_active()); });
 		builder->get_widget("pad" + qe_name + "PathEntry", qe_pad_path_entry);
+		existing_hooks_tree_view->append_column("Pad path", qe_hooks_model_columns.pad_path);
 	}
 
 	if (type_module)
@@ -46,19 +51,15 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		{
 			qe_types_combobox->set_active(0);
 		}
+
+		existing_hooks_tree_view->append_column(qe_name + " type", qe_hooks_model_columns.qe_type);
 	}
 
 	builder->get_widget(qe_name + "ListTreeView", qe_list_tree_view);
 	qe_list_tree_view->signal_row_activated().connect(sigc::mem_fun(*this, &GstQEModule::qeListTreeView_row_activated_cb));
 	qe_list_model = Gtk::ListStore::create(qe_list_model_columns);
 	qe_list_tree_view->set_model(qe_list_model);
-	qe_list_tree_view->append_column("Type", qe_list_model_columns.type);
-
-	builder->get_widget("existing" + qe_name + "HooksTreeView", existing_hooks_tree_view);
-	qe_hooks_model = Gtk::ListStore::create(qe_hooks_model_columns);
-	existing_hooks_tree_view->set_model(qe_hooks_model);
-	existing_hooks_tree_view->append_column("Pad path", qe_hooks_model_columns.pad_path);
-	existing_hooks_tree_view->append_column(qe_name + " type", qe_hooks_model_columns.qe_type);
+	qe_list_tree_view->append_column("", qe_list_model_columns.type);
 
 	builder->get_widget("details" + qe_name + "TreeView", qe_details_tree_view);
 	qe_details_model = Gtk::TreeStore::create(qe_details_model_columns);
@@ -72,7 +73,7 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 
 PadWatch_WatchType GstQEModule::get_watch_type() const
 {
-	switch (info.info_type())
+	switch (info_type)
 	{
 	case GstreamerInfo_InfoType_BUFFER:
 		return PadWatch_WatchType_BUFFER;

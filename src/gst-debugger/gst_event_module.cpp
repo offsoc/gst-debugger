@@ -27,9 +27,7 @@ void GstEventModule::append_qe_entry()
 	}
 
 	Gtk::TreeModel::Row row = *(qe_list_model->append());
-	row[qe_list_model_columns.type] = event->type;
-/*	row[qe_list_model_columns.timestamp] = event->timestamp; // todo GST_TIME_FORMAT / GST_TIME_ARGS ?
-	row[qe_list_model_columns.seqnum] = event->seqnum;*/
+	row[qe_list_model_columns.type] = std::string("Event ") + Gst::Enums::get_name(static_cast<Gst::EventType>(event->type));
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(event);
 }
 

@@ -27,7 +27,7 @@ void GstQueryModule::append_qe_entry()
 	}
 
 	Gtk::TreeModel::Row row = *(qe_list_model->append());
-	row[qe_list_model_columns.type] = query->type;
+	row[qe_list_model_columns.type] = std::string("Query ") + Gst::Enums::get_name(static_cast<Gst::QueryType>(query->type));
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(query);
 }
 

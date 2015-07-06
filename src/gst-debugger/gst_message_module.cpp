@@ -32,7 +32,7 @@ void GstMessageModule::append_qe_entry()
 	}
 
 	Gtk::TreeModel::Row row = *(qe_list_model->append());
-	row[qe_list_model_columns.type] = msg->type;
+	row[qe_list_model_columns.type] = std::string("Message ") + Gst::Enums::get_name(static_cast<Gst::MessageType>(msg->type));
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(msg);
 }
 

@@ -28,7 +28,7 @@ public:
 		add(type); add(qe);
 	}
 
-	Gtk::TreeModelColumn<gint32> type;
+	Gtk::TreeModelColumn<Glib::ustring> type;
 	Gtk::TreeModelColumn<GstMiniObject*> qe;
 };
 

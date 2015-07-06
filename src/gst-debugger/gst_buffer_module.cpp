@@ -30,7 +30,8 @@ void GstBufferModule::append_qe_entry()
 	}
 
 	Gtk::TreeModel::Row row = *(qe_list_model->append());
-	row[qe_list_model_columns.type] = buffer->dts; // todo
+	row[qe_list_model_columns.type] = "Buffer with size " + std::to_string(gst_buffer_get_size(buffer)) +
+			", timestamp: " + std::to_string(buffer->dts);
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(buffer);
 }
 
