@@ -19,6 +19,7 @@ add_executable(gst-debugger
 	gst_query_module.cpp
 	gst_qe_module.cpp
 	gst-debugger.ui.h
+	pipeline-drawer/gst_bin_to_dot_converter.cpp
 )
 
 target_link_libraries(gst-debugger
