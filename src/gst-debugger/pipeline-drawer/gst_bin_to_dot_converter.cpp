@@ -147,7 +147,7 @@ void GstBinToDotConverter::debug_dump_element (const Glib::RefPtr<Gst::Bin>& bin
 		g_string_append_printf (str, "%s  fontsize=\"8\";\n", spc);
 		g_string_append_printf (str, "%s  style=filled;\n", spc);
 		g_string_append_printf (str, "%s  color=black;\n\n", spc);
-		g_string_append_printf (str, "%s  label=\"%s\\n\";\n", spc,
+		g_string_append_printf (str, "%s  label=\"%s\";\n", spc,
 				element->get_name().c_str());
 
 		debug_dump_element_pads (element->iterate_sink_pads(), element, indent);

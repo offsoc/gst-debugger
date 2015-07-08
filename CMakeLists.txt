@@ -27,6 +27,14 @@ pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS}) 
 
+pkg_check_modules(CGRAPH REQUIRED libcgraph)
+include_directories(${CGRAPH_INCLUDE_DIRS})
+link_directories(${CGRAPH_LIBRARY_DIRS}) 
+
+pkg_check_modules(GVC REQUIRED libgvc)
+include_directories(${GVC_INCLUDE_DIRS})
+link_directories(${GVC_LIBRARY_DIRS}) 
+
 pkg_check_modules(GIO REQUIRED gio-2.0)
 link_directories(${GIO_LIBRARY_DIRS}) 
 

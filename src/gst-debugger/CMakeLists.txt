@@ -20,6 +20,7 @@ add_executable(gst-debugger
 	gst_qe_module.cpp
 	gst-debugger.ui.h
 	pipeline-drawer/gst_bin_to_dot_converter.cpp
+	pipeline-drawer/graph_module.cpp
 )
 
 target_link_libraries(gst-debugger
@@ -28,5 +29,8 @@ target_link_libraries(gst-debugger
 	${GIOMM_LIBRARIES}
 	${GTKMM_LIBRARIES}
 	${GSTMM_LIBRARIES}
+	${GVC_LIBRARIES}
+	${CGRAPH_LIBRARIES}
+	-L/usr/local/lib/graphviz -lgvplugin_gstdebugger #todo
 	-pthread
 )

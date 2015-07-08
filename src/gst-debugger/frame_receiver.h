@@ -10,6 +10,8 @@
 
 #include "protocol/gstdebugger.pb.h"
 
+#include <glibmm.h>
+
 #include <mutex>
 
 class FrameReceiver
