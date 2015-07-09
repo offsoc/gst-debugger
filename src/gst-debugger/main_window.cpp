@@ -6,7 +6,7 @@
  */
 
 #include "main_window.h"
-
+#include "sigc++lambdahack.h"
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject),
   builder(builder),
@@ -18,9 +18,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   message_module(std::make_shared<GstMessageModule>(builder, client)),
   buffer_module(std::make_shared<GstBufferModule>(builder, client))
 {
-	Glib::RefPtr<Gst::Pipeline> pipeline;
 	Glib::RefPtr<Gst::Element> src, sink;
 	pipeline = Gst::Pipeline::create ();
+	pipeline->add(Gst::ElementFactory::create_element("fakesrc"));
 	src = Gst::ElementFactory::create_element("videotestsrc");
 	sink = Gst::ElementFactory::create_element("xvimagesink");
 	pipeline->add (src)->add (sink);
@@ -53,6 +53,11 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	signal_show().connect([this] {
 		graph_module->redraw_model();
+	});
+
+	signal_delete_event().connect([this](GdkEventAny*){
+		graph_module->free_graph();
+		return false;
 	});
 }
 

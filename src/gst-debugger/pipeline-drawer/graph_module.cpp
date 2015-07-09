@@ -7,8 +7,6 @@
 
 #include "graph_module.h"
 
-#include <gvc.h>
-#include <gvcjob.h>
 #include <graphviz-gstdebugger.h>
 
 GraphModule::GraphModule(const Glib::RefPtr<Gst::Bin>& model, const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
@@ -26,9 +24,16 @@ GraphModule::GraphModule(const Glib::RefPtr<Gst::Bin>& model, const Glib::RefPtr
 	set_drawing_area(GTK_WIDGET (graph_drawing_area->gobj()));
 
 	builder->get_widget("selectedElementInGraphEntry", selected_element_entry);
+	builder->get_widget("currentPathGraphEntry", current_path_graph_entry);
+
+	builder->get_widget("upGraphButton", up_graph_button);
+	up_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::upGraphButton_clicked_cb));
 
 	builder->get_widget("jumpToGraphButton", jump_to_graph_button);
 	jump_to_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::jumpToGraphButton_clicked_cb));
+
+	builder->get_widget("refreshGraphButton", refresh_graph_button);
+	refresh_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::refreshGraphButton_clicked_cb));
 }
 
 void GraphModule::process_frame()
@@ -62,7 +67,7 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 				auto tmp = (Agraph_t*)n_info->clust;
 				g_info = (Agraphinfo_t*)(((Agobj_t*)tmp)->data);
 				if (g_info->label != NULL)
-				selected_element_entry->set_text(g_info->label->text + std::string(":") + n_info->label->text);
+					selected_element_entry->set_text(g_info->label->text + std::string(":") + n_info->label->text);
 			}
 			break;
 		case AGEDGE:
@@ -73,9 +78,66 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 	return FALSE;
 }
 
+void GraphModule::update_model(const Glib::RefPtr<Gst::Bin>& new_model)
+{
+	model = new_model;
+
+	auto tmp_model = model;
+	std::string path;
+
+	while (true)
+	{
+		auto bin = Glib::RefPtr<Gst::Bin>::cast_dynamic(tmp_model->get_parent());
+		if (bin)
+		{
+			path = tmp_model->get_name() + "/" + path;
+			tmp_model = bin;
+		}
+		else break;
+	}
+	current_path_graph_entry->set_text("/" + path);
+	redraw_model();
+}
+
+void GraphModule::upGraphButton_clicked_cb()
+{
+	//auto p = model->get_u;
+	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(model->get_parent());
+	if (new_model)
+	{
+		update_model(new_model);
+	}
+	else
+	{
+		// todo message: no parent
+	}
+}
+
 void GraphModule::jumpToGraphButton_clicked_cb()
 {
+	std::string selected_element = selected_element_entry->get_text();
 
+	if (selected_element.empty())
+	{
+		// todo message: no element selected
+		return;
+	}
+	else if (selected_element.find(':') != std::string::npos)
+	{
+		// todo message: cannot jump to pad
+		return;
+	}
+
+	auto e = model->get_element(selected_element);
+	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(model->get_element(selected_element));
+
+	if (!new_model)
+	{
+		// todo message: selected element is not a bin
+		return;
+	}
+
+	update_model(new_model);
 }
 
 bool GraphModule::graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context)
@@ -87,20 +149,38 @@ bool GraphModule::graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& 
 	job->width = graph_drawing_area->get_allocated_width();
 	job->height = graph_drawing_area->get_allocated_height();
 	(job->callbacks->refresh)(job);
-
 	return false;
+}
+
+void GraphModule::free_graph()
+{
+	if (gvc != nullptr)
+	{
+		if (g != nullptr)
+			gvFreeLayout (gvc, g);
+		gvFreeContext (gvc);
+	}
+	if (g != nullptr)
+	{
+		agclose (g);
+	}
 }
 
 void GraphModule::redraw_model()
 {
-	Agraph_t *g;
-	GVC_t *gvc;
+	free_graph();
 
 	gvc = gvContext ();
 	g = agmemread (dot_converter.to_dot_data(model).c_str());
 	gvLayout (gvc, g, "dot");
+	graph_drawing_area->hide();
 	gvRender (gvc, g, "gstdebugger", NULL);
-	gvFreeLayout (gvc, g);
-	agclose (g);
-	gvFreeContext (gvc);
+}
+
+void GraphModule::refreshGraphButton_clicked_cb()
+{
+	auto e = Gst::ElementFactory::create_element("decodebin");
+	model->add (e);
+
+	redraw_model();
 }

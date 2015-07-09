@@ -44,6 +44,8 @@ class MainWindow : public Gtk::Window
 
 	GstreamerInfo info;
 
+	Glib::RefPtr<Gst::Pipeline> pipeline;
+
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~MainWindow() {}
