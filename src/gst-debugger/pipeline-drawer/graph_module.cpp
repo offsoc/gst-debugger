@@ -9,9 +9,8 @@
 
 #include <graphviz-gstdebugger.h>
 
-GraphModule::GraphModule(const Glib::RefPtr<Gst::Bin>& model, const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
-: client (client),
-  model(model)
+GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
+: client (client)
 {
 	builder->get_widget("graphDrawingArea", graph_drawing_area);
 	graph_drawing_area->signal_draw().connect(sigc::mem_fun(*this, &GraphModule::graphDrawingArea_draw_cb));
@@ -34,6 +33,17 @@ GraphModule::GraphModule(const Glib::RefPtr<Gst::Bin>& model, const Glib::RefPtr
 
 	builder->get_widget("refreshGraphButton", refresh_graph_button);
 	refresh_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::refreshGraphButton_clicked_cb));
+
+	root_model = current_model = Gst::Pipeline::create ();
+
+	/* todo: for tests purpose only */
+	Glib::RefPtr<Gst::Element> src, sink;
+	current_model->add(Gst::ElementFactory::create_element("fakesrc"));
+	src = Gst::ElementFactory::create_element("videotestsrc");
+	sink = Gst::ElementFactory::create_element("xvimagesink");
+	current_model->add (src)->add (sink);
+	src->link (sink);
+	current_model->add (Gst::ElementFactory::create_element("decodebin"));
 }
 
 void GraphModule::process_frame()
@@ -80,9 +90,9 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 
 void GraphModule::update_model(const Glib::RefPtr<Gst::Bin>& new_model)
 {
-	model = new_model;
+	current_model = new_model;
 
-	auto tmp_model = model;
+	auto tmp_model = current_model;
 	std::string path;
 
 	while (true)
@@ -102,7 +112,7 @@ void GraphModule::update_model(const Glib::RefPtr<Gst::Bin>& new_model)
 void GraphModule::upGraphButton_clicked_cb()
 {
 	//auto p = model->get_u;
-	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(model->get_parent());
+	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(current_model->get_parent());
 	if (new_model)
 	{
 		update_model(new_model);
@@ -128,8 +138,8 @@ void GraphModule::jumpToGraphButton_clicked_cb()
 		return;
 	}
 
-	auto e = model->get_element(selected_element);
-	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(model->get_element(selected_element));
+	auto e = current_model->get_element(selected_element);
+	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(current_model->get_element(selected_element));
 
 	if (!new_model)
 	{
@@ -171,7 +181,7 @@ void GraphModule::redraw_model()
 	free_graph();
 
 	gvc = gvContext ();
-	g = agmemread (dot_converter.to_dot_data(model).c_str());
+	g = agmemread (dot_converter.to_dot_data(current_model).c_str());
 	gvLayout (gvc, g, "dot");
 	graph_drawing_area->hide();
 	gvRender (gvc, g, "gstdebugger", NULL);
@@ -179,8 +189,5 @@ void GraphModule::redraw_model()
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	auto e = Gst::ElementFactory::create_element("decodebin");
-	model->add (e);
-
 	redraw_model();
 }

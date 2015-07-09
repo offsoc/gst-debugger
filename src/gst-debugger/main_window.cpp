@@ -18,15 +18,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   message_module(std::make_shared<GstMessageModule>(builder, client)),
   buffer_module(std::make_shared<GstBufferModule>(builder, client))
 {
-	Glib::RefPtr<Gst::Element> src, sink;
-	pipeline = Gst::Pipeline::create ();
-	pipeline->add(Gst::ElementFactory::create_element("fakesrc"));
-	src = Gst::ElementFactory::create_element("videotestsrc");
-	sink = Gst::ElementFactory::create_element("xvimagesink");
-	pipeline->add (src)->add (sink);
-	src->link (sink);
-
-	graph_module = std::make_shared<GraphModule>(pipeline, builder, client);
+	graph_module = std::make_shared<GraphModule>(builder, client);
 
 	builder->get_widget("connectionPropertiesMenuItem", connection_properties);
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));

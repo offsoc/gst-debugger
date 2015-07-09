@@ -22,12 +22,13 @@ class GraphModule : public FrameReceiver
 {
 protected:
 	std::shared_ptr<GstDebuggerTcpClient> client;
-	Glib::RefPtr<Gst::Bin> model;
+	Glib::RefPtr<Gst::Bin> current_model;
+	Glib::RefPtr<Gst::Bin> root_model;
+
 	GstBinToDotConverter dot_converter;
 
 	Agraph_t *g = nullptr;
 	GVC_t * gvc = nullptr;
-
 
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
@@ -47,7 +48,7 @@ protected:
 	void refreshGraphButton_clicked_cb();
 
 public:
-	GraphModule(const Glib::RefPtr<Gst::Bin>& pipeline, const Glib::RefPtr<Gtk::Builder>& builder,
+	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder,
 			const std::shared_ptr<GstDebuggerTcpClient>& client);
 
 	void redraw_model();
