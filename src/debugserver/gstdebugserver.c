@@ -31,7 +31,7 @@
 #endif
 
 #include "gstdebugserver.h"
-#include "gstdebugserverutils.h"
+#include "utils/gst-utils.h"
 
 #include <string.h>
 
@@ -223,7 +223,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__EVENT) {
       if (gst_debugserver_qe_set_watch (debugserver->event_handler,
             cmd->pad_watch->toggle == TOGGLE__ENABLE,
-            gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
+            gst_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
             cmd->pad_watch->qe_type, client_id)) {
         size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
           cmd->pad_watch->qe_type, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__EVENT);
@@ -233,7 +233,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     } else if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__QUERY) {
         if (gst_debugserver_qe_set_watch (debugserver->query_handler,
               cmd->pad_watch->toggle == TOGGLE__ENABLE,
-              gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
+			  gst_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
               cmd->pad_watch->qe_type, client_id)) {
           size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
             cmd->pad_watch->qe_type, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__QUERY);
@@ -243,7 +243,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
       } else if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__BUFFER) {
         if (gst_debugserver_buffer_set_watch (debugserver->buffer_handler,
               cmd->pad_watch->toggle == TOGGLE__ENABLE,
-              gst_debugserver_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
+			  gst_utils_find_pad (debugserver->pipeline, cmd->pad_watch->pad_path),
               client_id)) {
           size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
             -1, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__BUFFER);
