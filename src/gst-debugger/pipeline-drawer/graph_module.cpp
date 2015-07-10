@@ -7,6 +7,8 @@
 
 #include "graph_module.h"
 
+#include "utils/gst-utils.h"
+
 #include <graphviz-gstdebugger.h>
 
 GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
@@ -93,25 +95,15 @@ void GraphModule::update_model(const Glib::RefPtr<Gst::Bin>& new_model)
 	current_model = new_model;
 
 	auto tmp_model = current_model;
-	std::string path;
+	gchar *path = gst_utils_get_object_path (GST_OBJECT (current_model->gobj()));
+	current_path_graph_entry->set_text(path);
+	g_free (path);
 
-	while (true)
-	{
-		auto bin = Glib::RefPtr<Gst::Bin>::cast_dynamic(tmp_model->get_parent());
-		if (bin)
-		{
-			path = tmp_model->get_name() + "/" + path;
-			tmp_model = bin;
-		}
-		else break;
-	}
-	current_path_graph_entry->set_text("/" + path);
 	redraw_model();
 }
 
 void GraphModule::upGraphButton_clicked_cb()
 {
-	//auto p = model->get_u;
 	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(current_model->get_parent());
 	if (new_model)
 	{

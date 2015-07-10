@@ -81,3 +81,32 @@ finalize:
   g_free (tmp_path);
   return pad;
 }
+
+gchar* gst_utils_get_object_path (GstObject *obj)
+{
+  GString *path;
+
+  assert (obj != NULL);
+
+  const gchar *init = gst_object_get_parent (obj) == NULL ? NULL : GST_OBJECT_NAME (obj);
+
+  path = g_string_new (init);
+
+  if (GST_IS_PAD (obj)) {
+    g_string_prepend_c (path, ':');
+  } else if (GST_IS_ELEMENT (obj)) {
+    g_string_prepend_c (path, '/');
+  } else {
+    assert (FALSE); // only GstElement and GstPad allowed
+  }
+
+  obj = gst_object_get_parent (obj);
+
+  while (obj != NULL && gst_object_get_parent (obj) != NULL) {
+    g_string_prepend (path, GST_OBJECT_NAME (obj));
+    g_string_prepend_c (path, '/');
+    obj = gst_object_get_parent (obj);
+  }
+
+  return g_string_free (path, FALSE);
+}

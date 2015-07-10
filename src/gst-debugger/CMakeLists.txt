@@ -26,6 +26,7 @@ add_executable(gst-debugger
 target_link_libraries(gst-debugger
 	gst-debugger-protocol-cpp
 	gvalue-converter
+	utils
 	${GIOMM_LIBRARIES}
 	${GTKMM_LIBRARIES}
 	${GSTMM_LIBRARIES}
