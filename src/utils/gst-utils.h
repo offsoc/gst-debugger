@@ -7,9 +7,9 @@ G_BEGIN_DECLS
 
 GstObject* gst_utils_get_root (GstObject * start);
 
-GstElement* gst_utils_get_element_from_path (GstElement * root, gchar * path);
+GstElement* gst_utils_get_element_from_path (GstElement * root, const gchar * path);
 
-GstPad* gst_utils_get_pad_from_path (GstElement * root, gchar * pad_path);
+GstPad* gst_utils_get_pad_from_path (GstElement * root, const gchar * pad_path);
 
 gchar* gst_utils_get_object_path (GstObject *obj);
 

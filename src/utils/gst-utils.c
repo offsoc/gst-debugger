@@ -22,13 +22,17 @@ GstObject* gst_utils_get_root (GstObject * start)
   return start;
 }
 
-GstElement* gst_utils_get_element_from_path (GstElement * root, gchar * path)
+GstElement* gst_utils_get_element_from_path (GstElement * root, const gchar * path)
 {
-  if (root == NULL || path == NULL || strlen (path)) {
+  if (root == NULL || path == NULL) {
     return NULL;
   }
 
   assert (path[0] == '/');
+
+  if (strlen (path) == 1) {
+    return root;
+  }
 
   gchar ** element_names = g_strsplit (path, "/", -1);
 
@@ -38,6 +42,9 @@ GstElement* gst_utils_get_element_from_path (GstElement * root, gchar * path)
   for (size = 0; element_names && element_names[size]; size++);
 
   for (i = 0; i < size; i++) {
+    if (strlen (element_names[i]) == 0) {
+      continue;
+    }
     if (GST_IS_BIN (sp)) {
       sp = gst_bin_get_by_name (GST_BIN (sp), element_names[i]);
     } else if (i != size-1) {
@@ -50,7 +57,7 @@ GstElement* gst_utils_get_element_from_path (GstElement * root, gchar * path)
   return sp;
 }
 
-GstPad* gst_utils_get_pad_from_path (GstElement * root, gchar * pad_path)
+GstPad* gst_utils_get_pad_from_path (GstElement * root, const gchar * pad_path)
 {
   if (pad_path == NULL || strlen (pad_path) == 0) {
     return NULL;
