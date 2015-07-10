@@ -49,7 +49,8 @@ message Command {
 		LOG_WATCH = 1;
 		MESSAGE_WATCH = 2;
 		LOG_THRESHOLD = 3;
-		DEBUG_CATEGORIES=4;
+		DEBUG_CATEGORIES = 4;
+		TOPOLOGY = 5;
 	}
 	required CommandType command_type = 6;
 }
@@ -68,6 +69,41 @@ message GstreamerQEBM {
 	required bytes payload = 1;
 }
 
+message TopologyLink {
+	required string src_pad_path = 1;
+	required string sink_pad_path = 2;
+}
+
+message TopologyElement {
+	required string factory = 1;
+	required string name = 2;
+}
+
+message TopologyPad {
+	required string element = 1;
+	required string pad = 2;
+	required string pad_tpl =3;
+}
+
+message Topology {
+	enum ObjectType {
+		PAD = 0;
+		ELEMENT = 1;
+		LINK = 2;
+	}
+	enum Action {
+		ADD = 0;
+		REMOVE = 1;
+	}
+	
+	required ObjectType type = 1;
+	required Action action = 2;
+	required string bin_path = 3;
+	optional TopologyPad pad = 4;
+	optional TopologyElement element = 5;
+	optional TopologyLink link = 6;
+}
+
 message GstreamerInfo {
 	enum InfoType {
 		BUFFER = 0;
@@ -76,8 +112,9 @@ message GstreamerInfo {
 		MESSAGE = 3;
 		LOG = 4;
 		DEBUG_CATEGORIES = 5;
-		PAD_WATCH_CONFIRMATION = 6;
-		MESSAGE_CONFIRMATION = 7;
+		TOPOLOGY = 6;
+		PAD_WATCH_CONFIRMATION = 7;
+		MESSAGE_CONFIRMATION = 8;
 	}
 	
 	required InfoType info_type = 1;
@@ -87,4 +124,5 @@ message GstreamerInfo {
 	optional GstreamerQEBM qebm = 4;
 	optional PadWatch confirmation = 5;
 	optional MessageWatch bus_msg_confirmation = 6;
+	optional Topology topology = 7;
 }
