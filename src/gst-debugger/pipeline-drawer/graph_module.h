@@ -24,7 +24,7 @@ protected:
 	std::shared_ptr<GstDebuggerTcpClient> client;
 	Glib::RefPtr<Gst::Bin> current_model;
 	Glib::RefPtr<Gst::Bin> root_model;
-
+	Glib::Dispatcher dsp;
 	GstBinToDotConverter dot_converter;
 
 	Agraph_t *g = nullptr;

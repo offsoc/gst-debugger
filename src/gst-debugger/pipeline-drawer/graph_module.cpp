@@ -38,19 +38,22 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 
 	root_model = current_model = Gst::Pipeline::create ();
 
-	/* todo: for tests purpose only */
-	Glib::RefPtr<Gst::Element> src, sink;
-	current_model->add(Gst::ElementFactory::create_element("fakesrc"));
-	src = Gst::ElementFactory::create_element("videotestsrc");
-	sink = Gst::ElementFactory::create_element("xvimagesink");
-	current_model->add (src)->add (sink);
-	src->link (sink);
-	current_model->add (Gst::ElementFactory::create_element("decodebin"));
+	dsp.connect(sigc::mem_fun(*this, &GraphModule::redraw_model));
 }
 
 void GraphModule::process_frame()
 {
+	if (info.info_type() != GstreamerInfo_InfoType_TOPOLOGY)
+		return;
 
+	Glib::RefPtr<Gst::Element> e = Glib::wrap(gst_utils_get_element_from_path(GST_ELEMENT (root_model->gobj()), info.topology().bin_path().c_str()), true);
+	Glib::RefPtr<Gst::Bin> bin = bin.cast_static(e);
+
+	if (bin->get_element(info.topology().element().name()))
+		return;
+
+	bin->add (Gst::ElementFactory::create_element(info.topology().element().factory(), info.topology().element().name()));
+	dsp.emit();
 }
 
 bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
@@ -161,6 +164,7 @@ void GraphModule::free_graph()
 		if (g != nullptr)
 			gvFreeLayout (gvc, g);
 		gvFreeContext (gvc);
+		gvFinalize (gvc);
 	}
 	if (g != nullptr)
 	{
@@ -181,5 +185,7 @@ void GraphModule::redraw_model()
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	redraw_model();
+	Command cmd;
+	cmd.set_command_type(Command_CommandType_TOPOLOGY);
+	client->send_command(cmd);
 }
