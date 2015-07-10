@@ -31,6 +31,7 @@
 #endif
 
 #include "gstdebugserver.h"
+#include "gstdebugservertopology.h"
 #include "utils/gst-utils.h"
 
 #include <string.h>
@@ -199,7 +200,6 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   gchar buff[1024];
   gint size;
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-  GstPad *p = gst_utils_get_pad_from_path (GST_ELEMENT (debugserver->pipeline), cmd->pad_watch->pad_path);
 
   switch (cmd->command_type) {
   case COMMAND__COMMAND_TYPE__LOG_THRESHOLD:
@@ -224,7 +224,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     if (cmd->pad_watch->watch_type == PAD_WATCH__WATCH_TYPE__EVENT) {
       if (gst_debugserver_qe_set_watch (debugserver->event_handler,
             cmd->pad_watch->toggle == TOGGLE__ENABLE,
-            p,
+			gst_utils_get_pad_from_path (GST_ELEMENT (debugserver->pipeline), cmd->pad_watch->pad_path),
             cmd->pad_watch->qe_type, client_id)) {
         size = gst_debugserver_qeb_prepare_confirmation_buffer (cmd->pad_watch->pad_path,
           cmd->pad_watch->qe_type, cmd->pad_watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__EVENT);
@@ -256,6 +256,9 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
       gst_debugserver_tracer_send_categories (debugserver, client_id);
       break;
+  case COMMAND__COMMAND_TYPE__TOPOLOGY:
+    gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server);
+    break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
   }
