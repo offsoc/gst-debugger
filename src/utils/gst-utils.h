@@ -13,6 +13,8 @@ GstPad* gst_utils_get_pad_from_path (GstElement * root, const gchar * pad_path);
 
 gchar* gst_utils_get_object_path (GstObject *obj);
 
+void gst_utils_make_pad_path (GstPad * pad, gchar * buffer, gint max_size);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGGER_GST_UTILS_H__ */

@@ -117,3 +117,15 @@ gchar* gst_utils_get_object_path (GstObject *obj)
 
   return g_string_free (path, FALSE);
 }
+
+void gst_utils_make_pad_path (GstPad * pad, gchar * buffer, gint max_size)
+{
+  gchar *pad_name = GST_PAD_NAME (pad);
+  gchar *parent_name = (GST_OBJECT_NAME (GST_OBJECT_PARENT (pad)));
+
+  assert (strlen (pad_name) + strlen (parent_name) + 1 <= max_size); // todo return required size?
+
+  strcpy (buffer, parent_name);
+  strcat (buffer, ":");
+  strcat (buffer, pad_name);
+}
