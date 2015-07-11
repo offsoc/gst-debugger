@@ -123,9 +123,23 @@ void gst_utils_make_pad_path (GstPad * pad, gchar * buffer, gint max_size)
   gchar *pad_name = GST_PAD_NAME (pad);
   gchar *parent_name = (GST_OBJECT_NAME (GST_OBJECT_PARENT (pad)));
 
-  assert (strlen (pad_name) + strlen (parent_name) + 1 <= max_size); // todo return required size?
+  assert ((gint) (strlen (pad_name) + strlen (parent_name) + 1) <= max_size); // todo return required size?
 
   strcpy (buffer, parent_name);
   strcat (buffer, ":");
   strcat (buffer, pad_name);
+}
+
+gboolean gst_utils_check_pad_has_element_parent (GstPad * pad)
+{
+  GstObject *obj = GST_OBJECT_PARENT (pad);
+  if (obj == NULL) {
+    return FALSE;
+  } else if (GST_IS_ELEMENT (obj)) {
+    return TRUE;
+  } else if (GST_IS_PAD (obj)) { // internal pad
+    obj = GST_OBJECT_PARENT (obj);
+    return obj != NULL && GST_IS_ELEMENT (obj);
+  }
+  return FALSE;
 }

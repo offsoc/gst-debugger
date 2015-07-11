@@ -107,6 +107,55 @@ do_element_new (GstTracer * self, guint64 ts, GstElement * element)
 }
 
 static void
+do_pad_unlink_post (GstTracer * self, guint64 ts, GstPad * src, GstPad * sink, gboolean result)
+{
+  if (result == FALSE) {
+    return;
+  }
+  gst_debugserver_topology_send_pad_link (src, sink, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+}
+
+static void
+do_pad_link_post (GstTracer * self, guint64 ts, GstPad * src, GstPad * sink, GstPadLinkReturn result)
+{
+  if (result == FALSE) {
+    return;
+  }
+  gst_debugserver_topology_send_pad_link (src, sink, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+}
+
+static void
+do_bin_add_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element, gboolean result)
+{
+  if (result == FALSE) {
+    return;
+  }
+  gst_debugserver_topology_send_element_in_bin (bin, element, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+}
+
+static void
+do_bin_remove_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element, gboolean result)
+{
+  if (result == FALSE) {
+    return;
+  }
+  gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+}
+
+static void
+do_element_add_pad (GstTracer * self, gint64 ts, GstElement * element, GstPad * pad)
+{
+  gst_debugserver_topology_send_pad_in_element (element, pad, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+}
+
+static void
+do_element_remove_pad (GstTracer * self, gint64 ts, GstElement * element, GstPad * pad)
+{
+  gst_debugserver_topology_send_pad_in_element (element, pad, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+}
+
+
+static void
 do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
@@ -321,6 +370,18 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
       G_CALLBACK (do_pad_query_pre));
   gst_tracing_register_hook (tracer, "pad-push-pre",
       G_CALLBACK (do_pad_push_pre));
+  gst_tracing_register_hook (tracer, "element-add-pad",
+      G_CALLBACK (do_element_add_pad));
+  gst_tracing_register_hook (tracer, "element-remove-pad",
+      G_CALLBACK (do_element_remove_pad));
+  gst_tracing_register_hook (tracer, "bin-add-post",
+      G_CALLBACK (do_bin_add_post));
+  gst_tracing_register_hook (tracer, "bin-remove-post",
+      G_CALLBACK (do_bin_remove_post));
+  gst_tracing_register_hook (tracer, "pad-link-post",
+      G_CALLBACK (do_pad_link_post));
+  gst_tracing_register_hook (tracer, "pad-unlink-post",
+      G_CALLBACK (do_pad_unlink_post));
 
   gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
 

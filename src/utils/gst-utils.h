@@ -15,6 +15,8 @@ gchar* gst_utils_get_object_path (GstObject *obj);
 
 void gst_utils_make_pad_path (GstPad * pad, gchar * buffer, gint max_size);
 
+gboolean gst_utils_check_pad_has_element_parent (GstPad * pad);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGGER_GST_UTILS_H__ */
