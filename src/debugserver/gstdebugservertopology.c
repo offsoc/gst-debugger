@@ -43,10 +43,19 @@ static void send_object (GstObject *object, gchar *bin_path, GstDebugserverTcp *
     topology.type = TOPOLOGY__OBJECT_TYPE__ELEMENT;
   } else if (GST_IS_PAD (object)) {
     GstPad *pad = GST_PAD (object);
-    pad_tp.element = g_strdup (GST_ELEMENT_NAME (gst_pad_get_parent_element (pad)));
+    GstObject *parent_obj = gst_object_get_parent (GST_OBJECT (pad));
+    // internal pad
+    if (GST_IS_PAD (parent_obj)) {
+      parent_obj = gst_object_get_parent (parent_obj);
+    }
+    pad_tp.element = g_strdup (GST_ELEMENT_NAME (parent_obj));
+    pad_tp.element = g_strdup (GST_OBJECT_NAME (parent_obj));
     pad_tp.name = GST_PAD_NAME (pad);
     pad_tp.tpl_name = g_strdup (GST_PAD_TEMPLATE_NAME_TEMPLATE (gst_pad_get_pad_template (pad)));
     pad_tp.is_ghostpad = GST_IS_GHOST_PAD (pad);
+    if (pad_tp.is_ghostpad) {
+      send_object (GST_OBJECT (gst_proxy_pad_get_internal (GST_PROXY_PAD (pad))), bin_path, server);
+    }
     topology.pad = &pad_tp;
     topology.type = TOPOLOGY__OBJECT_TYPE__PAD;
   } else {
