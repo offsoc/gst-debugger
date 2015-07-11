@@ -22,47 +22,56 @@
 #include "protocol/gstdebugger.pb-c.h"
 #include <stdio.h>
 
-static void send_element (GstElement *element, gchar *bin_path, GstDebugserverTcp *client)
+static void send_object (GstObject *object, gchar *bin_path, GstDebugserverTcp *server)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   Topology topology = TOPOLOGY__INIT;
   gint size;
   gchar buffer[1024];
   TopologyElement element_tp = TOPOLOGY_ELEMENT__INIT;
+  TopologyPad pad_tp = TOPOLOGY_PAD__INIT;
 
   info.info_type = GSTREAMER_INFO__INFO_TYPE__TOPOLOGY;
-  topology.type = TOPOLOGY__OBJECT_TYPE__ELEMENT;
   topology.action = TOPOLOGY__ACTION__ADD;
   topology.bin_path = g_strdup (bin_path);
 
-  element_tp.name = g_strdup (GST_ELEMENT_NAME (element));
-  element_tp.factory = g_strdup (gst_plugin_feature_get_name (GST_PLUGIN_FEATURE (gst_element_get_factory (element))));
-  topology.element = &element_tp;
+  if (GST_IS_ELEMENT (object)) {
+    GstElement *element = GST_ELEMENT (object);
+    element_tp.name = g_strdup (GST_ELEMENT_NAME (element));
+    element_tp.factory = g_strdup (gst_plugin_feature_get_name (GST_PLUGIN_FEATURE (gst_element_get_factory (element))));
+    topology.element = &element_tp;
+    topology.type = TOPOLOGY__OBJECT_TYPE__ELEMENT;
+  } else if (GST_IS_PAD (object)) {
+    GstPad *pad = GST_PAD (object);
+    pad_tp.element = g_strdup (GST_ELEMENT_NAME (gst_pad_get_parent_element (pad)));
+    pad_tp.name = GST_PAD_NAME (pad);
+    pad_tp.tpl_name = g_strdup (GST_PAD_TEMPLATE_NAME_TEMPLATE (gst_pad_get_pad_template (pad)));
+    pad_tp.is_ghostpad = GST_IS_GHOST_PAD (pad);
+    topology.pad = &pad_tp;
+    topology.type = TOPOLOGY__OBJECT_TYPE__PAD;
+  } else {
+    assert (FALSE);
+  }
   info.topology = &topology;
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= 1024);
   gstreamer_info__pack (&info, (guint8*)buffer);
-  gst_debugserver_tcp_send_packet (client, ((TcpClient*) (client->clients->data))->connection, buffer, size);
-
+  gst_debugserver_tcp_send_packet (server, ((TcpClient*) (server->clients->data))->connection, buffer, size);
 }
 
-/*static void gst_debugserver_topology_send_element (GstElement *element, gchar *path, GstDebugserverTcp *client)
+static void send_element_pads (GstElement * element, GString *path, GstDebugserverTcp *server)
 {
   gboolean done;
-  puts (GST_ELEMENT_NAME (element));
-
   GstPad *pad;
-  GstPadTemplate *pad_tpl;
   GValue item = G_VALUE_INIT;
   done = FALSE;
   GstIterator *pad_it = gst_element_iterate_pads (element);
+
   while (!done) {
     switch (gst_iterator_next (pad_it, &item)) {
       case GST_ITERATOR_OK:
         pad = g_value_get_object (&item);
-        puts (gst_pad_get_name (pad));
-        pad_tpl = gst_pad_get_pad_template (pad);
-        printf ("of_type: %s\n", GST_PAD_TEMPLATE_NAME_TEMPLATE (pad_tpl));
+        send_object (GST_OBJECT (pad), path->str, server);
         g_value_reset (&item);
         break;
       case GST_ITERATOR_RESYNC:
@@ -76,9 +85,7 @@ static void send_element (GstElement *element, gchar *bin_path, GstDebugserverTc
   }
   g_value_unset (&item);
   gst_iterator_free (pad_it);
-
-  xx (element, client);
-}*/
+}
 
 static void gst_debugserver_topology_send_element (GstElement * element, GString *path, GstDebugserverTcp *server)
 {
@@ -87,7 +94,7 @@ static void gst_debugserver_topology_send_element (GstElement * element, GString
   GString *intern_path = g_string_new (path->str);
 
   if (GST_ELEMENT_PARENT (element) != NULL) {
-    send_element (element, path->str, server);
+    send_object (GST_OBJECT (element), path->str, server);
     if (GST_ELEMENT_PARENT (GST_ELEMENT_PARENT (element)) != NULL) {
       g_string_append_c (intern_path, '/');
     }
@@ -95,6 +102,8 @@ static void gst_debugserver_topology_send_element (GstElement * element, GString
   } else {
     g_string_append_c (intern_path, '/');
   }
+
+  send_element_pads (element, path, server);
 
   if (!GST_IS_BIN (element)) {
     return;
