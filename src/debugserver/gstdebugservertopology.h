@@ -21,8 +21,9 @@
 #define SRC_DEBUGSERVER_GSTDEBUGSERVERTOPOLOGY_H_
 
 #include <gst/gst.h>
+
 #include "gstdebugservertcp.h"
 
-void gst_debugserver_topology_send_entire_topology (GstBin *root, GstDebugserverTcp *client);
+void gst_debugserver_topology_send_entire_topology (GstBin *root, GstDebugserverTcp * server);
 
 #endif /* SRC_DEBUGSERVER_GSTDEBUGSERVERTOPOLOGY_H_ */

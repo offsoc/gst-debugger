@@ -30,7 +30,7 @@ typedef struct {
   gchar *bin;
 } PadLinkInfo;
 
-static void send_object (GstObject *object, gchar *bin_path, GstDebugserverTcp *server)
+static void send_object (GstObject *object, gchar *bin_path, GstDebugserverTcp * server)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   Topology topology = TOPOLOGY__INIT;
@@ -64,7 +64,8 @@ static void send_object (GstObject *object, gchar *bin_path, GstDebugserverTcp *
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= 1024);
   gstreamer_info__pack (&info, (guint8*)buffer);
-  gst_debugserver_tcp_send_packet (server, ((TcpClient*) (server->clients->data))->connection, buffer, size);
+
+  gst_debugserver_tcp_send_packet_to_all_clients (server, buffer, size);
 }
 
 static void send_link (GstPad *src_pad, gchar *bin_path, GstDebugserverTcp *server)
@@ -96,7 +97,7 @@ static void send_link (GstPad *src_pad, gchar *bin_path, GstDebugserverTcp *serv
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= 1024);
   gstreamer_info__pack (&info, (guint8*)buffer);
-  gst_debugserver_tcp_send_packet (server, ((TcpClient*) (server->clients->data))->connection, buffer, size);
+  gst_debugserver_tcp_send_packet_to_all_clients (server, buffer, size);
 }
 
 static void send_element_pads (GstElement * element, GString *path, GstDebugserverTcp *server)
@@ -114,7 +115,7 @@ static void send_element_pads (GstElement * element, GString *path, GstDebugserv
         if (gst_pad_get_direction (pad) == GST_PAD_SRC && gst_pad_get_peer (pad)) {
           PadLinkInfo *nfo = (PadLinkInfo*) g_malloc (sizeof (PadLinkInfo));
           nfo->pad = pad;
-          nfo->bin = g_strdup (path->str); // todo memleak
+          nfo->bin = g_strdup (path->str); // todo memleak ?
           src_pads = g_slist_append (src_pads, nfo);
         }
         send_object (GST_OBJECT (pad), path->str, server);
@@ -179,17 +180,17 @@ static void gst_debugserver_topology_send_element (GstElement * element, GString
   gst_iterator_free (element_it);
 }
 
-void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverTcp *client)
+void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverTcp * server)
 {
   GString *path = g_string_new (NULL);
   src_pads = NULL;
-  gst_debugserver_topology_send_element (GST_ELEMENT (bin), path, client);
+  gst_debugserver_topology_send_element (GST_ELEMENT (bin), path, server);
   g_string_free (path, TRUE);
   GSList *tmp_list = src_pads;
   while (tmp_list != NULL) {
     PadLinkInfo *nfo = (PadLinkInfo*)tmp_list->data;
     GstPad *p = nfo->pad;
-    send_link (p, nfo->bin, client);
+    send_link (p, nfo->bin, server);
     tmp_list = tmp_list->next;
   }
 
