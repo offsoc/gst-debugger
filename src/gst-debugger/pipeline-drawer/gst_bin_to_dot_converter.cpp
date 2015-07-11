@@ -53,6 +53,7 @@ void GstBinToDotConverter::debug_dump_element_pad (const Glib::RefPtr<Gst::Pad>&
 
 	Gst::PadDirection dir = pad->get_direction();
 	auto element_name = debug_dump_make_object_name (element);
+
 	if (pad->is_ghost_pad())
 	{
 		color_name = (dir == Gst::PAD_SRC) ? "#ffdddd" :

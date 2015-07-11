@@ -49,10 +49,29 @@ void GraphModule::process_frame()
 	Glib::RefPtr<Gst::Element> e = Glib::wrap(gst_utils_get_element_from_path(GST_ELEMENT (root_model->gobj()), info.topology().bin_path().c_str()), true);
 	Glib::RefPtr<Gst::Bin> bin = bin.cast_static(e);
 
-	if (bin->get_element(info.topology().element().name()))
-		return;
+	if (info.topology().type() == Topology_ObjectType_ELEMENT)
+	{
+		if (bin->get_element(info.topology().element().name()))
+			return;
 
-	bin->add (Gst::ElementFactory::create_element(info.topology().element().factory(), info.topology().element().name()));
+		bin->add (Gst::ElementFactory::create_element(info.topology().element().factory(), info.topology().element().name()));
+	}
+	else
+	{
+		Glib::RefPtr<Gst::Element> element = bin->get_element(info.topology().pad().element());
+		std::string pad_name = info.topology().pad().name();
+		std::string tpl_name = info.topology().pad().tpl_name();
+
+		if (element->get_static_pad (pad_name)) {
+			return;
+		}
+
+		Glib::RefPtr<Gst::Pad> pad = info.topology().pad().is_ghostpad() ?
+				pad.cast_static(Gst::GhostPad::create(element->get_pad_template(tpl_name), pad_name)) :
+			Gst::Pad::create(element->get_pad_template(tpl_name), pad_name);
+		element->add_pad(pad);
+	}
+
 	dsp.emit();
 }
 
