@@ -56,7 +56,7 @@ void GraphModule::process_frame()
 
 		bin->add (Gst::ElementFactory::create_element(info.topology().element().factory(), info.topology().element().name()));
 	}
-	else
+	else if (info.topology().type() == Topology_ObjectType_PAD)
 	{
 		Glib::RefPtr<Gst::Element> element = bin->get_element(info.topology().pad().element());
 		std::string pad_name = info.topology().pad().name();
@@ -70,6 +70,24 @@ void GraphModule::process_frame()
 				pad.cast_static(Gst::GhostPad::create(element->get_pad_template(tpl_name), pad_name)) :
 			Gst::Pad::create(element->get_pad_template(tpl_name), pad_name);
 		element->add_pad(pad);
+	}
+	else
+	{
+		auto link_info = info.topology().link();
+		// Position of the new line in the string
+		int newLine = link_info.src_pad_path().find_first_of(':');
+		std::string start = link_info.src_pad_path().substr(0, newLine);
+		std::string end = link_info.src_pad_path().substr(newLine + 1, link_info.src_pad_path().length() - newLine - 1);
+		auto element = bin->get_element(start);
+		auto src_pad = element->get_static_pad(end);
+		newLine = link_info.sink_pad_path().find_first_of(':');
+		start = link_info.sink_pad_path().substr(0, newLine);
+		end = link_info.sink_pad_path().substr(newLine + 1, link_info.sink_pad_path().length() - newLine-1);
+		element = bin->get_element(start);
+		auto sink_pad = element->get_static_pad(end);
+		printf ("%d\n", src_pad->link(sink_pad));
+		puts (start.c_str());
+		puts(end.c_str());
 	}
 
 	dsp.emit();
