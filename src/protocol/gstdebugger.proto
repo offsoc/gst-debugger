@@ -81,8 +81,9 @@ message TopologyElement {
 
 message TopologyPad {
 	required string element = 1;
-	required string pad = 2;
-	required string pad_tpl =3;
+	required string name = 2;
+	required string tpl_name =3;
+	required bool is_ghostpad = 4;
 }
 
 message Topology {
