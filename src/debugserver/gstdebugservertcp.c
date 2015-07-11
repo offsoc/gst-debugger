@@ -34,6 +34,8 @@ G_DEFINE_TYPE_WITH_CODE (GstDebugserverTcp, gst_debugserver_tcp,
 
 static void gst_debugserver_tcp_finalize (GObject * tcp);
 
+static TcpClient* gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConnection * connection);
+
 static void
 gst_debugserver_tcp_class_init (GstDebugserverTcpClass * klass)
 {
@@ -106,6 +108,11 @@ gst_debugserver_tcp_process_client (gpointer user_data)
 
   if (tcp->client_disconnected)
     tcp->client_disconnected (connection, tcp->client_disconnected_user_data);
+
+  TcpClient *c = gst_debugserver_tcp_find_client (tcp, connection);
+  tcp->clients = g_slist_remove (tcp->clients, c);
+  g_free (c);
+
   GST_LOG_OBJECT (tcp, "Client disconnected");
 
   return NULL;
@@ -162,7 +169,7 @@ gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp)
   }
 }
 
-static TcpClient* gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConnection * connection)
+TcpClient* gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConnection * connection)
 {
   GSList *client_list = tcp->clients;
   TcpClient *client;
@@ -208,4 +215,19 @@ gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnec
   }
 
   return TRUE;
+}
+
+gboolean gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp * tcp, gchar * buffer, gint size)
+{
+  GSList *clients = tcp->clients;
+  TcpClient *client;
+  gboolean ret = TRUE;
+
+  while (clients != NULL) {
+    client = (TcpClient*)clients->data;
+    ret = ret && gst_debugserver_tcp_send_packet (tcp, client->connection, buffer, size);
+    clients = clients->next;
+  }
+
+  return ret;
 }
