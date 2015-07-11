@@ -46,52 +46,24 @@ void GstBinToDotConverter::debug_dump_pad (const Glib::RefPtr<Gst::Pad>& pad, co
 
 void GstBinToDotConverter::debug_dump_element_pad (const Glib::RefPtr<Gst::Pad>& pad, const Glib::RefPtr<Gst::Element>& element, const gint indent)
 {
-	Glib::RefPtr<Gst::Element> target_element;
 	Glib::RefPtr<Gst::Pad> target_pad, tmp_pad;
-	std::string target_element_name;
 	const gchar *color_name;
 
 	Gst::PadDirection dir = pad->get_direction();
-	auto element_name = debug_dump_make_object_name (element);
+	auto element_name = element ? debug_dump_make_object_name (element) : std::string();
 
 	if (pad->is_ghost_pad())
 	{
 		color_name = (dir == Gst::PAD_SRC) ? "#ffdddd" :
 				((dir == Gst::PAD_SINK) ? "#ddddff" : "#ffffff");
-		if ((tmp_pad = Glib::RefPtr<Gst::GhostPad>::cast_static (pad)->get_target())) {
-			if ((target_pad = tmp_pad->get_peer())) {
-				std::string pad_name, target_pad_name;
-				const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
-
-				if ((target_element = target_pad->get_parent_element())) {
-					target_element_name =
-							debug_dump_make_object_name (target_element);
-				} else {
-					target_element_name = "";
-				}
-				debug_dump_pad (target_pad, color_name, target_element_name.c_str(), indent);
-				/* src ghostpad relationship */
-				pad_name = debug_dump_make_object_name (pad);
-				target_pad_name = debug_dump_make_object_name (target_pad);
-				if (dir == Gst::PAD_SRC) {
-					g_string_append_printf (str,
-							"%s%s_%s -> %s_%s [style=dashed, minlen=0]\n", spc,
-							target_element_name.c_str(), target_pad_name.c_str(), element_name.c_str(), pad_name.c_str());
-				} else {
-					g_string_append_printf (str,
-							"%s%s_%s -> %s_%s [style=dashed, minlen=0]\n", spc,
-							element_name.c_str(), pad_name.c_str(), target_element_name.c_str(), target_pad_name.c_str());
-				}
-			}
-		}
 	} else {
-		color_name = (dir == Gst::PAD_SRC) ? "#ffaaaa" :
-				((dir == Gst::PAD_SINK) ? "#aaaaff" : "#cccccc");
+		color_name = (dir == Gst::PAD_SRC) ? "#ff7777" :
+				((dir == Gst::PAD_SINK) ? "#7777ff" : "#cccccc");
 	}
-	/* pads */
+
 	debug_dump_pad (pad, color_name, element_name, indent);
 }
-void GstBinToDotConverter::debug_dump_element_pad_link (const Glib::RefPtr<Gst::Pad>& pad, Glib::RefPtr<Gst::Element>& element, const gint indent)
+void GstBinToDotConverter::debug_dump_element_pad_link (const Glib::RefPtr<Gst::Pad>& pad, const Glib::RefPtr<Gst::Element>& element, const gint indent)
 {
 	Glib::RefPtr<Gst::Element> peer_element;
 	Glib::RefPtr<Gst::Pad> peer_pad;
@@ -120,7 +92,7 @@ void GstBinToDotConverter::debug_dump_element_pad_link (const Glib::RefPtr<Gst::
 }
 
 
-void GstBinToDotConverter::debug_dump_element_pads (Gst::Iterator<Gst::Pad> pad_iter,Glib::RefPtr<Gst::Element>& element, const gint indent)
+void GstBinToDotConverter::debug_dump_element_pads (Gst::Iterator<Gst::Pad> pad_iter, const Glib::RefPtr<Gst::Element>& element, const gint indent)
 {
 	Glib::RefPtr<Gst::Pad> pad;
 
@@ -194,12 +166,39 @@ void GstBinToDotConverter::debug_dump_header ()
 			"\n");
 }
 
+void GstBinToDotConverter::debug_dump_top_pads(Gst::Iterator<Gst::Pad> pad_iter, const Glib::RefPtr<Gst::Element>& bin)
+{
+	while (pad_iter.next())
+	{
+		debug_dump_element_pad (*pad_iter, bin, 1);
+		if (pad_iter->is_proxy_pad())
+		{
+			auto pp = Glib::wrap(GST_PAD (gst_proxy_pad_get_internal(GST_PROXY_PAD (pad_iter->gobj()))), true);
+			debug_dump_element_pad (pp, Glib::RefPtr<Gst::Element>(), 1);
+			if (pad_iter->get_direction() == Gst::PAD_SRC)
+			{
+				g_string_append_printf (str, "_%s -> %s_%s\n", debug_dump_make_object_name(pp).c_str(),
+						debug_dump_make_object_name(bin).c_str(), debug_dump_make_object_name(*pad_iter).c_str());
+			}
+			else
+			{
+				g_string_append_printf (str, "%s_%s -> _%s\n", debug_dump_make_object_name(bin).c_str(),
+						debug_dump_make_object_name(*pad_iter).c_str(), debug_dump_make_object_name(pp).c_str());
+			}
+		}
+	}
+}
+
 std::string GstBinToDotConverter::to_dot_data (const Glib::RefPtr<Gst::Bin>& bin)
 {
 	str = g_string_new (NULL);
 
 	debug_dump_header ();
+	Glib::RefPtr<Gst::Pad> pad;
+	debug_dump_top_pads(bin->iterate_src_pads(), bin);
+	debug_dump_top_pads(bin->iterate_sink_pads(), bin);
 	debug_dump_element (bin, 1);
+
 	g_string_append_printf (str, "}\n");
 
 	gchar *tmp = g_string_free (str, FALSE);

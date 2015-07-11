@@ -74,20 +74,21 @@ void GraphModule::process_frame()
 	else
 	{
 		auto link_info = info.topology().link();
-		// Position of the new line in the string
-		int newLine = link_info.src_pad_path().find_first_of(':');
-		std::string start = link_info.src_pad_path().substr(0, newLine);
-		std::string end = link_info.src_pad_path().substr(newLine + 1, link_info.src_pad_path().length() - newLine - 1);
-		auto element = bin->get_element(start);
-		auto src_pad = element->get_static_pad(end);
-		newLine = link_info.sink_pad_path().find_first_of(':');
-		start = link_info.sink_pad_path().substr(0, newLine);
-		end = link_info.sink_pad_path().substr(newLine + 1, link_info.sink_pad_path().length() - newLine-1);
-		element = bin->get_element(start);
-		auto sink_pad = element->get_static_pad(end);
-		printf ("%d\n", src_pad->link(sink_pad));
-		puts (start.c_str());
-		puts(end.c_str());
+		int colon_pos = link_info.src_pad_path().find_first_of(':');
+		std::string pad_path = link_info.src_pad_path();
+		std::string parent_name = pad_path.substr(0, colon_pos);
+		std::string obj_name = pad_path.substr(colon_pos + 1, pad_path.length() - colon_pos - 1);
+		auto src_pad = bin->get_element(parent_name)->get_static_pad(obj_name);
+
+		pad_path = link_info.sink_pad_path();
+		colon_pos = pad_path.find_first_of(':');
+		parent_name = pad_path.substr(0, colon_pos);
+		obj_name = pad_path.substr(colon_pos + 1, pad_path.length() - colon_pos-1);
+		auto element = bin->get_element(parent_name);
+		Glib::RefPtr<Gst::Pad> sink_pad =  element ? element->get_static_pad(obj_name) :
+				Glib::wrap((GstPad*)gst_proxy_pad_get_internal (GST_PROXY_PAD(bin->get_static_pad(parent_name)->gobj())), true);
+
+		src_pad->link(sink_pad);
 	}
 
 	dsp.emit();

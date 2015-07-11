@@ -18,10 +18,11 @@ private:
 	std::string debug_dump_make_object_name (const Glib::RefPtr<Gst::Object>& obj);
 	void debug_dump_pad (const Glib::RefPtr<Gst::Pad>& pad, const gchar * color_name, const std::string& element_name, const gint indent);
 	void debug_dump_element_pad (const Glib::RefPtr<Gst::Pad>& pad, const Glib::RefPtr<Gst::Element>& element, const gint indent);
-	void debug_dump_element_pad_link (const Glib::RefPtr<Gst::Pad>& pad, Glib::RefPtr<Gst::Element>& element, const gint indent);
-	void debug_dump_element_pads (Gst::Iterator<Gst::Pad> pad_iter, Glib::RefPtr<Gst::Element>& element, const gint indent);
+	void debug_dump_element_pad_link (const Glib::RefPtr<Gst::Pad>& pad, const Glib::RefPtr<Gst::Element>& element, const gint indent);
+	void debug_dump_element_pads (Gst::Iterator<Gst::Pad> pad_iter, const Glib::RefPtr<Gst::Element>& element, const gint indent);
 	void debug_dump_element (const Glib::RefPtr<Gst::Bin>& bin, const gint indent);
 	void debug_dump_header ();
+	void debug_dump_top_pads(Gst::Iterator<Gst::Pad> pad_iter, const Glib::RefPtr<Gst::Element>& bin);
 
 public:
 	std::string to_dot_data (const Glib::RefPtr<Gst::Bin>& bin);
