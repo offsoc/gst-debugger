@@ -92,6 +92,7 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
 {
   switch (internal_type) {
   case INTERNAL_GTYPE_ENUM: // do nothing with enums (todo for now...)
+  case INTERNAL_GTYPE_GST_OBJECT: // and with pointers
   case INTERNAL_GTYPE_FUNDAMENTAL:
     g_value_init (value, type);
     gst_value_deserialize (value, data);
@@ -105,6 +106,7 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
     g_value_reset (value);
     g_value_init (value, GST_TYPE_CAPS);
     gst_value_set_caps (value, caps);
+    break;
   }
   }
 }

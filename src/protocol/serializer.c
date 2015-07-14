@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 gint gst_query_serialize (GstQuery * query, gchar * buffer, gint size)
 {
@@ -127,6 +128,13 @@ gchar * g_value_serialize (GValue * value, GType * type, InternalGType * interna
     *type = G_TYPE_STRING;
     g_value_set_string (&tmp, gst_caps_to_string (gst_value_get_caps (value)));
     *internal_type = INTERNAL_GTYPE_CAPS;
+  } else if (value->g_type == GST_TYPE_OBJECT) {
+    g_value_init(&tmp, G_TYPE_STRING);
+    gchar buffer[128];
+    snprintf (buffer, 128, "(GstObject:name) %s", GST_OBJECT_NAME (g_value_get_object (value)));
+    *type = G_TYPE_STRING;
+    g_value_set_string (&tmp, g_strdup (buffer));
+    *internal_type = INTERNAL_GTYPE_GST_OBJECT;
   }
 
   return gst_value_serialize (&tmp);
