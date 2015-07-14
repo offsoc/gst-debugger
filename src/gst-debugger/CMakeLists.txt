@@ -16,6 +16,7 @@ add_executable(gst-debugger
 	gst_message_module.cpp
 	gst_log_module.cpp
 	gst_event_module.cpp
+	gst_properties_module.cpp
 	gst_query_module.cpp
 	gst_qe_module.cpp
 	gst-debugger.ui.h
