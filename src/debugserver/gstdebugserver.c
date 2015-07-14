@@ -33,6 +33,7 @@
 #include "gstdebugserver.h"
 #include "gstdebugservertopology.h"
 #include "utils/gst-utils.h"
+#include "protocol/serializer.h"
 
 #include <string.h>
 
@@ -243,6 +244,66 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
 }
 
 static void
+gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GSocketConnection * client_id,
+  const gchar * element_path, const GstElement *element, const GParamSpec *param)
+{
+  GValue value = {0};
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  Property property = PROPERTY__INIT;
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__PROPERTY;
+  gchar buffer [1024];
+  gint size;
+  GType tmptype;
+  InternalGType internal_type;
+
+  g_value_init (&value, param->value_type);
+  g_object_get_property (G_OBJECT (element), param->name, &value);
+
+  property.element_path = g_strdup (element_path);
+  property.property_name = g_strdup (param->name);
+  property.property_value = g_value_serialize (&value, &tmptype, &internal_type);
+  property.internal_type = internal_type;
+  property.has_internal_type = TRUE;
+  property.type = tmptype;
+  property.has_type = TRUE;
+  info.property = &property;
+  size = gstreamer_info__get_packed_size (&info);
+  assert(size <= 1024);
+  gstreamer_info__pack (&info, (guint8*)buffer);
+  gst_debugserver_tcp_send_packet (server->tcp_server, client_id, buffer, size);
+}
+
+static void
+gst_debugserver_property_send_property (GstDebugserverTracer * server, GSocketConnection * client_id, const gchar * element_path, const gchar * property_name)
+{
+  GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (server->pipeline), element_path);
+
+  if (element == NULL) {
+    return; // todo ?
+  }
+
+  GstElementClass *element_class = GST_ELEMENT_GET_CLASS (element);
+
+  if (property_name == NULL || strlen (property_name) == 0) {
+    gint num_properties, i;
+    GParamSpec **property_specs = g_object_class_list_properties
+        (G_OBJECT_GET_CLASS (element), &num_properties);
+
+    for (i = 0; i < num_properties; i++) {
+      gst_debugserver_property_send_single_property (server, client_id, element_path, element, property_specs[i]);
+    }
+
+    g_free (property_specs);
+  } else {
+    GParamSpec *param = g_object_class_find_property (element_class, property_name);
+    if (param == NULL) {
+      return; // todo
+    }
+    gst_debugserver_property_send_single_property (server, client_id, element_path, element, param);
+  }
+}
+
+static void
 gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   gpointer user_data)
 {
@@ -308,6 +369,9 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   case COMMAND__COMMAND_TYPE__TOPOLOGY:
     gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server);
     break;
+  case COMMAND__COMMAND_TYPE__PROPERTY:
+    gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
+    break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
   }
@@ -370,7 +434,7 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
       G_CALLBACK (do_pad_query_pre));
   gst_tracing_register_hook (tracer, "pad-push-pre",
       G_CALLBACK (do_pad_push_pre));
-  gst_tracing_register_hook (tracer, "element-add-pad",
+ /* gst_tracing_register_hook (tracer, "element-add-pad",
       G_CALLBACK (do_element_add_pad));
   gst_tracing_register_hook (tracer, "element-remove-pad",
       G_CALLBACK (do_element_remove_pad));
@@ -381,7 +445,7 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   gst_tracing_register_hook (tracer, "pad-link-post",
       G_CALLBACK (do_pad_link_post));
   gst_tracing_register_hook (tracer, "pad-unlink-post",
-      G_CALLBACK (do_pad_unlink_post));
+      G_CALLBACK (do_pad_unlink_post));*/
 
   gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
 
