@@ -108,3 +108,26 @@ gint gst_buffer_serialize(GstBuffer * gstbuffer, gchar * buffer, gint size)
 finalize:
   return total_size;
 }
+
+gchar * g_value_serialize (GValue * value, GType * type, InternalGType * internal_type)
+{
+  GValue tmp = G_VALUE_INIT;
+
+  if (G_TYPE_IS_FUNDAMENTAL (value->g_type)) {
+    *type = value->g_type;
+    *internal_type = INTERNAL_GTYPE_FUNDAMENTAL;
+    return gst_value_serialize (value);
+  } else if (G_TYPE_IS_ENUM(value->g_type)) {
+    g_value_init(&tmp, G_TYPE_INT);
+    *type = G_TYPE_INT;
+    g_value_set_int(&tmp, g_value_get_enum(value));
+    *internal_type = INTERNAL_GTYPE_ENUM;
+  } else if (value->g_type == GST_TYPE_CAPS) {
+    g_value_init(&tmp, G_TYPE_STRING);
+    *type = G_TYPE_STRING;
+    g_value_set_string (&tmp, gst_caps_to_string (gst_value_get_caps (value)));
+    *internal_type = INTERNAL_GTYPE_CAPS;
+  }
+
+  return gst_value_serialize (&tmp);
+}

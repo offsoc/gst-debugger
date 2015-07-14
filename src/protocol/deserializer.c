@@ -88,3 +88,23 @@ GstBuffer* gst_buffer_deserialize (const gchar * buffer, gint size)
   return gstbuffer;
 }
 
+void g_value_deserialize (GValue * value, GType type, InternalGType internal_type, const gchar * data)
+{
+  switch (internal_type) {
+  case INTERNAL_GTYPE_ENUM: // do nothing with enums (todo for now...)
+  case INTERNAL_GTYPE_FUNDAMENTAL:
+    g_value_init (value, type);
+    gst_value_deserialize (value, data);
+    break;
+  case INTERNAL_GTYPE_CAPS:
+  {
+    GstCaps *caps;
+    g_value_init (value, G_TYPE_STRING);
+    gst_value_deserialize (value, data);
+    caps = gst_caps_from_string (g_value_get_string (value));
+    g_value_reset (value);
+    g_value_init (value, GST_TYPE_CAPS);
+    gst_value_set_caps (value, caps);
+  }
+  }
+}
