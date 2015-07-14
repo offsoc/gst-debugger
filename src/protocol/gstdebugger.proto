@@ -38,12 +38,20 @@ message LogThreshold {
 	required bool overwrite = 2;
 }
 
+message Property {
+	required string element_path = 1;
+	required string property_name = 2;
+	optional int32 type = 3;
+	optional string property_value = 4;
+}
+
 message Command {	
 	optional PadWatch pad_watch = 1;
 	optional LogWatch log_watch = 2;
 	optional MessageWatch message_watch = 3;
 	optional LogThreshold log_threshold = 4;
-	
+	optional Property property = 5;
+
 	enum CommandType {
 		PAD_WATCH = 0;
 		LOG_WATCH = 1;
@@ -51,6 +59,7 @@ message Command {
 		LOG_THRESHOLD = 3;
 		DEBUG_CATEGORIES = 4;
 		TOPOLOGY = 5;
+		PROPERTY = 6;
 	}
 	required CommandType command_type = 6;
 }
@@ -116,6 +125,7 @@ message GstreamerInfo {
 		TOPOLOGY = 6;
 		PAD_WATCH_CONFIRMATION = 7;
 		MESSAGE_CONFIRMATION = 8;
+		PROPERTY = 9;
 	}
 	
 	required InfoType info_type = 1;
@@ -126,4 +136,5 @@ message GstreamerInfo {
 	optional PadWatch confirmation = 5;
 	optional MessageWatch bus_msg_confirmation = 6;
 	optional Topology topology = 7;
+	optional Property property = 8;
 }
