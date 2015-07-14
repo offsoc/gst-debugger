@@ -41,19 +41,21 @@ GstElement* gst_utils_get_element_from_path (GstElement * root, const gchar * pa
 
   for (size = 0; element_names && element_names[size]; size++);
 
-  for (i = 0; i < size; i++) {
+  for (i = 0; i < size - 1; i++) {
     if (strlen (element_names[i]) == 0) {
       continue;
     }
     if (GST_IS_BIN (sp)) {
       sp = gst_bin_get_by_name (GST_BIN (sp), element_names[i]);
-    } else if (i != size-1) {
+    } else {
       g_strfreev (element_names);
       return NULL;
     }
   }
 
+  sp = gst_bin_get_by_name (GST_BIN (sp), element_names[size-1]);
   g_strfreev (element_names);
+
   return sp;
 }
 
