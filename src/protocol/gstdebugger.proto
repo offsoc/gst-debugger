@@ -86,11 +86,11 @@ message TopologyLink {
 
 message TopologyElement {
 	required string factory = 1;
-	required string name = 2;
+	required string path = 2;
 }
 
 message TopologyPad {
-	required string element = 1;
+	required string pad_path = 1;
 	required string name = 2;
 	required string tpl_name =3;
 	required bool is_ghostpad = 4;
@@ -109,10 +109,9 @@ message Topology {
 	
 	required ObjectType type = 1;
 	required Action action = 2;
-	required string bin_path = 3;
-	optional TopologyPad pad = 4;
-	optional TopologyElement element = 5;
-	optional TopologyLink link = 6;
+	optional TopologyPad pad = 3;
+	optional TopologyElement element = 4;
+	optional TopologyLink link = 5;
 }
 
 message GstreamerInfo {
