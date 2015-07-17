@@ -85,15 +85,17 @@ message TopologyLink {
 }
 
 message TopologyElement {
-	required string factory = 1;
-	required string path = 2;
+	required string path = 1;
+	required string type_name = 2;
+	required bool is_bin = 3;
 }
 
 message TopologyPad {
-	required string pad_path = 1;
-	required string name = 2;
-	required string tpl_name =3;
-	required bool is_ghostpad = 4;
+	required string path = 1;
+	required string tpl_name = 2;
+	required bool is_ghostpad = 3;
+	required int32 direction = 4;
+	required int32 presence = 5;
 }
 
 message Topology {
