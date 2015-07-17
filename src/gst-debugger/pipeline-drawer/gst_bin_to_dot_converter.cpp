@@ -14,28 +14,25 @@ const gchar spaces[] = {
 		"                                "        /* 128 */
 };
 
-std::string GstBinToDotConverter::debug_dump_make_object_name (const Glib::RefPtr<Gst::Object>& obj)
+std::string GstBinToDotConverter::debug_dump_make_object_name (const std::shared_ptr<GraphObject>& obj)
 {
-	gchar* str = g_strcanon (g_strdup_printf ("%s_%p", obj->get_name().c_str(), obj->gobj()),
+	gchar* str = g_strcanon (g_strdup_printf ("%s_%p", obj->get_name().c_str(), obj.get()),
 			G_CSET_A_2_Z G_CSET_a_2_z G_CSET_DIGITS "_", '_');
 	std::string ret(str);
 	g_free (str);
 	return ret;
 }
 
-void GstBinToDotConverter::debug_dump_pad (const Glib::RefPtr<Gst::Pad>& pad, const gchar * color_name, const std::string& element_name, const gint indent)
+void GstBinToDotConverter::debug_dump_pad (const std::shared_ptr<GraphPad>& pad, const gchar * color_name, const std::string& element_name, const gint indent)
 {
-	Glib::RefPtr<Gst::PadTemplate> pad_templ;
 	const gchar *style_name = "filled,solid";
 
-	if ((pad_templ = pad->get_pad_template())) {
-		Gst::PadPresence presence = pad_templ->get_presence();
-		if (presence == Gst::PAD_SOMETIMES) {
-			style_name = "filled,dotted";
-		} else if (presence == Gst::PAD_REQUEST) {
-			style_name = "filled,dashed";
-		}
+	if (pad->get_presence() == Gst::PAD_SOMETIMES) {
+		style_name = "filled,dotted";
+	} else if (pad->get_presence() == Gst::PAD_REQUEST) {
+		style_name = "filled,dashed";
 	}
+
 	const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
 	g_string_append_printf (str,
 			"%s  %s_%s [color=black, fillcolor=\"%s\", label=\"%s\", height=\"0.2\", style=\"%s\"];\n",
@@ -43,47 +40,44 @@ void GstBinToDotConverter::debug_dump_pad (const Glib::RefPtr<Gst::Pad>& pad, co
 			style_name);
 }
 
-
-void GstBinToDotConverter::debug_dump_element_pad (const Glib::RefPtr<Gst::Pad>& pad, const Glib::RefPtr<Gst::Element>& element, const gint indent)
+void GstBinToDotConverter::debug_dump_element_pad (const std::shared_ptr<GraphPad>& pad, const std::shared_ptr<GraphElement>& element, const gint indent)
 {
-	Glib::RefPtr<Gst::Pad> target_pad, tmp_pad;
 	const gchar *color_name;
 
 	Gst::PadDirection dir = pad->get_direction();
-	auto element_name = element ? debug_dump_make_object_name (element) : std::string();
+	std::string element_name = element ? debug_dump_make_object_name (element) : std::string();
 
-	if (pad->is_ghost_pad())
+	if (pad->is_ghost())
 	{
 		color_name = (dir == Gst::PAD_SRC) ? "#ffdddd" :
 				((dir == Gst::PAD_SINK) ? "#ddddff" : "#ffffff");
-	} else {
+	}
+	else
+	{
 		color_name = (dir == Gst::PAD_SRC) ? "#ff7777" :
 				((dir == Gst::PAD_SINK) ? "#7777ff" : "#cccccc");
 	}
 
 	debug_dump_pad (pad, color_name, element_name, indent);
 }
-void GstBinToDotConverter::debug_dump_element_pad_link (const Glib::RefPtr<Gst::Pad>& pad, const Glib::RefPtr<Gst::Element>& element, const gint indent)
+void GstBinToDotConverter::debug_dump_element_pad_link (const std::shared_ptr<GraphPad>& pad, const gint indent)
 {
-	Glib::RefPtr<Gst::Element> peer_element;
-	Glib::RefPtr<Gst::Pad> peer_pad;
+	std::shared_ptr<GraphPad> peer_pad;
 	std::string pad_name, element_name;
 	std::string peer_pad_name, peer_element_name;
 	const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
 
 	if ((peer_pad = pad->get_peer())) {
 		pad_name = debug_dump_make_object_name (pad);
-		if (element) {
-			element_name = debug_dump_make_object_name (element);
-		} else {
-			element_name = "";
+		if (pad->get_parent())
+		{
+			element_name = debug_dump_make_object_name (pad->get_parent());
 		}
+
 		peer_pad_name = debug_dump_make_object_name (peer_pad);
-		if ((peer_element = peer_pad->get_parent_element())) {
-			peer_element_name =
-					debug_dump_make_object_name (peer_element);
-		} else {
-			peer_element_name = "";
+		if (peer_pad->get_parent())
+		{
+			peer_element_name = debug_dump_make_object_name (peer_pad->get_parent());
 		}
 
 		g_string_append_printf (str, "%s%s_%s -> %s_%s\n", spc,
@@ -92,25 +86,21 @@ void GstBinToDotConverter::debug_dump_element_pad_link (const Glib::RefPtr<Gst::
 }
 
 
-void GstBinToDotConverter::debug_dump_element_pads (Gst::Iterator<Gst::Pad> pad_iter, const Glib::RefPtr<Gst::Element>& element, const gint indent)
+void GstBinToDotConverter::debug_dump_element_pads (const std::vector<std::shared_ptr<GraphPad>>& pads, const std::shared_ptr<GraphElement>& element, const gint indent)
 {
-	Glib::RefPtr<Gst::Pad> pad;
-
-	while (pad_iter.next())
+	for (auto pad : pads)
 	{
-		debug_dump_element_pad (*pad_iter, element, indent);
+		debug_dump_element_pad (pad, element, indent);
 	}
 }
 
-void GstBinToDotConverter::debug_dump_element (const Glib::RefPtr<Gst::Bin>& bin, const gint indent)
+void GstBinToDotConverter::debug_dump_element (const std::shared_ptr<GraphElement>& bin, const gint indent)
 {
 	Glib::RefPtr<Gst::Element> element;
 	const gchar *spc = &spaces[MAX (sizeof (spaces) - (1 + indent * 2), 0)];
 
-	Gst::Iterator<Gst::Element> element_iter = bin->iterate_elements();
-	while (element_iter.next())
+	for (auto element : bin->children)
 	{
-		element = *element_iter;
 		std::string element_name = debug_dump_make_object_name (element);
 
 		g_string_append_printf (str, "%ssubgraph cluster_%s {\n", spc,
@@ -123,27 +113,19 @@ void GstBinToDotConverter::debug_dump_element (const Glib::RefPtr<Gst::Bin>& bin
 		g_string_append_printf (str, "%s  label=\"%s\";\n", spc,
 				element->get_name().c_str());
 
-		debug_dump_element_pads (element->iterate_sink_pads(), element, indent);
-		debug_dump_element_pads (element->iterate_src_pads(), element, indent);
+		debug_dump_element_pads (element->pads, element, indent);
 
 		g_string_append_printf (str, "%s  fillcolor=\"#ffffff\";\n", spc);
 		g_string_append_printf (str, "%s}\n\n", spc);
 
-		auto pad_iter = element->iterate_pads();
-		while (pad_iter.next() && pad_iter->is_linked()) {
-			if (pad_iter->get_direction() == Gst::PAD_SRC)
-				debug_dump_element_pad_link (*pad_iter, element, indent);
-			else
-			{
-				auto peer_pad = pad_iter->get_peer();
+		for (auto pad : element->pads)
+		{
+			if (!pad->get_peer())
+				continue;
 
-				if (!peer_pad)
-					continue;
-				if (!peer_pad->is_ghost_pad() && peer_pad->is_proxy_pad())
-				{
-					Glib::RefPtr<Gst::Element> e;
-					debug_dump_element_pad_link (peer_pad, e, indent);
-				}
+			if (pad->get_direction() == Gst::PAD_SRC)
+			{
+				debug_dump_element_pad_link (pad, indent);
 			}
 		}
 	}
@@ -166,39 +148,28 @@ void GstBinToDotConverter::debug_dump_header ()
 			"\n");
 }
 
-void GstBinToDotConverter::debug_dump_top_pads(Gst::Iterator<Gst::Pad> pad_iter, const Glib::RefPtr<Gst::Element>& bin)
+void GstBinToDotConverter::debug_dump_top_pads(const std::shared_ptr<GraphElement>& bin)
 {
-	while (pad_iter.next())
+	for (auto pad : bin->pads)
 	{
-		debug_dump_element_pad (*pad_iter, bin, 1);
-		if (pad_iter->is_proxy_pad())
+		debug_dump_element_pad (pad, bin, 1);
+
+		if (pad->get_direction() == Gst::PAD_SINK)
 		{
-			auto pp = Glib::wrap(GST_PAD (gst_proxy_pad_get_internal(GST_PROXY_PAD (pad_iter->gobj()))), true);
-			debug_dump_element_pad (pp, Glib::RefPtr<Gst::Element>(), 1);
-			if (pad_iter->get_direction() == Gst::PAD_SRC)
-			{
-				g_string_append_printf (str, "_%s -> %s_%s\n", debug_dump_make_object_name(pp).c_str(),
-						debug_dump_make_object_name(bin).c_str(), debug_dump_make_object_name(*pad_iter).c_str());
-			}
-			else
-			{
-				g_string_append_printf (str, "%s_%s -> _%s\n", debug_dump_make_object_name(bin).c_str(),
-						debug_dump_make_object_name(*pad_iter).c_str(), debug_dump_make_object_name(pp).c_str());
-			}
+			debug_dump_element_pad_link (pad, 1);
 		}
 	}
 }
 
-std::string GstBinToDotConverter::to_dot_data (const Glib::RefPtr<Gst::Bin>& bin)
+std::string GstBinToDotConverter::to_dot_data (const std::shared_ptr<GraphElement>& bin)
 {
 	str = g_string_new (NULL);
 
 	debug_dump_header ();
-	Glib::RefPtr<Gst::Pad> pad;
-	debug_dump_top_pads(bin->iterate_src_pads(), bin);
-	debug_dump_top_pads(bin->iterate_sink_pads(), bin);
-	debug_dump_element (bin, 1);
 
+	debug_dump_top_pads(bin);
+
+	debug_dump_element (bin, 1);
 	g_string_append_printf (str, "}\n");
 
 	gchar *tmp = g_string_free (str, FALSE);

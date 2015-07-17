@@ -11,6 +11,8 @@
 
 #include <graphviz-gstdebugger.h>
 
+#include <boost/algorithm/string.hpp>
+
 GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
 : client (client)
 {
@@ -36,9 +38,56 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 	builder->get_widget("refreshGraphButton", refresh_graph_button);
 	refresh_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::refreshGraphButton_clicked_cb));
 
-	root_model = current_model = Gst::Pipeline::create ();
+	current_model = GraphElement::get_root();
 
 	dsp.connect(sigc::mem_fun(*this, &GraphModule::redraw_model));
+}
+#include <iostream>
+static void print_tree(const std::shared_ptr<GraphElement>& e, int spaces)
+{
+	for (auto c : e->children)
+	{
+		for (int i = 0; i < spaces; i++) std::cout << " ";
+		std::cout << c->get_name() << " (";
+		for (auto p : c->pads) std::cout << p->get_name() << " ";
+		std::cout << ")" << std::endl;
+		print_tree(c, spaces+2);
+	}
+}
+
+static std::vector<std::string> split_path(const std::string &path)
+{
+	std::vector<std::string> elements;
+	boost::split(elements, path, [](char c) { return c == '/'; });
+
+	elements.erase(std::remove_if(elements.begin(), elements.end(),
+			[](const std::string &s){return s.empty();}), elements.end());
+	return elements;
+}
+
+static void split_element_pad(const std::string &str, std::string &element, std::string &pad)
+{
+	auto pos = str.find(':');
+	pad = str.substr(pos+1);
+	element = str.substr(0, pos);
+}
+
+static std::shared_ptr<GraphElement> get_from_root(const std::vector<std::string>& elements)
+{
+	auto parent = GraphElement::get_root();
+
+	for (std::size_t i = 0; i < elements.size(); i++)
+	{
+		auto it = std::find_if(parent->children.begin(), parent->children.end(),
+				[&elements, i](std::shared_ptr<GraphElement> e) {return elements[i] == e->get_name();});
+
+		if (it == parent->children.end())
+			return std::shared_ptr<GraphElement>();
+
+		parent = *it;
+	}
+
+	return parent;
 }
 
 void GraphModule::process_frame()
@@ -46,49 +95,53 @@ void GraphModule::process_frame()
 	if (info.info_type() != GstreamerInfo_InfoType_TOPOLOGY)
 		return;
 
-	Glib::RefPtr<Gst::Element> e = Glib::wrap(gst_utils_get_element_from_path(GST_ELEMENT (root_model->gobj()), info.topology().bin_path().c_str()), true);
-	Glib::RefPtr<Gst::Bin> bin = bin.cast_static(e);
-
 	if (info.topology().type() == Topology_ObjectType_ELEMENT)
 	{
-		if (bin->get_element(info.topology().element().name()))
+		auto& e_info = info.topology().element();
+		auto elements = split_path (e_info.path());
+
+		if (elements.empty())
 			return;
 
-		bin->add (Gst::ElementFactory::create_element(info.topology().element().factory(), info.topology().element().name()));
+		auto parent = get_from_root(std::vector<std::string>(elements.begin(), elements.end()-1));
+		if (!parent)
+			return;
+
+		parent->add_child(std::make_shared<GraphElement>(elements.back(), e_info.type_name(), e_info.is_bin()));
+
+		std::cout << std::endl << std::endl << " ============ " << std::endl;
+		print_tree(GraphElement::get_root(), 0);
 	}
 	else if (info.topology().type() == Topology_ObjectType_PAD)
 	{
-		Glib::RefPtr<Gst::Element> element = bin->get_element(info.topology().pad().element());
-		std::string pad_name = info.topology().pad().name();
-		std::string tpl_name = info.topology().pad().tpl_name();
+		auto& pad_tp = info.topology().pad();
+		auto elements = split_path (pad_tp.path());
 
-		if (element->get_static_pad (pad_name)) {
+		if (elements.empty())
 			return;
-		}
 
-		Glib::RefPtr<Gst::Pad> pad = info.topology().pad().is_ghostpad() ?
-				pad.cast_static(Gst::GhostPad::create(element->get_pad_template(tpl_name), pad_name)) :
-			Gst::Pad::create(element->get_pad_template(tpl_name), pad_name);
-		element->add_pad(pad);
+		std::string pad;
+		split_element_pad(elements.back(), elements.back(), pad);
+
+		auto parent = get_from_root(elements);
+		if (!parent)
+			return;
+
+		parent->add_pad(std::make_shared<GraphPad>(pad, pad_tp.tpl_name(),
+				pad_tp.is_ghostpad(), static_cast<Gst::PadDirection>(pad_tp.direction()),
+				static_cast<Gst::PadPresence>(pad_tp.presence())));
 	}
 	else
 	{
-		auto link_info = info.topology().link();
-		int colon_pos = link_info.src_pad_path().find_first_of(':');
-		std::string pad_path = link_info.src_pad_path();
-		std::string parent_name = pad_path.substr(0, colon_pos);
-		std::string obj_name = pad_path.substr(colon_pos + 1, pad_path.length() - colon_pos - 1);
-		auto src_pad = bin->get_element(parent_name)->get_static_pad(obj_name);
-
-		pad_path = link_info.sink_pad_path();
-		colon_pos = pad_path.find_first_of(':');
-		parent_name = pad_path.substr(0, colon_pos);
-		obj_name = pad_path.substr(colon_pos + 1, pad_path.length() - colon_pos-1);
-		auto element = bin->get_element(parent_name);
-		Glib::RefPtr<Gst::Pad> sink_pad =  element ? element->get_static_pad(obj_name) :
-				Glib::wrap((GstPad*)gst_proxy_pad_get_internal (GST_PROXY_PAD(bin->get_static_pad(parent_name)->gobj())), true);
-
-		src_pad->link(sink_pad);
+		auto& link = info.topology().link();
+		auto src_elements = split_path (link.src_pad_path()),
+				sink_elements = split_path (link.sink_pad_path());
+		std::string src_pad, sink_pad;
+		split_element_pad(src_elements.back(), src_elements.back(), src_pad);
+		split_element_pad(sink_elements.back(), sink_elements.back(), sink_pad);
+		auto src = get_from_root(src_elements)->get_pad(src_pad);
+		auto sink = get_from_root(sink_elements)->get_pad(sink_pad);
+		src->set_peer(sink);
 	}
 
 	dsp.emit();
@@ -131,21 +184,25 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 	return FALSE;
 }
 
-void GraphModule::update_model(const Glib::RefPtr<Gst::Bin>& new_model)
+void GraphModule::update_model(const std::shared_ptr<GraphElement>& new_model)
 {
 	current_model = new_model;
 
-	auto tmp_model = current_model;
-	gchar *path = gst_utils_get_object_path (GST_OBJECT (current_model->gobj()));
-	current_path_graph_entry->set_text(path);
-	g_free (path);
+	std::shared_ptr<GraphObject> tmp_model = current_model;
+	std::string model_path;
+	while (tmp_model)
+	{
+		model_path = tmp_model->get_name() + "/" + model_path;
+		tmp_model = tmp_model->get_parent();
+	}
+	current_path_graph_entry->set_text(model_path);
 
 	redraw_model();
 }
 
 void GraphModule::upGraphButton_clicked_cb()
 {
-	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(current_model->get_parent());
+	auto new_model = std::dynamic_pointer_cast<GraphElement>(current_model->get_parent());
 	if (new_model)
 	{
 		update_model(new_model);
@@ -171,10 +228,9 @@ void GraphModule::jumpToGraphButton_clicked_cb()
 		return;
 	}
 
-	auto e = current_model->get_element(selected_element);
-	auto new_model = Glib::RefPtr<Gst::Bin>::cast_dynamic(current_model->get_element(selected_element));
+	auto new_model = current_model->get_child(selected_element);
 
-	if (!new_model)
+	if (!new_model || !new_model->is_bin())
 	{
 		// todo message: selected element is not a bin
 		return;
@@ -199,14 +255,14 @@ void GraphModule::free_graph()
 {
 	if (gvc != nullptr)
 	{
-		if (g != nullptr)
-			gvFreeLayout (gvc, g);
 		gvFreeContext (gvc);
 		gvFinalize (gvc);
+		gvc = nullptr;
 	}
 	if (g != nullptr)
 	{
 		agclose (g);
+		g = nullptr;
 	}
 }
 

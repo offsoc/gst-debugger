@@ -11,24 +11,24 @@
 #include "frame_receiver.h"
 #include "gst_debugger_tcp_client.h"
 #include "gst_bin_to_dot_converter.h"
+#include "graph_elements.h"
 
 #include <gvc.h>
 #include <gvcjob.h>
 
 #include <gtkmm.h>
-#include <gstreamermm.h>
 
 class GraphModule : public FrameReceiver
 {
 protected:
 	std::shared_ptr<GstDebuggerTcpClient> client;
-	Glib::RefPtr<Gst::Bin> current_model;
-	Glib::RefPtr<Gst::Bin> root_model;
 	Glib::Dispatcher dsp;
 	GstBinToDotConverter dot_converter;
 
 	Agraph_t *g = nullptr;
 	GVC_t * gvc = nullptr;
+
+	std::shared_ptr<GraphElement> current_model;
 
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
@@ -39,7 +39,7 @@ protected:
 
 	void process_frame() override;
 
-	void update_model(const Glib::RefPtr<Gst::Bin>& new_model);
+	void update_model(const std::shared_ptr<GraphElement>& new_model);
 
 	void upGraphButton_clicked_cb();
 	void jumpToGraphButton_clicked_cb();
