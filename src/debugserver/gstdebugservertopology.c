@@ -25,12 +25,7 @@
 
 GSList *src_pads;
 
-typedef struct {
-  GstPad *pad;
-  gchar *bin;
-} PadLinkInfo;
-
-static void send_object (GstObject *object, gchar *bin_path, Topology__Action action, GstDebugserverTcp * server)
+static void send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * server)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   Topology topology = TOPOLOGY__INIT;
@@ -41,20 +36,21 @@ static void send_object (GstObject *object, gchar *bin_path, Topology__Action ac
 
   info.info_type = GSTREAMER_INFO__INFO_TYPE__TOPOLOGY;
   topology.action = action;
-  topology.bin_path = g_strdup (bin_path);
 
   if (GST_IS_ELEMENT (object)) {
-    GstElement *element = GST_ELEMENT (object);
-    element_tp.name = g_strdup (GST_ELEMENT_NAME (element));
-    element_tp.factory = g_strdup (gst_plugin_feature_get_name (GST_PLUGIN_FEATURE (gst_element_get_factory (element))));
+    element_tp.type_name = g_strdup (g_type_name (G_OBJECT_TYPE (object)));
+    element_tp.path = gst_utils_get_object_path (object);
+    element_tp.is_bin = GST_IS_BIN (object);
     topology.element = &element_tp;
     topology.type = TOPOLOGY__OBJECT_TYPE__ELEMENT;
   } else if (GST_IS_PAD (object)) {
     GstPad *pad = GST_PAD (object);
-    pad_tp.element = g_strdup (GST_ELEMENT_NAME (GST_PAD_PARENT (pad)));
-    pad_tp.name = GST_PAD_NAME (pad);
-    pad_tp.tpl_name = g_strdup (GST_PAD_TEMPLATE_NAME_TEMPLATE (gst_pad_get_pad_template (pad)));
+    pad_tp.path = gst_utils_get_object_path (object);
+    pad_tp.tpl_name = g_strdup (
+    		gst_pad_get_pad_template (pad) ? GST_PAD_TEMPLATE_NAME_TEMPLATE (gst_pad_get_pad_template (pad)) : "");
     pad_tp.is_ghostpad = GST_IS_GHOST_PAD (pad);
+    pad_tp.presence = gst_pad_get_pad_template (pad) ? GST_PAD_TEMPLATE_PRESENCE (gst_pad_get_pad_template (pad)) : 0;
+    pad_tp.direction = GST_PAD_DIRECTION (pad);
     topology.pad = &pad_tp;
     topology.type = TOPOLOGY__OBJECT_TYPE__PAD;
   } else {
@@ -68,14 +64,13 @@ static void send_object (GstObject *object, gchar *bin_path, Topology__Action ac
   gst_debugserver_tcp_send_packet_to_all_clients (server, buffer, size);
 }
 
-static void send_link (GstPad *src_pad, GstPad *sink_pad, gchar *bin_path, Topology__Action action, GstDebugserverTcp *server)
+static void send_link (GstPad *src_pad, GstPad *sink_pad, Topology__Action action, GstDebugserverTcp *server)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   Topology topology = TOPOLOGY__INIT;
   gint size;
   gchar buffer[1024];
   TopologyLink link_tp = TOPOLOGY_LINK__INIT;
-  gchar tmpbuff[128];
 
   if (!gst_utils_check_pad_has_element_parent (src_pad) || !gst_utils_check_pad_has_element_parent (sink_pad)) {
     return;
@@ -84,12 +79,16 @@ static void send_link (GstPad *src_pad, GstPad *sink_pad, gchar *bin_path, Topol
   info.info_type = GSTREAMER_INFO__INFO_TYPE__TOPOLOGY;
   topology.action = action;
   topology.type = TOPOLOGY__OBJECT_TYPE__LINK;
-  topology.bin_path = g_strdup (bin_path);
 
-  gst_utils_make_pad_path (src_pad, tmpbuff, 128);
-  link_tp.src_pad_path = g_strdup (tmpbuff);
-  gst_utils_make_pad_path (sink_pad, tmpbuff, 128);
-  link_tp.sink_pad_path = g_strdup (tmpbuff);
+  link_tp.src_pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (src_pad));
+  if (GST_IS_PROXY_PAD (sink_pad)) {
+    if (GST_IS_GHOST_PAD (sink_pad)) {
+      send_link (sink_pad, gst_pad_get_peer (GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (sink_pad)))), action, server);
+    } else {
+      sink_pad = GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (sink_pad)));
+    }
+  }
+  link_tp.sink_pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (sink_pad));
   topology.link = &link_tp;
   topology.type = TOPOLOGY__OBJECT_TYPE__LINK;
   info.topology = &topology;
@@ -99,7 +98,7 @@ static void send_link (GstPad *src_pad, GstPad *sink_pad, gchar *bin_path, Topol
   gst_debugserver_tcp_send_packet_to_all_clients (server, buffer, size);
 }
 
-static void send_element_pads (GstElement * element, GString *path, GstDebugserverTcp *server)
+static void send_element_pads (GstElement * element, GstDebugserverTcp *server)
 {
   gboolean done;
   GstPad *pad;
@@ -112,12 +111,9 @@ static void send_element_pads (GstElement * element, GString *path, GstDebugserv
       case GST_ITERATOR_OK:
         pad = g_value_get_object (&item);
         if (gst_pad_get_direction (pad) == GST_PAD_SRC && gst_pad_get_peer (pad)) {
-          PadLinkInfo *nfo = (PadLinkInfo*) g_malloc (sizeof (PadLinkInfo));
-          nfo->pad = pad;
-          nfo->bin = g_strdup (path->str); // todo memleak ?
-          src_pads = g_slist_append (src_pads, nfo);
+          src_pads = g_slist_append (src_pads, pad);
         }
-        send_object (GST_OBJECT (pad), path->str, TOPOLOGY__ACTION__ADD, server);
+        send_object (GST_OBJECT (pad), TOPOLOGY__ACTION__ADD, server);
         g_value_reset (&item);
         break;
       case GST_ITERATOR_RESYNC:
@@ -133,23 +129,16 @@ static void send_element_pads (GstElement * element, GString *path, GstDebugserv
   gst_iterator_free (pad_it);
 }
 
-static void gst_debugserver_topology_send_element (GstElement * element, GString *path, GstDebugserverTcp *server)
+static void gst_debugserver_topology_send_element (GstElement * element, GstDebugserverTcp *server)
 {
   GstIterator *element_it;
   gboolean done;
-  GString *intern_path = g_string_new (path->str);
 
   if (GST_ELEMENT_PARENT (element) != NULL) {
-    send_object (GST_OBJECT (element), path->str, TOPOLOGY__ACTION__ADD, server);
-    if (GST_ELEMENT_PARENT (GST_ELEMENT_PARENT (element)) != NULL) {
-      g_string_append_c (intern_path, '/');
-    }
-    g_string_append (intern_path, GST_ELEMENT_NAME (element));
-  } else {
-    g_string_append_c (intern_path, '/');
+    send_object (GST_OBJECT (element), TOPOLOGY__ACTION__ADD, server);
   }
 
-  send_element_pads (element, path, server);
+  send_element_pads (element, server);
 
   if (!GST_IS_BIN (element)) {
     return;
@@ -162,7 +151,7 @@ static void gst_debugserver_topology_send_element (GstElement * element, GString
     switch (gst_iterator_next (element_it, &item)) {
       case GST_ITERATOR_OK:
         element = g_value_get_object (&item);
-        gst_debugserver_topology_send_element (element, intern_path, server);
+        gst_debugserver_topology_send_element (element, server);
         g_value_reset (&item);
         break;
       case GST_ITERATOR_RESYNC:
@@ -174,26 +163,22 @@ static void gst_debugserver_topology_send_element (GstElement * element, GString
         break;
     }
   }
-  g_string_free (intern_path, TRUE);
   g_value_unset (&item);
   gst_iterator_free (element_it);
 }
 
 void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverTcp * server)
 {
-  GString *path = g_string_new (NULL);
   src_pads = NULL;
-  gst_debugserver_topology_send_element (GST_ELEMENT (bin), path, server);
-  g_string_free (path, TRUE);
+  gst_debugserver_topology_send_element (GST_ELEMENT (bin), server);
   GSList *tmp_list = src_pads;
   while (tmp_list != NULL) {
-    PadLinkInfo *nfo = (PadLinkInfo*)tmp_list->data;
-    GstPad *p = nfo->pad;
-    send_link (p, gst_pad_get_peer (p), nfo->bin, TOPOLOGY__ACTION__ADD, server);
+    GstPad *pad = (GstPad*)tmp_list->data;
+    send_link (pad, gst_pad_get_peer (pad), TOPOLOGY__ACTION__ADD, server);
     tmp_list = tmp_list->next;
   }
 
-  g_slist_free_full (src_pads, g_free);
+  g_slist_free (src_pads);
 }
 
 void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server)
@@ -205,19 +190,12 @@ void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboole
   if (GST_OBJECT_PARENT (parent_element) == NULL) { // todo try to comment it
     return;
   }
-  gchar *path = gst_utils_get_object_path (GST_OBJECT_PARENT (parent_element));
-  send_link (src, sink, path, link ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
-
-  g_free (path);
+  send_link (src, sink, link ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
 }
 
 void gst_debugserver_topology_send_element_in_bin (GstBin * bin, GstElement * element, gboolean add, GstDebugserverTcp * server)
 {
-  gchar *path = gst_utils_get_object_path (GST_OBJECT_CAST (bin));
-
-  send_object (GST_OBJECT_CAST (element), path, add ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
-
-  g_free (path);
+  send_object (GST_OBJECT_CAST (element), add ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
 }
 
 void gst_debugserver_topology_send_pad_in_element (GstElement * element, GstPad * pad, gboolean add, GstDebugserverTcp * server)
@@ -225,10 +203,7 @@ void gst_debugserver_topology_send_pad_in_element (GstElement * element, GstPad 
   if (GST_OBJECT_PARENT (element) == NULL) {
     return;
   }
-  gchar *path = gst_utils_get_object_path (GST_OBJECT_PARENT (element));
 
-  send_object (GST_OBJECT_CAST (pad), path, add ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
-
-  g_free (path);
+  send_object (GST_OBJECT_CAST (pad), add ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
 }
 
