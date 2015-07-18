@@ -13,19 +13,17 @@
 class GstBinToDotConverter
 {
 private:
-	GString * str = nullptr;
+	std::string str;
 
-	std::string debug_dump_make_object_name (const std::shared_ptr<GraphObject>& obj);
-	void debug_dump_pad (const std::shared_ptr<GraphPad>& pad, const gchar * color_name, const std::string& element_name, const gint indent);
-	void debug_dump_element_pad (const std::shared_ptr<GraphPad>& pad, const std::shared_ptr<GraphElement>& element, gint indent);
-	void debug_dump_element_pad_link (const std::shared_ptr<GraphPad>& pad, const gint indent);
-	void debug_dump_element_pads (const std::vector<std::shared_ptr<GraphPad>>& pads, const std::shared_ptr<GraphElement>& element, const gint indent);
-	void debug_dump_element (const std::shared_ptr<GraphElement>& bin, const gint indent);
-	void debug_dump_header ();
-	void debug_dump_top_pads(const std::shared_ptr<GraphElement>& bin);
+	std::string make_object_name(const GraphObjectPtr& obj);
+	void dump_pad(const GraphPadPtr& pad);
+	void dump_pad_link(const GraphPadPtr& pad);
+	void dump_element(const GraphElementPtr& bin);
+	void dump_header();
+	void dump_top_pads(const GraphElementPtr& bin);
 
 public:
-	std::string to_dot_data (const std::shared_ptr<GraphElement>& bin);
+	std::string to_dot_data (const GraphElementPtr& bin);
 };
 
 #endif /* SRC_GST_DEBUGGER_PIPELINE_DRAWER_GST_BIN_TO_DOT_CONVERTER_H_ */

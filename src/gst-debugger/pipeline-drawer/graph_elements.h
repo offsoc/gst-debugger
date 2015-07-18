@@ -20,15 +20,15 @@ class GraphObject : public std::enable_shared_from_this<GraphObject>
 
 public:
 	virtual ~GraphObject() {}
+
 	GraphObject(const std::string &name, const std::shared_ptr<GraphObject>& parent = std::shared_ptr<GraphObject>())
 	 : name(name), parent(parent) {}
 
 	std::string get_name() const { return name; }
+
 	std::shared_ptr<GraphObject> get_parent() const { return parent; }
-	void set_parent(const std::shared_ptr<GraphObject>& parent)
-	{
-		this->parent = parent;
-	}
+
+	void set_parent(const std::shared_ptr<GraphObject>& parent) { this->parent = parent; }
 };
 
 class GraphPad : public GraphObject
@@ -47,15 +47,18 @@ public:
 	{}
 
 	bool is_ghost() const { return is_ghost_pad; }
+
 	Gst::PadDirection get_direction() const { return direction; }
+
 	Gst::PadPresence get_presence() const { return presence; }
+
 	void set_peer(const std::shared_ptr<GraphPad>& peer) { this->peer = peer; }
+
 	std::shared_ptr<GraphPad> get_peer() const { return peer; }
 };
 
 class GraphElement : public GraphObject
 {
-public:
 	std::string type_name;
 	bool is_bin_;
 	std::vector<std::shared_ptr<GraphElement>> children;
@@ -106,6 +109,14 @@ public:
 
 		return (it != children.end()) ? *it : std::shared_ptr<GraphElement>();
 	}
+
+	const std::vector<std::shared_ptr<GraphElement>>& get_children() const { return children; }
+
+	const std::vector<std::shared_ptr<GraphPad>>& get_pads() const { return pads; }
 };
+
+typedef std::shared_ptr<GraphObject> GraphObjectPtr;
+typedef std::shared_ptr<GraphPad> GraphPadPtr;
+typedef std::shared_ptr<GraphElement> GraphElementPtr;
 
 #endif /* SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_ELEMENTS_H_ */

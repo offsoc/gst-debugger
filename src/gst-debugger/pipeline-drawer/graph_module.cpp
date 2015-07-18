@@ -42,18 +42,6 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 
 	dsp.connect(sigc::mem_fun(*this, &GraphModule::redraw_model));
 }
-#include <iostream>
-static void print_tree(const std::shared_ptr<GraphElement>& e, int spaces)
-{
-	for (auto c : e->children)
-	{
-		for (int i = 0; i < spaces; i++) std::cout << " ";
-		std::cout << c->get_name() << " (";
-		for (auto p : c->pads) std::cout << p->get_name() << " ";
-		std::cout << ")" << std::endl;
-		print_tree(c, spaces+2);
-	}
-}
 
 static std::vector<std::string> split_path(const std::string &path)
 {
@@ -78,10 +66,10 @@ static std::shared_ptr<GraphElement> get_from_root(const std::vector<std::string
 
 	for (std::size_t i = 0; i < elements.size(); i++)
 	{
-		auto it = std::find_if(parent->children.begin(), parent->children.end(),
+		auto it = std::find_if(parent->get_children().begin(), parent->get_children().end(),
 				[&elements, i](std::shared_ptr<GraphElement> e) {return elements[i] == e->get_name();});
 
-		if (it == parent->children.end())
+		if (it == parent->get_children().end())
 			return std::shared_ptr<GraphElement>();
 
 		parent = *it;
@@ -108,9 +96,6 @@ void GraphModule::process_frame()
 			return;
 
 		parent->add_child(std::make_shared<GraphElement>(elements.back(), e_info.type_name(), e_info.is_bin()));
-
-		std::cout << std::endl << std::endl << " ============ " << std::endl;
-		print_tree(GraphElement::get_root(), 0);
 	}
 	else if (info.topology().type() == Topology_ObjectType_PAD)
 	{
