@@ -302,7 +302,7 @@ static void
 gst_debugserver_handle_error (GstDebugserverTracer *server, GSocketConnection * client_id, const gchar * message)
 {
   // todo
-  GST_WARNING_OBJECT (server, message);
+  GST_WARNING_OBJECT (server, "%s", message);
 }
 
 static void
@@ -318,7 +318,7 @@ gst_debugserver_property_send_property (GstDebugserverTracer * server, GSocketCo
   GstElementClass *element_class = GST_ELEMENT_GET_CLASS (element);
 
   if (property_name == NULL || strlen (property_name) == 0) {
-    gint num_properties, i;
+    guint num_properties, i;
     GParamSpec **property_specs = g_object_class_list_properties
         (G_OBJECT_GET_CLASS (element), &num_properties);
 
@@ -328,7 +328,7 @@ gst_debugserver_property_send_property (GstDebugserverTracer * server, GSocketCo
 
     g_free (property_specs);
   } else {
-    GParamSpec *param = g_object_class_find_property (element_class, property_name);
+    GParamSpec *param = g_object_class_find_property ((GObjectClass *)element_class, property_name);
     if (param == NULL) {
       gst_debugserver_handle_error (server, client_id, "Cannot find property");
       return;
