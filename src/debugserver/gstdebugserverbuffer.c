@@ -100,5 +100,4 @@ gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf,
 void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf)
 {
   g_hash_table_remove_all (buf->clients);
-  buf->clients = NULL;
 }

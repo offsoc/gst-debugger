@@ -501,12 +501,14 @@ gst_debugserver_tracer_finalize (GObject * obj)
 
   gst_debug_remove_log_function (gst_debugserver_tracer_log_function);
 
+  gst_debugserver_tracer_close_connection (debugserver);
+
   gst_debugserver_message_free (debugserver->msg_handler);
   gst_debugserver_log_free (debugserver->log_handler);
   gst_debugserver_qe_free (debugserver->event_handler);
   gst_debugserver_qe_free (debugserver->query_handler);
-  gst_debugserver_buffer_free (debugserver->buffer_handler);
-  gst_debugserver_tracer_close_connection (debugserver);
+ // gst_debugserver_buffer_free (debugserver->buffer_handler);
+
   g_object_unref (G_OBJECT (debugserver->tcp_server));
 }
 
