@@ -45,6 +45,9 @@ gboolean gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
 gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
   gboolean enable, GstMessageType msg_type, gpointer client_info);
 
+void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
+  gpointer client_info);
+
 GSList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
   GstMessageType msg_type);
 

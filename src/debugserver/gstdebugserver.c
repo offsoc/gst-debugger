@@ -265,7 +265,7 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
     -1, client_id);
   gst_debugserver_buffer_set_watch (debugserver->buffer_handler, FALSE, NULL,
     client_id);
-  //todo message
+  gst_debugserver_message_remove_client (debugserver->msg_handler, client_id);
 }
 
 static void

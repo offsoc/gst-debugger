@@ -73,6 +73,17 @@ gboolean gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
   }
 }
 
+void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
+  gpointer client_info)
+{
+  GList * keys = g_hash_table_get_keys (msg->clients);
+
+  while (keys) {
+    gst_debugserver_message_remove_watch (msg, GPOINTER_TO_INT (keys->data), client_info);
+    keys = keys->next;
+  }
+}
+
 GSList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
   GstMessageType msg_type)
 {
