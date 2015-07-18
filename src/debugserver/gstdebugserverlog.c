@@ -114,3 +114,9 @@ gint gst_debugserver_log_prepare_categories_buffer (gchar * buffer, gint max_siz
   return size;
 
 }
+
+void gst_debugserver_log_clean (GstDebugserverLog * log)
+{
+  g_slist_free (log->clients);
+  log->clients = NULL;
+}

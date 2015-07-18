@@ -53,6 +53,27 @@ enum
   PROP_PORT
 };
 
+#define SAFE_PREPARE_BUFFER_INIT(BUFFER_SIZE) \
+  gchar buff[BUFFER_SIZE]; \
+  gchar *m_buff = buff;
+
+#define SAFE_PREPARE_BUFFER(FUNCTION_CALL, SIZE_VAR) \
+  do { \
+    SIZE_VAR = (FUNCTION_CALL); \
+    if (SIZE_VAR > 1024) { \
+      m_buff = (gchar *) g_malloc (SIZE_VAR); \
+      SIZE_VAR = (FUNCTION_CALL); \
+    } \
+  } while (0)
+
+#define SAFE_PREPARE_BUFFER_CLEAN \
+  do { \
+    if (m_buff != buff) { \
+      g_free (m_buff); \
+    } \
+  } while (0)
+
+
 static void gst_debugserver_tracer_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
 static void gst_debugserver_tracer_get_property (GObject * object,
@@ -68,8 +89,13 @@ gst_debugserver_tracer_log_function (GstDebugCategory * category,
 
 static void gst_debugserver_tracer_close_connection (GstDebugserverTracer * debugserver)
 {
+  gst_debugserver_message_clean (debugserver->msg_handler);
+  gst_debugserver_log_clean (debugserver->log_handler);
+  gst_debugserver_qe_clean (debugserver->event_handler);
+  gst_debugserver_qe_clean (debugserver->query_handler);
+  gst_debugserver_buffer_clean (debugserver->buffer_handler);
+
   gst_debugserver_tcp_stop_server (debugserver->tcp_server);
-  // todo free list
 }
 
 static void
@@ -218,13 +244,12 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
 static void
 gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpointer client_id)
 {
-  gchar buffer[1024];
   gint size;
   GSocketConnection *connection = (GSocketConnection*) client_id;
-
-  size = gst_debugserver_log_prepare_categories_buffer (buffer, 1024);
+  SAFE_PREPARE_BUFFER_INIT (1024);
+  SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_categories_buffer (m_buff, 1024), size);
   gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
-    buffer, size);
+    m_buff, size);
 }
 
 static void
@@ -274,12 +299,20 @@ gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GS
 }
 
 static void
+gst_debugserver_handle_error (GstDebugserverTracer *server, GSocketConnection * client_id, const gchar * message)
+{
+  // todo
+  GST_WARNING_OBJECT (server, message);
+}
+
+static void
 gst_debugserver_property_send_property (GstDebugserverTracer * server, GSocketConnection * client_id, const gchar * element_path, const gchar * property_name)
 {
   GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (server->pipeline), element_path);
 
   if (element == NULL) {
-    return; // todo ?
+    gst_debugserver_handle_error (server, client_id, "Cannot find element");
+    return;
   }
 
   GstElementClass *element_class = GST_ELEMENT_GET_CLASS (element);
@@ -297,7 +330,8 @@ gst_debugserver_property_send_property (GstDebugserverTracer * server, GSocketCo
   } else {
     GParamSpec *param = g_object_class_find_property (element_class, property_name);
     if (param == NULL) {
-      return; // todo
+      gst_debugserver_handle_error (server, client_id, "Cannot find property");
+      return;
     }
     gst_debugserver_property_send_single_property (server, client_id, element_path, element, param);
   }
@@ -401,16 +435,19 @@ gst_debugserver_tracer_log_function (GstDebugCategory * category,
   GSocketConnection *connection;
   GSList *clients = gst_debugserver_log_get_clients (debugserver->log_handler);
   gsize size;
-  gchar buff[1024];
+  SAFE_PREPARE_BUFFER_INIT (1024);
+
+  SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_buffer (category, level, file, function,
+    line, object, message, m_buff, 1024), size);
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_log_prepare_buffer (category, level, file, function,
-      line, object, message, buff, 1024);
     gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
       buff, size);
     clients = clients->next;
   }
+
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static void

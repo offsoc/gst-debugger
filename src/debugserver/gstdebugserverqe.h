@@ -34,9 +34,9 @@ typedef struct _QEWatch {
   GstPad * pad;
 } QEWatch;
 
-typedef struct _GstDebugserverQE {
+struct _GstDebugserverQE {
   GHashTable * watches;
-} GstDebugserverQE;
+};
 
 GstDebugserverQE * gst_debugserver_qe_new (void);
 
@@ -53,6 +53,8 @@ GSList* gst_debugserver_qe_get_clients (GstDebugserverQE * qe, GstPad * pad,
 
 gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffer,
   gint max_size);
+
+void gst_debugserver_qe_clean (GstDebugserverQE * qe);
 
 G_END_DECLS
 

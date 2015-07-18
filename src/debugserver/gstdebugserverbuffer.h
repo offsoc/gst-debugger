@@ -47,6 +47,7 @@ gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf,
 GList* gst_debugserver_buffer_get_clients (GstDebugserverBuffer * buf,
   GstPad * pad);
 
+void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf);
 
 G_END_DECLS
 

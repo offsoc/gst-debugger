@@ -185,3 +185,8 @@ gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * evt, gboolean enable,
     return TRUE;
   }
 }
+
+void gst_debugserver_qe_clean (GstDebugserverQE * qe)
+{
+  g_hash_table_remove_all (qe->watches);
+}

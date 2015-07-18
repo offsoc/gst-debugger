@@ -54,6 +54,8 @@ gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
 gint gst_debugserver_message_prepare_confirmation_buffer (MessageWatch *msg_watch,
   gchar * buffer, gint max_size);
 
+void gst_debugserver_message_clean (GstDebugserverMessage * msg);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGSERVER_MESSAGE_H__ */

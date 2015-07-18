@@ -116,3 +116,8 @@ gint gst_debugserver_message_prepare_confirmation_buffer (MessageWatch *watch,
 
   return size;
 }
+
+void gst_debugserver_message_clean (GstDebugserverMessage * msg)
+{
+  g_hash_table_remove_all (msg->clients);
+}

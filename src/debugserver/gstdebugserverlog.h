@@ -46,6 +46,8 @@ void gst_debugserver_log_set_watch (GstDebugserverLog * log, gboolean enable,
 
 gint gst_debugserver_log_prepare_categories_buffer (gchar * buffer, gint max_size);
 
+void gst_debugserver_log_clean (GstDebugserverLog * log);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGSERVER_LOG_H__ */
