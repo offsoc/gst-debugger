@@ -37,17 +37,17 @@ void gst_debugserver_buffer_free (GstDebugserverBuffer * buf)
 gboolean gst_debugserver_buffer_add_watch (GstDebugserverBuffer * buf,
   GstPad * pad, gpointer client_info)
 {
-  GList *listeners =
-      (GList *) g_hash_table_lookup (buf->clients, pad);
+  GSList *listeners =
+      (GSList *) g_hash_table_lookup (buf->clients, pad);
 
   if (listeners == NULL) {
-    listeners = g_list_append (listeners, client_info);
+    listeners = g_slist_append (listeners, client_info);
     g_hash_table_insert (buf->clients, pad, listeners);
     return TRUE;
   }
 
-  if (g_list_find (listeners, client_info) == NULL) {
-    listeners = g_list_append (listeners, client_info);
+  if (g_slist_find (listeners, client_info) == NULL) {
+    listeners = g_slist_append (listeners, client_info);
     g_hash_table_replace (buf->clients, pad,
         listeners);
     return TRUE;
@@ -59,28 +59,28 @@ gboolean gst_debugserver_buffer_add_watch (GstDebugserverBuffer * buf,
 gboolean gst_debugserver_buffer_remove_watch (GstDebugserverBuffer * buf,
   GstPad * pad, gpointer client_info)
 {
-  GList *listeners =
-      (GList *) g_hash_table_lookup (buf->clients, pad);
+  GSList *listeners =
+      (GSList *) g_hash_table_lookup (buf->clients, pad);
 
-  if (g_list_find (listeners, client_info) == NULL) {
+  if (g_slist_find (listeners, client_info) == NULL) {
     return FALSE;
   } else {
-    listeners = g_list_remove (listeners, client_info);
+    listeners = g_slist_remove (listeners, client_info);
     g_hash_table_replace (buf->clients, pad, listeners);
     return TRUE;
   }
 }
 
-GList* gst_debugserver_buffer_get_clients (GstDebugserverBuffer * buf,
+GSList* gst_debugserver_buffer_get_clients (GstDebugserverBuffer * buf,
   GstPad * pad)
 {
-  GList *base = (GList *) g_hash_table_lookup (buf->clients, pad);
-  GList *clients = g_list_copy (base);
-  base = (GList *) g_hash_table_lookup (buf->clients, NULL);
+  GSList *base = (GSList *) g_hash_table_lookup (buf->clients, pad);
+  GSList *clients = g_slist_copy (base);
+  base = (GSList *) g_hash_table_lookup (buf->clients, NULL);
 
-  for (; base != NULL; base = g_list_next (base)) {
-    if (g_list_find (clients, base->data) == NULL) {
-      clients = g_list_append(clients, base->data);
+  for (; base != NULL; base = g_slist_next (base)) {
+    if (g_slist_find (clients, base->data) == NULL) {
+      clients = g_slist_append(clients, base->data);
     }
   }
 

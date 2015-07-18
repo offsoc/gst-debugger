@@ -39,17 +39,17 @@ void gst_debugserver_message_free (GstDebugserverMessage * msg)
 gboolean gst_debugserver_message_add_watch (GstDebugserverMessage * msg,
   GstMessageType msg_type, gpointer client_info)
 {
-  GList *listeners =
-      (GList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
+  GSList *listeners =
+      (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
 
   if (listeners == NULL) {
-    listeners = g_list_append (listeners, client_info);
+    listeners = g_slist_append (listeners, client_info);
     g_hash_table_insert (msg->clients, GINT_TO_POINTER (msg_type), listeners);
     return TRUE;
   }
 
-  if (g_list_find (listeners, client_info) == NULL) {
-    listeners = g_list_append (listeners, client_info);
+  if (g_slist_find (listeners, client_info) == NULL) {
+    listeners = g_slist_append (listeners, client_info);
     g_hash_table_replace (msg->clients, GINT_TO_POINTER (msg_type),
         listeners);
     return TRUE;
@@ -61,28 +61,28 @@ gboolean gst_debugserver_message_add_watch (GstDebugserverMessage * msg,
 gboolean gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
   GstMessageType msg_type, gpointer client_info)
 {
-  GList *listeners =
-      (GList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
+  GSList *listeners =
+      (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
 
-  if (g_list_find (listeners, client_info) == NULL) {
+  if (g_slist_find (listeners, client_info) == NULL) {
     return FALSE;
   } else {
-    listeners = g_list_remove (listeners, client_info);
+    listeners = g_slist_remove (listeners, client_info);
     g_hash_table_replace (msg->clients, GINT_TO_POINTER (msg_type), listeners);
     return TRUE;
   }
 }
 
-GList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
+GSList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
   GstMessageType msg_type)
 {
-  GList *base = (GList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
-  GList *clients = g_list_copy (base);
-  base = (GList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER(GST_MESSAGE_ANY));
+  GSList *base = (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
+  GSList *clients = g_slist_copy (base);
+  base = (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER(GST_MESSAGE_ANY));
 
-  for (; base != NULL; base = g_list_next (base)) {
-    if (g_list_find (clients, base->data) == NULL) {
-      clients = g_list_append(clients, base->data);
+  for (; base != NULL; base = g_slist_next (base)) {
+    if (g_slist_find (clients, base->data) == NULL) {
+      clients = g_slist_append(clients, base->data);
     }
   }
 

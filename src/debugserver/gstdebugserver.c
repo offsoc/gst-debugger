@@ -103,9 +103,9 @@ message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
   GSocketConnection *connection;
-  GList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
+  GSList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
     GST_MESSAGE_TYPE (message));
-  GList *cl_tmp = clients;
+  GSList *cl_tmp = clients;
   gsize size;
   gchar buff[1024];
 
@@ -117,7 +117,7 @@ message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
     clients = clients->next;
   }
 
-  g_list_free (cl_tmp);
+  g_slist_free (cl_tmp);
 }
 
 static void
@@ -225,7 +225,7 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
   GSocketConnection *connection;
-  GList *clients = gst_debugserver_buffer_get_clients (debugserver->buffer_handler,
+  GSList *clients = gst_debugserver_buffer_get_clients (debugserver->buffer_handler,
     pad);
   gsize size;
   gchar buff[1024];
@@ -238,7 +238,7 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
     clients = clients->next;
   }
 
-  g_list_free (clients);
+  g_slist_free (clients);
 }
 
 static void
