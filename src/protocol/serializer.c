@@ -65,12 +65,14 @@ gint gst_message_serialize(GstMessage * message, gchar * buffer, gint size)
 {
   gint total_size;
   gchar *msg_str;
-  gint str_len;
+  gint msg_str_len;
   const GstStructure *m_structure = gst_message_get_structure (message);
+  gchar *src_name = GST_MESSAGE_SRC_NAME (message);
+  gint src_name_len = strlen (src_name) + 1;
 
   msg_str = gst_structure_to_string (m_structure);
-  str_len = strlen (msg_str)+1;
-  total_size = str_len + 16;
+  msg_str_len = strlen (msg_str)+1;
+  total_size = msg_str_len + 16 + src_name_len;
 
   if (total_size > size) {
     goto finalize;
@@ -78,12 +80,12 @@ gint gst_message_serialize(GstMessage * message, gchar * buffer, gint size)
 
   gst_debugger_protocol_utils_serialize_integer64 (message->type, buffer, 4);
   gst_debugger_protocol_utils_serialize_uinteger64(message->timestamp, buffer+4, 8);
-  // todo object path (GstMessage::src)
   gst_debugger_protocol_utils_serialize_uinteger64(message->seqnum, buffer+12, 4);
 
-  memcpy (buffer + 16, msg_str, str_len);
+  memcpy (buffer + 16, msg_str, msg_str_len);
+  memcpy (buffer + 16 + msg_str_len, src_name, src_name_len);
 
-  finalize:
+finalize:
   g_free (msg_str);
   return total_size;
 }
