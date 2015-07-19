@@ -71,9 +71,14 @@ gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
   info.info_type = GSTREAMER_INFO__INFO_TYPE__LOG;
   info.log = &log;
   size = gstreamer_info__get_packed_size (&info);
-  assert(size <= max_size);
+
+  if (max_size > size) {
+    goto finalize;
+  }
+
   gstreamer_info__pack (&info, (guint8*)buffer);
 
+finalize:
   return size;
 }
 
@@ -101,14 +106,16 @@ gint gst_debugserver_log_prepare_categories_buffer (gchar * buffer, gint max_siz
     tmp = g_slist_next (tmp);
   }
 
-  category_list.list = g_strdup (categories->str);
+  category_list.list = g_string_free (categories, FALSE);
   info.info_type = GSTREAMER_INFO__INFO_TYPE__DEBUG_CATEGORIES;
   info.debug_categories = &category_list;
   size = gstreamer_info__get_packed_size (&info);
-  assert(size <= max_size);
+  if (size > max_size) {
+    goto finalize;
+  }
   gstreamer_info__pack (&info, (guint8*)buffer);
 
-  g_string_free (categories, TRUE);
+finalize:
   g_slist_free (all_categories);
 
   return size;
