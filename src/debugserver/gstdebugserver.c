@@ -141,11 +141,8 @@ do_bin_add_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element
 }
 
 static void
-do_bin_remove_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element, gboolean result)
+do_bin_remove_pre (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element)
 {
-  if (result == FALSE) {
-    return;
-  }
   gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
 }
 
@@ -224,7 +221,7 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
 
   SAFE_PREPARE_BUFFER (
     gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), m_buff, max_m_buff_size), size);
-puts ("prepare ok");
+
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
     gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
@@ -243,7 +240,7 @@ gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpoi
   gint size;
   GSocketConnection *connection = (GSocketConnection*) client_id;
   SAFE_PREPARE_BUFFER_INIT (1024);
-  SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_categories_buffer (m_buff, 1024), size);
+  SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_categories_buffer (m_buff, max_m_buff_size), size);
   gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
     m_buff, size);
   SAFE_PREPARE_BUFFER_CLEAN;
@@ -296,7 +293,7 @@ gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GS
 }
 
 static gint
-gst_debugserver_prepare_error (gchar * message, gchar * buffer, gint max_size)
+gst_debugserver_prepare_error (const gchar * message, gchar * buffer, gint max_size)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   ServerError s_err = SERVER_ERROR__INIT;
@@ -504,18 +501,18 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
       G_CALLBACK (do_pad_query_pre));
   gst_tracing_register_hook (tracer, "pad-push-pre",
       G_CALLBACK (do_pad_push_pre));
- /* gst_tracing_register_hook (tracer, "element-add-pad",
+  gst_tracing_register_hook (tracer, "element-add-pad",
       G_CALLBACK (do_element_add_pad));
   gst_tracing_register_hook (tracer, "element-remove-pad",
       G_CALLBACK (do_element_remove_pad));
   gst_tracing_register_hook (tracer, "bin-add-post",
       G_CALLBACK (do_bin_add_post));
-  gst_tracing_register_hook (tracer, "bin-remove-post",
-      G_CALLBACK (do_bin_remove_post));
+  gst_tracing_register_hook (tracer, "bin-remove-pre",
+      G_CALLBACK (do_bin_remove_pre));
   gst_tracing_register_hook (tracer, "pad-link-post",
       G_CALLBACK (do_pad_link_post));
   gst_tracing_register_hook (tracer, "pad-unlink-post",
-      G_CALLBACK (do_pad_unlink_post));*/
+      G_CALLBACK (do_pad_unlink_post));
 
   gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
 

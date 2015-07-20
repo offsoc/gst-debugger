@@ -80,14 +80,22 @@ static void send_link (GstPad *src_pad, GstPad *sink_pad, Topology__Action actio
   topology.action = action;
   topology.type = TOPOLOGY__OBJECT_TYPE__LINK;
 
+  if (GST_IS_PROXY_PAD (src_pad) && !GST_IS_GHOST_PAD (src_pad)) {
+    return;
+  }
+
   link_tp.src_pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (src_pad));
   if (GST_IS_PROXY_PAD (sink_pad)) {
     if (GST_IS_GHOST_PAD (sink_pad)) {
-      send_link (sink_pad, gst_pad_get_peer (GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (sink_pad)))), action, server);
+      GstPad *internal = gst_pad_get_peer (GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (sink_pad))));
+      if (internal != NULL) {
+        send_link (sink_pad, internal, action, server);
+      }
     } else {
       sink_pad = GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (sink_pad)));
     }
   }
+
   link_tp.sink_pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (sink_pad));
   topology.link = &link_tp;
   topology.type = TOPOLOGY__OBJECT_TYPE__LINK;
@@ -183,8 +191,6 @@ void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverT
 
 void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server)
 {
-  GstElement *parent_element = GST_PAD_PARENT (src);
-
   send_link (src, sink, link ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
 }
 
