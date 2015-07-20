@@ -116,6 +116,10 @@ message Topology {
 	optional TopologyLink link = 5;
 }
 
+message ServerError {
+	required string message = 1;
+}
+
 message GstreamerInfo {
 	enum InfoType {
 		BUFFER = 0;
@@ -128,6 +132,7 @@ message GstreamerInfo {
 		PAD_WATCH_CONFIRMATION = 7;
 		MESSAGE_CONFIRMATION = 8;
 		PROPERTY = 9;
+		SERVER_ERROR = 10;
 	}
 	
 	required InfoType info_type = 1;
@@ -139,4 +144,5 @@ message GstreamerInfo {
 	optional MessageWatch bus_msg_confirmation = 6;
 	optional Topology topology = 7;
 	optional Property property = 8;
+	optional ServerError server_error = 9;
 }
