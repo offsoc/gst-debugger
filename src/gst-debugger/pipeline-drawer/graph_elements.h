@@ -8,9 +8,12 @@
 #ifndef SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_ELEMENTS_H_
 #define SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_ELEMENTS_H_
 
+#include "gvalue-converter/gvalue_base.h"
+
 #include <gstreamermm.h>
 
 #include <memory>
+#include <map>
 #include <string>
 
 class GraphObject : public std::enable_shared_from_this<GraphObject>
@@ -63,8 +66,10 @@ class GraphElement : public GraphObject
 	bool is_bin_;
 	std::vector<std::shared_ptr<GraphElement>> children;
 	std::vector<std::shared_ptr<GraphPad>> pads;
+	std::map<std::string, std::shared_ptr<GValueBase>> properties;
 
 public:
+
 	GraphElement(const std::string &name, const std::string &type_name, bool is_bin)
 	 : GraphObject(name), type_name(type_name), is_bin_(is_bin)
 	{}
@@ -113,6 +118,11 @@ public:
 	const std::vector<std::shared_ptr<GraphElement>>& get_children() const { return children; }
 
 	const std::vector<std::shared_ptr<GraphPad>>& get_pads() const { return pads; }
+
+	void add_property(const std::string &name, const std::shared_ptr<GValueBase>& gvalue)
+	{
+		properties[name] = gvalue;
+	}
 };
 
 typedef std::shared_ptr<GraphObject> GraphObjectPtr;

@@ -83,6 +83,23 @@ static std::shared_ptr<GraphElement> get_from_root(const std::vector<std::string
 
 void GraphModule::process_frame()
 {
+	if (info.info_type() == GstreamerInfo_InfoType_PROPERTY)
+	{
+		auto& p_info = info.property();
+		GValue value = {0};
+		g_value_init (&value, p_info.type());
+		gst_value_deserialize(&value, p_info.property_value().c_str());
+
+		std::shared_ptr<GValueBase> value_base(GValueBase::build_gvalue(&value));
+
+		auto element = get_from_root(split_path (p_info.element_path()));
+
+		if (element)
+		{
+			element->add_property(p_info.property_name(), value_base);
+		}
+	}
+
 	if (info.info_type() != GstreamerInfo_InfoType_TOPOLOGY)
 		return;
 
