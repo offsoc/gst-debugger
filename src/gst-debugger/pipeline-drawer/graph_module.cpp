@@ -23,7 +23,8 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 			Gdk::POINTER_MOTION_MASK | Gdk::BUTTON_MOTION_MASK |
 			Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
 			Gdk::ENTER_NOTIFY_MASK | Gdk::LEAVE_NOTIFY_MASK);
-
+	graph_drawing_area->signal_motion_notify_event().connect(sigc::mem_fun(*this, &GraphModule::graphDrawingArea_motion_notify_cb));
+	graph_drawing_area->signal_button_release_event().connect(sigc::mem_fun(*this, &GraphModule::graphDrawingArea_button_release_cb));
 	set_drawing_area(GTK_WIDGET (graph_drawing_area->gobj()));
 
 	builder->get_widget("selectedElementInGraphEntry", selected_element_entry);
@@ -37,6 +38,8 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 
 	builder->get_widget("refreshGraphButton", refresh_graph_button);
 	refresh_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::refreshGraphButton_clicked_cb));
+
+	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
 
 	current_model = GraphElement::get_root();
 
@@ -149,7 +152,10 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 		case AGRAPH:
 			g_info = (Agraphinfo_t*)(((Agobj_t*)(job->selected_obj))->data);
 			if (g_info->label != NULL)
+			{
 				selected_element_entry->set_text(g_info->label->text);
+				update_full_path();
+			}
 			break;
 		case AGNODE:
 			n_info = (Agnodeinfo_t*)(((Agobj_t*)(job->selected_obj))->data);
@@ -224,6 +230,31 @@ void GraphModule::jumpToGraphButton_clicked_cb()
 	update_model(new_model);
 }
 
+bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)
+{
+	GVJ_t *job;
+
+	job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()),"job");
+	job->pointer.x = event->x;
+	job->pointer.y = event->y;
+	graph_drawing_area->queue_draw();
+
+	return false;
+}
+
+bool GraphModule::graphDrawingArea_button_release_cb(GdkEventButton *event)
+{
+	GVJ_t *job;
+	pointf pointer;
+
+	job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()),"job");
+	pointer.x = event->x;
+	pointer.y = event->y;
+	(job->callbacks->button_release)(job, event->button, pointer);
+
+	return false;
+}
+
 bool GraphModule::graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context)
 {
 	GVJ_t *job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()), "job");
@@ -267,4 +298,10 @@ void GraphModule::refreshGraphButton_clicked_cb()
 	Command cmd;
 	cmd.set_command_type(Command_CommandType_TOPOLOGY);
 	client->send_command(cmd);
+}
+
+void GraphModule::update_full_path()
+{
+	element_path_property_entry->set_text(
+			current_path_graph_entry->get_text() + selected_element_entry->get_text());
 }

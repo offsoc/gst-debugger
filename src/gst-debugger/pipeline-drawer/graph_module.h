@@ -36,15 +36,19 @@ protected:
 	Gtk::Entry *selected_element_entry;
 	Gtk::Entry *current_path_graph_entry;
 	Gtk::Button *refresh_graph_button;
+	Gtk::Entry *element_path_property_entry;
 
 	void process_frame() override;
 
+	void update_full_path();
 	void update_model(const std::shared_ptr<GraphElement>& new_model);
 
 	void upGraphButton_clicked_cb();
 	void jumpToGraphButton_clicked_cb();
 	bool graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context);
 	bool graphDrawingArea_button_press_event_cb(GdkEventButton* event);
+	bool graphDrawingArea_motion_notify_cb(GdkEventMotion *event);
+	bool graphDrawingArea_button_release_cb(GdkEventButton *event);
 	void refreshGraphButton_clicked_cb();
 
 public:
