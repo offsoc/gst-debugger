@@ -33,6 +33,7 @@
 #include "gstdebugserver.h"
 #include "gstdebugservertopology.h"
 #include "utils/gst-utils.h"
+#include "utils/buffer-prepare-utils.h"
 #include "protocol/serializer.h"
 
 #include <string.h>
@@ -52,27 +53,6 @@ enum
   PROP_0,
   PROP_PORT
 };
-
-#define SAFE_PREPARE_BUFFER_INIT(BUFFER_SIZE) \
-  gchar buff[BUFFER_SIZE]; \
-  gchar *m_buff = buff;
-
-#define SAFE_PREPARE_BUFFER(FUNCTION_CALL, SIZE_VAR) \
-  do { \
-    SIZE_VAR = (FUNCTION_CALL); \
-    if (SIZE_VAR > 1024) { \
-      m_buff = (gchar *) g_malloc (SIZE_VAR); \
-      SIZE_VAR = (FUNCTION_CALL); \
-    } \
-  } while (0)
-
-#define SAFE_PREPARE_BUFFER_CLEAN \
-  do { \
-    if (m_buff != buff) { \
-      g_free (m_buff); \
-    } \
-  } while (0)
-
 
 static void gst_debugserver_tracer_set_property (GObject * object,
     guint prop_id, const GValue * value, GParamSpec * pspec);
@@ -190,15 +170,23 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
   GSList *clients = gst_debugserver_qe_get_clients (debugserver->event_handler,
     pad, event->type);
   gsize size;
-  gchar buff[1024];
+  SAFE_PREPARE_BUFFER_INIT (1024);
+
+  if (clients == NULL) {
+    return;
+  }
+
+  SAFE_PREPARE_BUFFER (
+        gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (event), m_buff, max_m_buff_size), size);
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (event), buff, 1024);
     gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
-      buff, size);
+      m_buff, size);
     clients = clients->next;
   }
+
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static void
@@ -228,15 +216,23 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
   GSList *clients = gst_debugserver_buffer_get_clients (debugserver->buffer_handler,
     pad);
   gsize size;
-  gchar buff[1024];
+  SAFE_PREPARE_BUFFER_INIT (1024);
 
+  if (clients == NULL) {
+    return;
+  }
+
+  SAFE_PREPARE_BUFFER (
+    gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), m_buff, max_m_buff_size), size);
+puts ("prepare ok");
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), buff, 1024);
     gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
-      buff, size);
+      m_buff, size);
     clients = clients->next;
   }
+
+  SAFE_PREPARE_BUFFER_CLEAN;
 
   g_slist_free (clients);
 }
@@ -250,6 +246,7 @@ gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpoi
   SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_categories_buffer (m_buff, 1024), size);
   gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
     m_buff, size);
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static void
@@ -437,13 +434,17 @@ gst_debugserver_tracer_log_function (GstDebugCategory * category,
   gsize size;
   SAFE_PREPARE_BUFFER_INIT (1024);
 
+  if (clients == NULL) {
+    return;
+  }
+
   SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_buffer (category, level, file, function,
-    line, object, message, m_buff, 1024), size);
+    line, object, message, m_buff, max_m_buff_size), size);
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
     gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
-      buff, size);
+      m_buff, size);
     clients = clients->next;
   }
 

@@ -17,11 +17,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "gstdebugserverqe.h"
+
 #include "protocol/serializer.h"
 #include "protocol/gstdebugger.pb-c.h"
 
+#include "utils/buffer-prepare-utils.h"
+
 #include <string.h>
-#include "gstdebugserverqe.h"
 
 GstDebugserverQE * gst_debugserver_qe_new (void)
 {
@@ -64,23 +67,28 @@ gint gst_debugserver_qeb_prepare_confirmation_buffer (gchar * pad_path, gint qe_
   return size;
 }
 
+// todo improve performance (when size > max_size)
 gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffer, gint max_size)
 {
-  gchar buff[1024];
-  // todo verify max_size
   gint size;
+  SAFE_PREPARE_BUFFER_INIT (1024);
+
   GstreamerInfo__InfoType info_type;
   if (GST_IS_QUERY (miniobj)) {
-    size = gst_query_serialize (GST_QUERY (miniobj), buff, max_size);
+    SAFE_PREPARE_BUFFER (
+      gst_query_serialize (GST_QUERY (miniobj), m_buff, max_m_buff_size), size);
     info_type = GSTREAMER_INFO__INFO_TYPE__QUERY;
   } else if (GST_IS_EVENT (miniobj)) {
-    size = gst_event_serialize (GST_EVENT (miniobj), buff, max_size);
+    SAFE_PREPARE_BUFFER (
+      gst_event_serialize (GST_EVENT (miniobj), m_buff, max_m_buff_size), size);
     info_type = GSTREAMER_INFO__INFO_TYPE__EVENT;
   } else if (GST_IS_MESSAGE (miniobj)) {
-    size = gst_message_serialize (GST_MESSAGE (miniobj), buff, max_size);
+    SAFE_PREPARE_BUFFER (
+      gst_message_serialize (GST_MESSAGE (miniobj), m_buff, max_m_buff_size), size);
     info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE;
   } else if (GST_IS_BUFFER (miniobj)) {
-    size = gst_buffer_serialize (GST_BUFFER (miniobj), buff, max_size);
+    SAFE_PREPARE_BUFFER (
+      gst_buffer_serialize (GST_BUFFER (miniobj), m_buff, max_m_buff_size), size);
     info_type = GSTREAMER_INFO__INFO_TYPE__BUFFER;
   }
 
@@ -88,12 +96,19 @@ gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffe
   GstreamerQEBM evt = GSTREAMER_QEBM__INIT;
   evt.payload.len = size;
   evt.payload.data = (uint8_t*)g_malloc (size);
-  memcpy (evt.payload.data, buff, size);
+  memcpy (evt.payload.data, m_buff, size);
   info.info_type = info_type;
   info.qebm = &evt;
   size = gstreamer_info__get_packed_size (&info);
-  assert(size <= max_size);
+
+  if (size > max_size) {
+    goto finalize;
+  }
+
   gstreamer_info__pack (&info, (guint8*)buffer);
+
+finalize:
+  SAFE_PREPARE_BUFFER_CLEAN;
   return size;
 }
 
