@@ -119,7 +119,7 @@ do_pad_unlink_post (GstTracer * self, guint64 ts, GstPad * src, GstPad * sink, g
   if (result == FALSE) {
     return;
   }
-  gst_debugserver_topology_send_pad_link (src, sink, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+  gst_debugserver_topology_send_pad_link (src, sink, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
@@ -128,7 +128,7 @@ do_pad_link_post (GstTracer * self, guint64 ts, GstPad * src, GstPad * sink, Gst
   if (result == FALSE) {
     return;
   }
-  gst_debugserver_topology_send_pad_link (src, sink, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+  gst_debugserver_topology_send_pad_link (src, sink, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
@@ -137,25 +137,25 @@ do_bin_add_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element
   if (result == FALSE) {
     return;
   }
-  gst_debugserver_topology_send_element_in_bin (bin, element, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+  gst_debugserver_topology_send_element_in_bin (bin, element, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
 do_bin_remove_pre (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element)
 {
-  gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+  gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
 do_element_add_pad (GstTracer * self, gint64 ts, GstElement * element, GstPad * pad)
 {
-  gst_debugserver_topology_send_pad_in_element (element, pad, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+  gst_debugserver_topology_send_pad_in_element (element, pad, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
 do_element_remove_pad (GstTracer * self, gint64 ts, GstElement * element, GstPad * pad)
 {
-  gst_debugserver_topology_send_pad_in_element (element, pad, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server);
+  gst_debugserver_topology_send_pad_in_element (element, pad, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 
@@ -260,6 +260,15 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
   gst_debugserver_buffer_set_watch (debugserver->buffer_handler, FALSE, NULL,
     client_id);
   gst_debugserver_message_remove_client (debugserver->msg_handler, client_id);
+}
+
+static void
+gst_debugserver_tracer_client_connected (gpointer client_id, gpointer user_data)
+{
+  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
+
+  gst_debugserver_topology_send_entire_topology (
+    GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
 }
 
 static void
@@ -427,7 +436,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
       gst_debugserver_tracer_send_categories (debugserver, client_id);
       break;
   case COMMAND__COMMAND_TYPE__TOPOLOGY:
-    gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server);
+    gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
     break;
   case COMMAND__COMMAND_TYPE__PROPERTY:
     gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
@@ -520,7 +529,8 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   self->tcp_server->process_command = gst_debugserver_tracer_process_command;
   self->tcp_server->process_command_user_data = self;
   self->tcp_server->client_disconnected = gst_debugserver_tracer_client_disconnected;
-  self->tcp_server->client_disconnected_user_data = self;
+  self->tcp_server->parent = self;
+  self->tcp_server->client_connected = gst_debugserver_tracer_client_connected;
   gst_debugserver_tcp_start_server (self->tcp_server, self->port);
 }
 

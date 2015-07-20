@@ -52,7 +52,8 @@ gst_debugserver_tcp_init (GstDebugserverTcp * self)
   self->process_command = NULL;
   self->process_command_user_data = NULL;
   self->client_disconnected = NULL;
-  self->client_disconnected_user_data = NULL;
+  self->parent = NULL;
+  self->client_connected = NULL;
 }
 
 GstDebugserverTcp * gst_debugserver_tcp_new (void)
@@ -88,6 +89,10 @@ gst_debugserver_tcp_process_client (gpointer user_data)
 
   GST_DEBUG_OBJECT (tcp, "Received connection from client!\n");
 
+  if (tcp->client_connected != NULL) {
+    tcp->client_connected (connection, tcp->parent);
+  }
+
   while ((size = gst_debugger_protocol_utils_read_header (istream)) > 0) {
      assert (size <= 1024);
      GST_DEBUG_OBJECT (tcp, "Received message of size: %d\n", size);
@@ -107,7 +112,7 @@ gst_debugserver_tcp_process_client (gpointer user_data)
    }
 
   if (tcp->client_disconnected)
-    tcp->client_disconnected (connection, tcp->client_disconnected_user_data);
+    tcp->client_disconnected (connection, tcp->parent);
 
   TcpClient *c = gst_debugserver_tcp_find_client (tcp, connection);
   tcp->clients = g_slist_remove (tcp->clients, c);
@@ -191,6 +196,10 @@ gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnec
   gchar size_buffer[4];
   GSocket *socket;
   TcpClient *client;
+
+  if (connection == NULL) {
+    return gst_debugserver_tcp_send_packet_to_all_clients (tcp, buffer, size);
+  }
 
   client = gst_debugserver_tcp_find_client (tcp, connection);
   assert (client != NULL);

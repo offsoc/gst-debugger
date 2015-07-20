@@ -44,7 +44,7 @@ typedef struct _GstDebugserverTcpClass GstDebugserverTcpClass;
 typedef void (*GstDebugserverTcpProcessCommandFunction)
     (Command * command, gpointer client_id, gpointer user_data);
 
-typedef void (*GstDebugserverTcpClientDisconnected)
+typedef void (*GstDebugserverTcpClientChanged)
     (gpointer client_id, gpointer user_data);
 
 typedef struct _TcpClient {
@@ -58,8 +58,9 @@ struct _GstDebugserverTcp {
   GstDebugserverTcpProcessCommandFunction process_command;
   gpointer process_command_user_data;
 
-  GstDebugserverTcpClientDisconnected client_disconnected;
-  gpointer client_disconnected_user_data;
+  GstDebugserverTcpClientChanged client_disconnected;
+  GstDebugserverTcpClientChanged client_connected;
+  gpointer parent;
 
   /*< private >*/
   GSocketService * service;

@@ -24,12 +24,12 @@
 
 #include <gst/gst.h>
 
-void gst_debugserver_topology_send_entire_topology (GstBin *root, GstDebugserverTcp * server);
+void gst_debugserver_topology_send_entire_topology (GstBin *root, GstDebugserverTcp * server, GSocketConnection * client);
 
-void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server);
+void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server, GSocketConnection * client);
 
-void gst_debugserver_topology_send_element_in_bin (GstBin * bin, GstElement * element, gboolean add, GstDebugserverTcp * server);
+void gst_debugserver_topology_send_element_in_bin (GstBin * bin, GstElement * element, gboolean add, GstDebugserverTcp * server, GSocketConnection * client);
 
-void gst_debugserver_topology_send_pad_in_element (GstElement * element, GstPad * pad, gboolean add, GstDebugserverTcp * server);
+void gst_debugserver_topology_send_pad_in_element (GstElement * element, GstPad * pad, gboolean add, GstDebugserverTcp * server, GSocketConnection * client);
 
 #endif /* SRC_DEBUGSERVER_GSTDEBUGSERVERTOPOLOGY_H_ */
