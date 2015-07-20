@@ -184,12 +184,7 @@ void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverT
 void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server)
 {
   GstElement *parent_element = GST_PAD_PARENT (src);
-  if (parent_element == NULL) { // todo try to comment it
-    return;
-  }
-  if (GST_OBJECT_PARENT (parent_element) == NULL) { // todo try to comment it
-    return;
-  }
+
   send_link (src, sink, link ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server);
 }
 

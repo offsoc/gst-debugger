@@ -183,7 +183,7 @@ TcpClient* gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConn
   }
   return NULL;
 }
-#include <stdio.h>
+
 gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnection * connection,
   gchar * buffer, gint size)
 {
@@ -191,18 +191,12 @@ gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnec
   gchar size_buffer[4];
   GSocket *socket;
   TcpClient *client;
-  int i;
 
   client = gst_debugserver_tcp_find_client (tcp, connection);
   assert (client != NULL);
   socket = g_socket_connection_get_socket (connection);
-  printf ("trying to send: %d", size);
-  gst_debugger_protocol_utils_serialize_integer64 (size, size_buffer, 4);
 
-  for (i = 0; i < 4; i++) {
-    printf ("%d ", (int)size_buffer[i]);
-  }
-  puts ("");
+  gst_debugger_protocol_utils_serialize_integer64 (size, size_buffer, 4);
 
   g_mutex_lock (&client->mutex);
   g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);
@@ -220,7 +214,7 @@ gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnec
     g_error_free (err);
     return FALSE;
   }
-puts("sent");
+
   return TRUE;
 }
 
