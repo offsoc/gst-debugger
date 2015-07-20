@@ -152,8 +152,27 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 	job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()),"job");
 	pointer.x = event->x;
 	pointer.y = event->y;
+
+	auto prev_obj = job->selected_obj;
 	(job->callbacks->button_press)(job, event->button, pointer);
-	if (job->selected_obj) {
+
+	if (prev_obj)
+	{
+		switch (agobjkind(prev_obj))
+		{
+		case AGRAPH:
+			GD_gui_state((graph_t*)prev_obj) = 0;
+			break;
+		case AGNODE:
+			ND_gui_state((node_t*)prev_obj) = 0;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (job->selected_obj)
+	{
 		switch (agobjkind(job->selected_obj)) {
 		case AGRAPH:
 			g_info = (Agraphinfo_t*)(((Agobj_t*)(job->selected_obj))->data);
