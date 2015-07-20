@@ -295,11 +295,43 @@ gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GS
   gst_debugserver_tcp_send_packet (server->tcp_server, client_id, buffer, size);
 }
 
+static gint
+gst_debugserver_prepare_error (gchar * message, gchar * buffer, gint max_size)
+{
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  ServerError s_err = SERVER_ERROR__INIT;
+  gint size;
+
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__SERVER_ERROR;
+  s_err.message = g_strdup (message);
+  info.server_error = &s_err;
+
+  size = gstreamer_info__get_packed_size (&info);
+
+  if (size > max_size) {
+    goto finalize;
+  }
+
+  gstreamer_info__pack (&info, (guint8*)buffer);
+
+finalize:
+  return size;
+}
+
 static void
 gst_debugserver_handle_error (GstDebugserverTracer *server, GSocketConnection * client_id, const gchar * message)
 {
-  // todo
+  gint size;
+  SAFE_PREPARE_BUFFER_INIT (1024);
+
   GST_WARNING_OBJECT (server, "%s", message);
+
+  SAFE_PREPARE_BUFFER (
+    gst_debugserver_prepare_error (message, m_buff, max_m_buff_size), size);
+
+  gst_debugserver_tcp_send_packet (server->tcp_server, client_id, m_buff, size);
+
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static void
