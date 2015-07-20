@@ -40,6 +40,7 @@ protected:
 
 	void process_frame() override;
 
+	void jump_to_selected_model();
 	void update_full_path();
 	void update_model(const std::shared_ptr<GraphElement>& new_model);
 

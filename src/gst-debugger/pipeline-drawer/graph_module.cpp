@@ -137,6 +137,12 @@ void GraphModule::process_frame()
 
 bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 {
+	if (event->type == GDK_2BUTTON_PRESS)
+	{
+		jump_to_selected_model();
+		return false;
+	}
+
 	GVJ_t *job;
 	pointf pointer;
 	Agraphinfo_t *g_info;
@@ -172,7 +178,7 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 void GraphModule::update_model(const std::shared_ptr<GraphElement>& new_model)
@@ -204,7 +210,7 @@ void GraphModule::upGraphButton_clicked_cb()
 	}
 }
 
-void GraphModule::jumpToGraphButton_clicked_cb()
+void GraphModule::jump_to_selected_model()
 {
 	std::string selected_element = selected_element_entry->get_text();
 
@@ -228,6 +234,11 @@ void GraphModule::jumpToGraphButton_clicked_cb()
 	}
 
 	update_model(new_model);
+}
+
+void GraphModule::jumpToGraphButton_clicked_cb()
+{
+	jump_to_selected_model();
 }
 
 bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)
