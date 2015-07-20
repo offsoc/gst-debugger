@@ -44,7 +44,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_debugserver_debug);
     GST_DEBUG_CATEGORY_INIT (gst_debugserver_debug, "debugserver", 0, "debugserver tracer");
 #define gst_debugserver_tracer_parent_class parent_class
 G_DEFINE_TYPE_WITH_CODE (GstDebugserverTracer, gst_debugserver_tracer,
-    GST_TYPE_TRACER, _do_init);
+    GST_TYPE_TRACER, _do_init)
 
 #define DEFAULT_PORT 8080
 
@@ -597,4 +597,4 @@ plugin_init (GstPlugin * plugin)
 
 GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, debugtracers,
     "GStreamer core tracers", plugin_init, "1.0", "LGPL",
-    "gst-debugger", "http://github.com/loganek");
+    "gst-debugger", "http://github.com/loganek")

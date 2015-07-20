@@ -30,7 +30,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_debugserver_tcp);
     GST_DEBUG_CATEGORY_INIT (gst_debugserver_tcp, "debugserver-tcp", 0, "debugserver tcp tracer");
 #define gst_debugserver_tcp_parent_class parent_class
 G_DEFINE_TYPE_WITH_CODE (GstDebugserverTcp, gst_debugserver_tcp,
-    G_TYPE_OBJECT, _do_init);
+    G_TYPE_OBJECT, _do_init)
 
 static void gst_debugserver_tcp_finalize (GObject * tcp);
 
