@@ -62,6 +62,10 @@ static void gst_debugserver_tracer_get_property (GObject * object,
 static void gst_debugserver_tracer_finalize (GObject * obj);
 
 static void
+gst_debugserver_handle_error (GstDebugserverTracer *server,
+  GSocketConnection * client_id, const gchar * message);
+
+static void
 gst_debugserver_tracer_log_function (GstDebugCategory * category,
     GstDebugLevel level, const gchar * file, const gchar * function, gint line,
     GObject * object, GstDebugMessage * message, gpointer user_data)
@@ -232,6 +236,64 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
   SAFE_PREPARE_BUFFER_CLEAN;
 
   g_slist_free (clients);
+}
+
+static gint
+gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, gint size)
+{
+  GEnumValue *values = klass->values;
+  guint i = 0;
+  EnumEntry **entries;
+  EnumType msg;
+  gint len;
+
+  entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));
+
+  for (i = 0; i < klass->n_values; i++) {
+    entries[i] = g_malloc (sizeof (EnumEntry));
+    enum_entry__init (entries[i]);
+    entries[i]->name = g_strdup (values[i].value_name);
+    entries[i]->value = values[i].value;
+  }
+
+  msg.n_entry = klass->n_values;
+  msg.type_name = g_strdup (G_ENUM_CLASS_TYPE_NAME (klass));
+
+  len = enum_type__get_packed_size (&msg);
+
+  if (len > size) {
+    goto finalize;
+  }
+
+  enum_type__pack (&msg, (uint8_t*) buffer);
+
+finalize:
+  for (i = 0; i < klass->n_values; i++) {
+    g_free (entries[i]);
+  }
+
+  g_free (entries);
+
+  return len;
+}
+static void
+gst_debugserver_send_enum (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
+{
+  GType type = g_type_from_name (klass_name);
+  GEnumClass *klass = g_type_class_peek (type);
+  SAFE_PREPARE_BUFFER_INIT (1024);
+  gint size;
+
+  if (klass == NULL) {
+    gst_debugserver_handle_error (debugserver, client, "Cannot find enum type");
+    return;
+  }
+
+  SAFE_PREPARE_BUFFER (
+    gst_debug_server_prepare_enum_type_buffer (klass, m_buff, max_m_buff_size), size);
+
+  gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static void
@@ -440,6 +502,9 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     break;
   case COMMAND__COMMAND_TYPE__PROPERTY:
     gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
+    break;
+  case COMMAND__COMMAND_TYPE__ENUM_TYPE:
+    gst_debugserver_send_enum (debugserver, client_id, cmd->enum_name);
     break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
