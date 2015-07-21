@@ -356,6 +356,7 @@ gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GS
   property.has_internal_type = TRUE;
   property.type = tmptype;
   property.has_type = TRUE;
+  property.type_name = g_strdup (g_type_name (tmptype));
   info.property = &property;
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= 1024);
