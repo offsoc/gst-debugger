@@ -32,7 +32,6 @@ protected:
 
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
-	Gtk::Button *jump_to_graph_button;
 	Gtk::Entry *selected_element_entry;
 	Gtk::Entry *current_path_graph_entry;
 	Gtk::Button *refresh_graph_button;
@@ -45,7 +44,6 @@ protected:
 	void update_model(const std::shared_ptr<GraphElement>& new_model);
 
 	void upGraphButton_clicked_cb();
-	void jumpToGraphButton_clicked_cb();
 	bool graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context);
 	bool graphDrawingArea_button_press_event_cb(GdkEventButton* event);
 	bool graphDrawingArea_motion_notify_cb(GdkEventMotion *event);

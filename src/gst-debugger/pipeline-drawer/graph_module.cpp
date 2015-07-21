@@ -33,9 +33,6 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 	builder->get_widget("upGraphButton", up_graph_button);
 	up_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::upGraphButton_clicked_cb));
 
-	builder->get_widget("jumpToGraphButton", jump_to_graph_button);
-	jump_to_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::jumpToGraphButton_clicked_cb));
-
 	builder->get_widget("refreshGraphButton", refresh_graph_button);
 	refresh_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::refreshGraphButton_clicked_cb));
 
@@ -270,11 +267,6 @@ void GraphModule::jump_to_selected_model()
 	}
 
 	update_model(new_model);
-}
-
-void GraphModule::jumpToGraphButton_clicked_cb()
-{
-	jump_to_selected_model();
 }
 
 bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)

@@ -1494,13 +1494,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="jumpToGraphButton">
-                <property name="label">gtk-jump-to</property>
+              <object class="GtkLabel" id="label19">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-                <property name="always_show_image">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Current bin: </property>
               </object>
               <packing>
                 <property name="expand">False</property>
