@@ -21,3 +21,9 @@ std::string GValueString::to_string() const
 	return v.get();
 }
 
+Gtk::Widget* GValueString::get_widget() const
+{
+	Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
+	widget->set_text(to_string());
+	return widget;
+}

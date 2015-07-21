@@ -21,6 +21,8 @@ public:
 	std::string to_string() const override;
 
 	static std::vector<std::pair<int, std::string>> get_values(GType type);
+
+	Gtk::Widget* get_widget() const override;
 };
 
 #endif /* SRC_GST_DEBUGGER_GVALUE_CONVERTER_GVALUE_ENUM_H_ */

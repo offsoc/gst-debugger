@@ -58,3 +58,10 @@ std::vector<std::pair<int, std::string>> GValueEnum::get_values(GType type)
 
 	return values;
 }
+
+Gtk::Widget* GValueEnum::get_widget() const
+{
+	Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
+	widget->set_text(to_string());
+	return widget;
+}

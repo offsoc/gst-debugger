@@ -107,9 +107,6 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 {
 	Gtk::Box *hbox = new Gtk::Box (Gtk::ORIENTATION_HORIZONTAL, 0);
 	hbox->show();
-	Gtk::Entry *entry = Gtk::manage(new Gtk::Entry());
-	entry->set_text (value_base->to_string());
-	entry->show();
 	auto prop_name = info.property().property_name();
 	Gtk::Label *lbl = Gtk::manage(new Gtk::Label(prop_name));
 	lbl->show();
@@ -117,7 +114,9 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	btn->signal_clicked().connect([this, prop_name] {request_property(prop_name);});
 	btn->show();
 	hbox->pack_start(*lbl, false, false);
-	hbox->pack_start(*entry, true, true);
+	auto value_widget = value_base->get_widget();
+	value_widget->show();
+	hbox->pack_start(*value_widget, true, true);
 	hbox->pack_start(*btn, false, false);
 	properties_box->pack_start(*hbox);
 	property_widgets.push_back(hbox);

@@ -13,10 +13,24 @@ GValueBoolean::GValueBoolean(GValue *gobj)
 : GValueBase(gobj)
 {}
 
+bool GValueBoolean::get_value() const
+{
+	Glib::Value<bool> v;
+	v.init(g_value);
+	return v.get();
+}
+
 std::string GValueBoolean::to_string() const
 {
 	Glib::Value<bool> v;
 	v.init(g_value);
 
-	return v.get() ? "true" : "false";
+	return get_value() ? "true" : "false";
+}
+
+Gtk::Widget* GValueBoolean::get_widget() const
+{
+	Gtk::CheckButton *widget = Gtk::manage(new Gtk::CheckButton());
+	widget->set_active(get_value());
+	return widget;
 }

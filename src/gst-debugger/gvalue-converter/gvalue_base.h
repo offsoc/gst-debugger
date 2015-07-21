@@ -10,6 +10,8 @@
 
 #include <glib-object.h>
 
+#include <gtkmm.h>
+
 #include <string>
 
 class GValueBase
@@ -22,6 +24,8 @@ public:
 	virtual ~GValueBase();
 
 	virtual std::string to_string() const = 0;
+
+	virtual Gtk::Widget* get_widget() const = 0;
 
 	static GValueBase* build_gvalue(GValue* g_value);
 };

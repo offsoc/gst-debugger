@@ -22,12 +22,12 @@ std::string GValueNumeric<T>::to_string() const
 	return std::to_string(v.get());
 }
 
-template<>
-std::string GValueNumeric<Glib::ustring>::to_string() const
+template<typename T>
+Gtk::Widget* GValueNumeric<T>::get_widget() const
 {
-	Glib::Value<Glib::ustring> v;
-	v.init(g_value);
-	return v.get();
+	Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
+	widget->set_text(to_string());
+	return widget;
 }
 
 // Check GCC

@@ -17,6 +17,8 @@ public:
 	GValueNumeric(GValue* gobj);
 
 	std::string to_string() const override;
+
+	Gtk::Widget* get_widget() const override;
 };
 
 
