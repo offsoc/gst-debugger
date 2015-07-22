@@ -11,8 +11,7 @@
 
 Controller::Controller(IView *view)
  : current_model(ElementModel::get_root()),
-   view(view),
-   client(std::make_shared<TcpClient>())
+   view(view)
 {
 	view->set_controller(shared_from_this());
 }

@@ -10,8 +10,9 @@
 
 #include "protocol/gstdebugger.pb.h"
 
-// todo all methods shouldn't be static here
-class CommandFactory
+#include "base_controller.h"
+
+class CommandFactory : public virtual BaseController
 {
 public:
 	static Command make_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type);
