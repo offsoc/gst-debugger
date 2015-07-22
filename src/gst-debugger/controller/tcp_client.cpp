@@ -33,7 +33,7 @@ bool TcpClient::connect(const std::string &address, int port)
 
 void TcpClient::read_data()
 {
-	char buffer[1024]; // todo increase max size!
+	char buffer[2048]; // todo increase max size!
 	auto input_stream = connection->get_input_stream();
 	while (connected)
 	{
@@ -42,7 +42,7 @@ void TcpClient::read_data()
 		if (size < 0)
 			break;
 
-		assert(size <= 1024);
+		assert(size <= 2048);
 		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer);
 		GstreamerInfo info;
 		info.ParseFromArray(buffer, size);

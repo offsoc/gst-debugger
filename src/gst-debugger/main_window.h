@@ -19,17 +19,17 @@
 #include "pipeline-drawer/graph_module.h"
 #include "frame_receiver.h"
 #include <gtkmm.h>
-#include "models/gst_enum_model.h"
-#include "controller/iview.h"
 
-class MainWindow : public IView
+#include "controller/iview.h"
+#include "models/gst_enum_model.h"
+
+class MainWindow : public IMainView
 {
 	void connectionPropertiesMenuItem_activate_cb();
 	void connectMenuItem_activate_cb();
 	void connection_status_changed(bool connected);
 
 	Glib::RefPtr<Gtk::Builder> builder;
-	std::shared_ptr<TcpClient> client;
 	Gtk::MenuItem *connection_properties;
 	Gtk::ImageMenuItem *connect_menu_item;
 	ConnectionPropertiesDialog *connection_properties_dialog;
@@ -54,6 +54,8 @@ public:
 	virtual ~MainWindow() {}
 
 	void set_current_model(const std::shared_ptr<ElementModel> &model) override { /* todo */ }
+
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_MAIN_WINDOW_H_ */

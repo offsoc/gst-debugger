@@ -16,18 +16,26 @@
 
 class Controller;
 
-class IView : public Gtk::Window
+class IBaseView
 {
 protected:
 	std::shared_ptr<Controller> controller;
 
 public:
-	IView(BaseObjectType* cobject) : Gtk::Window(cobject) {}
-	virtual ~IView() {}
+	virtual ~IBaseView() {}
 
 	void set_controller(const std::shared_ptr<Controller> &controller) { this->controller = controller; }
+};
+
+class IMainView : public Gtk::Window, public IBaseView
+{
+public:
+	IMainView(BaseObjectType* cobject) : Gtk::Window(cobject) {}
+	virtual ~IMainView() {}
 
 	virtual void set_current_model(const std::shared_ptr<ElementModel> &model) = 0;
+
+	virtual void set_controller(const std::shared_ptr<Controller> &controller) = 0;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_IVIEW_H_ */

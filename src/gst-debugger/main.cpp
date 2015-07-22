@@ -21,9 +21,9 @@ int main(int argc, char** argv)
 	MainWindow* wnd_handler;
 	builder->get_widget_derived("mainWindow", wnd_handler);
 
-	Controller controller(wnd_handler);
+	 std::shared_ptr<Controller> controller(new Controller(wnd_handler));
 
-	controller.run(argc, argv);
+	controller->run(argc, argv);
 
 	return 0;
 }

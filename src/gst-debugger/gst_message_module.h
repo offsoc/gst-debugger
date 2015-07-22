@@ -38,7 +38,7 @@ class GstMessageModule : public GstQEModule
 	void send_start_stop_command(bool enable) override;
 
 public:
-	GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client);
+	GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder);
 };
 
 

@@ -7,20 +7,22 @@
 
 #include "main_window.h"
 #include "sigc++lambdahack.h"
+
+#include "controller/controller.h"
+
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
-: IView(cobject),
+: IMainView(cobject),
   builder(builder),
-  client(std::make_shared<TcpClient>()),
   dispatcher(std::make_shared<Glib::Dispatcher>()),
-  log_module(std::make_shared<GstLogModule>(builder, client)),
-  event_module(std::make_shared<GstEventModule>(builder, client)),
-  query_module(std::make_shared<GstQueryModule>(builder, client)),
-  message_module(std::make_shared<GstMessageModule>(builder, client)),
-  buffer_module(std::make_shared<GstBufferModule>(builder, client)),
-  properties_module(std::make_shared<GstPropertiesModule>(builder, client)),
+  log_module(std::make_shared<GstLogModule>(builder)),
+  event_module(std::make_shared<GstEventModule>(builder)),
+  query_module(std::make_shared<GstQueryModule>(builder)),
+  message_module(std::make_shared<GstMessageModule>(builder)),
+  buffer_module(std::make_shared<GstBufferModule>(builder)),
+  properties_module(std::make_shared<GstPropertiesModule>(builder)),
   enums(std::make_shared<GstEnumContainer>())
 {
-	graph_module = std::make_shared<GraphModule>(builder, client);
+	graph_module = std::make_shared<GraphModule>(builder);
 
 	builder->get_widget("connectionPropertiesMenuItem", connection_properties);
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));
@@ -31,12 +33,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget_derived("connectionPropertiesDialog", connection_properties_dialog);
 	builder->get_widget("mainStatusbar", main_statusbar);
 
-	client->signal_status_changed.connect(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
-	client->signal_frame_received.connect([this](const GstreamerInfo &info){
-		for (auto receiver : data_receivers)
-			receiver->on_frame_recieved(info);
-		dispatcher->emit();
-	});
 	connection_status_changed(false);
 	data_receivers.push_back(log_module);
 	data_receivers.push_back(event_module);
@@ -56,6 +52,26 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	});
 }
 
+void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	this->controller = controller;
+
+	controller->on_connection_status_changed(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
+	controller->on_frame_received([this](const GstreamerInfo &info){
+		for (auto receiver : data_receivers)
+			receiver->on_frame_recieved(info);
+		dispatcher->emit();
+	});
+
+	log_module->set_controller(controller);
+	event_module->set_controller(controller);
+	query_module->set_controller(controller);
+	message_module->set_controller(controller);
+	buffer_module->set_controller(controller);
+	graph_module->set_controller(controller);
+	properties_module->set_controller(controller);
+}
+
 void MainWindow::connectionPropertiesMenuItem_activate_cb()
 {
 	connection_properties_dialog->show();
@@ -63,10 +79,10 @@ void MainWindow::connectionPropertiesMenuItem_activate_cb()
 
 void MainWindow::connectMenuItem_activate_cb()
 {
-	if (client->is_connected())
-		client->disconnect();
+	if (controller->is_connected())
+		controller->disconnect();
 	else
-		client->connect(
+		controller->connect(
 			connection_properties_dialog->get_ip_address(),
 			connection_properties_dialog->get_port());
 }

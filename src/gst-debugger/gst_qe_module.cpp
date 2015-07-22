@@ -10,14 +10,12 @@
 #include "gvalue-converter/gvalue_base.h"
 #include "gvalue-converter/gvalue_enum.h"
 #include "protocol/deserializer.h"
-#include "controller/command_factory.h"
+#include "controller/controller.h"
 
 GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		GstreamerInfo_InfoType info_type,
-		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
-		const std::shared_ptr<TcpClient>& client)
-: client(client),
-  info_type(info_type),
+		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder)
+: info_type(info_type),
   type_module(type_module)
 {
 	builder->get_widget("existing" + qe_name + "HooksTreeView", existing_hooks_tree_view);
@@ -133,7 +131,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 
 	std::string pad_path = any_path_check_button->get_active() ? Glib::ustring() : qe_pad_path_entry->get_text();
 
-	client->send_command(CommandFactory::make_pad_watch_command(enable, get_watch_type(), pad_path, qe_type));
+	controller->make_pad_watch_command(enable, get_watch_type(), pad_path, qe_type);
 }
 
 void GstQEModule::qeListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)

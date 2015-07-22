@@ -10,13 +10,12 @@
 #include "sigc++lambdahack.h"
 #include "protocol/deserializer.h"
 #include "controller/command_factory.h"
-
+#include "controller/controller.h"
 #include <gstreamermm.h>
 
-GstMessageModule::GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder,
-		const std::shared_ptr<TcpClient>& client)
+GstMessageModule::GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder)
 : GstQEModule(true, false, GstreamerInfo_InfoType_MESSAGE,
-		"BusMessage", gst_message_type_get_type(), builder, client)
+		"BusMessage", gst_message_type_get_type(), builder)
 {
 
 }
@@ -81,5 +80,5 @@ void GstMessageModule::send_start_stop_command(bool enable)
 		msg_type = row[qe_types_model_columns.type_id];
 	}
 
-	client->send_command(CommandFactory::make_message_request_command(msg_type));
+	controller->make_message_request_command(msg_type);
 }

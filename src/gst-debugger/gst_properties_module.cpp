@@ -8,11 +8,10 @@
 #include "gst_properties_module.h"
 #include "protocol/deserializer.h"
 #include "controller/command_factory.h"
-
+#include "controller/controller.h"
 #include <gst/gst.h>
 
-GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
-: client (client)
+GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 	builder->get_widget("showPropertiesButton", show_propetries_button);
 	show_propetries_button->signal_clicked().connect(sigc::mem_fun(*this, &GstPropertiesModule::showPropertiesButton_clicked_cb));
@@ -24,7 +23,7 @@ GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& build
 
 void GstPropertiesModule::request_property(const std::string &property_name)
 {
-	client->send_command(CommandFactory::make_property_request_command(element_path_property_entry->get_text(), property_name));
+	controller->make_property_request_command(element_path_property_entry->get_text(), property_name);
 }
 
 void GstPropertiesModule::showPropertiesButton_clicked_cb()

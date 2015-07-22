@@ -9,7 +9,7 @@
 #define SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_MODULE_H_
 
 #include "frame_receiver.h"
-#include "controller/tcp_client.h"
+#include "controller/iview.h"
 #include "gst_bin_to_dot_converter.h"
 #include "../models/gst_pipeline_model.h"
 
@@ -18,10 +18,9 @@
 
 #include <gtkmm.h>
 
-class GraphModule : public FrameReceiver
+class GraphModule : public FrameReceiver, public IBaseView
 {
 protected:
-	std::shared_ptr<TcpClient> client;
 	Glib::Dispatcher dsp;
 	GstBinToDotConverter dot_converter;
 
@@ -51,8 +50,7 @@ protected:
 	void refreshGraphButton_clicked_cb();
 
 public:
-	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder,
-			const std::shared_ptr<TcpClient>& client);
+	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder);
 
 	void redraw_model();
 	void free_graph();

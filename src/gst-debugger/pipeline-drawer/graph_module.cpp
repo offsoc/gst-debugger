@@ -7,7 +7,7 @@
 
 #include "graph_module.h"
 
-#include "controller/command_factory.h"
+#include "controller/controller.h"
 
 #include "utils/gst-utils.h"
 
@@ -15,8 +15,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
-: client (client)
+GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 	builder->get_widget("graphDrawingArea", graph_drawing_area);
 	graph_drawing_area->signal_draw().connect(sigc::mem_fun(*this, &GraphModule::graphDrawingArea_draw_cb));
@@ -336,7 +335,7 @@ void GraphModule::redraw_model()
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	client->send_command(CommandFactory::make_request_topology_command());
+	controller->make_request_topology_command();
 }
 
 void GraphModule::update_full_path()

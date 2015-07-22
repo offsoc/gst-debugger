@@ -9,7 +9,7 @@
 #define SRC_GST_DEBUGGER_GST_QE_MODULE_H_
 
 #include "common_model_columns.h"
-#include "controller/tcp_client.h"
+#include "controller/iview.h"
 #include "frame_receiver.h"
 
 #include <gtkmm.h>
@@ -26,11 +26,9 @@ public:
 	Gtk::TreeModelColumn<gint> qe_type;
 };
 
-class GstQEModule : public FrameReceiver
+class GstQEModule : public FrameReceiver, public IBaseView
 {
 protected:
-	std::shared_ptr<TcpClient> client;
-
 	Gtk::TreeView *qe_list_tree_view;
 	Gtk::TreeView *qe_details_tree_view;
 	Gtk::Button *start_watching_qe_button;
@@ -78,8 +76,7 @@ protected:
 public:
 	GstQEModule(bool type_module, bool pad_path_module,
 			GstreamerInfo_InfoType info_type, const std::string& qe_name,
-			GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
-			const std::shared_ptr<TcpClient>& client);
+			GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder);
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_QE_MODULE_H_ */

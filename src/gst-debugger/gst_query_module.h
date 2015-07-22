@@ -17,7 +17,7 @@ class GstQueryModule : public GstQEModule
 	void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe) override;
 
 public:
-	GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client);
+	GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder);
 
 };
 
