@@ -14,7 +14,7 @@
 GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		GstreamerInfo_InfoType info_type,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder,
-		const std::shared_ptr<GstDebuggerTcpClient>& client)
+		const std::shared_ptr<TcpClient>& client)
 : client(client),
   info_type(info_type),
   type_module(type_module)

@@ -17,7 +17,7 @@ class GstBufferModule : public GstQEModule
 	void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe) override;
 
 public:
-	GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client);
+	GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client);
 
 };
 

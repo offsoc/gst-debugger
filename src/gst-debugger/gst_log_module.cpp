@@ -8,7 +8,7 @@
 #include "gst_log_module.h"
 #include <fstream>
 
-GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
+GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
 : client(client)
 {
 	builder->get_widget("logThresholdEntry", log_threshold_entry);

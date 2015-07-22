@@ -8,7 +8,7 @@
 #include "gst_query_module.h"
 #include "protocol/deserializer.h"
 
-GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
+GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
 : GstQEModule(true, true, GstreamerInfo_InfoType_QUERY,
 		"Query", gst_query_type_get_type(), builder, client)
 {

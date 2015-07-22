@@ -9,7 +9,7 @@
 #define SRC_GST_DEBUGGER_GST_PROPERTIES_MODULE_H_
 
 #include "frame_receiver.h"
-#include "gst_debugger_tcp_client.h"
+#include "controller/tcp_client.h"
 #include "gvalue-converter/gvalue_base.h"
 
 #include <gtkmm.h>
@@ -25,7 +25,7 @@ private:
 
 	std::string previous_element_path;
 	std::vector<Gtk::Box*> property_widgets;
-	std::shared_ptr<GstDebuggerTcpClient> client;
+	std::shared_ptr<TcpClient> client;
 
 	void process_frame() override;
 	void append_property(const std::shared_ptr<GValueBase>& value_base);
@@ -34,7 +34,7 @@ private:
 
 public:
 	GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder,
-			const std::shared_ptr<GstDebuggerTcpClient>& client);
+			const std::shared_ptr<TcpClient>& client);
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_PROPERTIES_MODULE_H_ */

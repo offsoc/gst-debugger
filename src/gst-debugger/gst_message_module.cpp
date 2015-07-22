@@ -13,7 +13,7 @@
 #include <gstreamermm.h>
 
 GstMessageModule::GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder,
-		const std::shared_ptr<GstDebuggerTcpClient>& client)
+		const std::shared_ptr<TcpClient>& client)
 : GstQEModule(true, false, GstreamerInfo_InfoType_MESSAGE,
 		"BusMessage", gst_message_type_get_type(), builder, client)
 {

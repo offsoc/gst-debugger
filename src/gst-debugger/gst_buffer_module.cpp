@@ -11,7 +11,7 @@
 #include <sstream>
 #include <iomanip>
 
-GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
+GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
 : GstQEModule(false, true, GstreamerInfo_InfoType_BUFFER,
 		"Buffer", gst_query_type_get_type(), builder, client)
 {

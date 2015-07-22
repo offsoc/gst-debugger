@@ -16,7 +16,7 @@
 #include <thread>
 #include <functional>
 
-class GstDebuggerTcpClient
+class TcpClient
 {
 public:
 	typedef sigc::signal1<void, const GstreamerInfo&> frame_received_slot;

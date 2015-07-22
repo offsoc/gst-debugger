@@ -9,7 +9,7 @@
 #define SRC_GST_DEBUGGER_GST_MESSAGE_MODULE_H_
 
 #include "common_model_columns.h"
-#include "gst_debugger_tcp_client.h"
+#include "controller/tcp_client.h"
 #include "gst_qe_module.h"
 
 #include <gtkmm.h>
@@ -38,7 +38,7 @@ class GstMessageModule : public GstQEModule
 	void send_start_stop_command(bool enable) override;
 
 public:
-	GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client);
+	GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client);
 };
 
 

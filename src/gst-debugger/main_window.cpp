@@ -10,7 +10,7 @@
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject),
   builder(builder),
-  client(std::make_shared<GstDebuggerTcpClient>()),
+  client(std::make_shared<TcpClient>()),
   dispatcher(std::make_shared<Glib::Dispatcher>()),
   log_module(std::make_shared<GstLogModule>(builder, client)),
   event_module(std::make_shared<GstEventModule>(builder, client)),

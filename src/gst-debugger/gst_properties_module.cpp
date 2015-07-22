@@ -10,7 +10,7 @@
 
 #include <gst/gst.h>
 
-GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
+GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
 : client (client)
 {
 	builder->get_widget("showPropertiesButton", show_propetries_button);

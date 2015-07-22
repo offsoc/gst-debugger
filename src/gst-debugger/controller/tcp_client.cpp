@@ -5,12 +5,13 @@
  *      Author: mkolny
  */
 
-#include "gst_debugger_tcp_client.h"
+#include "tcp_client.h"
+
 #include "protocol/protocol_utils.h"
 
 #include <cassert>
 
-bool GstDebuggerTcpClient::connect(const std::string &address, int port)
+bool TcpClient::connect(const std::string &address, int port)
 {
 	try
 	{
@@ -30,7 +31,7 @@ bool GstDebuggerTcpClient::connect(const std::string &address, int port)
 	}
 }
 
-void GstDebuggerTcpClient::read_data()
+void TcpClient::read_data()
 {
 	char buffer[1024]; // todo increase max size!
 	auto input_stream = connection->get_input_stream();
@@ -52,7 +53,7 @@ void GstDebuggerTcpClient::read_data()
 	connected = false;
 }
 
-bool GstDebuggerTcpClient::disconnect()
+bool TcpClient::disconnect()
 {
 	connected = false;
 	auto ok = connection->close();
@@ -60,13 +61,13 @@ bool GstDebuggerTcpClient::disconnect()
 	return ok;
 }
 
-void GstDebuggerTcpClient::write_data(char *data, int size)
+void TcpClient::write_data(char *data, int size)
 {
 	auto stream = connection->get_output_stream();
 	stream->write(data, size);
 }
 
-void GstDebuggerTcpClient::send_command(const Command &cmd)
+void TcpClient::send_command(const Command &cmd)
 {
 	if (!is_connected())
 		throw Gio::Error(Gio::Error::FAILED, "No connection!");

@@ -8,7 +8,7 @@
 #ifndef SRC_GST_DEBUGGER_GST_LOG_MODULE_H_
 #define SRC_GST_DEBUGGER_GST_LOG_MODULE_H_
 
-#include "gst_debugger_tcp_client.h"
+#include "controller/tcp_client.h"
 #include "frame_receiver.h"
 
 #include <gtkmm.h>
@@ -55,11 +55,11 @@ class GstLogModule : public FrameReceiver
 	GstreamerLogModelColumns model_columns;
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	std::shared_ptr<GstDebuggerTcpClient> client;
+	std::shared_ptr<TcpClient> client;
 
 	void process_frame() override;
 public:
-	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client);
+	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client);
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_LOG_MODULE_H_ */

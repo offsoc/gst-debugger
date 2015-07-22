@@ -11,7 +11,6 @@ add_executable(gst-debugger
 	main.cpp
 	main_window.cpp
 	connection_properties_dialog.cpp
-	gst_debugger_tcp_client.cpp
 	gst_buffer_module.cpp
 	gst_message_module.cpp
 	gst_log_module.cpp
@@ -24,6 +23,7 @@ add_executable(gst-debugger
 	pipeline-drawer/graph_module.cpp
 	
 	controller/controller.cpp
+	controller/tcp_client.cpp
 
 	models/gst_pipeline_model.cpp
 	models/gst_enum_model.cpp

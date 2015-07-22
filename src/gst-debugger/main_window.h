@@ -8,7 +8,7 @@
 #ifndef SRC_GST_DEBUGGER_MAIN_WINDOW_H_
 #define SRC_GST_DEBUGGER_MAIN_WINDOW_H_
 
-#include "gst_debugger_tcp_client.h"
+#include "controller/tcp_client.h"
 #include "connection_properties_dialog.h"
 #include "gst_log_module.h"
 #include "gst_event_module.h"
@@ -28,7 +28,7 @@ class MainWindow : public Gtk::Window
 	void connection_status_changed(bool connected);
 
 	Glib::RefPtr<Gtk::Builder> builder;
-	std::shared_ptr<GstDebuggerTcpClient> client;
+	std::shared_ptr<TcpClient> client;
 	Gtk::MenuItem *connection_properties;
 	Gtk::ImageMenuItem *connect_menu_item;
 	ConnectionPropertiesDialog *connection_properties_dialog;

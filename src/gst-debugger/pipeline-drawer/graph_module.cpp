@@ -13,7 +13,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<GstDebuggerTcpClient>& client)
+GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
 : client (client)
 {
 	builder->get_widget("graphDrawingArea", graph_drawing_area);
