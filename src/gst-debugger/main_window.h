@@ -18,6 +18,7 @@
 #include "gst_properties_module.h"
 #include "pipeline-drawer/graph_module.h"
 #include "frame_receiver.h"
+#include "gst_enum_container.h"
 
 #include <gtkmm.h>
 
@@ -43,6 +44,8 @@ class MainWindow : public Gtk::Window
 	std::shared_ptr<GstBufferModule> buffer_module;
 	std::shared_ptr<GraphModule> graph_module;
 	std::shared_ptr<GstPropertiesModule> properties_module;
+
+	std::shared_ptr<GstEnumContainer> enums;
 
 	GstreamerInfo info;
 

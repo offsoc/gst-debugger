@@ -17,7 +17,8 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   query_module(std::make_shared<GstQueryModule>(builder, client)),
   message_module(std::make_shared<GstMessageModule>(builder, client)),
   buffer_module(std::make_shared<GstBufferModule>(builder, client)),
-  properties_module(std::make_shared<GstPropertiesModule>(builder, client))
+  properties_module(std::make_shared<GstPropertiesModule>(builder, client)),
+  enums(std::make_shared<GstEnumContainer>())
 {
 	graph_module = std::make_shared<GraphModule>(builder, client);
 
@@ -44,6 +45,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	data_receivers.push_back(buffer_module);
 	data_receivers.push_back(graph_module);
 	data_receivers.push_back(properties_module);
+	data_receivers.push_back(enums);
 
 	signal_show().connect([this] {
 		graph_module->redraw_model();
