@@ -23,3 +23,8 @@ int Controller::run(int &argc, char **&argv)
 
 	return app->run(*view);
 }
+
+void Controller::send_command(const Command& cmd)
+{
+	client->send_command(cmd);
+}

@@ -7,6 +7,8 @@
 
 #include "graph_module.h"
 
+#include "controller/command_factory.h"
+
 #include "utils/gst-utils.h"
 
 #include <graphviz-gstdebugger.h>
@@ -334,9 +336,7 @@ void GraphModule::redraw_model()
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_TOPOLOGY);
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_request_topology_command());
 }
 
 void GraphModule::update_full_path()

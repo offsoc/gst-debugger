@@ -10,6 +10,7 @@
 #include "gvalue-converter/gvalue_base.h"
 #include "gvalue-converter/gvalue_enum.h"
 #include "protocol/deserializer.h"
+#include "controller/command_factory.h"
 
 GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		GstreamerInfo_InfoType info_type,
@@ -132,15 +133,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 
 	std::string pad_path = any_path_check_button->get_active() ? Glib::ustring() : qe_pad_path_entry->get_text();
 
-	Command cmd;
-	PadWatch *pad_watch = new PadWatch();
-	pad_watch->set_toggle(enable ? ENABLE : DISABLE);
-	pad_watch->set_watch_type(get_watch_type());
-	pad_watch->set_pad_path(pad_path);
-	pad_watch->set_qe_type(qe_type);
-	cmd.set_command_type(Command_CommandType_PAD_WATCH);
-	cmd.set_allocated_pad_watch(pad_watch);
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_pad_watch_command(enable, get_watch_type(), pad_path, qe_type));
 }
 
 void GstQEModule::qeListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)

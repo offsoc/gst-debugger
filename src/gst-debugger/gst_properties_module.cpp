@@ -7,6 +7,7 @@
 
 #include "gst_properties_module.h"
 #include "protocol/deserializer.h"
+#include "controller/command_factory.h"
 
 #include <gst/gst.h>
 
@@ -23,14 +24,7 @@ GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& build
 
 void GstPropertiesModule::request_property(const std::string &property_name)
 {
-	Command cmd;
-	Property *property = new Property();
-	property->set_element_path(element_path_property_entry->get_text());
-	property->set_property_name(property_name);
-	cmd.set_command_type(Command_CommandType_PROPERTY);
-	cmd.set_allocated_property(property);
-
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_property_request_command(element_path_property_entry->get_text(), property_name));
 }
 
 void GstPropertiesModule::showPropertiesButton_clicked_cb()

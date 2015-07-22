@@ -9,6 +9,7 @@
 #include "gvalue-converter/gvalue_enum.h"
 #include "sigc++lambdahack.h"
 #include "protocol/deserializer.h"
+#include "controller/command_factory.h"
 
 #include <gstreamermm.h>
 
@@ -80,12 +81,5 @@ void GstMessageModule::send_start_stop_command(bool enable)
 		msg_type = row[qe_types_model_columns.type_id];
 	}
 
-	MessageWatch *msg_watch = new MessageWatch();
-	msg_watch->set_message_type(msg_type);
-	msg_watch->set_toggle(ENABLE);
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_MESSAGE_WATCH);
-	cmd.set_allocated_message_watch(msg_watch);
-
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_message_request_command(msg_type));
 }

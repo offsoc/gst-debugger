@@ -6,6 +6,9 @@
  */
 
 #include "gst_log_module.h"
+
+#include "controller/command_factory.h"
+
 #include <fstream>
 
 GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::shared_ptr<TcpClient>& client)
@@ -47,24 +50,13 @@ GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder, const std:
 
 void GstLogModule::setThresholdButton_clicked_cb()
 {
-	Command cmd;
-	LogThreshold *log_threshold = new LogThreshold();
-	log_threshold->set_list(log_threshold_entry->get_text());
-	log_threshold->set_overwrite(overwrite_current_threshold_check_button->get_active());
-	cmd.set_command_type(Command_CommandType_LOG_THRESHOLD);
-	cmd.set_allocated_log_threshold(log_threshold);
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_set_threshold_command(log_threshold_entry->get_text(),
+			overwrite_current_threshold_check_button->get_active()));
 }
 
 void GstLogModule::watchLogCheckButton_toggled_cb()
 {
-	Command cmd;
-	LogWatch *log_watch = new LogWatch();
-	log_watch->set_toggle(watch_log_check_button->get_active() ? ENABLE : DISABLE);
-	log_watch->set_log_level(10); // todo
-	cmd.set_command_type(Command_CommandType_LOG_WATCH);
-	cmd.set_allocated_log_watch(log_watch);
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_set_log_watch_command(watch_log_check_button->get_active(), 10)); // todo log level
 }
 
 void GstLogModule::saveMessageLogsButton_clicked_cb()
@@ -103,9 +95,7 @@ void GstLogModule::saveMessageLogsButton_clicked_cb()
 
 void GstLogModule::refreshDebugCategoriesButton_clicked_cb()
 {
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_DEBUG_CATEGORIES);
-	client->send_command(cmd);
+	client->send_command(CommandFactory::make_request_debug_categories_command());
 }
 
 void GstLogModule::process_frame()

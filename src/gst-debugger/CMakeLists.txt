@@ -22,6 +22,7 @@ add_executable(gst-debugger
 	pipeline-drawer/gst_bin_to_dot_converter.cpp
 	pipeline-drawer/graph_module.cpp
 	
+	controller/command_factory.cpp
 	controller/controller.cpp
 	controller/tcp_client.cpp
 

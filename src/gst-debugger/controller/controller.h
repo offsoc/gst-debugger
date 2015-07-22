@@ -8,10 +8,12 @@
 #ifndef SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_
 #define SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_
 
-#include "models/gst_pipeline_model.h"
-
 #include "iview.h"
 #include "tcp_client.h"
+
+#include "models/gst_pipeline_model.h"
+
+#include "protocol/gstdebugger.pb.h"
 
 class Controller : public std::enable_shared_from_this<Controller>
 {
@@ -22,6 +24,8 @@ private:
 
 public:
 	Controller(IView *view);
+
+	void send_command(const Command& cmd);
 
 	int run(int &argc, char **&argv);
 };
