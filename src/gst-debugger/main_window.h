@@ -18,9 +18,8 @@
 #include "gst_properties_module.h"
 #include "pipeline-drawer/graph_module.h"
 #include "frame_receiver.h"
-#include "gst_enum_container.h"
-
 #include <gtkmm.h>
+#include "models/gst_enum_model.h"
 
 class MainWindow : public Gtk::Window
 {

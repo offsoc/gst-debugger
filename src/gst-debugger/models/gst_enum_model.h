@@ -5,10 +5,12 @@
  *      Author: loganek
  */
 
-#ifndef SRC_GST_DEBUGGER_GST_ENUM_CONTAINER_H_
-#define SRC_GST_DEBUGGER_GST_ENUM_CONTAINER_H_
+#ifndef SRC_GST_DEBUGGER_GST_ENUM_MODEL_H_
+#define SRC_GST_DEBUGGER_GST_ENUM_MODEL_H_
 
-#include "frame_receiver.h"
+#include <map>
+#include <vector>
+#include <string>
 
 class GstEnumType
 {
@@ -24,17 +26,16 @@ public:
 	}
 };
 
-class GstEnumContainer : public FrameReceiver
+class GstEnumContainer
 {
 	std::vector<GstEnumType> types;
-
 	std::vector<GstEnumType>::iterator get_enum_type_it(const std::string &type_name);
 
-protected:
-	void process_frame() override;
 public:
+
+	void update_type(const GstEnumType &type);
 	bool has_type(const std::string &type_name);
 	GstEnumType get_type(const std::string &type_name);
 };
 
-#endif /* SRC_GST_DEBUGGER_GST_ENUM_CONTAINER_H_ */
+#endif /* SRC_GST_DEBUGGER_GST_ENUM_MODEL_H_ */

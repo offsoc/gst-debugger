@@ -50,7 +50,7 @@ void GstBinToDotConverter::dump_pad(const GraphPadPtr& pad)
 }
 void GstBinToDotConverter::dump_pad_link(const GraphPadPtr& pad)
 {
-	std::shared_ptr<GraphPad> peer_pad;
+	std::shared_ptr<PadModel> peer_pad;
 	std::string pad_name, element_name;
 	std::string peer_pad_name, peer_element_name;
 

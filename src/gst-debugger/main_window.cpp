@@ -45,7 +45,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	data_receivers.push_back(buffer_module);
 	data_receivers.push_back(graph_module);
 	data_receivers.push_back(properties_module);
-	data_receivers.push_back(enums);
 
 	signal_show().connect([this] {
 		graph_module->redraw_model();

@@ -38,7 +38,7 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder, const std::s
 
 	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
 
-	current_model = GraphElement::get_root();
+	current_model = ElementModel::get_root();
 
 	dsp.connect(sigc::mem_fun(*this, &GraphModule::redraw_model));
 }
@@ -60,17 +60,17 @@ static void split_element_pad(const std::string &str, std::string &element, std:
 	element = str.substr(0, pos);
 }
 
-static std::shared_ptr<GraphElement> get_from_root(const std::vector<std::string>& elements)
+static std::shared_ptr<ElementModel> get_from_root(const std::vector<std::string>& elements)
 {
-	auto parent = GraphElement::get_root();
+	auto parent = ElementModel::get_root();
 
 	for (std::size_t i = 0; i < elements.size(); i++)
 	{
 		auto it = std::find_if(parent->get_children().begin(), parent->get_children().end(),
-				[&elements, i](std::shared_ptr<GraphElement> e) {return elements[i] == e->get_name();});
+				[&elements, i](std::shared_ptr<ElementModel> e) {return elements[i] == e->get_name();});
 
 		if (it == parent->get_children().end())
-			return std::shared_ptr<GraphElement>();
+			return std::shared_ptr<ElementModel>();
 
 		parent = *it;
 	}
@@ -112,7 +112,7 @@ void GraphModule::process_frame()
 		if (!parent)
 			return;
 
-		parent->add_child(std::make_shared<GraphElement>(elements.back(), e_info.type_name(), e_info.is_bin()));
+		parent->add_child(std::make_shared<ElementModel>(elements.back(), e_info.type_name(), e_info.is_bin()));
 	}
 	else if (info.topology().type() == Topology_ObjectType_PAD)
 	{
@@ -129,7 +129,7 @@ void GraphModule::process_frame()
 		if (!parent)
 			return;
 
-		parent->add_pad(std::make_shared<GraphPad>(pad, pad_tp.tpl_name(),
+		parent->add_pad(std::make_shared<PadModel>(pad, pad_tp.tpl_name(),
 				pad_tp.is_ghostpad(), static_cast<Gst::PadDirection>(pad_tp.direction()),
 				static_cast<Gst::PadPresence>(pad_tp.presence())));
 	}
@@ -214,11 +214,11 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 	return false;
 }
 
-void GraphModule::update_model(const std::shared_ptr<GraphElement>& new_model)
+void GraphModule::update_model(const std::shared_ptr<ElementModel>& new_model)
 {
 	current_model = new_model;
 
-	std::shared_ptr<GraphObject> tmp_model = current_model;
+	std::shared_ptr<ObjectModel> tmp_model = current_model;
 	std::string model_path;
 	while (tmp_model)
 	{
@@ -232,7 +232,7 @@ void GraphModule::update_model(const std::shared_ptr<GraphElement>& new_model)
 
 void GraphModule::upGraphButton_clicked_cb()
 {
-	auto new_model = std::dynamic_pointer_cast<GraphElement>(current_model->get_parent());
+	auto new_model = std::dynamic_pointer_cast<ElementModel>(current_model->get_parent());
 	if (new_model)
 	{
 		update_model(new_model);

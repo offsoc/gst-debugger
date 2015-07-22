@@ -12,7 +12,6 @@ add_executable(gst-debugger
 	main_window.cpp
 	connection_properties_dialog.cpp
 	gst_debugger_tcp_client.cpp
-	gst_enum_container.cpp
 	gst_buffer_module.cpp
 	gst_message_module.cpp
 	gst_log_module.cpp
@@ -23,6 +22,8 @@ add_executable(gst-debugger
 	gst-debugger.ui.h
 	pipeline-drawer/gst_bin_to_dot_converter.cpp
 	pipeline-drawer/graph_module.cpp
+	models/gst_pipeline_model.cpp
+	models/gst_enum_model.cpp
 )
 
 target_link_libraries(gst-debugger

@@ -8,7 +8,7 @@
 #ifndef SRC_GST_DEBUGGER_PIPELINE_DRAWER_GST_BIN_TO_DOT_CONVERTER_H_
 #define SRC_GST_DEBUGGER_PIPELINE_DRAWER_GST_BIN_TO_DOT_CONVERTER_H_
 
-#include "graph_elements.h"
+#include "../models/gst_pipeline_model.h"
 
 class GstBinToDotConverter
 {

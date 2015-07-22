@@ -11,7 +11,7 @@
 #include "frame_receiver.h"
 #include "gst_debugger_tcp_client.h"
 #include "gst_bin_to_dot_converter.h"
-#include "graph_elements.h"
+#include "../models/gst_pipeline_model.h"
 
 #include <gvc.h>
 #include <gvcjob.h>
@@ -28,7 +28,7 @@ protected:
 	Agraph_t *g = nullptr;
 	GVC_t * gvc = nullptr;
 
-	std::shared_ptr<GraphElement> current_model;
+	std::shared_ptr<ElementModel> current_model;
 
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
@@ -41,7 +41,7 @@ protected:
 
 	void jump_to_selected_model();
 	void update_full_path();
-	void update_model(const std::shared_ptr<GraphElement>& new_model);
+	void update_model(const std::shared_ptr<ElementModel>& new_model);
 
 	void upGraphButton_clicked_cb();
 	bool graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context);

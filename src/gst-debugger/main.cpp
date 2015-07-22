@@ -14,7 +14,7 @@
 int main(int argc, char** argv)
 {
 	Gst::init(argc, argv);
-	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "number.plate.recognition");
+	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "gst.debugger");
 
 	Glib::RefPtr<Gtk::Builder> builder =
 			Gtk::Builder::create_from_string(std::string((char*)gst_debugger_glade, gst_debugger_glade_len));
