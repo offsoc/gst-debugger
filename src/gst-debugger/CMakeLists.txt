@@ -25,6 +25,7 @@ add_executable(gst-debugger
 	controller/command_factory.cpp
 	controller/controller.cpp
 	controller/tcp_client.cpp
+	controller/topology_controller.cpp
 
 	models/gst_pipeline_model.cpp
 	models/gst_enum_model.cpp

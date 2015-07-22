@@ -11,16 +11,20 @@
 #include "command_factory.h"
 #include "iview.h"
 #include "connection_controller.h"
-
-#include "models/gst_pipeline_model.h"
+#include "topology_controller.h"
 
 #include "protocol/gstdebugger.pb.h"
 
-class Controller : public std::enable_shared_from_this<Controller>, public CommandFactory, public ConnectionController
+class Controller :
+		public std::enable_shared_from_this<Controller>,
+		public CommandFactory,
+		public ConnectionController,
+		public TopologyController
 {
 private:
-	std::shared_ptr<ElementModel> current_model;
 	IMainView *view;
+
+	void process_frame(const GstreamerInfo& info);
 
 public:
 	Controller(IMainView *view);

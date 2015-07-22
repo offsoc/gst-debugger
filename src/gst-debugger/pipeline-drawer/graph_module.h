@@ -21,13 +21,12 @@
 class GraphModule : public FrameReceiver, public IBaseView
 {
 protected:
-	Glib::Dispatcher dsp;
+
 	GstBinToDotConverter dot_converter;
 
 	Agraph_t *g = nullptr;
 	GVC_t * gvc = nullptr;
 
-	std::shared_ptr<ElementModel> current_model;
 
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
@@ -54,5 +53,9 @@ public:
 
 	void redraw_model();
 	void free_graph();
+
+	// todo
+	Glib::Dispatcher dsp;
+	std::shared_ptr<ElementModel> current_model;
 };
 #endif /* SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_MODULE_H_ */

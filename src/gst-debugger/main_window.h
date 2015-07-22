@@ -53,7 +53,7 @@ public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~MainWindow() {}
 
-	void set_current_model(const std::shared_ptr<ElementModel> &model) override { /* todo */ }
+	void set_current_model(const std::shared_ptr<ElementModel> &model) override;
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
