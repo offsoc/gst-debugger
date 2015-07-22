@@ -22,6 +22,9 @@ add_executable(gst-debugger
 	gst-debugger.ui.h
 	pipeline-drawer/gst_bin_to_dot_converter.cpp
 	pipeline-drawer/graph_module.cpp
+	
+	controller/controller.cpp
+
 	models/gst_pipeline_model.cpp
 	models/gst_enum_model.cpp
 )
