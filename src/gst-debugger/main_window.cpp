@@ -8,7 +8,7 @@
 #include "main_window.h"
 #include "sigc++lambdahack.h"
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
-: Gtk::Window(cobject),
+: IView(cobject),
   builder(builder),
   client(std::make_shared<TcpClient>()),
   dispatcher(std::make_shared<Glib::Dispatcher>()),

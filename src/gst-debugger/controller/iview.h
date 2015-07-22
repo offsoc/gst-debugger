@@ -10,18 +10,22 @@
 
 #include "models/gst_pipeline_model.h"
 
+#include <gtkmm/window.h>
+
 #include <memory>
 
 class Controller;
 
-class IView
+class IView : public Gtk::Window
 {
 protected:
 	std::shared_ptr<Controller> controller;
 
 public:
-	IView(const std::shared_ptr<Controller> &controller) : controller(controller) {}
+	IView(BaseObjectType* cobject) : Gtk::Window(cobject) {}
 	virtual ~IView() {}
+
+	void set_controller(const std::shared_ptr<Controller> &controller) { this->controller = controller; }
 
 	virtual void set_current_model(const std::shared_ptr<ElementModel> &model) = 0;
 };

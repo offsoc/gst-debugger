@@ -17,11 +17,13 @@ class Controller : public std::enable_shared_from_this<Controller>
 {
 private:
 	std::shared_ptr<ElementModel> current_model;
-	std::shared_ptr<IView> view;
+	IView *view;
 	std::shared_ptr<TcpClient> client;
 
 public:
-	Controller();
+	Controller(IView *view);
+
+	int run(int &argc, char **&argv);
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */

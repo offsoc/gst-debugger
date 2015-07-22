@@ -20,8 +20,9 @@
 #include "frame_receiver.h"
 #include <gtkmm.h>
 #include "models/gst_enum_model.h"
+#include "controller/iview.h"
 
-class MainWindow : public Gtk::Window
+class MainWindow : public IView
 {
 	void connectionPropertiesMenuItem_activate_cb();
 	void connectMenuItem_activate_cb();
@@ -51,6 +52,8 @@ class MainWindow : public Gtk::Window
 public:
 	MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~MainWindow() {}
+
+	void set_current_model(const std::shared_ptr<ElementModel> &model) override { /* todo */ }
 };
 
 #endif /* SRC_GST_DEBUGGER_MAIN_WINDOW_H_ */
