@@ -14,7 +14,6 @@
 
 #include "gst_pipeline_model.h"
 
-
 void ElementModel::add_child(const std::shared_ptr<ElementModel> &child)
 {
 	children.push_back(child);
@@ -58,5 +57,3 @@ void ElementModel::add_property(const std::string &name, const std::shared_ptr<G
 {
 	properties[name] = gvalue;
 }
-
-
