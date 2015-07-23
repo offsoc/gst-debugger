@@ -26,6 +26,8 @@ private:
 
 	void process_frame(const GstreamerInfo& info);
 
+	void process_debug_categories(const DebugCategoryList& categories);
+
 public:
 	Controller(IMainView *view);
 

@@ -49,7 +49,6 @@ class GstLogModule : public FrameReceiver, public IBaseView
 	void refreshDebugCategoriesButton_clicked_cb();
 	void saveMessageLogsButton_clicked_cb();
 
-	void update_debug_categories();
 	void append_log_entry();
 
 	GstreamerLogModelColumns model_columns;
@@ -58,6 +57,8 @@ class GstLogModule : public FrameReceiver, public IBaseView
 	void process_frame() override;
 public:
 	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder);
+
+	void update_debug_categories(const std::vector<std::string> &categories);
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_LOG_MODULE_H_ */

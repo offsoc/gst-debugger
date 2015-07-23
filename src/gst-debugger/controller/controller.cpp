@@ -9,6 +9,8 @@
 
 #include <gtkmm.h>
 
+#include <boost/algorithm/string/split.hpp>
+
 Controller::Controller(IMainView *view)
  : view(view)
 {
@@ -35,6 +37,9 @@ void Controller::process_frame(const GstreamerInfo &info)
 		process(info.topology());
 		view->set_current_model(current_model);
 		break;
+	case GstreamerInfo_InfoType_DEBUG_CATEGORIES:
+		process_debug_categories(info.debug_categories());
+		break;
 	default:
 		break;
 	}
@@ -58,4 +63,14 @@ void Controller::model_down(const std::string &name)
 		current_model = tmp;
 		view->set_current_model(current_model);
 	}
+}
+
+void Controller::process_debug_categories(const DebugCategoryList& debug_categories)
+{
+	std::vector<std::string> categories;
+	boost::split(categories, debug_categories.list(), [](char c) { return c == ';'; });
+	categories.erase(std::remove_if(categories.begin(), categories.end(),
+			[](const std::string &s){return s.empty();}), categories.end());
+
+	view->set_debug_categories(categories);
 }

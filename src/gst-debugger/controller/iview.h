@@ -36,6 +36,8 @@ public:
 	virtual void set_current_model(const std::shared_ptr<ElementModel> &model) = 0;
 
 	virtual void set_controller(const std::shared_ptr<Controller> &controller) = 0;
+
+	virtual void set_debug_categories(const std::vector<std::string> &debug_categories) = 0;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_IVIEW_H_ */

@@ -101,9 +101,6 @@ void GstLogModule::process_frame()
 {
 	switch (info.info_type())
 	{
-	case GstreamerInfo_InfoType_DEBUG_CATEGORIES:
-		update_debug_categories();
-		break;
 	case GstreamerInfo_InfoType_LOG:
 		append_log_entry();
 		break;
@@ -112,21 +109,16 @@ void GstLogModule::process_frame()
 	}
 }
 
-void GstLogModule::update_debug_categories()
+void GstLogModule::update_debug_categories(const std::vector<std::string> &categories)
 {
 	debug_categories_combo_box_text->remove_all();
-	std::string data = info.debug_categories().list();
-	std::size_t pos;
-	bool cnt = false;
 
-	while ((pos = data.find(';')) != std::string::npos)
+	for (auto cat : categories)
 	{
-		debug_categories_combo_box_text->append(data.substr(0, pos));
-		data = data.substr(pos+1);
-		cnt = true;
+		debug_categories_combo_box_text->append(cat);
 	}
 
-	if (cnt)
+	if (!categories.empty())
 		debug_categories_combo_box_text->set_active(0);
 }
 

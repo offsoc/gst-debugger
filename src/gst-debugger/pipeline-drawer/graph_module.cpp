@@ -194,8 +194,11 @@ void GraphModule::jump_to_selected_model()
 bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)
 {
 	GVJ_t *job;
-
 	job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()),"job");
+
+	if (job == nullptr)
+		return false;
+
 	job->pointer.x = event->x;
 	job->pointer.y = event->y;
 	graph_drawing_area->queue_draw();

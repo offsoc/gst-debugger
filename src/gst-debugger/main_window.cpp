@@ -107,3 +107,8 @@ void MainWindow::set_current_model(const std::shared_ptr<ElementModel> &model)
 	graph_module->update_model(model);
 	graph_module->dsp.emit();
 }
+
+void MainWindow::set_debug_categories(const std::vector<std::string> &debug_categories)
+{
+	log_module->update_debug_categories(debug_categories);
+}
