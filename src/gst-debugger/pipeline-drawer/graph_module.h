@@ -27,6 +27,7 @@ protected:
 	Agraph_t *g = nullptr;
 	GVC_t * gvc = nullptr;
 
+	std::string model_str;
 
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
@@ -39,7 +40,6 @@ protected:
 
 	void jump_to_selected_model();
 	void update_full_path();
-	void update_model(const std::shared_ptr<ElementModel>& new_model);
 
 	void upGraphButton_clicked_cb();
 	bool graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context);
@@ -51,11 +51,11 @@ protected:
 public:
 	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder);
 
+	void update_model(const std::shared_ptr<ElementModel>& new_model);
 	void redraw_model();
 	void free_graph();
 
 	// todo
 	Glib::Dispatcher dsp;
-	std::shared_ptr<ElementModel> current_model;
 };
 #endif /* SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_MODULE_H_ */

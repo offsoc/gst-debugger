@@ -39,3 +39,23 @@ void Controller::process_frame(const GstreamerInfo &info)
 		break;
 	}
 }
+
+void Controller::model_up()
+{
+	if (current_model == ElementModel::get_root())
+		return;
+
+	current_model = std::static_pointer_cast<ElementModel>(current_model->get_parent());
+	view->set_current_model(current_model);
+}
+
+void Controller::model_down(const std::string &name)
+{
+	auto tmp = current_model->get_child(name);
+
+	if (tmp && tmp->is_bin())
+	{
+		current_model = tmp;
+		view->set_current_model(current_model);
+	}
+}

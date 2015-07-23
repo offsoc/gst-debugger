@@ -17,7 +17,7 @@
 class ElementPathProcessor
 {
 private:
-	std::string last_obj;
+	std::string last_element;
 	std::shared_ptr<ElementModel> parent_element;
 	bool is_pad_ = false;
 	std::vector<std::string> elements;
@@ -42,12 +42,12 @@ public:
 		is_pad_ = pos != std::string::npos;
 		if (is_pad_)
 		{
-			last_obj = elements.back().substr(pos+1);
+			last_element = elements.back().substr(pos+1);
 			elements.back() = elements.back().substr(0, pos);
 		}
 		else
 		{
-			last_obj = elements.back();
+			last_element = elements.back();
 			elements.pop_back();
 		}
 		for (std::size_t i = 0; i < elements.size(); i++)
@@ -66,14 +66,14 @@ public:
 
 	bool is_pad() const { return is_pad_; }
 
-	std::string get_last_obj_str() const { return last_obj; }
+	std::string get_last_obj_str() const { return last_element; }
 
 	std::shared_ptr<ObjectModel> get_last_obj() const
 	{
 		if (is_pad_)
-			return parent_element->get_pad(last_obj);
+			return parent_element->get_pad(last_element);
 		else
-			return parent_element->get_child(last_obj);
+			return parent_element->get_child(last_element);
 	}
 };
 

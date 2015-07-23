@@ -104,6 +104,6 @@ void MainWindow::connection_status_changed(bool connected)
 
 void MainWindow::set_current_model(const std::shared_ptr<ElementModel> &model)
 {
-	graph_module->current_model = model;
+	graph_module->update_model(model);
 	graph_module->dsp.emit();
 }

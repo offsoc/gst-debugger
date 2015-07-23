@@ -39,8 +39,6 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 
 	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
 
-	current_model = ElementModel::get_root();
-
 	dsp.connect(sigc::mem_fun(*this, &GraphModule::redraw_model));
 }
 
@@ -159,9 +157,8 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 
 void GraphModule::update_model(const std::shared_ptr<ElementModel>& new_model)
 {
-	current_model = new_model;
-
-	std::shared_ptr<ObjectModel> tmp_model = current_model;
+	std::shared_ptr<ObjectModel> tmp_model = new_model;
+	model_str = dot_converter.to_dot_data(new_model);
 	std::string model_path;
 	while (tmp_model)
 	{
@@ -169,21 +166,11 @@ void GraphModule::update_model(const std::shared_ptr<ElementModel>& new_model)
 		tmp_model = tmp_model->get_parent();
 	}
 	current_path_graph_entry->set_text(model_path);
-
-	redraw_model();
 }
 
 void GraphModule::upGraphButton_clicked_cb()
 {
-	auto new_model = std::dynamic_pointer_cast<ElementModel>(current_model->get_parent());
-	if (new_model)
-	{
-		update_model(new_model);
-	}
-	else
-	{
-		// todo message: no parent
-	}
+	controller->model_up();
 }
 
 void GraphModule::jump_to_selected_model()
@@ -201,15 +188,7 @@ void GraphModule::jump_to_selected_model()
 		return;
 	}
 
-	auto new_model = current_model->get_child(selected_element);
-
-	if (!new_model || !new_model->is_bin())
-	{
-		// todo message: selected element is not a bin
-		return;
-	}
-
-	update_model(new_model);
+	controller->model_down(selected_element);
 }
 
 bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)
@@ -240,6 +219,10 @@ bool GraphModule::graphDrawingArea_button_release_cb(GdkEventButton *event)
 bool GraphModule::graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context)
 {
 	GVJ_t *job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()), "job");
+
+	if (job == nullptr)
+		return false;
+
 	(job->callbacks->motion)(job, job->pointer);
 	job->context = (void *)context->cobj();
 	job->external_context = TRUE;
@@ -268,8 +251,11 @@ void GraphModule::redraw_model()
 {
 	free_graph();
 
+	if (model_str.empty())
+		return;
+
 	gvc = gvContext ();
-	g = agmemread (dot_converter.to_dot_data(current_model).c_str());
+	g = agmemread (model_str.c_str());
 	gvLayout (gvc, g, "dot");
 	graph_drawing_area->hide();
 	gvRender (gvc, g, "gstdebugger", NULL);

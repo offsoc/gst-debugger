@@ -32,6 +32,9 @@ public:
 	void send_command(const Command& cmd);
 
 	int run(int &argc, char **&argv);
+
+	void model_up();
+	void model_down(const std::string &name);
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */
