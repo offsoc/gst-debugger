@@ -72,7 +72,7 @@ gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
   info.log = &log;
   size = gstreamer_info__get_packed_size (&info);
 
-  if (max_size > size) {
+  if (max_size < size) {
     goto finalize;
   }
 
