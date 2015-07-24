@@ -1314,7 +1314,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="orientation">vertical</property>
-                <property name="position">126</property>
+                <property name="position">196</property>
+                <property name="position_set">True</property>
                 <child>
                   <object class="GtkBox" id="box19">
                     <property name="visible">True</property>
