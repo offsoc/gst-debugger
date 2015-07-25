@@ -137,6 +137,11 @@ void GstBinToDotConverter::dump_top_pads(const GraphElementPtr& bin)
 	}
 }
 
+void GstBinToDotConverter::dump_footer()
+{
+	str += "}\n";
+}
+
 std::string GstBinToDotConverter::to_dot_data(const GraphElementPtr& bin)
 {
 	str.clear();
@@ -146,7 +151,19 @@ std::string GstBinToDotConverter::to_dot_data(const GraphElementPtr& bin)
 	dump_top_pads(bin);
 
 	dump_element (bin);
-	str += "}\n";
+
+	dump_footer();
+
+	return str;
+}
+
+std::string GstBinToDotConverter::get_blank_page()
+{
+	str.clear();
+
+	dump_header();
+
+	dump_footer();
 
 	return str;
 }

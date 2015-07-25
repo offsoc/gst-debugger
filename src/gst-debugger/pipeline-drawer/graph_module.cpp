@@ -15,6 +15,11 @@
 
 #include <boost/algorithm/string.hpp>
 
+static void ptr_free(std::shared_ptr<ElementModel>* ptr)
+{
+	delete ptr;
+}
+
 GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 	builder->get_widget("graphDrawingArea", graph_drawing_area);
@@ -39,7 +44,13 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 
 	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
 
-	dsp.connect(sigc::mem_fun(*this, &GraphModule::redraw_model));
+	create_dispatcher("update-model", sigc::mem_fun(*this, &GraphModule::update_model_), (GDestroyNotify)ptr_free);
+}
+
+void GraphModule::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	IBaseView::set_controller(controller);
+	controller->on_model_changed.connect(sigc::mem_fun(*this, &GraphModule::update_model));
 }
 
 static std::shared_ptr<ElementModel> get_from_root(const std::vector<std::string>& elements)
@@ -155,17 +166,10 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 	return false;
 }
 
-void GraphModule::update_model(const std::shared_ptr<ElementModel>& new_model)
+void GraphModule::update_model(std::shared_ptr<ElementModel> new_model)
 {
-	std::shared_ptr<ObjectModel> tmp_model = new_model;
-	model_str = dot_converter.to_dot_data(new_model);
-	std::string model_path;
-	while (tmp_model)
-	{
-		model_path = tmp_model->get_name() + "/" + model_path;
-		tmp_model = tmp_model->get_parent();
-	}
-	current_path_graph_entry->set_text(model_path);
+	gui_push("update-model", new std::shared_ptr<ElementModel>(new_model));
+	gui_emit("update-model");
 }
 
 void GraphModule::upGraphButton_clicked_cb()
@@ -250,12 +254,32 @@ void GraphModule::free_graph()
 	}
 }
 
-void GraphModule::redraw_model()
+void GraphModule::update_model_()
 {
 	free_graph();
 
-	if (model_str.empty())
-		return;
+	auto m = gui_try_pop<std::shared_ptr<ElementModel>*>("update-model");
+	std::string model_str;
+	if (m != nullptr)
+	{
+		auto new_model = *m;
+
+		std::shared_ptr<ObjectModel> tmp_model = new_model;
+		model_str = dot_converter.to_dot_data(new_model);
+
+		std::string model_path;
+		while (tmp_model)
+		{
+			model_path = tmp_model->get_name() + "/" + model_path;
+			tmp_model = tmp_model->get_parent();
+		}
+		current_path_graph_entry->set_text(model_path);
+		delete m;
+	}
+	else
+	{
+		model_str = dot_converter.get_blank_page();
+	}
 
 	gvc = gvContext ();
 	g = agmemread (model_str.c_str());

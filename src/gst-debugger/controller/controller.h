@@ -38,6 +38,7 @@ public:
 
 	sigc::signal<void, const GstreamerLog&> on_log_received;
 	sigc::signal<void, const DebugCategoryList&> on_debug_categories_received;
+	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */

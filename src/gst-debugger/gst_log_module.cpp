@@ -52,17 +52,8 @@ GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder)
 	log_messages_tree_view->append_column("Object", model_columns.object_path);
 	log_messages_tree_view->append_column("Message", model_columns.message);
 
-	logs_queue = g_async_queue_new_full ((GDestroyNotify)free_log);
-	categories_queue = g_async_queue_new_full ((GDestroyNotify)free_categories);
-
-	create_dispatcher("log", sigc::mem_fun(*this, &GstLogModule::new_log_entry_));
-	create_dispatcher("debug-categories", sigc::mem_fun(*this, &GstLogModule::new_debug_categories_));
-}
-
-GstLogModule::~GstLogModule()
-{
-	g_async_queue_unref (logs_queue);
-	g_async_queue_unref (categories_queue);
+	create_dispatcher("log", sigc::mem_fun(*this, &GstLogModule::new_log_entry_), (GDestroyNotify)free_log);
+	create_dispatcher("debug-categories", sigc::mem_fun(*this, &GstLogModule::new_debug_categories_), (GDestroyNotify)free_categories);
 }
 
 void GstLogModule::setThresholdButton_clicked_cb()
@@ -123,7 +114,7 @@ void GstLogModule::new_debug_categories_()
 {
 	debug_categories_combo_box_text->remove_all();
 
-	auto debug_categories = reinterpret_cast<DebugCategoryList*>(g_async_queue_pop (categories_queue));
+	auto debug_categories = gui_pop<DebugCategoryList*>("debug-categories");
 
 	std::vector<std::string> categories;
 	boost::split(categories, debug_categories->list(), [](char c) { return c == ';'; });
@@ -142,19 +133,19 @@ void GstLogModule::new_debug_categories_()
 
 void GstLogModule::new_debug_categories(const DebugCategoryList& debug_categories)
 {
-	g_async_queue_push (categories_queue, new DebugCategoryList (debug_categories));
-	gui_emit("debug-categories");
+	gui_push ("debug-categories", new DebugCategoryList(debug_categories));
+	gui_emit ("debug-categories");
 }
 
 void GstLogModule::new_log_entry(const GstreamerLog& log_info)
 {
-	g_async_queue_push (logs_queue, new GstreamerLog (log_info));
+	gui_push("log", new GstreamerLog (log_info));
 	gui_emit("log");
 }
 
 void GstLogModule::new_log_entry_()
 {
-	auto log_info = reinterpret_cast<GstreamerLog*>(g_async_queue_pop (logs_queue));
+	auto log_info = gui_pop<GstreamerLog*>("log");
 
 	Gtk::TreeModel::Row row = *(model->append());
 	row[model_columns.level] = log_info->level();

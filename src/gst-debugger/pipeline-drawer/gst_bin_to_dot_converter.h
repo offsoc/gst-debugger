@@ -21,9 +21,11 @@ private:
 	void dump_element(const GraphElementPtr& bin);
 	void dump_header();
 	void dump_top_pads(const GraphElementPtr& bin);
+	void dump_footer();
 
 public:
-	std::string to_dot_data (const GraphElementPtr& bin);
+	std::string to_dot_data(const GraphElementPtr& bin);
+	std::string get_blank_page();
 };
 
 #endif /* SRC_GST_DEBUGGER_PIPELINE_DRAWER_GST_BIN_TO_DOT_CONVERTER_H_ */

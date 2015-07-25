@@ -27,8 +27,6 @@ protected:
 	Agraph_t *g = nullptr;
 	GVC_t * gvc = nullptr;
 
-	std::string model_str;
-
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
 	Gtk::Entry *selected_element_entry;
@@ -51,11 +49,10 @@ protected:
 public:
 	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder);
 
-	void update_model(const std::shared_ptr<ElementModel>& new_model);
-	void redraw_model();
+	void update_model_();
+	void update_model(std::shared_ptr<ElementModel> new_model);
 	void free_graph();
 
-	// todo
-	Glib::Dispatcher dsp;
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 #endif /* SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_MODULE_H_ */

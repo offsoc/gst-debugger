@@ -44,9 +44,6 @@ class GstLogModule : public FrameReceiver, public IBaseView
 	Gtk::Button *set_threshold_button;
 	Gtk::Button *save_message_logs_button;
 
-	GAsyncQueue *logs_queue;
-	GAsyncQueue *categories_queue;
-
 	void setThresholdButton_clicked_cb();
 	void watchLogCheckButton_toggled_cb();
 	void refreshDebugCategoriesButton_clicked_cb();
@@ -64,9 +61,7 @@ class GstLogModule : public FrameReceiver, public IBaseView
 	void process_frame() override;
 public:
 	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder);
-	virtual ~GstLogModule();
-
-	void update_debug_categories(const std::vector<std::string> &categories);
+	virtual ~GstLogModule() {}
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };

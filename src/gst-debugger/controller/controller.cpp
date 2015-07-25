@@ -33,7 +33,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 	{
 	case GstreamerInfo_InfoType_TOPOLOGY:
 		process(info.topology());
-		view->set_current_model(current_model);
+		on_model_changed(current_model);
 		break;
 	case GstreamerInfo_InfoType_DEBUG_CATEGORIES:
 		on_debug_categories_received(info.debug_categories());
@@ -52,7 +52,7 @@ void Controller::model_up()
 		return;
 
 	current_model = std::static_pointer_cast<ElementModel>(current_model->get_parent());
-	view->set_current_model(current_model);
+	on_model_changed(current_model);
 }
 
 void Controller::model_down(const std::string &name)
@@ -62,7 +62,7 @@ void Controller::model_down(const std::string &name)
 	if (tmp && tmp->is_bin())
 	{
 		current_model = tmp;
-		view->set_current_model(current_model);
+		on_model_changed(current_model);
 	}
 }
 

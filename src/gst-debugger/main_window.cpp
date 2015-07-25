@@ -43,7 +43,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	data_receivers.push_back(properties_module);
 
 	signal_show().connect([this] {
-		graph_module->redraw_model();
+		graph_module->update_model_();
 	});
 
 	signal_delete_event().connect([this](GdkEventAny*){
@@ -100,11 +100,5 @@ void MainWindow::connection_status_changed(bool connected)
 		main_statusbar->push("Disconnected", id);
 		((Gtk::Label*)connect_menu_item->get_child())->set_text("Connect");
 	}
-}
-
-void MainWindow::set_current_model(const std::shared_ptr<ElementModel> &model)
-{
-	graph_module->update_model(model);
-	graph_module->dsp.emit();
 }
 
