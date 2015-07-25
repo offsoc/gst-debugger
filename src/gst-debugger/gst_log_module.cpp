@@ -9,7 +9,13 @@
 
 #include "controller/command_factory.h"
 #include "controller/controller.h"
+
+#include <boost/algorithm/string/split.hpp>
+
 #include <fstream>
+
+static void free_log(GstreamerLog *log) { delete log; }
+static void free_categories(DebugCategoryList *log) { delete log; }
 
 GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
@@ -45,6 +51,18 @@ GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder)
 	log_messages_tree_view->append_column("Line", model_columns.line);
 	log_messages_tree_view->append_column("Object", model_columns.object_path);
 	log_messages_tree_view->append_column("Message", model_columns.message);
+
+	logs_queue = g_async_queue_new_full ((GDestroyNotify)free_log);
+	categories_queue = g_async_queue_new_full ((GDestroyNotify)free_categories);
+
+	create_dispatcher("log", sigc::mem_fun(*this, &GstLogModule::new_log_entry_));
+	create_dispatcher("debug-categories", sigc::mem_fun(*this, &GstLogModule::new_debug_categories_));
+}
+
+GstLogModule::~GstLogModule()
+{
+	g_async_queue_unref (logs_queue);
+	g_async_queue_unref (categories_queue);
 }
 
 void GstLogModule::setThresholdButton_clicked_cb()
@@ -99,19 +117,19 @@ void GstLogModule::refreshDebugCategoriesButton_clicked_cb()
 
 void GstLogModule::process_frame()
 {
-	switch (info.info_type())
-	{
-	case GstreamerInfo_InfoType_LOG:
-		append_log_entry();
-		break;
-	default:
-		break;
-	}
 }
 
-void GstLogModule::update_debug_categories(const std::vector<std::string> &categories)
+void GstLogModule::new_debug_categories_()
 {
 	debug_categories_combo_box_text->remove_all();
+
+	auto debug_categories = reinterpret_cast<DebugCategoryList*>(g_async_queue_pop (categories_queue));
+
+	std::vector<std::string> categories;
+	boost::split(categories, debug_categories->list(), [](char c) { return c == ';'; });
+	delete debug_categories;
+	categories.erase(std::remove_if(categories.begin(), categories.end(),
+			[](const std::string &s){return s.empty();}), categories.end());
 
 	for (auto cat : categories)
 	{
@@ -122,15 +140,37 @@ void GstLogModule::update_debug_categories(const std::vector<std::string> &categ
 		debug_categories_combo_box_text->set_active(0);
 }
 
-void GstLogModule::append_log_entry()
+void GstLogModule::new_debug_categories(const DebugCategoryList& debug_categories)
 {
+	g_async_queue_push (categories_queue, new DebugCategoryList (debug_categories));
+	gui_emit("debug-categories");
+}
+
+void GstLogModule::new_log_entry(const GstreamerLog& log_info)
+{
+	g_async_queue_push (logs_queue, new GstreamerLog (log_info));
+	gui_emit("log");
+}
+
+void GstLogModule::new_log_entry_()
+{
+	auto log_info = reinterpret_cast<GstreamerLog*>(g_async_queue_pop (logs_queue));
+
 	Gtk::TreeModel::Row row = *(model->append());
-	auto gstlog = info.log();
-	row[model_columns.level] = gstlog.level();
-	row[model_columns.category_name] = gstlog.category_name();
-	row[model_columns.file] = gstlog.file();
-	row[model_columns.function] = gstlog.function();
-	row[model_columns.line] = gstlog.line();
-	row[model_columns.object_path] = gstlog.object_path();
-	row[model_columns.message] = gstlog.message();
+	row[model_columns.level] = log_info->level();
+	row[model_columns.category_name] = log_info->category_name();
+	row[model_columns.file] = log_info->file();
+	row[model_columns.function] = log_info->function();
+	row[model_columns.line] = log_info->line();
+	row[model_columns.object_path] = log_info->object_path();
+	row[model_columns.message] = log_info->message();
+
+	delete log_info;
+}
+
+void GstLogModule::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	IBaseView::set_controller(controller);
+	controller->on_log_received.connect(sigc::mem_fun(*this, &GstLogModule::new_log_entry));
+	controller->on_debug_categories_received.connect(sigc::mem_fun(*this, &GstLogModule::new_debug_categories));
 }

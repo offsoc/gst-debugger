@@ -44,21 +44,31 @@ class GstLogModule : public FrameReceiver, public IBaseView
 	Gtk::Button *set_threshold_button;
 	Gtk::Button *save_message_logs_button;
 
+	GAsyncQueue *logs_queue;
+	GAsyncQueue *categories_queue;
+
 	void setThresholdButton_clicked_cb();
 	void watchLogCheckButton_toggled_cb();
 	void refreshDebugCategoriesButton_clicked_cb();
 	void saveMessageLogsButton_clicked_cb();
 
-	void append_log_entry();
-
 	GstreamerLogModelColumns model_columns;
 	Glib::RefPtr<Gtk::ListStore> model;
+
+	void new_log_entry(const GstreamerLog& log_info);
+	void new_log_entry_();
+
+	void new_debug_categories(const DebugCategoryList& debug_categories);
+	void new_debug_categories_();
 
 	void process_frame() override;
 public:
 	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder);
+	virtual ~GstLogModule();
 
 	void update_debug_categories(const std::vector<std::string> &categories);
+
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_LOG_MODULE_H_ */

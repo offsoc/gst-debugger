@@ -56,8 +56,6 @@ public:
 	void set_current_model(const std::shared_ptr<ElementModel> &model) override;
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
-
-	void set_debug_categories(const std::vector<std::string> &debug_categories) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_MAIN_WINDOW_H_ */

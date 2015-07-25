@@ -18,13 +18,25 @@ class Controller;
 
 class IBaseView
 {
+	std::map<std::string, Glib::Dispatcher> dispatchers;
+
 protected:
 	std::shared_ptr<Controller> controller;
+
+	void create_dispatcher(const std::string &dispatcher_name, const sigc::slot<void>& slot)
+	{
+		dispatchers[dispatcher_name].connect(slot);
+	}
+
+	void gui_emit(const std::string &dispatcher_name)
+	{
+		dispatchers[dispatcher_name].emit();
+	}
 
 public:
 	virtual ~IBaseView() {}
 
-	void set_controller(const std::shared_ptr<Controller> &controller) { this->controller = controller; }
+	virtual void set_controller(const std::shared_ptr<Controller> &controller) { this->controller = controller; }
 };
 
 class IMainView : public Gtk::Window, public IBaseView
@@ -36,8 +48,6 @@ public:
 	virtual void set_current_model(const std::shared_ptr<ElementModel> &model) = 0;
 
 	virtual void set_controller(const std::shared_ptr<Controller> &controller) = 0;
-
-	virtual void set_debug_categories(const std::vector<std::string> &debug_categories) = 0;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_IVIEW_H_ */

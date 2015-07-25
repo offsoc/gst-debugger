@@ -26,8 +26,6 @@ private:
 
 	void process_frame(const GstreamerInfo& info);
 
-	void process_debug_categories(const DebugCategoryList& categories);
-
 public:
 	Controller(IMainView *view);
 
@@ -37,6 +35,9 @@ public:
 
 	void model_up();
 	void model_down(const std::string &name);
+
+	sigc::signal<void, const GstreamerLog&> on_log_received;
+	sigc::signal<void, const DebugCategoryList&> on_debug_categories_received;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */
