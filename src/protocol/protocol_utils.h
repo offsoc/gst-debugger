@@ -12,9 +12,9 @@
 
 G_BEGIN_DECLS
 
-gboolean gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint requested_size, gchar * buffer);
+gboolean gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint requested_size, gchar * buffer, GCancellable *cancel);
 
-gint gst_debugger_protocol_utils_read_header (GInputStream * istream);
+gint gst_debugger_protocol_utils_read_header (GInputStream * istream, GCancellable *cancel);
 
 void gst_debugger_protocol_utils_serialize_integer64 (gint64 value, gchar * buffer, gint size);
 

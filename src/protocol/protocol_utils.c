@@ -40,13 +40,13 @@ gst_debugger_protocol_utils_deserialize_uinteger64 (const gchar * buffer, gint s
 }
 
 gboolean
-gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint requested_size, gchar * buffer)
+gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint requested_size, gchar * buffer, GCancellable *cancel)
 {
   gint size = 0;
   gint cnt = 0;
 
   while (size < requested_size) {
-    if ((cnt = g_input_stream_read (istream, buffer + size, requested_size - size, NULL, NULL)) < 1) {
+    if ((cnt = g_input_stream_read (istream, buffer + size, requested_size - size, cancel, NULL)) < 1) {
       return FALSE;
     }
     size += cnt;
@@ -56,11 +56,11 @@ gst_debugger_protocol_utils_read_requested_size (GInputStream * istream, gint re
 }
 
 gint
-gst_debugger_protocol_utils_read_header (GInputStream * istream)
+gst_debugger_protocol_utils_read_header (GInputStream * istream, GCancellable *cancel)
 {
   gchar buffer[4];
 
-  if (gst_debugger_protocol_utils_read_requested_size(istream, 4, buffer) == FALSE) {
+  if (gst_debugger_protocol_utils_read_requested_size(istream, 4, buffer, cancel) == FALSE) {
     return -1;
   }
 
