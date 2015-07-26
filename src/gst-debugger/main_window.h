@@ -9,13 +9,13 @@
 #define SRC_GST_DEBUGGER_MAIN_WINDOW_H_
 
 #include "controller/tcp_client.h"
-#include "connection_properties_dialog.h"
-#include "gst_log_module.h"
-#include "gst_event_module.h"
-#include "gst_query_module.h"
-#include "gst_message_module.h"
-#include "gst_buffer_module.h"
-#include "gst_properties_module.h"
+#include "dialogs/connection_properties_dialog.h"
+#include "modules/gst_log_module.h"
+#include "modules/gst_event_module.h"
+#include "modules/gst_query_module.h"
+#include "modules/gst_message_module.h"
+#include "modules/gst_buffer_module.h"
+#include "modules/gst_properties_module.h"
 #include "pipeline-drawer/graph_module.h"
 #include <gtkmm.h>
 

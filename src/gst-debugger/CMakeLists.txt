@@ -10,18 +10,21 @@ add_custom_command(
 add_executable(gst-debugger
 	main.cpp
 	main_window.cpp
-	connection_properties_dialog.cpp
-	gst_buffer_module.cpp
-	gst_message_module.cpp
-	gst_log_module.cpp
-	gst_event_module.cpp
-	gst_properties_module.cpp
-	gst_query_module.cpp
-	gst_qe_module.cpp
 	gst-debugger.ui.h
+	
+	dialogs/connection_properties_dialog.cpp
+	
+	modules/gst_buffer_module.cpp
+	modules/gst_message_module.cpp
+	modules/gst_log_module.cpp
+	modules/gst_event_module.cpp
+	modules/gst_properties_module.cpp
+	modules/gst_query_module.cpp
+	modules/gst_qe_module.cpp
+
 	pipeline-drawer/gst_bin_to_dot_converter.cpp
 	pipeline-drawer/graph_module.cpp
-	
+
 	controller/command_factory.cpp
 	controller/controller.cpp
 	controller/tcp_client.cpp
