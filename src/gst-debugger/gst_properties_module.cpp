@@ -39,7 +39,7 @@ void GstPropertiesModule::new_property(const Property &property)
 
 void GstPropertiesModule::request_property(const std::string &property_name)
 {
-	controller->make_property_request_command(element_path_property_entry->get_text(), property_name);
+	controller->send_property_request_command(element_path_property_entry->get_text(), property_name);
 }
 
 void GstPropertiesModule::showPropertiesButton_clicked_cb()

@@ -147,7 +147,7 @@ void GstQEModule::send_start_stop_command(bool enable)
 
 	std::string pad_path = any_path_check_button->get_active() ? Glib::ustring() : qe_pad_path_entry->get_text();
 
-	controller->make_pad_watch_command(enable, get_watch_type(), pad_path, qe_type);
+	controller->send_pad_watch_command(enable, get_watch_type(), pad_path, qe_type);
 }
 
 void GstQEModule::qeListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)

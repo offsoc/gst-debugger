@@ -15,13 +15,13 @@
 class CommandFactory : public virtual BaseController
 {
 public:
-	void make_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type);
-	void make_property_request_command(const std::string &element_path, const std::string &property_name);
-	void make_message_request_command(int message_type);
-	void make_set_threshold_command(const std::string &threshold_list, bool overwrite);
-	void make_set_log_watch_command(bool enable, int log_level);
-	void make_request_debug_categories_command();
-	void make_request_topology_command();
+	void send_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type);
+	void send_property_request_command(const std::string &element_path, const std::string &property_name);
+	void send_message_request_command(int message_type);
+	void send_set_threshold_command(const std::string &threshold_list, bool overwrite);
+	void send_set_log_watch_command(bool enable, int log_level);
+	void send_request_debug_categories_command();
+	void send_request_topology_command();
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_COMMAND_FACTORY_H_ */

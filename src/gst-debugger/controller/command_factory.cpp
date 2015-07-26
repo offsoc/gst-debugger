@@ -7,7 +7,7 @@
 
 #include "command_factory.h"
 
-void CommandFactory::make_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type)
+void CommandFactory::send_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type)
 {
 	Command cmd;
 	PadWatch *pad_watch = new PadWatch();
@@ -21,7 +21,7 @@ void CommandFactory::make_pad_watch_command(bool enable, PadWatch_WatchType watc
 	client->send_command(cmd);
 }
 
-void CommandFactory::make_property_request_command(const std::string &element_path, const std::string &property_name)
+void CommandFactory::send_property_request_command(const std::string &element_path, const std::string &property_name)
 {
 	Command cmd;
 	Property *property = new Property();
@@ -32,7 +32,7 @@ void CommandFactory::make_property_request_command(const std::string &element_pa
 	client->send_command(cmd);
 }
 
-void CommandFactory::make_message_request_command(int message_type)
+void CommandFactory::send_message_request_command(int message_type)
 {
 	MessageWatch *msg_watch = new MessageWatch();
 	msg_watch->set_message_type(message_type);
@@ -44,7 +44,7 @@ void CommandFactory::make_message_request_command(int message_type)
 	client->send_command(cmd);
 }
 
-void CommandFactory::make_set_threshold_command(const std::string &threshold_list, bool overwrite)
+void CommandFactory::send_set_threshold_command(const std::string &threshold_list, bool overwrite)
 {
 	Command cmd;
 	LogThreshold *log_threshold = new LogThreshold();
@@ -56,7 +56,7 @@ void CommandFactory::make_set_threshold_command(const std::string &threshold_lis
 	client->send_command(cmd);
 }
 
-void CommandFactory::make_set_log_watch_command(bool enable, int log_level)
+void CommandFactory::send_set_log_watch_command(bool enable, int log_level)
 {
 	Command cmd;
 	LogWatch *log_watch = new LogWatch();
@@ -68,7 +68,7 @@ void CommandFactory::make_set_log_watch_command(bool enable, int log_level)
 	client->send_command(cmd);
 }
 
-void CommandFactory::make_request_debug_categories_command()
+void CommandFactory::send_request_debug_categories_command()
 {
 	Command cmd;
 	cmd.set_command_type(Command_CommandType_DEBUG_CATEGORIES);
@@ -76,7 +76,7 @@ void CommandFactory::make_request_debug_categories_command()
 	client->send_command(cmd);
 }
 
-void CommandFactory::make_request_topology_command()
+void CommandFactory::send_request_topology_command()
 {
 	Command cmd;
 	cmd.set_command_type(Command_CommandType_TOPOLOGY);

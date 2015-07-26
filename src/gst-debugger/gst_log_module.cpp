@@ -58,13 +58,13 @@ GstLogModule::GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder)
 
 void GstLogModule::setThresholdButton_clicked_cb()
 {
-	controller->make_set_threshold_command(log_threshold_entry->get_text(),
+	controller->send_set_threshold_command(log_threshold_entry->get_text(),
 			overwrite_current_threshold_check_button->get_active());
 }
 
 void GstLogModule::watchLogCheckButton_toggled_cb()
 {
-	controller->make_set_log_watch_command(watch_log_check_button->get_active(), 10); // todo log level
+	controller->send_set_log_watch_command(watch_log_check_button->get_active(), 10); // todo log level
 }
 
 void GstLogModule::saveMessageLogsButton_clicked_cb()
@@ -103,7 +103,7 @@ void GstLogModule::saveMessageLogsButton_clicked_cb()
 
 void GstLogModule::refreshDebugCategoriesButton_clicked_cb()
 {
-	controller->make_request_debug_categories_command();
+	controller->send_request_debug_categories_command();
 }
 
 void GstLogModule::new_debug_categories_()

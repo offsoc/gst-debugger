@@ -91,5 +91,5 @@ void GstMessageModule::send_start_stop_command(bool enable)
 		msg_type = row[qe_types_model_columns.type_id];
 	}
 
-	controller->make_message_request_command(msg_type);
+	controller->send_message_request_command(msg_type);
 }

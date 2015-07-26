@@ -242,7 +242,7 @@ void GraphModule::update_model_()
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	controller->make_request_topology_command();
+	controller->send_request_topology_command();
 }
 
 void GraphModule::update_full_path()
