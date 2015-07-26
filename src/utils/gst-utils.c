@@ -86,7 +86,6 @@ GstPad* gst_utils_get_pad_from_path (GstElement * root, const gchar * pad_path)
   pad = gst_element_get_static_pad (parent_element, pad_name);
 
 finalize:
-  g_free (pad_name);
   g_free (tmp_path);
   return pad;
 }
