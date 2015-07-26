@@ -12,6 +12,9 @@
 #include "protocol/deserializer.h"
 #include "controller/controller.h"
 
+template<typename T>
+static void free_data(T *data) { delete data; }
+
 GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		GstreamerInfo_InfoType info_type,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder)
@@ -68,6 +71,21 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 
 	builder->get_widget("startWatching" + qe_name + "Button", start_watching_qe_button);
 	start_watching_qe_button->signal_clicked().connect(sigc::mem_fun(*this, &GstQEModule::startWatchingQEButton_click_cb));
+
+	create_dispatcher("qebm", sigc::mem_fun(*this, &GstQEModule::qebm_received_), (GDestroyNotify)free_data<GstreamerQEBM>);
+	create_dispatcher("confirmation", sigc::mem_fun(*this, &GstQEModule::confirmation_received_),
+			info_type == GstreamerInfo_InfoType_MESSAGE ? (GDestroyNotify)free_data<MessageWatch> : (GDestroyNotify)free_data<PadWatch>);
+}
+
+void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	IBaseView::set_controller(controller);
+	controller->on_qebm_received.connect(sigc::mem_fun(*this, &GstQEModule::qebm_received));
+
+	if (info_type != GstreamerInfo_InfoType_MESSAGE)
+	{
+		controller->on_pad_watch_confirmation_received.connect(sigc::mem_fun(*this, &GstQEModule::pad_confirmation_received));
+	}
 }
 
 PadWatch_WatchType GstQEModule::get_watch_type() const
@@ -85,26 +103,24 @@ PadWatch_WatchType GstQEModule::get_watch_type() const
 	}
 }
 
-void GstQEModule::update_hook_list()
+void GstQEModule::update_hook_list(PadWatch *conf)
 {
-	auto conf = info.confirmation();
-
-	if (conf.watch_type() != get_watch_type())
+	if (conf->watch_type() != get_watch_type())
 		return;
 
-	if (conf.toggle() == ENABLE)
+	if (conf->toggle() == ENABLE)
 	{
 		Gtk::TreeModel::Row row = *(qe_hooks_model->append());
-		row[qe_hooks_model_columns.pad_path] = conf.pad_path();
-		row[qe_hooks_model_columns.qe_type] = conf.qe_type();
+		row[qe_hooks_model_columns.pad_path] = conf->pad_path();
+		row[qe_hooks_model_columns.qe_type] = conf->qe_type();
 	}
 	else
 	{
 		for (auto iter = qe_hooks_model->children().begin();
 				iter != qe_hooks_model->children().end(); ++iter)
 		{
-			if ((*iter)[qe_hooks_model_columns.pad_path] == conf.pad_path() &&
-					(*iter)[qe_hooks_model_columns.qe_type] == conf.qe_type())
+			if ((*iter)[qe_hooks_model_columns.pad_path] == conf->pad_path() &&
+					(*iter)[qe_hooks_model_columns.qe_type] == conf->qe_type())
 			{
 				qe_hooks_model->erase(iter);
 				break;
@@ -177,13 +193,36 @@ void GstQEModule::append_details_from_structure(Gst::Structure& structure)
 	});
 }
 
-void GstQEModule::process_frame()
+void GstQEModule::qebm_received(const GstreamerQEBM &qebm, GstreamerInfo_InfoType type)
 {
-	if (info.info_type() == info_type)
-		append_qe_entry();
-	else if (info.info_type() == GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION ||
-			info.info_type() == GstreamerInfo_InfoType_MESSAGE_CONFIRMATION)
-		update_hook_list();
+	if (type == info_type)
+	{
+		gui_push("qebm", new GstreamerQEBM(qebm));
+		gui_emit("qebm");
+	}
+}
+
+void GstQEModule::qebm_received_()
+{
+	auto qebm = gui_pop<GstreamerQEBM*>("qebm");
+	append_qe_entry(qebm);
+	delete qebm;
+}
+
+void GstQEModule::pad_confirmation_received(const PadWatch& watch, PadWatch_WatchType type)
+{
+	if (type == get_watch_type())
+	{
+		gui_push("confirmation", new PadWatch(watch));
+		gui_emit("confirmation");
+	}
+}
+
+void GstQEModule::confirmation_received_()
+{
+	auto confirmation = gui_pop<PadWatch*>("confirmation");
+	update_hook_list(confirmation);
+	delete confirmation;
 }
 
 void GstQEModule::startWatchingQEButton_click_cb()

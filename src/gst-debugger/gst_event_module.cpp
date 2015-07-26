@@ -14,11 +14,9 @@ GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 }
 
-void GstEventModule::append_qe_entry()
+void GstEventModule::append_qe_entry(GstreamerQEBM *qebm)
 {
-	auto gstevt = info.qebm();
-
-	GstEvent *event = gst_event_deserialize(gstevt.payload().c_str(), gstevt.payload().length());
+	GstEvent *event = gst_event_deserialize(qebm->payload().c_str(), qebm->payload().length());
 
 	if (event == NULL)
 	{

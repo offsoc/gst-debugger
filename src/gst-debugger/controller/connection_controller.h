@@ -24,11 +24,6 @@ public:
 		client->signal_status_changed.connect(slot);
 	}
 
-	void on_frame_received(const TcpClient::frame_received_slot::slot_type& slot)
-	{
-		client->signal_frame_received.connect(slot);
-	}
-
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONNECTION_CONTROLLER_H_ */

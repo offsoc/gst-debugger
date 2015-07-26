@@ -17,11 +17,9 @@ GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 }
 
-void GstBufferModule::append_qe_entry()
+void GstBufferModule::append_qe_entry(GstreamerQEBM *qebm)
 {
-	auto gstbuffer = info.qebm();
-
-	GstBuffer *buffer = gst_buffer_deserialize(gstbuffer.payload().c_str(), gstbuffer.payload().length());
+	GstBuffer *buffer = gst_buffer_deserialize(qebm->payload().c_str(), qebm->payload().length());
 
 	if (buffer == NULL)
 	{

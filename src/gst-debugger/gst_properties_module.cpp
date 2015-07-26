@@ -11,6 +11,8 @@
 #include "controller/controller.h"
 #include <gst/gst.h>
 
+static void free_properties(Property *property) { delete property; }
+
 GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 	builder->get_widget("showPropertiesButton", show_propetries_button);
@@ -19,6 +21,20 @@ GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& build
 	builder->get_widget("propertiesBox", properties_box);
 
 	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
+
+	create_dispatcher("property", sigc::mem_fun(*this, &GstPropertiesModule::new_property_), (GDestroyNotify)free_properties);
+}
+
+void GstPropertiesModule::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	IBaseView::set_controller(controller);
+	controller->on_property_received.connect(sigc::mem_fun(*this, &GstPropertiesModule::new_property));
+}
+
+void GstPropertiesModule::new_property(const Property &property)
+{
+	gui_push("property", new Property (property));
+	gui_emit("property");
 }
 
 void GstPropertiesModule::request_property(const std::string &property_name)
@@ -42,24 +58,23 @@ void GstPropertiesModule::showPropertiesButton_clicked_cb()
 	}
 }
 
-void GstPropertiesModule::process_frame()
+void GstPropertiesModule::new_property_()
 {
-	if (info.info_type() != GstreamerInfo_InfoType_PROPERTY)
-		return;
-
+	auto property = gui_pop<Property*>("property");
 	GValue value = {0};
-	g_value_init (&value, info.property().type());
-	gst_value_deserialize(&value, info.property().property_value().c_str());
+	g_value_init (&value, property->type());
+	gst_value_deserialize(&value, property->property_value().c_str());
 
 	std::shared_ptr<GValueBase> value_base(GValueBase::build_gvalue(&value));
 
-	if (!update_property(value_base))
+	if (!update_property(value_base, property))
 	{
-		append_property(value_base);
+		append_property(value_base, property);
 	}
+	delete property;
 }
 
-bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& value_base)
+bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& value_base, Property *property)
 {
 	for (auto internal_box : properties_box->get_children())
 	{
@@ -86,7 +101,7 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 			continue;
 		}
 
-		if (label->get_text() == info.property().property_name())
+		if (label->get_text() == property->property_name())
 		{
 			entry->set_text(value_base->to_string());
 			return true;
@@ -96,11 +111,11 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 	return false;
 }
 
-void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& value_base)
+void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& value_base, Property *property)
 {
 	Gtk::Box *hbox = new Gtk::Box (Gtk::ORIENTATION_HORIZONTAL, 0);
 	hbox->show();
-	auto prop_name = info.property().property_name();
+	auto prop_name = property->property_name();
 	Gtk::Label *lbl = Gtk::manage(new Gtk::Label(prop_name));
 	lbl->show();
 	Gtk::Button *btn = Gtk::manage(new Gtk::Button("Refresh"));

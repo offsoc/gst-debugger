@@ -17,13 +17,17 @@ GstMessageModule::GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder)
 : GstQEModule(true, false, GstreamerInfo_InfoType_MESSAGE,
 		"BusMessage", gst_message_type_get_type(), builder)
 {
-
 }
-void GstMessageModule::append_qe_entry()
-{
-	auto gstmsg = info.qebm();
 
-	GstMessage *msg= gst_message_deserialize(gstmsg.payload().c_str(), gstmsg.payload().length());
+void GstMessageModule::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	GstQEModule::set_controller(controller);
+	controller->on_message_confirmation_received.connect(sigc::mem_fun(*this, &GstMessageModule::message_confirmation_received));
+}
+
+void GstMessageModule::append_qe_entry(GstreamerQEBM *qebm)
+{
+	GstMessage *msg = gst_message_deserialize(qebm->payload().c_str(), qebm->payload().length());
 
 	if (msg == NULL)
 	{
@@ -55,12 +59,19 @@ void GstMessageModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& q
 	append_details_from_structure(structure);
 }
 
-void GstMessageModule::update_hook_list()
+void GstMessageModule::confirmation_received_()
 {
-	auto msg_watch = info.bus_msg_confirmation();
-
+	auto confirmation = gui_pop<MessageWatch*>("confirmation");
 	Gtk::TreeModel::Row row = *(qe_hooks_model->append());
-	row[qe_hooks_model_columns.qe_type] = msg_watch.message_type();
+	row[qe_hooks_model_columns.qe_type] = confirmation->message_type();
+	delete confirmation;
+
+}
+
+void GstMessageModule::message_confirmation_received(const MessageWatch& watch)
+{
+	gui_push("confirmation", new MessageWatch(watch));
+	gui_emit("confirmation");
 }
 
 void GstMessageModule::send_start_stop_command(bool enable)

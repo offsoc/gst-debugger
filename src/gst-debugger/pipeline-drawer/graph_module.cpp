@@ -53,54 +53,6 @@ void GraphModule::set_controller(const std::shared_ptr<Controller> &controller)
 	controller->on_model_changed.connect(sigc::mem_fun(*this, &GraphModule::update_model));
 }
 
-static std::shared_ptr<ElementModel> get_from_root(const std::vector<std::string>& elements)
-{
-	auto parent = ElementModel::get_root();
-
-	for (std::size_t i = 0; i < elements.size(); i++)
-	{
-		auto it = std::find_if(parent->get_children().begin(), parent->get_children().end(),
-				[&elements, i](std::shared_ptr<ElementModel> e) {return elements[i] == e->get_name();});
-
-		if (it == parent->get_children().end())
-			return std::shared_ptr<ElementModel>();
-
-		parent = *it;
-	}
-
-	return parent;
-}
-
-static std::vector<std::string> split_path(const std::string &path)
-{
-	std::vector<std::string> elements;
-	boost::split(elements, path, [](char c) { return c == '/'; });
-
-	elements.erase(std::remove_if(elements.begin(), elements.end(),
-			[](const std::string &s){return s.empty();}), elements.end());
-	return elements;
-}
-
-void GraphModule::process_frame()
-{
-	if (info.info_type() == GstreamerInfo_InfoType_PROPERTY)
-	{
-		auto& p_info = info.property();
-		GValue value = {0};
-		g_value_init (&value, p_info.type());
-		gst_value_deserialize(&value, p_info.property_value().c_str());
-
-		std::shared_ptr<GValueBase> value_base(GValueBase::build_gvalue(&value));
-
-		auto element = get_from_root(split_path (p_info.element_path()));
-
-		if (element)
-		{
-			element->add_property(p_info.property_name(), value_base);
-		}
-	}
-}
-
 bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 {
 	if (event->type == GDK_2BUTTON_PRESS)

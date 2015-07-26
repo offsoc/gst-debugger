@@ -106,10 +106,6 @@ void GstLogModule::refreshDebugCategoriesButton_clicked_cb()
 	controller->make_request_debug_categories_command();
 }
 
-void GstLogModule::process_frame()
-{
-}
-
 void GstLogModule::new_debug_categories_()
 {
 	debug_categories_combo_box_text->remove_all();

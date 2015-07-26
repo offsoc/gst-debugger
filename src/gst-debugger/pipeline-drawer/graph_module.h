@@ -8,7 +8,6 @@
 #ifndef SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_MODULE_H_
 #define SRC_GST_DEBUGGER_PIPELINE_DRAWER_GRAPH_MODULE_H_
 
-#include "frame_receiver.h"
 #include "controller/iview.h"
 #include "gst_bin_to_dot_converter.h"
 #include "../models/gst_pipeline_model.h"
@@ -18,7 +17,7 @@
 
 #include <gtkmm.h>
 
-class GraphModule : public FrameReceiver, public IBaseView
+class GraphModule : public IBaseView
 {
 protected:
 
@@ -33,8 +32,6 @@ protected:
 	Gtk::Entry *current_path_graph_entry;
 	Gtk::Button *refresh_graph_button;
 	Gtk::Entry *element_path_property_entry;
-
-	void process_frame() override;
 
 	void jump_to_selected_model();
 	void update_full_path();

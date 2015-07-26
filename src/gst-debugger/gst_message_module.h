@@ -9,7 +9,6 @@
 #define SRC_GST_DEBUGGER_GST_MESSAGE_MODULE_H_
 
 #include "common_model_columns.h"
-#include "controller/tcp_client.h"
 #include "gst_qe_module.h"
 
 #include <gtkmm.h>
@@ -29,16 +28,20 @@ public:
 // todo inherit from GstQEModule, a lot of copy&paste
 class GstMessageModule : public GstQEModule
 {
-	void append_qe_entry() override;
+	void append_qe_entry(GstreamerQEBM *qebm) override;
 
 	void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe) override;
 
-	void update_hook_list() override;
+	void confirmation_received_() override;
+
+	void message_confirmation_received(const MessageWatch& watch);
 
 	void send_start_stop_command(bool enable) override;
 
 public:
 	GstMessageModule(const Glib::RefPtr<Gtk::Builder>& builder);
+
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 
 

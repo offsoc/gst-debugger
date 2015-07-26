@@ -8,8 +8,8 @@
 #ifndef SRC_GST_DEBUGGER_GST_LOG_MODULE_H_
 #define SRC_GST_DEBUGGER_GST_LOG_MODULE_H_
 
-#include "frame_receiver.h"
 #include "controller/iview.h"
+#include "protocol/gstdebugger.pb.h"
 
 #include <gtkmm.h>
 
@@ -32,7 +32,7 @@ public:
 };
 
 
-class GstLogModule : public FrameReceiver, public IBaseView
+class GstLogModule : public IBaseView
 {
 	Gtk::Entry *log_threshold_entry;
 	Gtk::CheckButton *overwrite_current_threshold_check_button;
@@ -57,8 +57,6 @@ class GstLogModule : public FrameReceiver, public IBaseView
 
 	void new_debug_categories(const DebugCategoryList& debug_categories);
 	void new_debug_categories_();
-
-	void process_frame() override;
 public:
 	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder);
 	virtual ~GstLogModule() {}

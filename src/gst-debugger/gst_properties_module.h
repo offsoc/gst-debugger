@@ -8,13 +8,14 @@
 #ifndef SRC_GST_DEBUGGER_GST_PROPERTIES_MODULE_H_
 #define SRC_GST_DEBUGGER_GST_PROPERTIES_MODULE_H_
 
-#include "frame_receiver.h"
 #include "controller/iview.h"
 #include "gvalue-converter/gvalue_base.h"
 
+#include "protocol/gstdebugger.pb.h"
+
 #include <gtkmm.h>
 
-class GstPropertiesModule : public FrameReceiver, public IBaseView
+class GstPropertiesModule : public IBaseView
 {
 private:
 	Gtk::Button *show_propetries_button;
@@ -26,13 +27,17 @@ private:
 	std::string previous_element_path;
 	std::vector<Gtk::Box*> property_widgets;
 
-	void process_frame() override;
-	void append_property(const std::shared_ptr<GValueBase>& value_base);
-	bool update_property(const std::shared_ptr<GValueBase>& value_base);
+	void append_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
+	bool update_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
 	void request_property(const std::string &property_name);
+
+	void new_property(const Property& property);
+	void new_property_();
 
 public:
 	GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder);
+
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_PROPERTIES_MODULE_H_ */

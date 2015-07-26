@@ -41,6 +41,22 @@ void Controller::process_frame(const GstreamerInfo &info)
 	case GstreamerInfo_InfoType_LOG:
 		on_log_received(info.log());
 		break;
+	case GstreamerInfo_InfoType_PROPERTY:
+		on_property_received(info.property());
+		break;
+	case GstreamerInfo_InfoType_BUFFER:
+	case GstreamerInfo_InfoType_EVENT:
+	case GstreamerInfo_InfoType_QUERY:
+	case GstreamerInfo_InfoType_MESSAGE:
+		on_qebm_received(info.qebm(), info.info_type());
+		break;
+	case GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION:
+		on_pad_watch_confirmation_received(info.confirmation(), info.confirmation().watch_type());
+		break;
+	case GstreamerInfo_InfoType_MESSAGE_CONFIRMATION:
+		on_message_confirmation_received(info.bus_msg_confirmation());
+		break;
+
 	default:
 		break;
 	}

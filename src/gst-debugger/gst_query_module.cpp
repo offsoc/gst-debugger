@@ -14,11 +14,9 @@ GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 }
 
-void GstQueryModule::append_qe_entry()
+void GstQueryModule::append_qe_entry(GstreamerQEBM *qebm)
 {
-	auto gstquery = info.qebm();
-
-	GstQuery *query = gst_query_deserialize(gstquery.payload().c_str(), gstquery.payload().length());
+	GstQuery *query = gst_query_deserialize(qebm->payload().c_str(), qebm->payload().length());
 
 	if (query == NULL)
 	{

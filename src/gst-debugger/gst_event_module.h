@@ -12,7 +12,7 @@
 
 class GstEventModule : public GstQEModule
 {
-	void append_qe_entry() override;
+	void append_qe_entry(GstreamerQEBM *qebm) override;
 
 	void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe) override;
 

@@ -34,13 +34,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("mainStatusbar", main_statusbar);
 
 	connection_status_changed(false);
-	data_receivers.push_back(log_module);
-	data_receivers.push_back(event_module);
-	data_receivers.push_back(query_module);
-	data_receivers.push_back(message_module);
-	data_receivers.push_back(buffer_module);
-	data_receivers.push_back(graph_module);
-	data_receivers.push_back(properties_module);
 
 	signal_show().connect([this] {
 		graph_module->update_model_();
@@ -57,11 +50,6 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	this->controller = controller;
 
 	controller->on_connection_status_changed(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
-	controller->on_frame_received([this](const GstreamerInfo &info){
-		for (auto receiver : data_receivers)
-			receiver->on_frame_recieved(info);
-		dispatcher->emit();
-	});
 
 	log_module->set_controller(controller);
 	event_module->set_controller(controller);

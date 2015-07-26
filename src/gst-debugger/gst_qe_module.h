@@ -10,7 +10,8 @@
 
 #include "common_model_columns.h"
 #include "controller/iview.h"
-#include "frame_receiver.h"
+
+#include "protocol/gstdebugger.pb.h"
 
 #include <gtkmm.h>
 #include <gstreamermm.h>
@@ -26,7 +27,7 @@ public:
 	Gtk::TreeModelColumn<gint> qe_type;
 };
 
-class GstQEModule : public FrameReceiver, public IBaseView
+class GstQEModule : public IBaseView
 {
 protected:
 	Gtk::TreeView *qe_list_tree_view;
@@ -55,11 +56,9 @@ protected:
 
 	bool type_module;
 
-	void process_frame() override;
+	virtual void append_qe_entry(GstreamerQEBM *qebm) = 0;
 
-	virtual void append_qe_entry() = 0;
-
-	virtual void update_hook_list();
+	virtual void update_hook_list(PadWatch *confirmation);
 	virtual void send_start_stop_command(bool enable);
 	virtual void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe);
 
@@ -73,10 +72,18 @@ protected:
 
 	PadWatch_WatchType get_watch_type() const;
 
+	void qebm_received(const GstreamerQEBM &qebm, GstreamerInfo_InfoType type);
+	void qebm_received_();
+
+	virtual void confirmation_received_();
+	void pad_confirmation_received(const PadWatch& watch, PadWatch_WatchType type);
+
 public:
 	GstQEModule(bool type_module, bool pad_path_module,
 			GstreamerInfo_InfoType info_type, const std::string& qe_name,
 			GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder);
+
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_QE_MODULE_H_ */

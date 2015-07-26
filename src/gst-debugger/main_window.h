@@ -17,7 +17,6 @@
 #include "gst_buffer_module.h"
 #include "gst_properties_module.h"
 #include "pipeline-drawer/graph_module.h"
-#include "frame_receiver.h"
 #include <gtkmm.h>
 
 #include "controller/iview.h"
@@ -36,7 +35,6 @@ class MainWindow : public IMainView
 	Gtk::Statusbar *main_statusbar;
 
 	std::shared_ptr<Glib::Dispatcher> dispatcher;
-	std::vector<std::shared_ptr<FrameReceiver>> data_receivers;
 	std::shared_ptr<GstLogModule> log_module;
 	std::shared_ptr<GstEventModule> event_module;
 	std::shared_ptr<GstQueryModule> query_module;
