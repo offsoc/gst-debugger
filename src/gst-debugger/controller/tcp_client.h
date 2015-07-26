@@ -25,6 +25,8 @@ private:
 	Glib::RefPtr<Gio::SocketClient> client;
 	Glib::RefPtr<Gio::SocketConnection> connection;
 
+	Glib::RefPtr<Gio::Cancellable> cancel;
+
 	bool connected = false;
 	std::thread reader;
 

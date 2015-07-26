@@ -15,6 +15,7 @@ bool TcpClient::connect(const std::string &address, int port)
 {
 	try
 	{
+		cancel = Gio::Cancellable::create();
 		client = Gio::SocketClient::create();
 		connection = client->connect_to_host(address, port);
 		connected = true;
@@ -37,13 +38,13 @@ void TcpClient::read_data()
 	auto input_stream = connection->get_input_stream();
 	while (connected)
 	{
-		int size = gst_debugger_protocol_utils_read_header(input_stream->gobj());
+		int size = gst_debugger_protocol_utils_read_header(input_stream->gobj(), cancel->gobj());
 
 		if (size < 0)
 			break;
 
 		assert(size <= 2048);
-		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer);
+		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer, cancel->gobj());
 		GstreamerInfo info;
 		info.ParseFromArray(buffer, size);
 		signal_frame_received(info);
@@ -56,6 +57,7 @@ void TcpClient::read_data()
 bool TcpClient::disconnect()
 {
 	connected = false;
+	cancel->cancel();
 	auto ok = connection->close();
 	reader.join();
 	return ok;
