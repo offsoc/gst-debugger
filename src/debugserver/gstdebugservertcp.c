@@ -93,10 +93,10 @@ gst_debugserver_tcp_process_client (gpointer user_data)
     tcp->client_connected (connection, tcp->parent);
   }
 
-  while ((size = gst_debugger_protocol_utils_read_header (istream)) > 0) {
+  while ((size = gst_debugger_protocol_utils_read_header (istream, NULL)) > 0) {
      assert (size <= 1024);
      GST_DEBUG_OBJECT (tcp, "Received message of size: %d\n", size);
-     gst_debugger_protocol_utils_read_requested_size (istream, size, message);
+     gst_debugger_protocol_utils_read_requested_size (istream, size, message, NULL);
      command = command__unpack (NULL, size, (guint8*)message);
      if (command == NULL) {
        g_print ("error unpacking incoming message\n");
