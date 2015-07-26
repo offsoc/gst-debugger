@@ -15,9 +15,9 @@ static void read_data(const Glib::RefPtr<Gio::InputStream>& input_stream)
 
 	//while (true)
 	{
-		int size = gst_debugger_protocol_utils_read_header(input_stream->gobj());
+		int size = gst_debugger_protocol_utils_read_header(input_stream->gobj(), NULL);
 		assert(size <= 1024);
-		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer);
+		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, buffer, NULL);
 
 		GstreamerInfo info;
 
