@@ -7,11 +7,23 @@
 
 #include "gvalue_enum.h"
 
+#include "utils/gst-utils.h"
+
 #include <glibmm.h>
 
 GValueEnum::GValueEnum(GValue *gobj)
 : GValueBase(gobj)
 {}
+
+gint GValueEnum::get_value() const
+{
+	return g_value_get_enum(g_value);
+}
+
+void GValueEnum::set_type(GstEnumType type)
+{
+	this->type = type;
+}
 
 template<typename T>
 void append_to_vector(std::vector<std::pair<int, std::string>>& values, T *enum_values)
@@ -27,6 +39,23 @@ void append_to_vector(std::vector<std::pair<int, std::string>>& values, T *enum_
 
 std::string GValueEnum::to_string() const
 {
+	if (G_VALUE_TYPE(g_value) == gst_utils_get_virtual_enum_type())
+	{
+		gint value = get_value();
+		if (!type)
+		{
+			return std::to_string(value);
+		}
+		try
+		{
+			return type.get().get_values().at(value);
+		}
+		catch (const std::out_of_range&)
+		{
+			return std::to_string(value);
+		}
+	}
+
 	gpointer ptr = g_type_class_ref(G_VALUE_TYPE(g_value));
 	if (G_IS_ENUM_CLASS(ptr))
 	{
@@ -61,7 +90,27 @@ std::vector<std::pair<int, std::string>> GValueEnum::get_values(GType type)
 
 Gtk::Widget* GValueEnum::get_widget() const
 {
-	Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
-	widget->set_text(to_string());
-	return widget;
+	if (type)
+	{
+		Gtk::ComboBoxText *widget = Gtk::manage(new Gtk::ComboBoxText());
+		gint pos = 0;
+		gint value = get_value();
+		for (auto entry : type.get().get_values())
+		{
+			widget->append(entry.second);
+			if (entry.first == value)
+			{
+				widget->set_active(pos);
+			}
+			pos++;
+		}
+
+		return widget;
+	}
+	else
+	{
+		Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
+		widget->set_text(to_string());
+		return widget;
+	}
 }
