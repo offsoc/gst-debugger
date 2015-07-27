@@ -19,18 +19,23 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   query_module(std::make_shared<GstQueryModule>(builder)),
   message_module(std::make_shared<GstMessageModule>(builder)),
   buffer_module(std::make_shared<GstBufferModule>(builder)),
-  properties_module(std::make_shared<GstPropertiesModule>(builder)),
-  enums(std::make_shared<GstEnumContainer>())
+  properties_module(std::make_shared<GstPropertiesModule>(builder))
 {
 	graph_module = std::make_shared<GraphModule>(builder);
 
 	builder->get_widget("connectionPropertiesMenuItem", connection_properties);
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));
 
+	builder->get_widget("remoteEnumTypesMenuitem", remote_enum_types);
+	remote_enum_types->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::remoteEnumTypesMenuitem_activate_cb));
+
 	builder->get_widget("connectMenuItem", connect_menu_item);
 	connect_menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectMenuItem_activate_cb));
 
 	builder->get_widget_derived("connectionPropertiesDialog", connection_properties_dialog);
+	builder->get_widget("mainStatusbar", main_statusbar);
+
+	builder->get_widget_derived("remoteEnumTypesDialog", enums_dialog);
 	builder->get_widget("mainStatusbar", main_statusbar);
 
 	connection_status_changed(false);
@@ -58,6 +63,11 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	buffer_module->set_controller(controller);
 	graph_module->set_controller(controller);
 	properties_module->set_controller(controller);
+
+	enums_dialog->set_controller(controller);
+	enums_dialog->set_transient_for(*this);
+
+	connection_properties_dialog->set_transient_for(*this);
 }
 
 void MainWindow::connectionPropertiesMenuItem_activate_cb()
@@ -73,6 +83,11 @@ void MainWindow::connectMenuItem_activate_cb()
 		controller->connect(
 			connection_properties_dialog->get_ip_address(),
 			connection_properties_dialog->get_port());
+}
+
+void MainWindow::remoteEnumTypesMenuitem_activate_cb()
+{
+	enums_dialog->show();
 }
 
 void MainWindow::connection_status_changed(bool connected)

@@ -4,6 +4,7 @@
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkDialog" id="connectionPropertiesDialog">
     <property name="can_focus">False</property>
+    <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
@@ -167,7 +168,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem2">
+              <object class="GtkMenuItem" id="serverMenuItem">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Server</property>
@@ -192,7 +193,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkMenuItem" id="remoteEnumTypesMenuItem">
+                      <object class="GtkMenuItem" id="remoteEnumTypesMenuitem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Remote Enum Types...</property>
@@ -1552,7 +1553,11 @@
     </child>
   </object>
   <object class="GtkDialog" id="remoteEnumTypesDialog">
+    <property name="width_request">300</property>
+    <property name="height_request">200</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Remote Enum Types</property>
+    <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox2">

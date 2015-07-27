@@ -83,3 +83,12 @@ void CommandFactory::send_request_topology_command()
 
 	client->send_command(cmd);
 }
+
+void CommandFactory::send_enum_type_request_command(const std::string &enum_name)
+{
+	Command cmd;
+	cmd.set_command_type(Command_CommandType_ENUM_TYPE);
+	cmd.set_enum_name(enum_name);
+
+	client->send_command(cmd);
+}

@@ -7,6 +7,8 @@
 
 #include "controller.h"
 
+#include "protocol/common.h"
+
 #include <gtkmm.h>
 
 Controller::Controller(IMainView *view)
@@ -42,8 +44,15 @@ void Controller::process_frame(const GstreamerInfo &info)
 		on_log_received(info.log());
 		break;
 	case GstreamerInfo_InfoType_PROPERTY:
+	{
+		std::string name = info.property().type_name();
+		if (info.property().internal_type() == INTERNAL_GTYPE_ENUM && !enum_container.has_type(name))
+		{
+			send_enum_type_request_command(name);
+		}
 		on_property_received(info.property());
 		break;
+	}
 	case GstreamerInfo_InfoType_BUFFER:
 	case GstreamerInfo_InfoType_EVENT:
 	case GstreamerInfo_InfoType_QUERY:
@@ -56,7 +65,10 @@ void Controller::process_frame(const GstreamerInfo &info)
 	case GstreamerInfo_InfoType_MESSAGE_CONFIRMATION:
 		on_message_confirmation_received(info.bus_msg_confirmation());
 		break;
-
+	case GstreamerInfo_InfoType_ENUM_TYPE:
+		update_enum_model(info.enum_type());
+		on_enum_list_changed();
+		break;
 	default:
 		break;
 	}
@@ -82,3 +94,12 @@ void Controller::model_down(const std::string &name)
 	}
 }
 
+void Controller::update_enum_model(const EnumType &enum_type)
+{
+	GstEnumType et(enum_type.type_name());
+	for (int i = 0; i < enum_type.entry_size(); i++)
+	{
+		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value());
+	}
+	enum_container.update_type(et);
+}

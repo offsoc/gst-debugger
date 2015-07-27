@@ -12,7 +12,7 @@
 #include "iview.h"
 #include "connection_controller.h"
 #include "topology_controller.h"
-
+#include "models/gst_enum_model.h"
 #include "protocol/gstdebugger.pb.h"
 
 class Controller :
@@ -23,6 +23,8 @@ class Controller :
 {
 private:
 	IMainView *view;
+
+	GstEnumContainer enum_container;
 
 	void process_frame(const GstreamerInfo& info);
 
@@ -36,6 +38,10 @@ public:
 	void model_up();
 	void model_down(const std::string &name);
 
+	void update_enum_model(const EnumType &enum_type);
+
+	const GstEnumContainer& get_enum_container() const { return enum_container; }
+
 	sigc::signal<void, const GstreamerLog&> on_log_received;
 	sigc::signal<void, const DebugCategoryList&> on_debug_categories_received;
 	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
@@ -43,6 +49,7 @@ public:
 	sigc::signal<void, const GstreamerQEBM&, GstreamerInfo_InfoType> on_qebm_received;
 	sigc::signal<void, const MessageWatch&> on_message_confirmation_received;
 	sigc::signal<void, const PadWatch&, PadWatch_WatchType> on_pad_watch_confirmation_received;
+	sigc::signal<void> on_enum_list_changed;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */
