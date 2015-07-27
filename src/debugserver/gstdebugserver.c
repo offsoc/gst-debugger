@@ -244,7 +244,9 @@ gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, g
   GEnumValue *values = klass->values;
   guint i = 0;
   EnumEntry **entries;
-  EnumType msg;
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  EnumType msg = ENUM_TYPE__INIT;
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__ENUM_TYPE;
   gint len;
 
   entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));
@@ -252,20 +254,21 @@ gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, g
   for (i = 0; i < klass->n_values; i++) {
     entries[i] = g_malloc (sizeof (EnumEntry));
     enum_entry__init (entries[i]);
-    entries[i]->name = g_strdup (values[i].value_name);
+    entries[i]->name = g_strdup (values[i].value_nick);
     entries[i]->value = values[i].value;
   }
 
+  msg.entry = entries;
   msg.n_entry = klass->n_values;
   msg.type_name = g_strdup (G_ENUM_CLASS_TYPE_NAME (klass));
-
-  len = enum_type__get_packed_size (&msg);
+  info.enum_type = &msg;
+  len = gstreamer_info__get_packed_size (&info);
 
   if (len > size) {
     goto finalize;
   }
 
-  enum_type__pack (&msg, (uint8_t*) buffer);
+  gstreamer_info__pack (&info, (uint8_t*) buffer);
 
 finalize:
   for (i = 0; i < klass->n_values; i++) {
@@ -356,7 +359,7 @@ gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GS
   property.has_internal_type = TRUE;
   property.type = tmptype;
   property.has_type = TRUE;
-  property.type_name = g_strdup (g_type_name (tmptype));
+  property.type_name = g_strdup (g_type_name (value.g_type));
   info.property = &property;
   size = gstreamer_info__get_packed_size (&info);
   assert(size <= 1024);
