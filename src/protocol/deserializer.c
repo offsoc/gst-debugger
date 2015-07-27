@@ -8,6 +8,8 @@
 #include "deserializer.h"
 #include "protocol_utils.h"
 
+#include "utils/gst-utils.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -93,7 +95,16 @@ GstBuffer* gst_buffer_deserialize (const gchar * buffer, gint size)
 void g_value_deserialize (GValue * value, GType type, InternalGType internal_type, const gchar * data)
 {
   switch (internal_type) {
-  case INTERNAL_GTYPE_ENUM: // do nothing with enums (todo for now...)
+  case INTERNAL_GTYPE_ENUM:
+  {
+    GValue tmp = G_VALUE_INIT;
+    g_value_init (&tmp, type);
+    gst_value_deserialize (&tmp, data);
+    g_value_init(value, gst_utils_get_virtual_enum_type ());
+    g_value_set_enum (value, g_value_get_int (&tmp));
+    g_value_unset (&tmp);
+    break;
+  }
   case INTERNAL_GTYPE_GST_OBJECT: // and with pointers
   case INTERNAL_GTYPE_FUNDAMENTAL:
     g_value_init (value, type);
