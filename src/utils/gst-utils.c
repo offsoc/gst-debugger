@@ -2,6 +2,7 @@
 
 #include <glib.h>
 
+#include <limits.h>
 #include <assert.h>
 #include <string.h>
 
@@ -131,4 +132,21 @@ gboolean gst_utils_check_pad_has_element_parent (GstPad * pad)
     return obj != NULL && GST_IS_ELEMENT (obj);
   }
   return FALSE;
+}
+
+GType gst_utils_get_virtual_enum_type (void)
+{
+  static gsize id = 0;
+  static const GEnumValue values[] = {
+    { 0, "DUMMY_VALUE_NAME_BEGIN", "dummy nick name begin"},
+    { INT_MAX, "DUMMY_VALUE_NAME_END", "dummy nick name end"},
+    { 0, NULL, NULL }
+  };
+
+  if (g_once_init_enter (&id)) {
+    GType tmp = g_enum_register_static ("GstDebuggerVirtualEnumType", values);
+    g_once_init_leave (&id, tmp);
+  }
+
+  return (GType) id;
 }
