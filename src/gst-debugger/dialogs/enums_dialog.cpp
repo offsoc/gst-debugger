@@ -13,10 +13,13 @@ EnumsDialog::EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 : Gtk::Dialog(cobject)
 {
 	builder->get_widget("enumTypesTreeView", enum_types_tree_view);
-	m_refTreeModel = Gtk::TreeStore::create(m_Columns);
-	enum_types_tree_view->set_model(m_refTreeModel);
-	enum_types_tree_view->append_column("Name", m_Columns.m_col_name);
-	enum_types_tree_view->append_column("Value", m_Columns.m_col_value);
+	enums_tree_model = Gtk::TreeStore::create(enums_columns);
+	enum_types_tree_view->set_model(enums_tree_model);
+	enum_types_tree_view->append_column("Name", enums_columns.m_col_name);
+	enum_types_tree_view->append_column("Value", enums_columns.m_col_value);
+
+	builder->get_widget("remoteEnumsCloseButton", close_button);
+	close_button->signal_clicked().connect([this]{hide();});
 }
 
 void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)
@@ -28,19 +31,19 @@ void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)
 
 void EnumsDialog::reload_list()
 {
-	m_refTreeModel->clear();
+	enums_tree_model->clear();
 
 	for (auto enum_type : controller->get_enum_container())
 	{
-		auto row = *(m_refTreeModel->append());
-		row[m_Columns.m_col_name] = enum_type.get_type_name();
-		row[m_Columns.m_col_value] = -1;
+		auto row = *(enums_tree_model->append());
+		row[enums_columns.m_col_name] = enum_type.get_type_name();
+		row[enums_columns.m_col_value] = -1;
 
 		for (auto enum_entry : enum_type.get_values())
 		{
-			auto childrow = *(m_refTreeModel->append(row.children()));
-			childrow[m_Columns.m_col_name] = enum_entry.second;
-			childrow[m_Columns.m_col_value] = enum_entry.first;
+			auto childrow = *(enums_tree_model->append(row.children()));
+			childrow[enums_columns.m_col_name] = enum_entry.second;
+			childrow[enums_columns.m_col_value] = enum_entry.first;
 		}
 	}
 }

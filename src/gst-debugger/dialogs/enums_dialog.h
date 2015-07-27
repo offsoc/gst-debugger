@@ -12,11 +12,11 @@
 
 #include <gtkmm.h>
 
-class ModelColumns : public Gtk::TreeModel::ColumnRecord
+class EnumsModelColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
 
-	ModelColumns() { add(m_col_name); add(m_col_value); }
+	EnumsModelColumns() { add(m_col_name); add(m_col_value); }
 
 	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
 	Gtk::TreeModelColumn<int> m_col_value;
@@ -25,9 +25,10 @@ public:
 class EnumsDialog : public Gtk::Dialog, public IBaseView
 {
 	Gtk::TreeView *enum_types_tree_view;
+	Gtk::Button *close_button;
 
-	ModelColumns m_Columns;
-	Glib::RefPtr<Gtk::TreeStore> m_refTreeModel;
+	EnumsModelColumns enums_columns;
+	Glib::RefPtr<Gtk::TreeStore> enums_tree_model;
 
 	void reload_list();
 
