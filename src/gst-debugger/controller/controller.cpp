@@ -94,6 +94,33 @@ void Controller::model_down(const std::string &name)
 	}
 }
 
+void Controller::set_selected_object(const std::string &name)
+{
+	auto colon_pos = name.find(':');
+	std::shared_ptr<ObjectModel> obj;
+
+	if (colon_pos == std::string::npos)
+	{
+		obj = current_model->get_child(name);
+	}
+	else
+	{
+		std::string e_name = name.substr(0, colon_pos);
+		std::string p_name = name.substr(colon_pos+1);
+		std::shared_ptr<ElementModel> e_model;
+		if ((e_model = std::dynamic_pointer_cast<ElementModel>(current_model->get_child(e_name))))
+		{
+			obj = e_model->get_pad(p_name);
+		}
+	}
+
+	if (selected_object != obj)
+	{
+		selected_object = obj;
+		on_selected_object_changed();
+	}
+}
+
 void Controller::update_enum_model(const EnumType &enum_type)
 {
 	GstEnumType et(enum_type.type_name());

@@ -11,6 +11,7 @@
 #include "gvalue-converter/gvalue_enum.h"
 #include "protocol/deserializer.h"
 #include "controller/controller.h"
+#include "controller/element_path_processor.h"
 
 template<typename T>
 static void free_data(T *data) { delete data; }
@@ -28,8 +29,6 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 	if (pad_path_module)
 	{
 		builder->get_widget("any" + qe_name + "PathCheckButton", any_path_check_button);
-		any_path_check_button->signal_toggled().connect([this] { qe_pad_path_entry->set_sensitive(!any_path_check_button->get_active()); });
-		builder->get_widget("pad" + qe_name + "PathEntry", qe_pad_path_entry);
 		existing_hooks_tree_view->append_column("Pad path", qe_hooks_model_columns.pad_path);
 	}
 
@@ -145,7 +144,14 @@ void GstQEModule::send_start_stop_command(bool enable)
 		qe_type = row[qe_types_model_columns.type_id];
 	}
 
-	std::string pad_path = any_path_check_button->get_active() ? Glib::ustring() : qe_pad_path_entry->get_text();
+	auto selected_pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
+
+	if (!selected_pad && !any_path_check_button->get_active())
+	{
+		return;
+	}
+
+	std::string pad_path = any_path_check_button->get_active() ? std::string() : ElementPathProcessor::get_object_path(selected_pad);
 
 	controller->send_pad_watch_command(enable, get_watch_type(), pad_path, qe_type);
 }

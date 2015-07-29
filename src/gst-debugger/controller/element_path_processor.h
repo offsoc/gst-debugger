@@ -75,6 +75,19 @@ public:
 		else
 			return parent_element->get_child(last_element);
 	}
+
+	static std::string get_object_path(std::shared_ptr<ObjectModel> object)
+	{
+		std::string path;
+
+		while (object && object != ElementModel::get_root())
+		{
+			path = (std::dynamic_pointer_cast<PadModel>(object) ?  ':' : '/') + object->get_name() + path;
+			object = object->get_parent();
+		}
+
+		return path;
+	}
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_ELEMENT_PATH_PROCESSOR_H_ */

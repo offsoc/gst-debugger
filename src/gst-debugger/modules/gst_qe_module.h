@@ -35,7 +35,6 @@ protected:
 	Gtk::Button *start_watching_qe_button;
 	Gtk::Button *stop_watching_qe_button;
 	Gtk::ComboBox *qe_types_combobox;
-	Gtk::Entry *qe_pad_path_entry;
 	Gtk::CheckButton *any_path_check_button;
 	Gtk::CheckButton *any_qe_check_button;
 	Gtk::TreeView *existing_hooks_tree_view;

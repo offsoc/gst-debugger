@@ -96,6 +96,7 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 			g_info = (Agraphinfo_t*)(((Agobj_t*)(job->selected_obj))->data);
 			if (g_info->label != NULL)
 			{
+				controller->set_selected_object(g_info->label->text);
 				selected_element_entry->set_text(g_info->label->text);
 				update_full_path();
 			}
@@ -107,7 +108,10 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 				auto tmp = (Agraph_t*)n_info->clust;
 				g_info = (Agraphinfo_t*)(((Agobj_t*)tmp)->data);
 				if (g_info->label != NULL)
+				{
+					controller->set_selected_object(g_info->label->text + std::string(":") + n_info->label->text);
 					selected_element_entry->set_text(g_info->label->text + std::string(":") + n_info->label->text);
+				}
 			}
 			break;
 		case AGEDGE:
