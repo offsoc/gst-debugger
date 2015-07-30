@@ -45,12 +45,14 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
 
 	create_dispatcher("update-model", sigc::mem_fun(*this, &GraphModule::update_model_), (GDestroyNotify)ptr_free);
+	create_dispatcher("update-selected-object", sigc::mem_fun(*this, &GraphModule::update_selected_object_), NULL);
 }
 
 void GraphModule::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
 	controller->on_model_changed.connect(sigc::mem_fun(*this, &GraphModule::update_model));
+	controller->on_selected_object_changed.connect(sigc::mem_fun(*this, &GraphModule::update_selected_object));
 }
 
 bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
@@ -97,8 +99,6 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 			if (g_info->label != NULL)
 			{
 				controller->set_selected_object(g_info->label->text);
-				selected_element_entry->set_text(g_info->label->text);
-				update_full_path();
 			}
 			break;
 		case AGNODE:
@@ -110,7 +110,6 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 				if (g_info->label != NULL)
 				{
 					controller->set_selected_object(g_info->label->text + std::string(":") + n_info->label->text);
-					selected_element_entry->set_text(g_info->label->text + std::string(":") + n_info->label->text);
 				}
 			}
 			break;
@@ -126,6 +125,27 @@ void GraphModule::update_model(std::shared_ptr<ElementModel> new_model)
 {
 	gui_push("update-model", new std::shared_ptr<ElementModel>(new_model));
 	gui_emit("update-model");
+}
+
+void GraphModule::update_selected_object()
+{
+	gui_emit("update-selected-object");
+}
+
+void GraphModule::update_selected_object_()
+{
+	auto obj = controller->get_selected_object();
+
+	if (obj)
+	{
+		std::string name = obj->get_name();
+		if (std::dynamic_pointer_cast<PadModel>(obj))
+		{
+			name = obj->get_parent()->get_name() + ":" + name;
+		}
+		selected_element_entry->set_text(name);
+		update_full_path();
+	}
 }
 
 void GraphModule::upGraphButton_clicked_cb()

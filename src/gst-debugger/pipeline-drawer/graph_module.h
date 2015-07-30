@@ -43,6 +43,9 @@ protected:
 	bool graphDrawingArea_button_release_cb(GdkEventButton *event);
 	void refreshGraphButton_clicked_cb();
 
+	void update_selected_object();
+	void update_selected_object_();
+
 public:
 	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder);
 
