@@ -20,7 +20,6 @@ class GstPropertiesModule : public IBaseView
 private:
 	Gtk::Button *show_propetries_button;
 	Gtk::Box *properties_box;
-	Gtk::Entry *element_path_property_entry;
 
 	void showPropertiesButton_clicked_cb();
 
@@ -29,7 +28,7 @@ private:
 
 	void append_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
 	bool update_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
-	void request_property(const std::string &property_name);
+	void request_selected_element_property(const std::string &property_name);
 
 	void new_property(const Property& property);
 	void new_property_();

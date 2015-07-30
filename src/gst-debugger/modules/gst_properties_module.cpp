@@ -10,6 +10,7 @@
 #include "protocol/deserializer.h"
 #include "controller/command_factory.h"
 #include "controller/controller.h"
+#include "controller/element_path_processor.h"
 #include <gst/gst.h>
 
 static void free_properties(Property *property) { delete property; }
@@ -20,8 +21,6 @@ GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& build
 	show_propetries_button->signal_clicked().connect(sigc::mem_fun(*this, &GstPropertiesModule::showPropertiesButton_clicked_cb));
 
 	builder->get_widget("propertiesBox", properties_box);
-
-	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
 
 	create_dispatcher("property", sigc::mem_fun(*this, &GstPropertiesModule::new_property_), (GDestroyNotify)free_properties);
 }
@@ -38,25 +37,31 @@ void GstPropertiesModule::new_property(const Property &property)
 	gui_emit("property");
 }
 
-void GstPropertiesModule::request_property(const std::string &property_name)
+void GstPropertiesModule::request_selected_element_property(const std::string &property_name)
 {
-	controller->send_property_request_command(element_path_property_entry->get_text(), property_name);
-}
+	auto obj = controller->get_selected_object();
+	if (!obj || !std::dynamic_pointer_cast<ElementModel>(obj))
+	{
+		return;
+	}
 
-void GstPropertiesModule::showPropertiesButton_clicked_cb()
-{
-	std::string current_element_path = element_path_property_entry->get_text();
-	request_property("");
+	std::string element_path = ElementPathProcessor::get_object_path(obj);
+	controller->send_property_request_command(element_path, property_name);
 
-	if (current_element_path != previous_element_path)
+	if (element_path != previous_element_path)
 	{
 		for (auto pw : property_widgets)
 		{
 			delete pw;
 		}
 		property_widgets.clear();
-		previous_element_path = current_element_path;
+		previous_element_path = element_path;
 	}
+}
+
+void GstPropertiesModule::showPropertiesButton_clicked_cb()
+{
+	request_selected_element_property("");
 }
 
 void GstPropertiesModule::new_property_()
@@ -95,7 +100,10 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 
 		for (auto cd : hb->get_children())
 		{
-			if (entry == nullptr && (entry = dynamic_cast<Gtk::Entry*>(cd)) != nullptr);
+			if (entry == nullptr && (entry = dynamic_cast<Gtk::Entry*>(cd)) != nullptr)
+			{
+				continue;
+			}
 			else if (label == nullptr)
 			{
 				label = dynamic_cast<Gtk::Label*>(cd);
@@ -125,7 +133,7 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	Gtk::Label *lbl = Gtk::manage(new Gtk::Label(prop_name));
 	lbl->show();
 	Gtk::Button *btn = Gtk::manage(new Gtk::Button("Refresh"));
-	btn->signal_clicked().connect([this, prop_name] {request_property(prop_name);});
+	btn->signal_clicked().connect([this, prop_name] {request_selected_element_property(prop_name);});
 	btn->show();
 	hbox->pack_start(*lbl, false, false);
 	auto value_widget = value_base->get_widget();

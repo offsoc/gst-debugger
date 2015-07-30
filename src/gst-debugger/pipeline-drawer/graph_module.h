@@ -31,10 +31,8 @@ protected:
 	Gtk::Entry *selected_element_entry;
 	Gtk::Entry *current_path_graph_entry;
 	Gtk::Button *refresh_graph_button;
-	Gtk::Entry *element_path_property_entry;
 
 	void jump_to_selected_model();
-	void update_full_path();
 
 	void upGraphButton_clicked_cb();
 	bool graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& context);

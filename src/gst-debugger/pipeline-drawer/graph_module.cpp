@@ -42,8 +42,6 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 	builder->get_widget("refreshGraphButton", refresh_graph_button);
 	refresh_graph_button->signal_clicked().connect(sigc::mem_fun(*this, &GraphModule::refreshGraphButton_clicked_cb));
 
-	builder->get_widget("elementPathPropertyEntry", element_path_property_entry);
-
 	create_dispatcher("update-model", sigc::mem_fun(*this, &GraphModule::update_model_), (GDestroyNotify)ptr_free);
 	create_dispatcher("update-selected-object", sigc::mem_fun(*this, &GraphModule::update_selected_object_), NULL);
 }
@@ -144,7 +142,6 @@ void GraphModule::update_selected_object_()
 			name = obj->get_parent()->get_name() + ":" + name;
 		}
 		selected_element_entry->set_text(name);
-		update_full_path();
 	}
 }
 
@@ -267,10 +264,4 @@ void GraphModule::update_model_()
 void GraphModule::refreshGraphButton_clicked_cb()
 {
 	controller->send_request_topology_command();
-}
-
-void GraphModule::update_full_path()
-{
-	element_path_property_entry->set_text(
-			current_path_graph_entry->get_text() + selected_element_entry->get_text());
 }
