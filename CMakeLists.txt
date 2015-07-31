@@ -13,17 +13,17 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 INCLUDE(FindPkgConfig)
 
-pkg_check_modules(LIBPB_C REQUIRED libprotobuf-c)
+pkg_check_modules(LIBPB_C REQUIRED libprotobuf-c>=1.1.1)
 
 pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 include_directories(${GIOMM_INCLUDE_DIRS})
-link_directories(${GIOMM_LIBRARY_DIRS}) 
+link_directories(${GIOMM_LIBRARY_DIRS})
 
 pkg_check_modules(GSTMM REQUIRED gstreamermm-1.0)
 include_directories(${GSTMM_INCLUDE_DIRS})
-link_directories(${GSTMM_LIBRARY_DIRS}) 
+link_directories(${GSTMM_LIBRARY_DIRS})
 
-pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
+pkg_check_modules (GTKMM REQUIRED gtkmm-3.0>=3.12)
 include_directories(${GTKMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS}) 
 
@@ -41,6 +41,8 @@ link_directories(${GIO_LIBRARY_DIRS})
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
 include_directories(${GSTREAMER_INCLUDE_DIRS})
 
+# it only checks version
+pkg_check_modules(PROTOBUFF REQUIRED protobuf>=2.6.1)
 find_package(Protobuf REQUIRED)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src/)
