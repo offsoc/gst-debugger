@@ -279,6 +279,50 @@ finalize:
 
   return len;
 }
+
+// todo maybe I don't have to copy&paste enum method?
+static gint
+gst_debug_server_prepare_flags_type_buffer (GFlagsClass * klass, gchar * buffer, gint size)
+{
+  GFlagsValue *values = klass->values;
+  guint i = 0;
+  EnumEntry **entries;
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  EnumType msg = ENUM_TYPE__INIT;
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__ENUM_TYPE;
+  gint len;
+
+  entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));
+
+  for (i = 0; i < klass->n_values; i++) {
+    entries[i] = g_malloc (sizeof (EnumEntry));
+    enum_entry__init (entries[i]);
+    entries[i]->name = g_strdup (values[i].value_nick);
+    entries[i]->value = values[i].value;
+  }
+
+  msg.entry = entries;
+  msg.n_entry = klass->n_values;
+  msg.type_name = g_strdup (G_FLAGS_CLASS_TYPE_NAME (klass));
+  info.enum_type = &msg;
+  len = gstreamer_info__get_packed_size (&info);
+
+  if (len > size) {
+    goto finalize;
+  }
+
+  gstreamer_info__pack (&info, (uint8_t*) buffer);
+
+finalize:
+  for (i = 0; i < klass->n_values; i++) {
+    g_free (entries[i]);
+  }
+
+  g_free (entries);
+
+  return len;
+}
+
 static void
 gst_debugserver_send_enum (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
 {
@@ -297,6 +341,39 @@ gst_debugserver_send_enum (GstDebugserverTracer * debugserver, GSocketConnection
 
   gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
   SAFE_PREPARE_BUFFER_CLEAN;
+}
+
+static void
+gst_debugserver_send_flags (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
+{
+  GType type = g_type_from_name (klass_name);
+  GFlagsClass *klass = g_type_class_peek (type);
+  SAFE_PREPARE_BUFFER_INIT (1024);
+  gint size;
+
+  if (klass == NULL) {
+    gst_debugserver_handle_error (debugserver, client, "Cannot find flags type");
+    return;
+  }
+
+  SAFE_PREPARE_BUFFER (
+    gst_debug_server_prepare_flags_type_buffer (klass, m_buff, max_m_buff_size), size);
+
+  gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
+  SAFE_PREPARE_BUFFER_CLEAN;
+}
+
+static void
+gst_debugserver_send_enum_flags (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name) {
+  GType type = g_type_from_name (klass_name);
+
+  if (G_TYPE_IS_ENUM (type)) {
+    gst_debugserver_send_enum (debugserver, client, klass_name);
+  } else if (G_TYPE_IS_FLAGS (type)) {
+    gst_debugserver_send_flags (debugserver, client, klass_name);
+  } else {
+    gst_debugserver_handle_error (debugserver, client, "requested type info is neither enum nor flags");
+  }
 }
 
 static void
@@ -508,7 +585,7 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
     break;
   case COMMAND__COMMAND_TYPE__ENUM_TYPE:
-    gst_debugserver_send_enum (debugserver, client_id, cmd->enum_name);
+    gst_debugserver_send_enum_flags (debugserver, client_id, cmd->enum_name);
     break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
