@@ -17,6 +17,8 @@ gboolean gst_utils_check_pad_has_element_parent (GstPad * pad);
 
 GType gst_utils_get_virtual_enum_type (void);
 
+GType gst_utils_get_virtual_flags_type (void);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGGER_GST_UTILS_H__ */

@@ -150,3 +150,20 @@ GType gst_utils_get_virtual_enum_type (void)
 
   return (GType) id;
 }
+
+GType gst_utils_get_virtual_flags_type (void)
+{
+  static gsize id = 0;
+  static const GFlagsValue values[] = {
+    { 0, "DUMMY_VALUE_NAME_BEGIN", "dummy nick name begin"},
+    { INT_MAX, "DUMMY_VALUE_NAME_END", "dummy nick name end"},
+    { 0, NULL, NULL }
+  };
+
+  if (g_once_init_enter (&id)) {
+    GType tmp = g_flags_register_static ("GstDebuggerVirtualFlagsType", values);
+    g_once_init_leave (&id, tmp);
+  }
+
+  return (GType) id;
+}
