@@ -120,11 +120,18 @@ gchar * g_value_serialize (GValue * value, GType * type, InternalGType * interna
     *type = value->g_type;
     *internal_type = INTERNAL_GTYPE_FUNDAMENTAL;
     return gst_value_serialize (value);
-  } else if (G_TYPE_IS_ENUM(value->g_type)) {
+  } else if (G_TYPE_IS_ENUM(value->g_type) || G_TYPE_IS_FLAGS (value->g_type)) {
+    gint val;
     g_value_init(&tmp, G_TYPE_INT);
     *type = G_TYPE_INT;
-    g_value_set_int(&tmp, g_value_get_enum(value));
-    *internal_type = INTERNAL_GTYPE_ENUM;
+    if (G_TYPE_IS_FLAGS (value->g_type)) {
+      val = g_value_get_flags (value);
+      *internal_type = INTERNAL_GTYPE_FLAGS;
+    } else {
+      g_value_get_enum(value);
+      *internal_type = INTERNAL_GTYPE_ENUM;
+    }
+    g_value_set_int(&tmp, val);
   } else if (value->g_type == GST_TYPE_CAPS) {
     g_value_init(&tmp, G_TYPE_STRING);
     *type = G_TYPE_STRING;

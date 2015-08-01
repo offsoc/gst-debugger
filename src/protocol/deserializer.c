@@ -96,12 +96,18 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
 {
   switch (internal_type) {
   case INTERNAL_GTYPE_ENUM:
+  case INTERNAL_GTYPE_FLAGS:
   {
     GValue tmp = G_VALUE_INIT;
     g_value_init (&tmp, type);
     gst_value_deserialize (&tmp, data);
-    g_value_init(value, gst_utils_get_virtual_enum_type ());
-    g_value_set_enum (value, g_value_get_int (&tmp));
+    if (internal_type == INTERNAL_GTYPE_ENUM) {
+      g_value_init(value, gst_utils_get_virtual_enum_type ());
+      g_value_set_enum (value, g_value_get_int (&tmp));
+    } else {
+      g_value_init(value, gst_utils_get_virtual_flags_type ());
+      g_value_set_flags (value, g_value_get_int (&tmp));
+    }
     g_value_unset (&tmp);
     break;
   }
