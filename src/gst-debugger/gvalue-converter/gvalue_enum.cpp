@@ -17,7 +17,7 @@ GValueEnum::GValueEnum(GValue *gobj)
 
 gint GValueEnum::get_value() const
 {
-	return g_value_get_enum(g_value);
+	return G_TYPE_IS_ENUM(G_VALUE_TYPE(g_value)) ? g_value_get_enum(g_value) : g_value_get_flags(g_value);
 }
 
 void GValueEnum::set_type(GstEnumType type)
@@ -39,7 +39,7 @@ void append_to_vector(std::vector<std::pair<int, std::string>>& values, T *enum_
 
 std::string GValueEnum::to_string() const
 {
-	if (G_VALUE_TYPE(g_value) == gst_utils_get_virtual_enum_type())
+	if (G_VALUE_TYPE(g_value) == gst_utils_get_virtual_enum_type() || G_VALUE_TYPE(g_value) == gst_utils_get_virtual_flags_type())
 	{
 		gint value = get_value();
 		if (!type)
@@ -90,7 +90,7 @@ std::vector<std::pair<int, std::string>> GValueEnum::get_values(GType type)
 
 Gtk::Widget* GValueEnum::get_widget() const
 {
-	if (type)
+	if (type && G_VALUE_TYPE(g_value) == gst_utils_get_virtual_enum_type())
 	{
 		Gtk::ComboBoxText *widget = Gtk::manage(new Gtk::ComboBoxText());
 		gint pos = 0;
@@ -106,6 +106,21 @@ Gtk::Widget* GValueEnum::get_widget() const
 		}
 
 		return widget;
+	}
+	else if (type && G_VALUE_TYPE(g_value) == gst_utils_get_virtual_flags_type())
+	{
+		Gtk::Box *box = Gtk::manage(new Gtk::Box (Gtk::ORIENTATION_HORIZONTAL, 0));
+		gint fv = get_value();
+		auto values = type->get_values();
+		for (auto val : values)
+		{
+			auto cb = Gtk::manage(new Gtk::CheckButton(val.second));
+			cb->set_active(val.first & fv);
+			cb->show();
+			box->pack_start(*cb, false, 5);
+		}
+
+		return box;
 	}
 	else
 	{

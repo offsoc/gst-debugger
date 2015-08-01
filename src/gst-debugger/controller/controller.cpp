@@ -46,7 +46,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 	case GstreamerInfo_InfoType_PROPERTY:
 	{
 		std::string name = info.property().type_name();
-		if (info.property().internal_type() == INTERNAL_GTYPE_ENUM && !enum_container.has_type(name))
+		if ((info.property().internal_type() == INTERNAL_GTYPE_ENUM || info.property().internal_type() == INTERNAL_GTYPE_FLAGS) && !enum_container.has_type(name))
 		{
 			send_enum_type_request_command(name);
 		}

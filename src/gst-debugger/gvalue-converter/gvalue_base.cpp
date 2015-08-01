@@ -50,7 +50,7 @@ GValueBase* GValueBase::build_gvalue(GValue* gobj)
 		break;
 	}
 
-	if (G_TYPE_IS_ENUM(G_VALUE_TYPE(gobj)))
+	if (G_TYPE_IS_ENUM(G_VALUE_TYPE(gobj)) || G_TYPE_IS_FLAGS(G_VALUE_TYPE(gobj)))
 	{
 		return new GValueEnum(gobj);
 	}
