@@ -109,7 +109,10 @@ Gtk::Widget* GValueEnum::get_widget() const
 	}
 	else if (type && G_VALUE_TYPE(g_value) == gst_utils_get_virtual_flags_type())
 	{
-		Gtk::Box *box = Gtk::manage(new Gtk::Box (Gtk::ORIENTATION_HORIZONTAL, 0));
+		Gtk::ScrolledWindow *scrolled = Gtk::manage(new Gtk::ScrolledWindow());
+		Gtk::Viewport *vp = Gtk::manage(new Gtk::Viewport(Gtk::Adjustment::create(10, 0, 20), Gtk::Adjustment::create(10, 0, 50)));
+		vp->show();
+		Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
 		gint fv = get_value();
 		auto values = type->get_values();
 		for (auto val : values)
@@ -119,8 +122,11 @@ Gtk::Widget* GValueEnum::get_widget() const
 			cb->show();
 			box->pack_start(*cb, false, 5);
 		}
+		box->show();
+		vp->add(*box);
+		scrolled->add(*vp);
 
-		return box;
+		return scrolled;
 	}
 	else
 	{
