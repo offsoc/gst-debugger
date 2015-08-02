@@ -128,7 +128,7 @@ gchar * g_value_serialize (GValue * value, GType * type, InternalGType * interna
       val = g_value_get_flags (value);
       *internal_type = INTERNAL_GTYPE_FLAGS;
     } else {
-      g_value_get_enum(value);
+      val = g_value_get_enum(value);
       *internal_type = INTERNAL_GTYPE_ENUM;
     }
     g_value_set_int(&tmp, val);
