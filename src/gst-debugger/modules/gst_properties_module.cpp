@@ -95,31 +95,36 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 			continue;
 		}
 
-		Gtk::Entry* entry = nullptr;
-		Gtk::Label* label = nullptr;
+		Gtk::Label *label = nullptr;
+		Gtk::Widget *widget = nullptr;
 
 		for (auto cd : hb->get_children())
 		{
-			if (entry == nullptr && (entry = dynamic_cast<Gtk::Entry*>(cd)) != nullptr)
+			if (label == nullptr && (label = dynamic_cast<Gtk::Label*>(cd)) != nullptr)
 			{
-				continue;
+				if (label->get_text() != property->property_name())
+				{
+					label = nullptr;
+					break;
+				}
 			}
-			else if (label == nullptr)
+			else if (dynamic_cast<Gtk::Button*>(cd) == nullptr || dynamic_cast<Gtk::CheckButton*>(cd) != nullptr)
 			{
-				label = dynamic_cast<Gtk::Label*>(cd);
+				widget = cd;
 			}
 		}
 
-		if (label == nullptr || entry == nullptr)
+		if (label == nullptr || widget == nullptr)
 		{
 			continue;
 		}
 
-		if (label->get_text() == property->property_name())
-		{
-			entry->set_text(value_base->to_string());
-			return true;
-		}
+		delete widget;
+		widget = Gtk::manage(value_base->get_widget());
+		widget->show();
+		hb->pack_start(*widget, true, 10);
+		hb->reorder_child(*widget, 1);
+		return true;
 	}
 
 	return false;
