@@ -41,6 +41,7 @@ message LogThreshold {
 message EnumEntry {
 	required string name = 1;
 	required int32 value = 2;
+	required string nick = 3;
 }
 
 message EnumType {
