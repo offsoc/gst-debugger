@@ -24,7 +24,6 @@ private:
 	void showPropertiesButton_clicked_cb();
 
 	std::string previous_element_path;
-	std::vector<Gtk::Box*> property_widgets;
 
 	void append_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
 	bool update_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
@@ -32,6 +31,11 @@ private:
 
 	void new_property(const Property& property);
 	void new_property_();
+
+	void selected_object_changed();
+	void selected_object_changed_();
+
+	void clear_widgets();
 
 public:
 	GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder);

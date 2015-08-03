@@ -32,6 +32,8 @@ private:
 
 	void update_enum_model(const EnumType &enum_type);
 
+	void append_property(const Property& property);
+
 public:
 	Controller(IMainView *view);
 

@@ -23,12 +23,14 @@ GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& build
 	builder->get_widget("propertiesBox", properties_box);
 
 	create_dispatcher("property", sigc::mem_fun(*this, &GstPropertiesModule::new_property_), (GDestroyNotify)free_properties);
+	create_dispatcher("selected-object-changed", sigc::mem_fun(*this, &GstPropertiesModule::selected_object_changed_), nullptr);
 }
 
 void GstPropertiesModule::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
 	controller->on_property_received.connect(sigc::mem_fun(*this, &GstPropertiesModule::new_property));
+	controller->on_selected_object_changed.connect(sigc::mem_fun(*this, &GstPropertiesModule::selected_object_changed));
 }
 
 void GstPropertiesModule::new_property(const Property &property)
@@ -50,11 +52,7 @@ void GstPropertiesModule::request_selected_element_property(const std::string &p
 
 	if (element_path != previous_element_path)
 	{
-		for (auto pw : property_widgets)
-		{
-			delete pw;
-		}
-		property_widgets.clear();
+		clear_widgets();
 		previous_element_path = element_path;
 	}
 }
@@ -146,5 +144,30 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	hbox->pack_start(*value_widget, true, true);
 	hbox->pack_start(*btn, false, false);
 	properties_box->pack_start(*hbox);
-	property_widgets.push_back(hbox);
+}
+
+void GstPropertiesModule::clear_widgets()
+{
+	for (auto c : properties_box->get_children())
+	{
+		delete c;
+	}
+}
+
+void GstPropertiesModule::selected_object_changed()
+{
+	gui_emit("selected-object-changed");
+}
+
+void GstPropertiesModule::selected_object_changed_()
+{
+	auto obj = std::dynamic_pointer_cast<ElementModel>(controller->get_selected_object());
+
+	if (!obj)
+	{
+		return;
+	}
+
+	clear_widgets();
+	request_selected_element_property("");
 }

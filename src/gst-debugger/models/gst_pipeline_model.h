@@ -93,6 +93,8 @@ public:
 	void add_property(const std::string &name, const std::shared_ptr<GValueBase>& gvalue);
 
 	static std::shared_ptr<ElementModel> get_parent_element_from_path(const std::string &path);
+
+	std::map<std::string, std::shared_ptr<GValueBase>> get_properties() const { return properties; }
 };
 
 typedef std::shared_ptr<ObjectModel> GraphObjectPtr;

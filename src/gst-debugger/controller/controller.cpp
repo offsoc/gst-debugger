@@ -8,6 +8,7 @@
 #include "controller.h"
 
 #include "protocol/common.h"
+#include "protocol/deserializer.h"
 
 #include <gtkmm.h>
 
@@ -50,6 +51,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 		{
 			send_enum_type_request_command(name);
 		}
+		append_property(info.property());
 		on_property_received(info.property());
 		break;
 	}
@@ -129,4 +131,14 @@ void Controller::update_enum_model(const EnumType &enum_type)
 		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value());
 	}
 	enum_container.update_type(et);
+}
+
+void Controller::append_property(const Property& property)
+{
+	GValue value = {0};
+	g_value_deserialize(&value, property.type(), (InternalGType)property.internal_type(), property.property_value().c_str());
+
+	auto element = ElementModel::get_parent_element_from_path(property.element_path());
+
+	element->add_property(property.property_name(), std::shared_ptr<GValueBase>(GValueBase::build_gvalue(&value)));
 }
