@@ -38,7 +38,7 @@ public:
 	void write_data(char *data, int size);
 	void send_command(const Command &cmd);
 
-	bool is_connected() const { return connection && connection->is_connected(); }
+	bool is_connected() const { return connected; }
 
 	sigc::signal1<void, bool> signal_status_changed;
 	frame_received_slot signal_frame_received;

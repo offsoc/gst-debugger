@@ -20,6 +20,8 @@ bool TcpClient::connect(const std::string &address, int port)
 		connection = client->connect_to_host(address, port);
 		connected = true;
 
+		if (reader.joinable())
+			reader.join();
 		reader = std::thread([this]{
 			read_data();
 		});
@@ -63,8 +65,8 @@ void TcpClient::read_data()
 		signal_frame_received(info);
 	}
 
-	signal_status_changed(false);
 	connected = false;
+	signal_status_changed(false);
 }
 
 bool TcpClient::disconnect()
