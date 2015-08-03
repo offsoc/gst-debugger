@@ -122,7 +122,7 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
     g_value_init (value, G_TYPE_STRING);
     gst_value_deserialize (value, data);
     caps = gst_caps_from_string (g_value_get_string (value));
-    g_value_reset (value);
+    g_value_unset (value);
     g_value_init (value, GST_TYPE_CAPS);
     gst_value_set_caps (value, caps);
     break;
