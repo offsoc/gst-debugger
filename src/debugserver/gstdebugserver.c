@@ -437,6 +437,7 @@ gst_debugserver_prepare_property (const gchar * element_path, const GstElement *
   property.type = tmptype;
   property.has_type = TRUE;
   property.type_name = g_strdup (g_type_name (value.g_type));
+  property.description = g_strdup (g_param_spec_get_blurb (param));
   info.property = &property;
   size = gstreamer_info__get_packed_size (&info);
 
