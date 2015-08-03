@@ -254,8 +254,9 @@ gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, g
   for (i = 0; i < klass->n_values; i++) {
     entries[i] = g_malloc (sizeof (EnumEntry));
     enum_entry__init (entries[i]);
-    entries[i]->name = g_strdup (values[i].value_nick);
+    entries[i]->name = g_strdup (values[i].value_name);
     entries[i]->value = values[i].value;
+    entries[i]->nick = g_strdup (values[i].value_nick);
   }
 
   msg.entry = entries;
@@ -297,8 +298,9 @@ gst_debug_server_prepare_flags_type_buffer (GFlagsClass * klass, gchar * buffer,
   for (i = 0; i < klass->n_values; i++) {
     entries[i] = g_malloc (sizeof (EnumEntry));
     enum_entry__init (entries[i]);
-    entries[i]->name = g_strdup (values[i].value_nick);
+    entries[i]->name = g_strdup (values[i].value_name);
     entries[i]->value = values[i].value;
+    entries[i]->nick = g_strdup (values[i].value_nick);
   }
 
   msg.entry = entries;
