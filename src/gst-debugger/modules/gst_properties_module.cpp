@@ -134,6 +134,7 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	hbox->show();
 	auto prop_name = property->property_name();
 	Gtk::Label *lbl = Gtk::manage(new Gtk::Label(prop_name));
+	lbl->set_tooltip_text(property->description());
 	lbl->show();
 	Gtk::Button *btn = Gtk::manage(new Gtk::Button("Refresh"));
 	btn->signal_clicked().connect([this, prop_name] {request_selected_element_property(prop_name);});
