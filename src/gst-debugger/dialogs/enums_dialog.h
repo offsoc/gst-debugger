@@ -16,10 +16,11 @@ class EnumsModelColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
 
-	EnumsModelColumns() { add(m_col_name); add(m_col_value); }
+	EnumsModelColumns() { add(m_col_name); add(m_col_value); add(m_col_description); }
 
 	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
-	Gtk::TreeModelColumn<int> m_col_value;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_value;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_description;
 };
 
 class EnumsDialog : public Gtk::Dialog, public IBaseView

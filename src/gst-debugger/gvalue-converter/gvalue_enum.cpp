@@ -48,7 +48,7 @@ std::string GValueEnum::to_string() const
 		}
 		try
 		{
-			return type.get().get_values().at(value);
+			return type.get().get_values().at(value).nick;
 		}
 		catch (const std::out_of_range&)
 		{
@@ -97,7 +97,7 @@ Gtk::Widget* GValueEnum::get_widget() const
 		gint value = get_value();
 		for (auto entry : type.get().get_values())
 		{
-			widget->append(entry.second);
+			widget->append(entry.second.nick);
 			if (entry.first == value)
 			{
 				widget->set_active(pos);
@@ -117,7 +117,7 @@ Gtk::Widget* GValueEnum::get_widget() const
 		auto values = type->get_values();
 		for (auto val : values)
 		{
-			auto cb = Gtk::manage(new Gtk::CheckButton(val.second));
+			auto cb = Gtk::manage(new Gtk::CheckButton(val.second.nick));
 			cb->set_active(val.first & fv);
 			cb->show();
 			box->pack_start(*cb, false, 5);

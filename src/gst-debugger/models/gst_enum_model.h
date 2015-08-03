@@ -14,17 +14,18 @@
 
 class GstEnumType
 {
-	std::map<int, std::string> values;
+	struct ValueInfo { std::string name; std::string nick; };
+	std::map<int, ValueInfo> values;
 	std::string type_name;
 
 public:
 	GstEnumType(const std::string &type_name) : type_name(type_name) {}
 	std::string get_type_name() const { return type_name; }
-	void add_value(const std::string& name, int value)
+	void add_value(const std::string& name, int value, const std::string &nick)
 	{
-		values[value] = name;
+		values[value] = ValueInfo {name, nick};
 	}
-	const std::map<int, std::string>& get_values() const { return values; }
+	const std::map<int, ValueInfo>& get_values() const { return values; }
 };
 
 class GstEnumContainer

@@ -17,6 +17,7 @@ EnumsDialog::EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	enum_types_tree_view->set_model(enums_tree_model);
 	enum_types_tree_view->append_column("Name", enums_columns.m_col_name);
 	enum_types_tree_view->append_column("Value", enums_columns.m_col_value);
+	enum_types_tree_view->append_column("Description", enums_columns.m_col_description);
 
 	builder->get_widget("remoteEnumsCloseButton", close_button);
 	close_button->signal_clicked().connect([this]{hide();});
@@ -37,13 +38,15 @@ void EnumsDialog::reload_list()
 	{
 		auto row = *(enums_tree_model->append());
 		row[enums_columns.m_col_name] = enum_type.get_type_name();
-		row[enums_columns.m_col_value] = -1;
+		row[enums_columns.m_col_value] = "";
+		row[enums_columns.m_col_description] = "";
 
 		for (auto enum_entry : enum_type.get_values())
 		{
 			auto childrow = *(enums_tree_model->append(row.children()));
-			childrow[enums_columns.m_col_name] = enum_entry.second;
-			childrow[enums_columns.m_col_value] = enum_entry.first;
+			childrow[enums_columns.m_col_name] = enum_entry.second.nick;
+			childrow[enums_columns.m_col_value] = std::to_string(enum_entry.first);
+			childrow[enums_columns.m_col_description] = enum_entry.second.name;
 		}
 	}
 }

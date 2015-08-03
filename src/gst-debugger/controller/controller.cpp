@@ -128,7 +128,7 @@ void Controller::update_enum_model(const EnumType &enum_type)
 	GstEnumType et(enum_type.type_name());
 	for (int i = 0; i < enum_type.entry_size(); i++)
 	{
-		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value());
+		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value(), enum_type.entry(i).nick());
 	}
 	enum_container.update_type(et);
 }
