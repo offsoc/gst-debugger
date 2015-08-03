@@ -413,15 +413,13 @@ gst_debugserver_tracer_client_connected (gpointer client_id, gpointer user_data)
     GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
 }
 
-static void
-gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GSocketConnection * client_id,
-  const gchar * element_path, const GstElement *element, const GParamSpec *param)
+static gint
+gst_debugserver_prepare_property (const gchar * element_path, const GstElement *element, const GParamSpec *param, gchar * buffer, gint max_size)
 {
   GValue value = {0};
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   Property property = PROPERTY__INIT;
   info.info_type = GSTREAMER_INFO__INFO_TYPE__PROPERTY;
-  gchar buffer [1024];
   gint size;
   GType tmptype;
   InternalGType internal_type;
@@ -439,9 +437,29 @@ gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GS
   property.type_name = g_strdup (g_type_name (value.g_type));
   info.property = &property;
   size = gstreamer_info__get_packed_size (&info);
-  assert(size <= 1024);
+
+  if (size > max_size) {
+    goto finalize;
+   }
   gstreamer_info__pack (&info, (guint8*)buffer);
-  gst_debugserver_tcp_send_packet (server->tcp_server, client_id, buffer, size);
+
+finalize:
+  return size;
+}
+
+static void
+gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GSocketConnection * client_id,
+  const gchar * element_path, const GstElement *element, const GParamSpec *param)
+{
+  gint size;
+  SAFE_PREPARE_BUFFER_INIT (1024);
+
+  SAFE_PREPARE_BUFFER (
+    gst_debugserver_prepare_property (element_path, element, param, m_buff, max_m_buff_size), size);
+
+  gst_debugserver_tcp_send_packet (server->tcp_server, client_id, m_buff, size);
+
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static gint
