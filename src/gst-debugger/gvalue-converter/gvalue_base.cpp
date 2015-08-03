@@ -7,9 +7,12 @@
 
 #include "gvalue_base.h"
 #include "gvalue_boolean.h"
+#include "gvalue_caps.h"
 #include "gvalue_enum.h"
 #include "gvalue_numeric.h"
 #include "gvalue_string.h"
+
+#include <gst/gst.h>
 
 GValueBase::GValueBase(GValue *gobj)
 : g_value(gobj)
@@ -55,12 +58,10 @@ GValueBase* GValueBase::build_gvalue(GValue* gobj)
 		return new GValueEnum(gobj);
 	}
 
-	/*
-	todo
 	if (G_VALUE_TYPE(gobj) == gst_caps_get_type())
 	{
-		return new GValueCaps(param_spec);
+		return new GValueCaps(gobj);
 	}
-	*/
+
 	return nullptr;
 }

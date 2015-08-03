@@ -1,6 +1,7 @@
 add_library(gvalue-converter
 	gvalue_base.cpp
 	gvalue_boolean.cpp
+	gvalue_caps.cpp
 	gvalue_enum.cpp
 	gvalue_numeric.cpp
 	gvalue_string.cpp
