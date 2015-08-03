@@ -13,6 +13,7 @@
  */
 
 #include "gst_pipeline_model.h"
+#include "controller/element_path_processor.h"
 
 void ElementModel::add_child(const std::shared_ptr<ElementModel> &child)
 {
@@ -56,4 +57,10 @@ std::shared_ptr<ElementModel> ElementModel::get_child(const std::string &child_n
 void ElementModel::add_property(const std::string &name, const std::shared_ptr<GValueBase>& gvalue)
 {
 	properties[name] = gvalue;
+}
+
+std::shared_ptr<ElementModel> ElementModel::get_parent_element_from_path(const std::string &path)
+{
+	ElementPathProcessor proc(path);
+	return std::dynamic_pointer_cast<ElementModel>(proc.get_last_obj());
 }
