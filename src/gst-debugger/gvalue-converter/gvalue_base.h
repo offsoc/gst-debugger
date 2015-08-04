@@ -27,6 +27,8 @@ public:
 
 	virtual Gtk::Widget* get_widget() const = 0;
 
+	void update_gvalue(const std::shared_ptr<GValueBase> &gvalue);
+
 	static GValueBase* build_gvalue(GValue* g_value);
 };
 

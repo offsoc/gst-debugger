@@ -21,8 +21,11 @@ GValueBase::GValueBase(GValue *gobj)
 
 GValueBase::~GValueBase()
 {
-	g_value_unset(g_value);
-	delete g_value;
+	if (g_value != nullptr)
+	{
+		g_value_unset(g_value);
+		delete g_value;
+	}
 }
 
 GValueBase* GValueBase::build_gvalue(GValue* gobj)
@@ -66,4 +69,10 @@ GValueBase* GValueBase::build_gvalue(GValue* gobj)
 	}
 
 	return nullptr;
+}
+
+void GValueBase::update_gvalue(const std::shared_ptr<GValueBase> &gvalue)
+{
+	this->g_value = gvalue->g_value;
+	gvalue->g_value = nullptr;
 }

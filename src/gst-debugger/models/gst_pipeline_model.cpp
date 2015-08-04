@@ -56,7 +56,14 @@ std::shared_ptr<ElementModel> ElementModel::get_child(const std::string &child_n
 
 void ElementModel::add_property(const std::string &name, const std::shared_ptr<GValueBase>& gvalue)
 {
-	properties[name] = gvalue;
+	if (properties.find(name) == properties.end())
+	{
+		properties[name] = gvalue;
+	}
+	else
+	{
+		gvalue->update_gvalue(gvalue);
+	}
 }
 
 std::shared_ptr<ElementModel> ElementModel::get_parent_element_from_path(const std::string &path)
