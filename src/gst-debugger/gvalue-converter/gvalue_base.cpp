@@ -21,6 +21,8 @@ GValueBase::GValueBase(GValue *gobj)
 
 GValueBase::~GValueBase()
 {
+	g_value_unset(g_value);
+	delete g_value;
 }
 
 GValueBase* GValueBase::build_gvalue(GValue* gobj)

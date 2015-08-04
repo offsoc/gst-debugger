@@ -187,7 +187,10 @@ void GstQEModule::append_details_from_structure(Gst::Structure& structure)
 		return;
 
 	structure.foreach([structure, this](const Glib::ustring &name, const Glib::ValueBase &value) -> bool {
-		auto gvalue = GValueBase::build_gvalue(const_cast<GValue*>(value.gobj()));
+		GValue* tmp_val = new GValue;
+		*tmp_val = {0};
+		g_value_copy(value.gobj(), tmp_val);
+		auto gvalue = GValueBase::build_gvalue(tmp_val);
 		if (gvalue == nullptr)
 			append_details_row(name, std::string("<unsupported type ") + g_type_name(G_VALUE_TYPE(value.gobj())) + ">");
 		else

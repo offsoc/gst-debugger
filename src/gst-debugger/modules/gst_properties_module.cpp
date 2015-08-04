@@ -65,10 +65,11 @@ void GstPropertiesModule::showPropertiesButton_clicked_cb()
 void GstPropertiesModule::new_property_()
 {
 	auto property = gui_pop<Property*>("property");
-	GValue value = {0};
-	g_value_deserialize(&value, property->type(), (InternalGType)property->internal_type(), property->property_value().c_str());
+	GValue* value = new GValue;
+	*value = {0};
+	g_value_deserialize(value, property->type(), (InternalGType)property->internal_type(), property->property_value().c_str());
 
-	std::shared_ptr<GValueBase> value_base(GValueBase::build_gvalue(&value));
+	std::shared_ptr<GValueBase> value_base(GValueBase::build_gvalue(value));
 	std::shared_ptr<GValueEnum> value_enum = std::dynamic_pointer_cast<GValueEnum>(value_base);
 
 	if (value_enum && const_cast<GstEnumContainer&>(controller->get_enum_container()).has_type(property->type_name()))

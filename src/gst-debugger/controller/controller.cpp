@@ -135,10 +135,10 @@ void Controller::update_enum_model(const EnumType &enum_type)
 
 void Controller::append_property(const Property& property)
 {
-	GValue value = {0};
-	g_value_deserialize(&value, property.type(), (InternalGType)property.internal_type(), property.property_value().c_str());
+	GValue *value = new GValue;
+	*value = {0};
+	g_value_deserialize(value, property.type(), (InternalGType)property.internal_type(), property.property_value().c_str());
 
 	auto element = ElementModel::get_parent_element_from_path(property.element_path());
-
-	element->add_property(property.property_name(), std::shared_ptr<GValueBase>(GValueBase::build_gvalue(&value)));
+	element->add_property(property.property_name(), std::shared_ptr<GValueBase>(GValueBase::build_gvalue(value)));
 }
