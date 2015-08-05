@@ -12,6 +12,8 @@
 
 class GValueString : public GValueBase
 {
+	mutable Gtk::Entry *widget = nullptr;
+
 public:
 	GValueString(GValue* gobj);
 

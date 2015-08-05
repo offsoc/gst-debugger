@@ -23,7 +23,10 @@ std::string GValueString::to_string() const
 
 Gtk::Widget* GValueString::get_widget() const
 {
-	Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
+	if (widget == nullptr)
+	{
+		widget = new Gtk::Entry();
+	}
 	widget->set_text(to_string());
 	return widget;
 }

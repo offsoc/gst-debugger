@@ -75,4 +75,6 @@ void GValueBase::update_gvalue(const std::shared_ptr<GValueBase> &gvalue)
 {
 	this->g_value = gvalue->g_value;
 	gvalue->g_value = nullptr;
+
+	update_widget();
 }

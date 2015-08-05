@@ -19,6 +19,7 @@ class GValueBase
 protected:
 	GValue* g_value;
 
+	virtual void update_widget() {}
 public:
 	GValueBase(GValue* gobj);
 	virtual ~GValueBase();
