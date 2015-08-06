@@ -27,10 +27,11 @@ void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
 	controller->on_enum_list_changed.connect(sigc::mem_fun(*this, &EnumsDialog::reload_list));
-	reload_list();
+	reload_list("");
 }
 
-void EnumsDialog::reload_list()
+// todo we don't need reload whole list
+void EnumsDialog::reload_list(const Glib::ustring& enum_name)
 {
 	enums_tree_model->clear();
 

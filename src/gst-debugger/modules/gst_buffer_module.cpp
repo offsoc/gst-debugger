@@ -13,7 +13,7 @@
 
 GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder)
 : GstQEModule(false, true, GstreamerInfo_InfoType_BUFFER,
-		"Buffer", gst_query_type_get_type(), builder)
+		"Buffer", gst_buffer_get_type(), builder)
 {
 }
 

@@ -19,7 +19,8 @@ static void free_data(T *data) { delete data; }
 GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		GstreamerInfo_InfoType info_type,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder)
-: info_type(info_type),
+:  qe_gtype(qe_gtype),
+   info_type(info_type),
   type_module(type_module)
 {
 	builder->get_widget("existing" + qe_name + "HooksTreeView", existing_hooks_tree_view);
@@ -42,17 +43,6 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		qe_types_combobox->set_model(qe_types_model);
 		qe_types_combobox->pack_start(qe_types_model_columns.type_name);
 
-		for (auto val : GValueEnum::get_values(qe_gtype))
-		{
-			Gtk::TreeModel::Row row = *(qe_types_model->append());
-			row[qe_types_model_columns.type_id] = val.first;
-			row[qe_types_model_columns.type_name] = val.second;
-		}
-		if (qe_types_model->children().size() > 0)
-		{
-			qe_types_combobox->set_active(0);
-		}
-
 		existing_hooks_tree_view->append_column(qe_name + " type", qe_hooks_model_columns.qe_type);
 	}
 
@@ -74,6 +64,8 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 	create_dispatcher("qebm", sigc::mem_fun(*this, &GstQEModule::qebm_received_), (GDestroyNotify)free_data<GstreamerQEBM>);
 	create_dispatcher("confirmation", sigc::mem_fun(*this, &GstQEModule::confirmation_received_),
 			info_type == GstreamerInfo_InfoType_MESSAGE ? (GDestroyNotify)free_data<MessageWatch> : (GDestroyNotify)free_data<PadWatch>);
+	create_dispatcher("enum", sigc::mem_fun(*this, &GstQEModule::enum_list_changed_), (GDestroyNotify)free_data<std::string>);
+
 }
 
 void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
@@ -81,10 +73,40 @@ void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
 	IBaseView::set_controller(controller);
 	controller->on_qebm_received.connect(sigc::mem_fun(*this, &GstQEModule::qebm_received));
 
+	controller->on_enum_list_changed.connect(sigc::mem_fun(*this, &GstQEModule::enum_list_changed));
+
 	if (info_type != GstreamerInfo_InfoType_MESSAGE)
 	{
 		controller->on_pad_watch_confirmation_received.connect(sigc::mem_fun(*this, &GstQEModule::pad_confirmation_received));
 	}
+}
+
+void GstQEModule::enum_list_changed(const Glib::ustring &enum_name)
+{
+	if ((qe_gtype == gst_query_type_get_type() && enum_name == "GstQueryType") ||
+			(qe_gtype == gst_event_type_get_type() && enum_name == "GstEventType"))
+	{
+		gui_push("enum", new std::string(enum_name));
+		gui_emit("enum");
+	}
+}
+
+void GstQEModule::enum_list_changed_()
+{
+	qe_types_model->clear();
+	std::string* type_name = gui_pop<std::string*>("enum");
+	GstEnumType type = const_cast<GstEnumContainer&>(controller->get_enum_container()).get_type(*type_name);
+	for (auto val : type.get_values())
+	{
+		Gtk::TreeModel::Row row = *(qe_types_model->append());
+		row[qe_types_model_columns.type_id] = val.first;
+		row[qe_types_model_columns.type_name] = val.second.nick;
+	}
+	if (qe_types_model->children().size() > 0)
+	{
+		qe_types_combobox->set_active(0);
+	}
+	delete type_name;
 }
 
 PadWatch_WatchType GstQEModule::get_watch_type() const

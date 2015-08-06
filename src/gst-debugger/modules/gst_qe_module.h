@@ -29,6 +29,9 @@ public:
 
 class GstQEModule : public IBaseView
 {
+private:
+	GType qe_gtype;
+
 protected:
 	Gtk::TreeView *qe_list_tree_view;
 	Gtk::TreeView *qe_details_tree_view;
@@ -73,6 +76,9 @@ protected:
 
 	void qebm_received(const GstreamerQEBM &qebm, GstreamerInfo_InfoType type);
 	void qebm_received_();
+
+	void enum_list_changed(const Glib::ustring &enum_name);
+	void enum_list_changed_();
 
 	virtual void confirmation_received_();
 	void pad_confirmation_received(const PadWatch& watch, PadWatch_WatchType type);

@@ -31,7 +31,7 @@ class EnumsDialog : public Gtk::Dialog, public IBaseView
 	EnumsModelColumns enums_columns;
 	Glib::RefPtr<Gtk::TreeStore> enums_tree_model;
 
-	void reload_list();
+	void reload_list(const Glib::ustring &enum_name);
 
 public:
 	EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

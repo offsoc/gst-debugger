@@ -70,7 +70,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 		break;
 	case GstreamerInfo_InfoType_ENUM_TYPE:
 		update_enum_model(info.enum_type());
-		on_enum_list_changed();
+		on_enum_list_changed(info.enum_type().type_name());
 		break;
 	default:
 		break;

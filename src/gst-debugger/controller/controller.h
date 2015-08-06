@@ -57,7 +57,7 @@ public:
 	sigc::signal<void, const GstreamerQEBM&, GstreamerInfo_InfoType> on_qebm_received;
 	sigc::signal<void, const MessageWatch&> on_message_confirmation_received;
 	sigc::signal<void, const PadWatch&, PadWatch_WatchType> on_pad_watch_confirmation_received;
-	sigc::signal<void> on_enum_list_changed;
+	sigc::signal<void, const Glib::ustring&> on_enum_list_changed;
 	sigc::signal<void> on_selected_object_changed;
 };
 
