@@ -32,7 +32,12 @@ Gtk::Widget* GValueBoolean::get_widget() const
 {
 	if (widget == nullptr)
 	{
-		widget = new Gtk::CheckButton();
+		auto cb = new Gtk::CheckButton();
+
+		cb->signal_toggled().connect([this, cb]{ g_value_set_boolean(g_value, cb->get_active()); });
+		cb->signal_toggled().connect(widget_value_changed);
+
+		widget = cb;
 	}
 	dynamic_cast<Gtk::CheckButton*>(widget)->set_active(get_value());
 	return widget;

@@ -23,11 +23,26 @@ std::string GValueNumeric<T>::to_string() const
 }
 
 template<typename T>
+void GValueNumeric<T>::update_value(const T &val)
+{
+	Glib::Value<T> v;
+	v.init(g_value);
+	v.set(val);
+	g_value_reset(this->g_value);
+	g_value_copy(v.gobj(), this->g_value);
+}
+
+template<typename T>
 Gtk::Widget* GValueNumeric<T>::get_widget() const
 {
 	if (widget == nullptr)
 	{
-		widget = new Gtk::Entry();
+		auto entry = new Gtk::Entry();
+		entry->signal_activate().connect([this, entry]{
+			update_value(std::atol(entry->get_text().c_str()));
+		});
+		entry->signal_activate().connect(widget_value_changed);
+		widget = entry;
 	}
 	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
 	return widget;
@@ -51,6 +66,24 @@ template<>
 std::string GValueNumeric<guint64>::to_string() const
 {
 	return std::to_string((G_VALUE_TYPE(g_value) == G_TYPE_UINT64) ? g_value_get_uint64(g_value) : g_value_get_ulong(g_value));
+}
+
+template<>
+void GValueNumeric<gint64>::update_value(const gint64 &val)
+{
+	if (G_VALUE_TYPE(g_value) == G_TYPE_INT64)
+		g_value_set_int64(g_value, val);
+	else
+		g_value_set_long(g_value, val);
+}
+
+template<>
+void GValueNumeric<guint64>::update_value(const guint64 &val)
+{
+	if (G_VALUE_TYPE(g_value) == G_TYPE_UINT64)
+		g_value_set_uint64(g_value, val);
+	else
+		g_value_set_ulong(g_value, val);
 }
 #endif
 #else

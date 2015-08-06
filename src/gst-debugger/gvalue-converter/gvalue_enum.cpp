@@ -92,12 +92,18 @@ Gtk::Widget* GValueEnum::get_widget() const
 {
 	if (type && G_VALUE_TYPE(g_value) == gst_utils_get_virtual_enum_type())
 	{
+		Gtk::ComboBoxText *cb;
 		if (widget == nullptr || !dynamic_cast<Gtk::ComboBoxText*>(widget))
 		{
 			delete widget;
-			widget = new Gtk::ComboBoxText();
+			widget = cb = new Gtk::ComboBoxText();
+			cb->signal_changed().connect([this]{ g_value_set_enum(g_value, gtk_combo_box_get_active(GTK_COMBO_BOX(dynamic_cast<Gtk::ComboBoxText*>(widget)->gobj())));} );
+			cb->signal_changed().connect(widget_value_changed);
 		}
-		auto cb = dynamic_cast<Gtk::ComboBoxText*>(widget);
+		else
+		{
+			cb = dynamic_cast<Gtk::ComboBoxText*>(widget);
+		}
 		gint pos = 0;
 		gint value = get_value();
 		for (auto entry : type.get().get_values())

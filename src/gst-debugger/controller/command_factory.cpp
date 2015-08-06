@@ -6,6 +6,8 @@
  */
 
 #include "command_factory.h"
+#include "protocol/common.h"
+#include "protocol/serializer.h"
 
 void CommandFactory::send_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type)
 {
@@ -89,6 +91,24 @@ void CommandFactory::send_enum_type_request_command(const std::string &enum_name
 	Command cmd;
 	cmd.set_command_type(Command_CommandType_ENUM_TYPE);
 	cmd.set_enum_name(enum_name);
+
+	client->send_command(cmd);
+}
+
+void CommandFactory::send_property_command(const std::string &path, const std::string &property_name, GValue *gvalue)
+{
+	Command cmd;
+	cmd.set_command_type(Command_CommandType_PROPERTY);
+	Property *property = new Property();
+	property->set_element_path(path);
+	property->set_property_name(property_name);
+	GType type; InternalGType internal_type;
+	gchar *serialized = g_value_serialize(gvalue, &type, &internal_type);
+	property->set_property_value(serialized);
+	g_free(serialized);
+	property->set_internal_type(internal_type);
+	property->set_type(type);
+	cmd.set_allocated_property(property);
 
 	client->send_command(cmd);
 }

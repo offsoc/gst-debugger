@@ -32,6 +32,10 @@ public:
 	void update_gvalue(const std::shared_ptr<GValueBase> &gvalue);
 
 	static GValueBase* build_gvalue(GValue* g_value);
+
+	GValue* get_gvalue() const { return g_value; }
+
+	sigc::signal<void> widget_value_changed;
 };
 
 #endif /* SRC_GST_DEBUGGER_GVALUE_CONVERTER_GVALUE_BASE_H_ */

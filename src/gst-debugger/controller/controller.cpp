@@ -9,6 +9,7 @@
 
 #include "protocol/common.h"
 #include "protocol/deserializer.h"
+#include "protocol/serializer.h"
 
 #include <gtkmm.h>
 
@@ -140,5 +141,9 @@ void Controller::append_property(const Property& property)
 	g_value_deserialize(value, property.type(), (InternalGType)property.internal_type(), property.property_value().c_str());
 
 	auto element = ElementModel::get_parent_element_from_path(property.element_path());
-	element->add_property(property.property_name(), std::shared_ptr<GValueBase>(GValueBase::build_gvalue(value)));
+	std::shared_ptr<GValueBase> gvalue(GValueBase::build_gvalue(value));
+	element->add_property(property.property_name(), gvalue);
+	gvalue->widget_value_changed.connect([gvalue, property, this] {
+		this->send_property_command(property.element_path(), property.property_name(), gvalue->get_gvalue());
+	});
 }

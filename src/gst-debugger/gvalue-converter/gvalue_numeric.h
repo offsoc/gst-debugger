@@ -19,6 +19,8 @@ public:
 	std::string to_string() const override;
 
 	Gtk::Widget* get_widget() const override;
+
+	void update_value(const T &val);
 };
 
 

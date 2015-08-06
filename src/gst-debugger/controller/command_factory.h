@@ -23,6 +23,7 @@ public:
 	void send_request_debug_categories_command();
 	void send_request_topology_command();
 	void send_enum_type_request_command(const std::string &enum_name);
+	void send_property_command(const std::string &path, const std::string &property_name, GValue *gvalue);
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_COMMAND_FACTORY_H_ */
