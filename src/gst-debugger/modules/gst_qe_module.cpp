@@ -210,7 +210,8 @@ void GstQEModule::append_details_from_structure(Gst::Structure& structure)
 
 	structure.foreach([structure, this](const Glib::ustring &name, const Glib::ValueBase &value) -> bool {
 		GValue* tmp_val = new GValue;
-		*tmp_val = {0};
+		*tmp_val = G_VALUE_INIT;
+		g_value_init(tmp_val, value.gobj()->g_type);
 		g_value_copy(value.gobj(), tmp_val);
 		auto gvalue = GValueBase::build_gvalue(tmp_val);
 		if (gvalue == nullptr)
