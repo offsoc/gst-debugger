@@ -35,6 +35,7 @@
 #include "utils/gst-utils.h"
 #include "utils/buffer-prepare-utils.h"
 #include "protocol/serializer.h"
+#include "protocol/deserializer.h"
 
 #include <string.h>
 
@@ -603,7 +604,15 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
     break;
   case COMMAND__COMMAND_TYPE__PROPERTY:
-    gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
+    if (cmd->property->has_type == FALSE) {
+      gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
+    } else {
+      GValue val = G_VALUE_INIT;
+      GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (debugserver->pipeline), cmd->property->element_path);
+      g_value_deserialize (&val, cmd->property->type, cmd->property->internal_type, cmd->property->property_value);
+      g_object_set_property (G_OBJECT (element), cmd->property->property_name, &val);
+      g_value_unset (&val);
+    }
     break;
   case COMMAND__COMMAND_TYPE__ENUM_TYPE:
     gst_debugserver_send_enum_flags (debugserver, client_id, cmd->enum_name);
