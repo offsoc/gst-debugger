@@ -121,6 +121,7 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 			continue;
 		}
 
+		hb->remove(*widget);
 		widget = value_base->get_widget();
 		widget->show();
 		hb->pack_start(*widget, true, 10);
