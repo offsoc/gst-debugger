@@ -414,6 +414,10 @@ gst_debugserver_tracer_client_connected (gpointer client_id, gpointer user_data)
 
   gst_debugserver_topology_send_entire_topology (
     GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
+
+  gst_debugserver_send_enum (debugserver, client_id, "GstQueryType");
+
+  gst_debugserver_send_enum (debugserver, client_id, "GstEventType");
 }
 
 static gint

@@ -127,7 +127,7 @@ static void gst_debugserver_qe_append_client (gpointer key, gpointer value,
     watch = (QEWatch*)watches->data;
     pad_ok = watch->pad == NULL || watch->pad == pad;
     type_ok = watch->qe_type == -1 ||
-      type == watch->qe_type;
+      (type & watch->qe_type);
 
     if (pad_ok && type_ok) {
       *clients = g_slist_append (*clients, key);
