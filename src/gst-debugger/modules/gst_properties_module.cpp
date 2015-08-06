@@ -121,8 +121,7 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 			continue;
 		}
 
-		delete widget;
-		widget = Gtk::manage(value_base->get_widget());
+		widget = value_base->get_widget();
 		widget->show();
 		hb->pack_start(*widget, true, 10);
 		hb->reorder_child(*widget, 1);

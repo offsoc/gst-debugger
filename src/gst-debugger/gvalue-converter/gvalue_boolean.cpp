@@ -30,7 +30,10 @@ std::string GValueBoolean::to_string() const
 
 Gtk::Widget* GValueBoolean::get_widget() const
 {
-	Gtk::CheckButton *widget = Gtk::manage(new Gtk::CheckButton());
-	widget->set_active(get_value());
+	if (widget == nullptr)
+	{
+		widget = new Gtk::CheckButton();
+	}
+	dynamic_cast<Gtk::CheckButton*>(widget)->set_active(get_value());
 	return widget;
 }

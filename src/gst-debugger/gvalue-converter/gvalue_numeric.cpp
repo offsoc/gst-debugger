@@ -25,8 +25,11 @@ std::string GValueNumeric<T>::to_string() const
 template<typename T>
 Gtk::Widget* GValueNumeric<T>::get_widget() const
 {
-	Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
-	widget->set_text(to_string());
+	if (widget == nullptr)
+	{
+		widget = new Gtk::Entry();
+	}
+	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
 	return widget;
 }
 

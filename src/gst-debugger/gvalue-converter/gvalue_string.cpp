@@ -27,6 +27,7 @@ Gtk::Widget* GValueString::get_widget() const
 	{
 		widget = new Gtk::Entry();
 	}
-	widget->set_text(to_string());
+
+	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
 	return widget;
 }

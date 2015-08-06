@@ -18,6 +18,7 @@ class GValueBase
 {
 protected:
 	GValue* g_value;
+	mutable Gtk::Widget *widget = nullptr;
 
 	virtual void update_widget() {}
 public:

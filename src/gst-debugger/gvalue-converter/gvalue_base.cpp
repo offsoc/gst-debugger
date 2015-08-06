@@ -26,6 +26,7 @@ GValueBase::~GValueBase()
 		g_value_unset(g_value);
 		delete g_value;
 	}
+	delete widget;
 }
 
 GValueBase* GValueBase::build_gvalue(GValue* gobj)

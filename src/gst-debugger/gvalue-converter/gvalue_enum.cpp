@@ -92,15 +92,20 @@ Gtk::Widget* GValueEnum::get_widget() const
 {
 	if (type && G_VALUE_TYPE(g_value) == gst_utils_get_virtual_enum_type())
 	{
-		Gtk::ComboBoxText *widget = Gtk::manage(new Gtk::ComboBoxText());
+		if (widget == nullptr || !dynamic_cast<Gtk::ComboBoxText*>(widget))
+		{
+			delete widget;
+			widget = new Gtk::ComboBoxText();
+		}
+		auto cb = dynamic_cast<Gtk::ComboBoxText*>(widget);
 		gint pos = 0;
 		gint value = get_value();
 		for (auto entry : type.get().get_values())
 		{
-			widget->append(entry.second.nick);
+			cb->append(entry.second.nick);
 			if (entry.first == value)
 			{
-				widget->set_active(pos);
+				cb->set_active(pos);
 			}
 			pos++;
 		}
@@ -109,29 +114,34 @@ Gtk::Widget* GValueEnum::get_widget() const
 	}
 	else if (type && G_VALUE_TYPE(g_value) == gst_utils_get_virtual_flags_type())
 	{
-		Gtk::ScrolledWindow *scrolled = Gtk::manage(new Gtk::ScrolledWindow());
-		Gtk::Viewport *vp = Gtk::manage(new Gtk::Viewport(Gtk::Adjustment::create(10, 0, 20), Gtk::Adjustment::create(10, 0, 50)));
-		vp->show();
-		Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
-		gint fv = get_value();
-		auto values = type->get_values();
-		for (auto val : values)
+		if (widget == nullptr)
 		{
-			auto cb = Gtk::manage(new Gtk::CheckButton(val.second.nick));
-			cb->set_active(val.first & fv);
-			cb->show();
-			box->pack_start(*cb, false, 5);
+			widget = new Gtk::ScrolledWindow();
+			Gtk::Viewport *vp = Gtk::manage(new Gtk::Viewport(Gtk::Adjustment::create(10, 0, 20), Gtk::Adjustment::create(10, 0, 50)));
+			vp->show();
+			Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
+			gint fv = get_value();
+			auto values = type->get_values();
+			for (auto val : values)
+			{
+				auto cb = Gtk::manage(new Gtk::CheckButton(val.second.nick));
+				cb->set_active(val.first & fv);
+				cb->show();
+				box->pack_start(*cb, false, 5);
+			}
+			box->show();
+			vp->add(*box);
+			dynamic_cast<Gtk::ScrolledWindow*>(widget)->add(*vp);
 		}
-		box->show();
-		vp->add(*box);
-		scrolled->add(*vp);
-
-		return scrolled;
+		return widget;
 	}
 	else
 	{
-		Gtk::Entry *widget = Gtk::manage(new Gtk::Entry());
-		widget->set_text(to_string());
+		if (widget == nullptr)
+		{
+			widget = new Gtk::Entry();
+		}
+		dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
 		return widget;
 	}
 }
