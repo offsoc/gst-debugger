@@ -347,7 +347,7 @@ gst_debugserver_send_enum (GstDebugserverTracer * debugserver, GSocketConnection
 }
 
 static void
-gst_debugserver_send_flags (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
+gst_debugserver_send_flag (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
 {
   GType type = g_type_from_name (klass_name);
   GFlagsClass *klass = g_type_class_peek (type);
@@ -373,7 +373,7 @@ gst_debugserver_send_enum_flags (GstDebugserverTracer * debugserver, GSocketConn
   if (G_TYPE_IS_ENUM (type)) {
     gst_debugserver_send_enum (debugserver, client, klass_name);
   } else if (G_TYPE_IS_FLAGS (type)) {
-    gst_debugserver_send_flags (debugserver, client, klass_name);
+    gst_debugserver_send_flag (debugserver, client, klass_name);
   } else {
     gst_debugserver_handle_error (debugserver, client, "requested type info is neither enum nor flags");
   }
@@ -419,7 +419,7 @@ gst_debugserver_tracer_client_connected (gpointer client_id, gpointer user_data)
 
   gst_debugserver_send_enum (debugserver, client_id, "GstEventType");
 
-  gst_debugserver_send_enum (debugserver, client_id, "GstMessageType");
+  gst_debugserver_send_flag (debugserver, client_id, "GstMessageType");
 }
 
 static gint
