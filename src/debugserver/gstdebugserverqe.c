@@ -117,7 +117,7 @@ static void gst_debugserver_qe_append_client (gpointer key, gpointer value,
 {
   GArray *tmp = (GArray *) user_data;
   GSList **clients = g_array_index (tmp, GSList**, 0);
-  gint type = g_array_index (tmp, gint, 1);
+  gint type = *g_array_index (tmp, gint*, 1);
   GstPad *pad = g_array_index (tmp, GstPad*, 2);
   GSList * watches = (GSList*) value;
   QEWatch *watch;
@@ -143,8 +143,10 @@ GSList* gst_debugserver_qe_get_clients (GstDebugserverQE * evt, GstPad * pad,
   GSList * clients = NULL;
   GSList ** ptr_clients = &clients;
   GArray *tmp = g_array_new (FALSE, FALSE, sizeof (gpointer));
+  gpointer type_ptr = &type;
+
   g_array_insert_val (tmp, 0, ptr_clients);
-  g_array_insert_val (tmp, 1, type);
+  g_array_insert_val (tmp, 1, type_ptr);
   g_array_insert_val (tmp, 2, pad);
 
   g_hash_table_foreach (evt->watches, gst_debugserver_qe_append_client, tmp);
