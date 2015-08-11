@@ -566,7 +566,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="startWatchingEventButton">
-                            <property name="label" translatable="yes">Start</property>
+                            <property name="label" translatable="yes">Add watch</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -777,7 +777,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="startWatchingQueryButton">
-                            <property name="label" translatable="yes">Start</property>
+                            <property name="label" translatable="yes">Add watch</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -963,7 +963,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="startWatchingBusMessageButton">
-                            <property name="label" translatable="yes">Start</property>
+                            <property name="label" translatable="yes">Add watch</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -1155,7 +1155,7 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="startWatchingBufferButton">
-                            <property name="label" translatable="yes">Start</property>
+                            <property name="label" translatable="yes">Add watch</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
