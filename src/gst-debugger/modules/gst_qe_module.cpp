@@ -84,7 +84,8 @@ void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
 void GstQEModule::enum_list_changed(const Glib::ustring &enum_name)
 {
 	if ((qe_gtype == gst_query_type_get_type() && enum_name == "GstQueryType") ||
-			(qe_gtype == gst_event_type_get_type() && enum_name == "GstEventType"))
+			(qe_gtype == gst_event_type_get_type() && enum_name == "GstEventType") ||
+			(qe_gtype == gst_message_type_get_type() && enum_name == "GstMessageType"))
 	{
 		gui_push("enum", new std::string(enum_name));
 		gui_emit("enum");
