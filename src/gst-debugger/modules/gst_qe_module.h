@@ -36,7 +36,7 @@ protected:
 	Gtk::TreeView *qe_list_tree_view;
 	Gtk::TreeView *qe_details_tree_view;
 	Gtk::Button *start_watching_qe_button;
-	Gtk::Button *stop_watching_qe_button;
+	Gtk::Button *remove_selected_hook_button;
 	Gtk::ComboBox *qe_types_combobox;
 	Gtk::CheckButton *any_path_check_button;
 	Gtk::CheckButton *any_qe_check_button;
@@ -68,7 +68,7 @@ protected:
 	void append_details_from_structure(Gst::Structure& structure);
 
 	void startWatchingQEButton_click_cb();
-	void stopWatchingQEButton_click_cb();
+	void removeSelectedHook_click_cb();
 
 	void qeListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
 

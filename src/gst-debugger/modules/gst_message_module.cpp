@@ -62,8 +62,23 @@ void GstMessageModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& q
 void GstMessageModule::confirmation_received_()
 {
 	auto confirmation = gui_pop<MessageWatch*>("confirmation");
-	Gtk::TreeModel::Row row = *(qe_hooks_model->append());
-	row[qe_hooks_model_columns.qe_type] = confirmation->message_type();
+	if (confirmation->toggle() == ENABLE)
+	{
+		Gtk::TreeModel::Row row = *(qe_hooks_model->append());
+		row[qe_hooks_model_columns.qe_type] = confirmation->message_type();
+	}
+	else
+	{
+		for (auto iter = qe_hooks_model->children().begin();
+				iter != qe_hooks_model->children().end(); ++iter)
+		{
+			if ((*iter)[qe_hooks_model_columns.qe_type] == confirmation->message_type())
+			{
+				qe_hooks_model->erase(iter);
+				break;
+			}
+		}
+	}
 	delete confirmation;
 
 }
@@ -91,5 +106,5 @@ void GstMessageModule::send_start_stop_command(bool enable)
 		msg_type = row[qe_types_model_columns.type_id];
 	}
 
-	controller->send_message_request_command(msg_type);
+	controller->send_message_request_command(msg_type, enable);
 }

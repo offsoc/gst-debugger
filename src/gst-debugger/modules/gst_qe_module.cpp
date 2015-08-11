@@ -61,6 +61,9 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 	builder->get_widget("startWatching" + qe_name + "Button", start_watching_qe_button);
 	start_watching_qe_button->signal_clicked().connect(sigc::mem_fun(*this, &GstQEModule::startWatchingQEButton_click_cb));
 
+	builder->get_widget("removeSelected" + qe_name + "Hook", remove_selected_hook_button);
+	remove_selected_hook_button->signal_clicked().connect(sigc::mem_fun(*this, &GstQEModule::removeSelectedHook_click_cb));
+
 	create_dispatcher("qebm", sigc::mem_fun(*this, &GstQEModule::qebm_received_), (GDestroyNotify)free_data<GstreamerQEBM>);
 	create_dispatcher("confirmation", sigc::mem_fun(*this, &GstQEModule::confirmation_received_),
 			info_type == GstreamerInfo_InfoType_MESSAGE ? (GDestroyNotify)free_data<MessageWatch> : (GDestroyNotify)free_data<PadWatch>);
@@ -263,7 +266,7 @@ void GstQEModule::startWatchingQEButton_click_cb()
 	send_start_stop_command(true);
 }
 
-void GstQEModule::stopWatchingQEButton_click_cb()
+void GstQEModule::removeSelectedHook_click_cb()
 {
 	send_start_stop_command(false);
 }

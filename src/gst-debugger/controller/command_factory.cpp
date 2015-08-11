@@ -34,11 +34,11 @@ void CommandFactory::send_property_request_command(const std::string &element_pa
 	client->send_command(cmd);
 }
 
-void CommandFactory::send_message_request_command(int message_type)
+void CommandFactory::send_message_request_command(int message_type, bool enable)
 {
 	MessageWatch *msg_watch = new MessageWatch();
 	msg_watch->set_message_type(message_type);
-	msg_watch->set_toggle(ENABLE);
+	msg_watch->set_toggle(enable ? ENABLE : DISABLE);
 	Command cmd;
 	cmd.set_command_type(Command_CommandType_MESSAGE_WATCH);
 	cmd.set_allocated_message_watch(msg_watch);

@@ -611,7 +611,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="button2">
+                          <object class="GtkButton" id="removeSelectedEventHook">
                             <property name="label" translatable="yes">Remove selected</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>

@@ -8,7 +8,6 @@
 #include "gst_buffer_module.h"
 #include "protocol/deserializer.h"
 
-#include <sstream>
 #include <iomanip>
 
 GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder)
