@@ -66,6 +66,7 @@ message Command {
 	optional LogThreshold log_threshold = 4;
 	optional Property property = 5;
 	optional string enum_name = 6;
+	optional string factory_name = 7;
 
 	enum CommandType {
 		PAD_WATCH = 0;
@@ -76,8 +77,9 @@ message Command {
 		TOPOLOGY = 5;
 		PROPERTY = 6;
 		ENUM_TYPE = 7;
+		FACTORY = 8;
 	}
-	required CommandType command_type = 7;
+	required CommandType command_type = 8;
 }
 
 message GstreamerLog {
@@ -110,6 +112,7 @@ message TopologyElement {
 	required string path = 1;
 	required string type_name = 2;
 	required bool is_bin = 3;
+	required string factory_name = 4;
 }
 
 message TopologyPad {
@@ -118,6 +121,13 @@ message TopologyPad {
 	required int32 direction = 3;
 	required int32 presence = 4;
 	optional TopologyTemplate template = 5;
+}
+
+message FactoryInfo {
+	required string name = 1;
+	repeated TopologyTemplate templates = 2;
+	repeated string protocols = 3;
+	repeated string interfaces = 4;
 }
 
 message Topology {
@@ -156,6 +166,7 @@ message GstreamerInfo {
 		PROPERTY = 9;
 		SERVER_ERROR = 10;
 		ENUM_TYPE = 11;
+		FACTORY = 12;
 	}
 	
 	required InfoType info_type = 1;
@@ -169,4 +180,5 @@ message GstreamerInfo {
 	optional Property property = 8;
 	optional ServerError server_error = 9;
 	optional EnumType enum_type = 10;
+	optional FactoryInfo factory_info = 11;
 }
