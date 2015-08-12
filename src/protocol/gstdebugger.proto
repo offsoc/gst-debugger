@@ -99,6 +99,13 @@ message TopologyLink {
 	required string sink_pad_path = 2;
 }
 
+message TopologyTemplate {
+	required string name_template = 1;
+	required int32 direction = 2;
+	required int32 presence = 3;
+	required string caps = 4;
+}
+
 message TopologyElement {
 	required string path = 1;
 	required string type_name = 2;
@@ -107,10 +114,10 @@ message TopologyElement {
 
 message TopologyPad {
 	required string path = 1;
-	required string tpl_name = 2;
-	required bool is_ghostpad = 3;
-	required int32 direction = 4;
-	required int32 presence = 5;
+	required bool is_ghostpad = 2;
+	required int32 direction = 3;
+	required int32 presence = 4;
+	optional TopologyTemplate template = 5;
 }
 
 message Topology {
