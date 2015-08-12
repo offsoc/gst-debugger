@@ -45,5 +45,9 @@ void TopologyController::process(const Topology& topology)
 			return;
 
 		src->set_peer(sink);
+		if (sink->get_direction() == Gst::PAD_SINK)
+		{
+			sink->set_peer(src);
+		}
 	}
 }
