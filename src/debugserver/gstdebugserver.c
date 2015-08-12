@@ -32,6 +32,7 @@
 
 #include "gstdebugserver.h"
 #include "gstdebugservertopology.h"
+#include "gstdebugserverfactory.h"
 #include "utils/gst-utils.h"
 #include "utils/buffer-prepare-utils.h"
 #include "protocol/serializer.h"
@@ -392,6 +393,18 @@ gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpoi
 }
 
 static void
+gst_debugserver_tracer_send_factory (GstDebugserverTracer * debugserver, gpointer client_id, const gchar * factory_name)
+{
+  gint size;
+  GSocketConnection *connection = (GSocketConnection*) client_id;
+  SAFE_PREPARE_BUFFER_INIT (1024);
+  SAFE_PREPARE_BUFFER (gst_debugserver_factory_prepare_buffer (factory_name, m_buff, max_m_buff_size), size);
+  gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
+    m_buff, size);
+  SAFE_PREPARE_BUFFER_CLEAN;
+}
+
+static void
 gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_data)
 {
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
@@ -605,6 +618,9 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
     break;
   case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
       gst_debugserver_tracer_send_categories (debugserver, client_id);
+      break;
+  case COMMAND__COMMAND_TYPE__FACTORY:
+      gst_debugserver_tracer_send_factory (debugserver, client_id, cmd->factory_name);
       break;
   case COMMAND__COMMAND_TYPE__TOPOLOGY:
     gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);

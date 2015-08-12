@@ -39,19 +39,6 @@ get_topology_template_object (GstPadTemplate *template)
 }
 
 static void
-send_element_templates (GstElement *element)
-{
-  GList *templates = gst_element_class_get_pad_template_list (GST_ELEMENT_GET_CLASS (element));
-  GstPadTemplate *tpl = NULL;
-
-  while (templates && templates->data) {
-    tpl = (GstPadTemplate*) templates->data;
-    get_topology_template_object (tpl);
-    templates = templates->next;
-  }
-}
-
-static void
 send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * server, GSocketConnection * client)
 {
   GstreamerInfo info = GSTREAMER_INFO__INIT;
@@ -69,6 +56,7 @@ send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * ser
     element_tp.type_name = g_strdup (g_type_name (G_OBJECT_TYPE (object)));
     element_tp.path = gst_utils_get_object_path (object);
     element_tp.is_bin = GST_IS_BIN (object);
+    element_tp.factory_name = g_strdup (gst_plugin_feature_get_name (gst_element_get_factory (GST_ELEMENT_CAST (object))));
     topology.element = &element_tp;
     topology.type = TOPOLOGY__OBJECT_TYPE__ELEMENT;
   } else if (GST_IS_PAD (object)) {
@@ -178,8 +166,6 @@ gst_debugserver_topology_send_element (GstElement * element, GstDebugserverTcp *
   if (GST_ELEMENT_PARENT (element) != NULL) {
     send_object (GST_OBJECT (element), TOPOLOGY__ACTION__ADD, server, client);
   }
-
-  send_element_templates (element);
 
   send_element_pads (element, server, client);
 

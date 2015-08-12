@@ -6,6 +6,7 @@ add_library(gstdebugserver SHARED
 	gstdebugserverlog.c
 	gstdebugserverqe.c
 	gstdebugservertopology.c
+	gstdebugserverfactory.c
 )
 
 target_link_libraries(gstdebugserver utils gst-debugger-protocol-c ${GIO_LIBRARIES} ${GSTREAMER_LIBRARIES})
