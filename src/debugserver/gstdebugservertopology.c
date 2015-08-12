@@ -25,6 +25,32 @@
 
 GSList *src_pads;
 
+static TopologyTemplate
+get_topology_template_object (GstPadTemplate *template)
+{
+  TopologyTemplate tpl = TOPOLOGY_TEMPLATE__INIT;
+
+  tpl.caps = gst_caps_to_string (GST_PAD_TEMPLATE_CAPS (template));
+  tpl.direction = GST_PAD_TEMPLATE_DIRECTION (template);
+  tpl.presence = GST_PAD_TEMPLATE_PRESENCE (template);
+  tpl.name_template = g_strdup (GST_PAD_TEMPLATE_NAME_TEMPLATE (template));
+
+  return tpl;
+}
+
+static void
+send_element_templates (GstElement *element)
+{
+  GList *templates = gst_element_class_get_pad_template_list (GST_ELEMENT_GET_CLASS (element));
+  GstPadTemplate *tpl = NULL;
+
+  while (templates && templates->data) {
+    tpl = (GstPadTemplate*) templates->data;
+    get_topology_template_object (tpl);
+    templates = templates->next;
+  }
+}
+
 static void
 send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * server, GSocketConnection * client)
 {
@@ -34,6 +60,7 @@ send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * ser
   gchar buffer[1024];
   TopologyElement element_tp = TOPOLOGY_ELEMENT__INIT;
   TopologyPad pad_tp = TOPOLOGY_PAD__INIT;
+  TopologyTemplate template;
 
   info.info_type = GSTREAMER_INFO__INFO_TYPE__TOPOLOGY;
   topology.action = action;
@@ -47,11 +74,13 @@ send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * ser
   } else if (GST_IS_PAD (object)) {
     GstPad *pad = GST_PAD (object);
     pad_tp.path = gst_utils_get_object_path (object);
-    pad_tp.tpl_name = g_strdup (
-    		gst_pad_get_pad_template (pad) ? GST_PAD_TEMPLATE_NAME_TEMPLATE (gst_pad_get_pad_template (pad)) : "");
     pad_tp.is_ghostpad = GST_IS_GHOST_PAD (pad);
     pad_tp.presence = gst_pad_get_pad_template (pad) ? GST_PAD_TEMPLATE_PRESENCE (gst_pad_get_pad_template (pad)) : 0;
     pad_tp.direction = GST_PAD_DIRECTION (pad);
+    if (GST_PAD_PAD_TEMPLATE (pad)) {
+      template = get_topology_template_object (GST_PAD_PAD_TEMPLATE (pad));
+      pad_tp.template_ = &template;
+    }
     topology.pad = &pad_tp;
     topology.type = TOPOLOGY__OBJECT_TYPE__PAD;
   } else {
@@ -149,6 +178,8 @@ gst_debugserver_topology_send_element (GstElement * element, GstDebugserverTcp *
   if (GST_ELEMENT_PARENT (element) != NULL) {
     send_object (GST_OBJECT (element), TOPOLOGY__ACTION__ADD, server, client);
   }
+
+  send_element_templates (element);
 
   send_element_pads (element, server, client);
 
