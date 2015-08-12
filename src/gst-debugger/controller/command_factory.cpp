@@ -112,3 +112,11 @@ void CommandFactory::send_property_command(const std::string &path, const std::s
 
 	client->send_command(cmd);
 }
+
+void CommandFactory::send_request_factory(const std::string &factory_name)
+{
+	Command cmd;
+	cmd.set_command_type(Command_CommandType_FACTORY);
+	cmd.set_factory_name(factory_name);
+	client->send_command(cmd);
+}

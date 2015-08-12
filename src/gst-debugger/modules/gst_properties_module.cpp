@@ -271,6 +271,7 @@ void GstPropertiesModule::show_pad_properties()
 	APPEND_ROW("Peer pad", peer_pad);
 
 #undef APPEND_ROW
+#undef SET_ROW
 
 	tree->show();
 	properties_box->pack_start(*tree, true, true, 0);

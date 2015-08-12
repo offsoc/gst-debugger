@@ -38,6 +38,13 @@ void Controller::process_frame(const GstreamerInfo &info)
 	case GstreamerInfo_InfoType_TOPOLOGY:
 		process(info.topology());
 		on_model_changed(current_model);
+
+		// todo get info from process??
+		if (info.topology().type() == Topology_ObjectType_ELEMENT)
+		{
+			send_request_factory(info.topology().element().factory_name());
+		}
+
 		break;
 	case GstreamerInfo_InfoType_DEBUG_CATEGORIES:
 		on_debug_categories_received(info.debug_categories());
@@ -71,6 +78,9 @@ void Controller::process_frame(const GstreamerInfo &info)
 	case GstreamerInfo_InfoType_ENUM_TYPE:
 		update_enum_model(info.enum_type());
 		on_enum_list_changed(info.enum_type().type_name());
+		break;
+	case GstreamerInfo_InfoType_FACTORY:
+		update_factory_model(info.factory_info());
 		break;
 	default:
 		break;
@@ -132,6 +142,24 @@ void Controller::update_enum_model(const EnumType &enum_type)
 		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value(), enum_type.entry(i).nick());
 	}
 	enum_container.update_type(et);
+}
+
+void Controller::update_factory_model(const FactoryInfo &factory_info)
+{
+	FactoryModel model(factory_info.name());
+
+	for (int i = 0; i < factory_info.templates_size(); i++)
+	{
+		auto tmp_tpl = factory_info.templates(i);
+		// todo TopologyTemplate -> Gst::PadTemplate twice (somewhere else, property module?)
+		auto tpl = Gst::PadTemplate::create(tmp_tpl.name_template(),
+				static_cast<Gst::PadDirection>(tmp_tpl.direction()),
+				static_cast<Gst::PadPresence>(tmp_tpl.presence()),
+				Gst::Caps::create_from_string(tmp_tpl.caps()));
+		model.append_template(tpl);
+	}
+
+	factory_container.update_factory(model);
 }
 
 void Controller::append_property(const Property& property)

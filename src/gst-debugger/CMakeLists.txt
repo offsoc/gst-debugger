@@ -33,6 +33,7 @@ add_executable(gst-debugger
 
 	models/gst_pipeline_model.cpp
 	models/gst_enum_model.cpp
+	models/gst_factory_model.cpp
 )
 
 target_link_libraries(gst-debugger

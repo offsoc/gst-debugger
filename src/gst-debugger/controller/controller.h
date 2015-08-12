@@ -13,6 +13,7 @@
 #include "connection_controller.h"
 #include "topology_controller.h"
 #include "models/gst_enum_model.h"
+#include "models/gst_factory_model.h"
 #include "protocol/gstdebugger.pb.h"
 
 class Controller :
@@ -27,10 +28,13 @@ private:
 	std::shared_ptr<ObjectModel> selected_object;
 
 	GstEnumContainer enum_container;
+	GstFactoryContainer factory_container;
 
 	void process_frame(const GstreamerInfo& info);
 
 	void update_enum_model(const EnumType &enum_type);
+
+	void update_factory_model(const FactoryInfo &factory_info);
 
 	void append_property(const Property& property);
 
