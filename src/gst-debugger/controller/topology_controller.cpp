@@ -12,6 +12,8 @@
 
 void TopologyController::process(const Topology& topology)
 {
+	lock_topology();
+
 	if (topology.type() == Topology_ObjectType_ELEMENT)
 	{
 		auto e_info = topology.element();
@@ -50,4 +52,6 @@ void TopologyController::process(const Topology& topology)
 			sink->set_peer(src);
 		}
 	}
+
+	unlock_topology();
 }

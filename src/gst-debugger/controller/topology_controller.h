@@ -12,9 +12,15 @@
 
 #include "protocol/gstdebugger.pb.h"
 
+#include <mutex>
+
 class TopologyController : public virtual BaseController
 {
+	std::mutex m_topology;
+
 public:
+	void lock_topology() { m_topology.lock(); }
+	void unlock_topology() { m_topology.unlock(); }
 	void process(const Topology &topology);
 };
 

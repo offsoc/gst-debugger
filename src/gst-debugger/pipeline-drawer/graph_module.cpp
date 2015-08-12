@@ -237,9 +237,10 @@ void GraphModule::update_model_()
 	{
 		auto new_model = *m;
 
+		controller->lock_topology();
 		std::shared_ptr<ObjectModel> tmp_model = new_model;
 		model_str = dot_converter.to_dot_data(new_model);
-
+		controller->unlock_topology();
 		std::string model_path;
 		while (tmp_model)
 		{
