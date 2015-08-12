@@ -207,42 +207,67 @@ void GstPropertiesModule::show_pad_properties()
 	}
 
 	PadPropertyModelColumns cols;
-	Glib::RefPtr<Gtk::ListStore> model = Gtk::ListStore::create(cols);
+	auto model = Gtk::TreeStore::create(cols);
 	Gtk::TreeView *tree = Gtk::manage(new Gtk::TreeView());
 	tree->append_column("Property Name", cols.m_col_name);
 	tree->append_column("Property Value", cols.m_col_value);
 	tree->set_model(model);
 
+#define SET_ROW(name, value, row_obj) \
+	do { \
+		row_obj[cols.m_col_name] = name; \
+		row_obj[cols.m_col_value] = value; \
+	} while (false);
+
 #define APPEND_ROW(name, value) \
 	do { \
-		Gtk::TreeModel::Row row = *(model->append()); \
+		row = *(model->append()); \
 		row[cols.m_col_name] = name; \
 		row[cols.m_col_value] = value; \
 	} while (false);
 
-	std::string presence;
-	switch (pad->get_presence())
-	{
-	case Gst::PAD_ALWAYS: presence = "ALWAYS"; break;
-	case Gst::PAD_SOMETIMES: presence = "SOMETIMES"; break;
-	case Gst::PAD_REQUEST: presence = "REQUEST"; break;
-	default: presence = "UNKNOWN";
-	}
 
-	std::string direction;
-	switch (pad->get_direction())
-	{
-	case Gst::PAD_SINK: direction = "SINK"; break;
-	case Gst::PAD_SRC: direction = "SRC"; break;
-	default: direction = "UNKNOWN";
-	}
+	auto get_presence_str = [] (Gst::PadPresence p) {
+		std::string presence;
+		switch (p)
+		{
+		case Gst::PAD_ALWAYS: presence = "ALWAYS"; break;
+		case Gst::PAD_SOMETIMES: presence = "SOMETIMES"; break;
+		case Gst::PAD_REQUEST: presence = "REQUEST"; break;
+		default: presence = "UNKNOWN";
+		}
+		return presence;
+	};
+
+	auto get_direction_str = [] (Gst::PadDirection d) {
+		std::string direction;
+		switch (d)
+		{
+		case Gst::PAD_SINK: direction = "SINK"; break;
+		case Gst::PAD_SRC: direction = "SRC"; break;
+		default: direction = "UNKNOWN";
+		}
+		return direction;
+	};
 
 	std::string peer_pad = pad->get_peer() ? ElementPathProcessor::get_object_path(pad->get_peer()) : std::string("NO PEER PAD");
 
+	Gtk::TreeModel::Row row;
 	APPEND_ROW("Name", pad->get_name());
-	APPEND_ROW("Template name", pad->get_tpl_name());
-	APPEND_ROW("Presence", presence);
-	APPEND_ROW("Direction", direction);
+	APPEND_ROW("Template", pad->get_template() ? pad->get_template()->get_name_template() : "");
+
+	if (pad->get_template())
+	{
+		auto childrow = *(model->append(row.children()));
+		SET_ROW("Presence", get_presence_str(pad->get_template()->get_presence()), childrow);
+		childrow = *(model->append(row.children()));
+		SET_ROW("Direction", get_direction_str(pad->get_template()->get_direction()), childrow);
+		childrow = *(model->append(row.children()));
+		SET_ROW("Caps", pad->get_template()->get_caps()->to_string(), childrow);
+	}
+
+	APPEND_ROW("Presence", get_presence_str(pad->get_presence()));
+	APPEND_ROW("Direction", get_direction_str(pad->get_direction()));
 	APPEND_ROW("Peer pad", peer_pad);
 
 #undef APPEND_ROW

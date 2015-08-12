@@ -36,16 +36,16 @@ public:
 
 class PadModel : public ObjectModel
 {
-	std::string tpl_name;
+	Glib::RefPtr<Gst::PadTemplate> tpl;
 	bool is_ghost_pad;
 	Gst::PadDirection direction;
 	Gst::PadPresence presence;
 	std::shared_ptr<PadModel> peer;
 
 public:
-	PadModel(const std::string &name, const std::string &tpl_name, bool is_ghost_pad,
+	PadModel(const std::string &name, const Glib::RefPtr<Gst::PadTemplate>& tpl, bool is_ghost_pad,
 			Gst::PadDirection direction, Gst::PadPresence presence)
-	 : ObjectModel(name), tpl_name(tpl_name), is_ghost_pad(is_ghost_pad),
+	 : ObjectModel(name), tpl(tpl), is_ghost_pad(is_ghost_pad),
 	   direction(direction), presence(presence)
 	{}
 
@@ -59,7 +59,7 @@ public:
 
 	std::shared_ptr<PadModel> get_peer() const { return peer; }
 
-	std::string get_tpl_name() const { return tpl_name; }
+	Glib::RefPtr<Gst::PadTemplate> get_template() const { return tpl; }
 };
 
 class ElementModel : public ObjectModel

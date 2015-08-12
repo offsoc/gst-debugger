@@ -32,7 +32,12 @@ void TopologyController::process(const Topology& topology)
 		if (!parent)
 			return;
 
-		parent->add_pad(std::make_shared<PadModel>(path_processor.get_last_obj_str(), pad_tp.tpl_name(),
+		auto tpl = Gst::PadTemplate::create(pad_tp.template_().name_template(),
+				static_cast<Gst::PadDirection>(pad_tp.template_().direction()),
+				static_cast<Gst::PadPresence>(pad_tp.template_().presence()),
+				Gst::Caps::create_from_string(pad_tp.template_().caps()));
+
+		parent->add_pad(std::make_shared<PadModel>(path_processor.get_last_obj_str(), tpl,
 				pad_tp.is_ghostpad(), static_cast<Gst::PadDirection>(pad_tp.direction()),
 				static_cast<Gst::PadPresence>(pad_tp.presence())));
 	}
