@@ -166,13 +166,87 @@ void GstPropertiesModule::selected_object_changed()
 
 void GstPropertiesModule::selected_object_changed_()
 {
-	auto obj = std::dynamic_pointer_cast<ElementModel>(controller->get_selected_object());
+	auto element = std::dynamic_pointer_cast<ElementModel>(controller->get_selected_object());
 
-	if (!obj)
+	if (element)
+	{
+		clear_widgets();
+		request_selected_element_property("");
+		return;
+	}
+
+	auto pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
+
+	if (pad)
+	{
+		clear_widgets();
+		show_pad_properties();
+	}
+}
+
+class PadPropertyModelColumns : public Gtk::TreeModel::ColumnRecord
+{
+public:
+	Gtk::TreeModelColumn<Glib::ustring> m_col_name;
+	Gtk::TreeModelColumn<Glib::ustring> m_col_value;
+
+	PadPropertyModelColumns()
+	{
+		add(m_col_name);
+		add(m_col_value);
+	}
+};
+
+void GstPropertiesModule::show_pad_properties()
+{
+	auto pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
+
+	if (!pad)
 	{
 		return;
 	}
 
-	clear_widgets();
-	request_selected_element_property("");
+	PadPropertyModelColumns cols;
+	Glib::RefPtr<Gtk::ListStore> model = Gtk::ListStore::create(cols);
+	Gtk::TreeView *tree = Gtk::manage(new Gtk::TreeView());
+	tree->append_column("Property Name", cols.m_col_name);
+	tree->append_column("Property Value", cols.m_col_value);
+	tree->set_model(model);
+
+#define APPEND_ROW(name, value) \
+	do { \
+		Gtk::TreeModel::Row row = *(model->append()); \
+		row[cols.m_col_name] = name; \
+		row[cols.m_col_value] = value; \
+	} while (false);
+
+	std::string presence;
+	switch (pad->get_presence())
+	{
+	case Gst::PAD_ALWAYS: presence = "ALWAYS"; break;
+	case Gst::PAD_SOMETIMES: presence = "SOMETIMES"; break;
+	case Gst::PAD_REQUEST: presence = "REQUEST"; break;
+	default: presence = "UNKNOWN";
+	}
+
+	std::string direction;
+	switch (pad->get_direction())
+	{
+	case Gst::PAD_SINK: direction = "SINK"; break;
+	case Gst::PAD_SRC: direction = "SRC"; break;
+	default: direction = "UNKNOWN";
+	}
+
+	std::string peer_pad = pad->get_peer() ? ElementPathProcessor::get_object_path(pad->get_peer()) : std::string("NO PEER PAD");
+
+	APPEND_ROW("Name", pad->get_name());
+	APPEND_ROW("Template name", pad->get_tpl_name());
+	APPEND_ROW("Presence", presence);
+	APPEND_ROW("Direction", direction);
+	APPEND_ROW("Peer pad", peer_pad);
+
+#undef APPEND_ROW
+
+	tree->show();
+	properties_box->pack_start(*tree, true, true, 0);
 }

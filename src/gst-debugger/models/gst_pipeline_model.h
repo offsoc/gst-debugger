@@ -58,6 +58,8 @@ public:
 	void set_peer(const std::shared_ptr<PadModel>& peer) { this->peer = peer; }
 
 	std::shared_ptr<PadModel> get_peer() const { return peer; }
+
+	std::string get_tpl_name() const { return tpl_name; }
 };
 
 class ElementModel : public ObjectModel

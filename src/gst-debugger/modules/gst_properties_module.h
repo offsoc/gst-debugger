@@ -29,6 +29,8 @@ private:
 	bool update_property(const std::shared_ptr<GValueBase>& value_base, Property *property);
 	void request_selected_element_property(const std::string &property_name);
 
+	void show_pad_properties();
+
 	void new_property(const Property& property);
 	void new_property_();
 
