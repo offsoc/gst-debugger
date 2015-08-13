@@ -8,6 +8,8 @@
 #include "main_window.h"
 #include "sigc++lambdahack.h"
 
+#include "gst-debugger-dialogs.ui.h"
+
 #include "controller/controller.h"
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
@@ -27,7 +29,10 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));
 
 	builder->get_widget("remoteEnumTypesMenuitem", remote_enum_types);
-	remote_enum_types->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::remoteEnumTypesMenuitem_activate_cb));
+	remote_enum_types->signal_activate().connect([this] { enums_dialog->show(); });
+
+	builder->get_widget("remoteFactoriesMenuitem", remote_factories);
+	remote_factories->signal_activate().connect([this] { factories_dialog->show(); });
 
 	builder->get_widget("connectMenuItem", connect_menu_item);
 	connect_menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectMenuItem_activate_cb));
@@ -35,7 +40,15 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget_derived("connectionPropertiesDialog", connection_properties_dialog);
 	builder->get_widget("mainStatusbar", main_statusbar);
 
-	builder->get_widget_derived("remoteEnumTypesDialog", enums_dialog);
+
+	{
+		Glib::RefPtr<Gtk::Builder> dialogs_builder = Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
+		dialogs_builder->get_widget_derived("remoteDataDialog", enums_dialog);
+	}
+	{
+		Glib::RefPtr<Gtk::Builder> dialogs_builder = Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
+		dialogs_builder->get_widget_derived("remoteDataDialog", factories_dialog);
+	}
 	builder->get_widget("mainStatusbar", main_statusbar);
 
 	connection_status_changed(false);
@@ -67,6 +80,9 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	enums_dialog->set_controller(controller);
 	enums_dialog->set_transient_for(*this);
 
+	factories_dialog->set_controller(controller);
+	factories_dialog->set_transient_for(*this);
+
 	connection_properties_dialog->set_transient_for(*this);
 }
 
@@ -83,11 +99,6 @@ void MainWindow::connectMenuItem_activate_cb()
 		controller->connect(
 			connection_properties_dialog->get_ip_address(),
 			connection_properties_dialog->get_port());
-}
-
-void MainWindow::remoteEnumTypesMenuitem_activate_cb()
-{
-	enums_dialog->show();
 }
 
 void MainWindow::connection_status_changed(bool connected)

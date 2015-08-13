@@ -8,6 +8,8 @@
 #ifndef SRC_ENUMS_DIALOG_H_
 #define SRC_ENUMS_DIALOG_H_
 
+#include "remote_data_dialog.h"
+
 #include "controller/iview.h"
 
 #include <gtkmm.h>
@@ -23,13 +25,9 @@ public:
 	Gtk::TreeModelColumn<Glib::ustring> m_col_description;
 };
 
-class EnumsDialog : public Gtk::Dialog, public IBaseView
+class EnumsDialog : public RemoteDataDialog
 {
-	Gtk::TreeView *enum_types_tree_view;
-	Gtk::Button *close_button;
-
 	EnumsModelColumns enums_columns;
-	Glib::RefPtr<Gtk::TreeStore> enums_tree_model;
 
 	void reload_list(const Glib::ustring &enum_name);
 

@@ -11,6 +11,8 @@
 #include "controller/command_factory.h"
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
+#include "ui_utils.h"
+
 #include <gst/gst.h>
 
 static void free_properties(Property *property) { delete property; }
@@ -213,12 +215,6 @@ void GstPropertiesModule::show_pad_properties()
 	tree->append_column("Property Value", cols.m_col_value);
 	tree->set_model(model);
 
-#define SET_ROW(name, value, row_obj) \
-	do { \
-		row_obj[cols.m_col_name] = name; \
-		row_obj[cols.m_col_value] = value; \
-	} while (false);
-
 #define APPEND_ROW(name, value) \
 	do { \
 		row = *(model->append()); \
@@ -226,44 +222,14 @@ void GstPropertiesModule::show_pad_properties()
 		row[cols.m_col_value] = value; \
 	} while (false);
 
-
-	auto get_presence_str = [] (Gst::PadPresence p) {
-		std::string presence;
-		switch (p)
-		{
-		case Gst::PAD_ALWAYS: presence = "ALWAYS"; break;
-		case Gst::PAD_SOMETIMES: presence = "SOMETIMES"; break;
-		case Gst::PAD_REQUEST: presence = "REQUEST"; break;
-		default: presence = "UNKNOWN";
-		}
-		return presence;
-	};
-
-	auto get_direction_str = [] (Gst::PadDirection d) {
-		std::string direction;
-		switch (d)
-		{
-		case Gst::PAD_SINK: direction = "SINK"; break;
-		case Gst::PAD_SRC: direction = "SRC"; break;
-		default: direction = "UNKNOWN";
-		}
-		return direction;
-	};
-
 	std::string peer_pad = pad->get_peer() ? ElementPathProcessor::get_object_path(pad->get_peer()) : std::string("NO PEER PAD");
 
 	Gtk::TreeModel::Row row;
 	APPEND_ROW("Name", pad->get_name());
-	APPEND_ROW("Template", pad->get_template() ? pad->get_template()->get_name_template() : "");
 
 	if (pad->get_template())
 	{
-		auto childrow = *(model->append(row.children()));
-		SET_ROW("Presence", get_presence_str(pad->get_template()->get_presence()), childrow);
-		childrow = *(model->append(row.children()));
-		SET_ROW("Direction", get_direction_str(pad->get_template()->get_direction()), childrow);
-		childrow = *(model->append(row.children()));
-		SET_ROW("Caps", pad->get_template()->get_caps()->to_string(), childrow);
+		display_template_info(pad->get_template(), model, cols.m_col_name, cols.m_col_value);
 	}
 
 	APPEND_ROW("Presence", get_presence_str(pad->get_presence()));
@@ -271,7 +237,6 @@ void GstPropertiesModule::show_pad_properties()
 	APPEND_ROW("Peer pad", peer_pad);
 
 #undef APPEND_ROW
-#undef SET_ROW
 
 	tree->show();
 	properties_box->pack_start(*tree, true, true, 0);

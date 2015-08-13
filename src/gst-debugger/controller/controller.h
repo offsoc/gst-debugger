@@ -51,6 +51,7 @@ public:
 	void set_selected_object(const std::string &name);
 
 	const GstEnumContainer& get_enum_container() const { return enum_container; }
+	const GstFactoryContainer& get_factory_container() const { return factory_container; }
 
 	std::shared_ptr<ObjectModel> get_selected_object() const { return selected_object; }
 
@@ -63,6 +64,7 @@ public:
 	sigc::signal<void, const PadWatch&, PadWatch_WatchType> on_pad_watch_confirmation_received;
 	sigc::signal<void, const Glib::ustring&> on_enum_list_changed;
 	sigc::signal<void> on_selected_object_changed;
+	sigc::signal<void, const Glib::ustring&> on_factory_list_changed;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */

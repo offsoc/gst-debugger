@@ -7,13 +7,23 @@ add_custom_command(
 	DEPENDS ui/gst-debugger.glade
 )
 
+add_custom_command(
+	OUTPUT gst-debugger-dialogs.ui.h
+	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ui/gst-debugger-dialogs.glade gst-debugger-dialogs.glade
+	COMMAND xxd -i gst-debugger-dialogs.glade gst-debugger-dialogs.ui.h
+	DEPENDS ui/gst-debugger-dialogs.glade
+)
+
 add_executable(gst-debugger
 	main.cpp
 	main_window.cpp
 	gst-debugger.ui.h
+	gst-debugger-dialogs.ui.h
+	ui_utils.cpp
 	
 	dialogs/connection_properties_dialog.cpp
 	dialogs/enums_dialog.cpp
+	dialogs/factories_dialog.cpp
 	
 	modules/gst_buffer_module.cpp
 	modules/gst_message_module.cpp

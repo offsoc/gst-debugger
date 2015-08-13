@@ -81,6 +81,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 		break;
 	case GstreamerInfo_InfoType_FACTORY:
 		update_factory_model(info.factory_info());
+		on_factory_list_changed(info.factory_info().name());
 		break;
 	default:
 		break;

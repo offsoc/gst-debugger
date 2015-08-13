@@ -11,6 +11,7 @@
 #include "controller/tcp_client.h"
 #include "dialogs/connection_properties_dialog.h"
 #include "dialogs/enums_dialog.h"
+#include "dialogs/factories_dialog.h"
 #include "modules/gst_log_module.h"
 #include "modules/gst_event_module.h"
 #include "modules/gst_query_module.h"
@@ -28,14 +29,15 @@ class MainWindow : public IMainView
 	void connectionPropertiesMenuItem_activate_cb();
 	void connectMenuItem_activate_cb();
 	void connection_status_changed(bool connected);
-	void remoteEnumTypesMenuitem_activate_cb();
 
 	Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::MenuItem *connection_properties;
 	Gtk::MenuItem *remote_enum_types;
+	Gtk::MenuItem *remote_factories;
 	Gtk::ImageMenuItem *connect_menu_item;
 	ConnectionPropertiesDialog *connection_properties_dialog;
 	EnumsDialog *enums_dialog;
+	FactoriesDialog *factories_dialog;
 	Gtk::Statusbar *main_statusbar;
 
 	std::shared_ptr<Glib::Dispatcher> dispatcher;
