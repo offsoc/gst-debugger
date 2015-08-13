@@ -37,18 +37,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("connectMenuItem", connect_menu_item);
 	connect_menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectMenuItem_activate_cb));
 
-	builder->get_widget_derived("connectionPropertiesDialog", connection_properties_dialog);
 	builder->get_widget("mainStatusbar", main_statusbar);
 
+	enums_dialog = load_dialog<EnumsDialog>("remoteDataDialog");
+	factories_dialog = load_dialog<FactoriesDialog>("remoteDataDialog");
+	connection_properties_dialog = load_dialog<ConnectionPropertiesDialog>("connectionPropertiesDialog");
 
-	{
-		Glib::RefPtr<Gtk::Builder> dialogs_builder = Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
-		dialogs_builder->get_widget_derived("remoteDataDialog", enums_dialog);
-	}
-	{
-		Glib::RefPtr<Gtk::Builder> dialogs_builder = Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
-		dialogs_builder->get_widget_derived("remoteDataDialog", factories_dialog);
-	}
 	builder->get_widget("mainStatusbar", main_statusbar);
 
 	connection_status_changed(false);
@@ -84,6 +78,11 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	factories_dialog->set_transient_for(*this);
 
 	connection_properties_dialog->set_transient_for(*this);
+}
+
+Glib::RefPtr<Gtk::Builder> MainWindow::get_dialog_ui_def()
+{
+	return Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
 }
 
 void MainWindow::connectionPropertiesMenuItem_activate_cb()

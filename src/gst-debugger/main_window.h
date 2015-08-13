@@ -19,6 +19,7 @@
 #include "modules/gst_buffer_module.h"
 #include "modules/gst_properties_module.h"
 #include "pipeline-drawer/graph_module.h"
+
 #include <gtkmm.h>
 
 #include "controller/iview.h"
@@ -29,6 +30,17 @@ class MainWindow : public IMainView
 	void connectionPropertiesMenuItem_activate_cb();
 	void connectMenuItem_activate_cb();
 	void connection_status_changed(bool connected);
+
+	Glib::RefPtr<Gtk::Builder> get_dialog_ui_def();
+
+	template<typename T>
+	T* load_dialog(const std::string &name)
+	{
+		T* tmp = nullptr;
+		Glib::RefPtr<Gtk::Builder> dialogs_builder = get_dialog_ui_def();
+		dialogs_builder->get_widget_derived(name, tmp);
+		return tmp;
+	}
 
 	Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::MenuItem *connection_properties;
