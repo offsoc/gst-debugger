@@ -17,6 +17,8 @@ EnumsDialog::EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builde
 	data_tree_view->append_column("Name", enums_columns.m_col_name);
 	data_tree_view->append_column("Value", enums_columns.m_col_value);
 	data_tree_view->append_column("Description", enums_columns.m_col_description);
+
+	set_title("Remote Enum Types");
 }
 
 void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)

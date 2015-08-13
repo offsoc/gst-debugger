@@ -17,6 +17,8 @@ FactoriesDialog::FactoriesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk
 	data_tree_view->set_model(tree_model);
 	data_tree_view->append_column("Property", factories_columns.m_col_name);
 	data_tree_view->append_column("Value", factories_columns.m_col_value);
+
+	set_title("Remote Factories");
 }
 
 void FactoriesDialog::set_controller(const std::shared_ptr<Controller> &controller)
