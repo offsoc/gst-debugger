@@ -160,6 +160,11 @@ void Controller::update_factory_model(const FactoryInfo &factory_info)
 		model.append_template(tpl);
 	}
 
+	for (int i = 0; i < factory_info.meta_entries_size(); i++)
+	{
+		model.append_meta(factory_info.meta_entries(i).key(), factory_info.meta_entries(i).value());
+	}
+
 	factory_container.update_factory(model);
 }
 

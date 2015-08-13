@@ -45,6 +45,11 @@ void FactoriesDialog::reload_list(const Glib::ustring &factory_name)
 		row[factories_columns.m_col_name] = factory.get_name();
 		row[factories_columns.m_col_value] = "";
 
+		for (auto meta : factory.get_metadata())
+		{
+			APPEND_SUB_ROW(meta.first, meta.second, row);
+		}
+
 		auto tpl_row = APPEND_SUB_ROW("Pad templates", "", row);
 
 		for (auto tpl : factory.get_pad_templates())
