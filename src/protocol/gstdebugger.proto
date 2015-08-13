@@ -123,11 +123,17 @@ message TopologyPad {
 	optional TopologyTemplate template = 5;
 }
 
+message FactoryMetaEntry {
+	required string key = 1;
+	required string value = 2;
+}
+
 message FactoryInfo {
 	required string name = 1;
 	repeated TopologyTemplate templates = 2;
 	repeated string protocols = 3;
 	repeated string interfaces = 4;
+	repeated FactoryMetaEntry meta_entries = 5;
 }
 
 message Topology {
