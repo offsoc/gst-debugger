@@ -66,6 +66,27 @@ gint gst_debugserver_factory_prepare_buffer (const gchar * factory_name, gchar *
   f_info.n_protocols = 0;
   f_info.protocols = NULL;
 
+  gchar **keys, **k;
+  int meta_cnt = 0;
+  i = 0;
+  FactoryMetaEntry **entries = NULL;
+  keys = gst_element_factory_get_metadata_keys (factory);
+  if (keys != NULL) {
+    for (k = keys; *k != NULL; ++k) { meta_cnt++; }
+    entries = g_malloc (sizeof (FactoryMetaEntry*) * meta_cnt);
+    for (k = keys; *k != NULL; ++k) {
+      entries[i] = g_malloc (sizeof (FactoryMetaEntry));
+      factory_meta_entry__init (entries[i]);
+      entries[i]->key = g_strdup (*k);
+      entries[i]->value = g_strdup (gst_element_factory_get_metadata (factory, *k));
+      i++;
+    }
+    g_strfreev (keys);
+  }
+
+  f_info.meta_entries = entries;
+  f_info.n_meta_entries = meta_cnt;
+
   info.factory_info = &f_info;
 
   size = gstreamer_info__get_packed_size (&info);
@@ -81,6 +102,11 @@ finalize:
     g_free (templates[i]);
   }
   g_free (templates);
+
+  for (i = 0; i < (gint) f_info.n_meta_entries; i++) {
+    g_free (entries[i]);
+  }
+  g_free (entries);
 
   return size;
 }
