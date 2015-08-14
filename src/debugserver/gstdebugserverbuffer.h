@@ -49,6 +49,9 @@ GSList* gst_debugserver_buffer_get_clients (GstDebugserverBuffer * buf,
 
 void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf);
 
+void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf,
+  gpointer client_info);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGSERVER_BUFFER_H__ */

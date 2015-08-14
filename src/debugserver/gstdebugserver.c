@@ -419,13 +419,9 @@ gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_da
   GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
 
   gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
-  // todo this methods remove only one watch
-  gst_debugserver_qe_set_watch (debugserver->event_handler, FALSE, NULL,
-    -1, client_id);
-  gst_debugserver_qe_set_watch (debugserver->query_handler, FALSE, NULL,
-    -1, client_id);
-  gst_debugserver_buffer_set_watch (debugserver->buffer_handler, FALSE, NULL,
-    client_id);
+  gst_debugserver_qe_remove_client (debugserver->event_handler, client_id);
+  gst_debugserver_qe_remove_client (debugserver->query_handler, client_id);
+  gst_debugserver_buffer_remove_client (debugserver->buffer_handler, client_id);
   gst_debugserver_message_remove_client (debugserver->msg_handler, client_id);
 }
 

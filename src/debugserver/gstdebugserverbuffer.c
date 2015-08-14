@@ -97,6 +97,19 @@ gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf,
   }
 }
 
+void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf, gpointer client_info)
+{
+  GList *list = g_hash_table_get_keys (buf->clients);
+  GList *free_list = list;
+
+  while (list) {
+    gst_debugserver_buffer_remove_watch (buf, GST_PAD_CAST (list->data), client_info);
+    list = g_list_next (list);
+  }
+
+  g_list_free (free_list);
+}
+
 void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf)
 {
   g_hash_table_remove_all (buf->clients);

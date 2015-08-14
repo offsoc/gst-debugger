@@ -203,6 +203,17 @@ gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * evt, gboolean enable,
   }
 }
 
+void gst_debugserver_qe_remove_client (GstDebugserverQE * evt, gpointer client_info)
+{
+  GSList *list = g_hash_table_lookup (evt->watches, client_info);
+  if (list == NULL) {
+    return;
+  }
+
+  g_slist_free_full (list, g_free);
+  g_hash_table_remove (evt->watches, client_info);
+}
+
 void gst_debugserver_qe_clean (GstDebugserverQE * qe)
 {
   g_hash_table_remove_all (qe->watches);

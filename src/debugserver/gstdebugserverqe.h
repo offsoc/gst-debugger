@@ -56,6 +56,8 @@ gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffe
 
 void gst_debugserver_qe_clean (GstDebugserverQE * qe);
 
+void gst_debugserver_qe_remove_client (GstDebugserverQE * evt, gpointer client_info);
+
 G_END_DECLS
 
 #endif /* __GST_DEBUGSERVER_EVENT_H__ */
