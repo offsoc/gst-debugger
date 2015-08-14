@@ -61,3 +61,11 @@ void display_template_info(const Glib::RefPtr<Gst::PadTemplate> &tpl,
 }
 
 #undef APPEND_SUB_ROW
+
+Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const TopologyTemplate &tpl)
+{
+	return Gst::PadTemplate::create(tpl.name_template(),
+			static_cast<Gst::PadDirection>(tpl.direction()),
+			static_cast<Gst::PadPresence>(tpl.presence()),
+			Gst::Caps::create_from_string(tpl.caps()));
+}

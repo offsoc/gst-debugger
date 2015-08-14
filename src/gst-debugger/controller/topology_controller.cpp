@@ -8,6 +8,8 @@
 #include "topology_controller.h"
 #include "element_path_processor.h"
 
+#include "ui_utils.h"
+
 #include <boost/algorithm/string/split.hpp>
 
 void TopologyController::process(const Topology& topology)
@@ -32,11 +34,7 @@ void TopologyController::process(const Topology& topology)
 		if (!parent)
 			return;
 
-		auto tpl = Gst::PadTemplate::create(pad_tp.template_().name_template(),
-				static_cast<Gst::PadDirection>(pad_tp.template_().direction()),
-				static_cast<Gst::PadPresence>(pad_tp.template_().presence()),
-				Gst::Caps::create_from_string(pad_tp.template_().caps()));
-
+		auto tpl = protocol_template_to_gst_template(pad_tp.template_());
 		parent->add_pad(std::make_shared<PadModel>(path_processor.get_last_obj_str(), tpl,
 				pad_tp.is_ghostpad(), static_cast<Gst::PadDirection>(pad_tp.direction()),
 				static_cast<Gst::PadPresence>(pad_tp.presence())));

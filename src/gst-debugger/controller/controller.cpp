@@ -7,6 +7,8 @@
 
 #include "controller.h"
 
+#include "ui_utils.h"
+
 #include "protocol/common.h"
 #include "protocol/deserializer.h"
 #include "protocol/serializer.h"
@@ -151,13 +153,7 @@ void Controller::update_factory_model(const FactoryInfo &factory_info)
 
 	for (int i = 0; i < factory_info.templates_size(); i++)
 	{
-		auto tmp_tpl = factory_info.templates(i);
-		// todo TopologyTemplate -> Gst::PadTemplate twice (somewhere else, property module?)
-		auto tpl = Gst::PadTemplate::create(tmp_tpl.name_template(),
-				static_cast<Gst::PadDirection>(tmp_tpl.direction()),
-				static_cast<Gst::PadPresence>(tmp_tpl.presence()),
-				Gst::Caps::create_from_string(tmp_tpl.caps()));
-		model.append_template(tpl);
+		model.append_template(protocol_template_to_gst_template(factory_info.templates(i)));
 	}
 
 	for (int i = 0; i < factory_info.meta_entries_size(); i++)
