@@ -20,8 +20,8 @@
 #ifndef __GST_DEBUGSERVER_FACTORY_H__
 #define __GST_DEBUGSERVER_FACTORY_H__
 
-#include <glib.h>
+#include <gst/gst.h>
 
-gint gst_debugserver_factory_prepare_buffer (const gchar * factory_name, gchar * buffer, gint max_size);
+gint gst_debugserver_factory_prepare_buffer (GstElementFactory *factory, gchar * buffer, gint max_size);
 
 #endif /* __GST_DEBUGSERVER_FACTORY_H__ */

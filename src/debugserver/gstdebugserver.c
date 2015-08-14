@@ -396,12 +396,21 @@ static void
 gst_debugserver_tracer_send_factory (GstDebugserverTracer * debugserver, gpointer client_id, const gchar * factory_name)
 {
   gint size;
+  GstElementFactory *factory = gst_element_factory_find (factory_name);
+  if (factory == NULL) {
+    gchar *msg = g_strdup_printf ("Cannot find factory %s", factory_name);
+    gst_debugserver_handle_error (debugserver, client_id, msg);
+    g_free (msg);
+    return;
+  }
   GSocketConnection *connection = (GSocketConnection*) client_id;
   SAFE_PREPARE_BUFFER_INIT (1024);
-  SAFE_PREPARE_BUFFER (gst_debugserver_factory_prepare_buffer (factory_name, m_buff, max_m_buff_size), size);
+  SAFE_PREPARE_BUFFER (gst_debugserver_factory_prepare_buffer (factory, m_buff, max_m_buff_size), size);
   gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
     m_buff, size);
   SAFE_PREPARE_BUFFER_CLEAN;
+
+  gst_object_unref (factory);
 }
 
 static void

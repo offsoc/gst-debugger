@@ -21,11 +21,8 @@
 
 #include "protocol/gstdebugger.pb-c.h"
 
-#include <gst/gst.h>
-
-gint gst_debugserver_factory_prepare_buffer (const gchar * factory_name, gchar * buffer, gint max_size)
+gint gst_debugserver_factory_prepare_buffer (GstElementFactory *factory, gchar * buffer, gint max_size)
 {
-  GstElementFactory *factory = gst_element_factory_find (factory_name);
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   FactoryInfo f_info = FACTORY_INFO__INIT;
   TopologyTemplate **templates = NULL;
@@ -33,12 +30,8 @@ gint gst_debugserver_factory_prepare_buffer (const gchar * factory_name, gchar *
   GList *tpls = NULL;
   GstStaticPadTemplate *static_template = NULL;
 
-  if (factory == NULL) {
-    // todo
-  }
-
   info.info_type = GSTREAMER_INFO__INFO_TYPE__FACTORY;
-  f_info.name = g_strdup (factory_name);
+  f_info.name = g_strdup (gst_plugin_feature_get_name (factory));
   f_info.n_templates = gst_element_factory_get_num_pad_templates (factory);
 
   if (f_info.n_templates != 0) {
