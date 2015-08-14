@@ -28,7 +28,6 @@ void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)
 	reload_list("");
 }
 
-// todo we don't need reload whole list
 void EnumsDialog::reload_list(const Glib::ustring& enum_name)
 {
 	tree_model->clear();

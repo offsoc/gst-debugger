@@ -28,7 +28,6 @@ void FactoriesDialog::set_controller(const std::shared_ptr<Controller> &controll
 	reload_list("");
 }
 
-// todo we don't need reload whole list
 void FactoriesDialog::reload_list(const Glib::ustring &factory_name)
 {
 	tree_model->clear();
