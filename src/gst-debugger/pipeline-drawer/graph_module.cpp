@@ -11,7 +11,7 @@
 
 #include "utils/gst-utils.h"
 
-#include <graphviz-gstdebugger.h>
+#include "graphviz-plugin/graphviz-gstdebugger.h"
 
 #include <boost/algorithm/string.hpp>
 
@@ -19,6 +19,8 @@ static void ptr_free(std::shared_ptr<ElementModel>* ptr)
 {
 	delete ptr;
 }
+
+extern gvplugin_library_t gvplugin_gstdebugger_LTX_library;
 
 GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
@@ -218,6 +220,7 @@ void GraphModule::free_graph()
 	{
 		gvFreeContext (gvc);
 		gvFinalize (gvc);
+
 		gvc = nullptr;
 	}
 	if (g != nullptr)
@@ -255,7 +258,12 @@ void GraphModule::update_model_()
 		model_str = dot_converter.get_blank_page();
 	}
 
-	gvc = gvContext ();
+	static lt_symlist_t lt_preloaded_symbols[] = {
+		{ "gvplugin_gstdebugger_LTX_library", (void*)(&gvplugin_gstdebugger_LTX_library) },
+		{ 0, 0 }
+	};
+
+	gvc = gvContextPlugins(lt_preloaded_symbols, 1);
 	g = agmemread (model_str.c_str());
 	gvLayout (gvc, g, "dot");
 	graph_drawing_area->hide();

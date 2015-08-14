@@ -48,6 +48,7 @@ add_executable(gst-debugger
 
 target_link_libraries(gst-debugger
 	gst-debugger-protocol-cpp
+	gvplugin_gstdebugger
 	gvalue-converter
 	utils
 	${GIOMM_LIBRARIES}
@@ -55,6 +56,5 @@ target_link_libraries(gst-debugger
 	${GSTMM_LIBRARIES}
 	${GVC_LIBRARIES}
 	${CGRAPH_LIBRARIES}
-	-L/usr/local/lib/graphviz -lgvplugin_gstdebugger #todo
 	-pthread
 )
