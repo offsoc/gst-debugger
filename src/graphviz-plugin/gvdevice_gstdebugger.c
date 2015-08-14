@@ -13,10 +13,16 @@
 #include <X11/Xutil.h>
 
 GtkWidget* drawing_area;
+GMainLoop *graphviz_gstdebugger_plugin_main_loop = NULL;
 
-void set_drawing_area(GtkWidget *area)
+void graphviz_gstdebugger_set_drawing_area(GtkWidget *area)
 {
 	drawing_area = area;
+}
+
+void graphviz_gstdebugger_set_main_loop(GMainLoop *loop)
+{
+	graphviz_gstdebugger_plugin_main_loop = loop;
 }
 
 static void gstdebugger_initialize(GVJ_t *firstjob)
@@ -47,7 +53,7 @@ static void gstdebugger_finalize(GVJ_t *firstjob)
 		gtk_widget_show (drawing_area);
 	}
 
-	gtk_main();
+	g_main_loop_run (graphviz_gstdebugger_plugin_main_loop);
 }
 
 static gvdevice_features_t device_features_gstdebugger = {

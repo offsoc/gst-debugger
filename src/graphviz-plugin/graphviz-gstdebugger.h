@@ -14,7 +14,9 @@
 extern "C" {
 #endif
 
-void set_drawing_area(GtkWidget *drawing_area);
+void graphviz_gstdebugger_set_main_loop(GMainLoop *loop);
+
+void graphviz_gstdebugger_set_drawing_area(GtkWidget *drawing_area);
 
 #ifdef __cplusplus
 }
