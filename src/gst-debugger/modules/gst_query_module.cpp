@@ -7,6 +7,7 @@
 
 #include "gst_query_module.h"
 #include "protocol/deserializer.h"
+#include "controller/controller.h"
 
 GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder)
 : GstQEModule(true, true, GstreamerInfo_InfoType_QUERY,
@@ -20,7 +21,7 @@ void GstQueryModule::append_qe_entry(GstreamerQEBM *qebm)
 
 	if (query == NULL)
 	{
-		// todo log about it
+		controller->log("cannot deserialize query in qe module");
 		return;
 	}
 

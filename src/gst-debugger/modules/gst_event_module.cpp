@@ -7,6 +7,7 @@
 
 #include "gst_event_module.h"
 #include "protocol/deserializer.h"
+#include "controller/controller.h"
 
 GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder)
 : GstQEModule(true, true, GstreamerInfo_InfoType_EVENT,
@@ -20,7 +21,7 @@ void GstEventModule::append_qe_entry(GstreamerQEBM *qebm)
 
 	if (event == NULL)
 	{
-		// todo log about it
+		controller->log("cannot deserialize event in qe module");
 		return;
 	}
 

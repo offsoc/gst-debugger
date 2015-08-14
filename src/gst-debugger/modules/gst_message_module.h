@@ -10,6 +10,7 @@
 
 #include "common_model_columns.h"
 #include "gst_qe_module.h"
+#include "controller/controller.h"
 
 #include <gtkmm.h>
 #include <gstreamermm.h>
@@ -24,8 +25,6 @@ public:
 	Gtk::TreeModelColumn<gint> type;
 };
 
-
-// todo inherit from GstQEModule, a lot of copy&paste
 class GstMessageModule : public GstQEModule
 {
 	void append_qe_entry(GstreamerQEBM *qebm) override;

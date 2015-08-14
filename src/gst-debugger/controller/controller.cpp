@@ -177,3 +177,11 @@ void Controller::append_property(const Property& property)
 		this->send_property_command(property.element_path(), property.property_name(), gvalue->get_gvalue());
 	});
 }
+
+void Controller::log(const std::string &message)
+{
+	// todo date/time?
+	std::cerr << message << std::endl;
+
+	on_new_log_entry(message);
+}

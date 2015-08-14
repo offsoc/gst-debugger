@@ -172,12 +172,12 @@ void GraphModule::jump_to_selected_model()
 
 	if (selected_element.empty())
 	{
-		// todo message: no element selected
+		controller->log("cannot jump to element. element is not selected.");
 		return;
 	}
 	else if (selected_element.find(':') != std::string::npos)
 	{
-		// todo message: cannot jump to pad
+		controller->log("cannot jump into element. selected element is a pad.");
 		return;
 	}
 

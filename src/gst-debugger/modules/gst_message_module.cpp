@@ -31,7 +31,7 @@ void GstMessageModule::append_qe_entry(GstreamerQEBM *qebm)
 
 	if (msg == NULL)
 	{
-		// todo log about it
+		controller->log("cannot deserialize message in qe module");
 		return;
 	}
 

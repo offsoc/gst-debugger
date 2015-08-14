@@ -56,6 +56,8 @@ public:
 
 	std::shared_ptr<ObjectModel> get_selected_object() const { return selected_object; }
 
+	void log(const std::string &message);
+
 	sigc::signal<void, const GstreamerLog&> on_log_received;
 	sigc::signal<void, const DebugCategoryList&> on_debug_categories_received;
 	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
@@ -66,6 +68,7 @@ public:
 	sigc::signal<void, const Glib::ustring&> on_enum_list_changed;
 	sigc::signal<void> on_selected_object_changed;
 	sigc::signal<void, const Glib::ustring&> on_factory_list_changed;
+	sigc::signal<void, const Glib::ustring&> on_new_log_entry;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */

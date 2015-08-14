@@ -7,6 +7,7 @@
 
 #include "gst_buffer_module.h"
 #include "protocol/deserializer.h"
+#include "controller/controller.h"
 
 #include <iomanip>
 
@@ -22,7 +23,7 @@ void GstBufferModule::append_qe_entry(GstreamerQEBM *qebm)
 
 	if (buffer == NULL)
 	{
-		// todo log about it
+		controller->log("cannot deserialize buffer in qe module");
 		return;
 	}
 
