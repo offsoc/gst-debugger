@@ -32,6 +32,8 @@ protected:
 	Gtk::Entry *current_path_graph_entry;
 	Gtk::Button *refresh_graph_button;
 
+	GMainLoop *graphviz_plugin_loop = NULL;
+
 	void jump_to_selected_model();
 
 	void upGraphButton_clicked_cb();
@@ -44,8 +46,11 @@ protected:
 	void update_selected_object();
 	void update_selected_object_();
 
+	bool drawing_area_events_allowed() const;
+
 public:
 	GraphModule(const Glib::RefPtr<Gtk::Builder>& builder);
+	~GraphModule();
 
 	void update_model_();
 	void update_model(std::shared_ptr<ElementModel> new_model);

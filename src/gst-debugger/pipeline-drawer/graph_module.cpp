@@ -33,7 +33,7 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 			Gdk::ENTER_NOTIFY_MASK | Gdk::LEAVE_NOTIFY_MASK);
 	graph_drawing_area->signal_motion_notify_event().connect(sigc::mem_fun(*this, &GraphModule::graphDrawingArea_motion_notify_cb));
 	graph_drawing_area->signal_button_release_event().connect(sigc::mem_fun(*this, &GraphModule::graphDrawingArea_button_release_cb));
-	set_drawing_area(GTK_WIDGET (graph_drawing_area->gobj()));
+	graphviz_gstdebugger_set_drawing_area(GTK_WIDGET (graph_drawing_area->gobj()));
 
 	builder->get_widget("selectedElementInGraphEntry", selected_element_entry);
 	builder->get_widget("currentPathGraphEntry", current_path_graph_entry);
@@ -46,6 +46,14 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 
 	create_dispatcher("update-model", sigc::mem_fun(*this, &GraphModule::update_model_), (GDestroyNotify)ptr_free);
 	create_dispatcher("update-selected-object", sigc::mem_fun(*this, &GraphModule::update_selected_object_), NULL);
+
+	graphviz_plugin_loop = g_main_loop_new(NULL, FALSE);
+	graphviz_gstdebugger_set_main_loop(graphviz_plugin_loop);
+}
+
+GraphModule::~GraphModule()
+{
+	g_main_loop_unref(graphviz_plugin_loop);
 }
 
 void GraphModule::set_controller(const std::shared_ptr<Controller> &controller)
@@ -57,6 +65,11 @@ void GraphModule::set_controller(const std::shared_ptr<Controller> &controller)
 
 bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 {
+	if (!drawing_area_events_allowed())
+	{
+		return false;
+	}
+
 	if (event->type == GDK_2BUTTON_PRESS)
 	{
 		jump_to_selected_model();
@@ -123,6 +136,7 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 
 void GraphModule::update_model(std::shared_ptr<ElementModel> new_model)
 {
+	g_main_loop_quit(graphviz_plugin_loop);
 	gui_push("update-model", new std::shared_ptr<ElementModel>(new_model));
 	gui_emit("update-model");
 }
@@ -170,8 +184,18 @@ void GraphModule::jump_to_selected_model()
 	controller->model_down(selected_element);
 }
 
+bool GraphModule::drawing_area_events_allowed() const
+{
+	return g_main_loop_is_running(graphviz_plugin_loop);
+}
+
 bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)
 {
+	if (!drawing_area_events_allowed())
+	{
+		return false;
+	}
+
 	GVJ_t *job;
 	job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()),"job");
 
@@ -187,6 +211,11 @@ bool GraphModule::graphDrawingArea_motion_notify_cb(GdkEventMotion *event)
 
 bool GraphModule::graphDrawingArea_button_release_cb(GdkEventButton *event)
 {
+	if (!drawing_area_events_allowed())
+	{
+		return false;
+	}
+
 	GVJ_t *job;
 	pointf pointer;
 
@@ -202,8 +231,10 @@ bool GraphModule::graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& 
 {
 	GVJ_t *job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()), "job");
 
-	if (job == nullptr)
+	if (job == nullptr || !drawing_area_events_allowed())
+	{
 		return false;
+	}
 
 	(job->callbacks->motion)(job, job->pointer);
 	job->context = (void *)context->cobj();
@@ -228,12 +259,11 @@ void GraphModule::free_graph()
 		agclose (g);
 		g = nullptr;
 	}
+	g_main_loop_quit(graphviz_plugin_loop);
 }
 
 void GraphModule::update_model_()
 {
-	free_graph();
-
 	auto m = gui_try_pop<std::shared_ptr<ElementModel>*>("update-model");
 	std::string model_str;
 	if (m != nullptr)
@@ -268,6 +298,7 @@ void GraphModule::update_model_()
 	gvLayout (gvc, g, "dot");
 	graph_drawing_area->hide();
 	gvRender (gvc, g, "gstdebugger", NULL);
+	free_graph();
 }
 
 void GraphModule::refreshGraphButton_clicked_cb()
