@@ -57,7 +57,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 	case GstreamerInfo_InfoType_PROPERTY:
 	{
 		std::string name = info.property().type_name();
-		if ((info.property().internal_type() == INTERNAL_GTYPE_ENUM || info.property().internal_type() == INTERNAL_GTYPE_FLAGS) && !enum_container.has_type(name))
+		if ((info.property().internal_type() == INTERNAL_GTYPE_ENUM || info.property().internal_type() == INTERNAL_GTYPE_FLAGS) && !enum_container.has_item(name))
 		{
 			send_enum_type_request_command(name);
 		}
@@ -144,7 +144,7 @@ void Controller::update_enum_model(const EnumType &enum_type)
 	{
 		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value(), enum_type.entry(i).nick());
 	}
-	enum_container.update_type(et);
+	enum_container.update_item(et);
 }
 
 void Controller::update_factory_model(const FactoryInfo &factory_info)
@@ -161,7 +161,7 @@ void Controller::update_factory_model(const FactoryInfo &factory_info)
 		model.append_meta(factory_info.meta_entries(i).key(), factory_info.meta_entries(i).value());
 	}
 
-	factory_container.update_factory(model);
+	factory_container.update_item(model);
 }
 
 void Controller::append_property(const Property& property)

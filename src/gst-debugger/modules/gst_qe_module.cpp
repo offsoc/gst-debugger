@@ -99,7 +99,7 @@ void GstQEModule::enum_list_changed_()
 {
 	qe_types_model->clear();
 	std::string* type_name = gui_pop<std::string*>("enum");
-	GstEnumType type = const_cast<GstEnumContainer&>(controller->get_enum_container()).get_type(*type_name);
+	GstEnumType type = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container()).get_item(*type_name);
 	for (auto val : type.get_values())
 	{
 		Gtk::TreeModel::Row row = *(qe_types_model->append());

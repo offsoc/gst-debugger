@@ -13,6 +13,7 @@
 #include "connection_controller.h"
 #include "topology_controller.h"
 #include "models/gst_enum_model.h"
+#include "models/remote_data_container.h"
 #include "models/gst_factory_model.h"
 #include "protocol/gstdebugger.pb.h"
 
@@ -27,8 +28,8 @@ private:
 
 	std::shared_ptr<ObjectModel> selected_object;
 
-	GstEnumContainer enum_container;
-	GstFactoryContainer factory_container;
+	RemoteDataContainer<GstEnumType> enum_container;
+	RemoteDataContainer<FactoryModel> factory_container;
 
 	void process_frame(const GstreamerInfo& info);
 
@@ -50,8 +51,8 @@ public:
 
 	void set_selected_object(const std::string &name);
 
-	const GstEnumContainer& get_enum_container() const { return enum_container; }
-	const GstFactoryContainer& get_factory_container() const { return factory_container; }
+	const RemoteDataContainer<GstEnumType>& get_enum_container() const { return enum_container; }
+	const RemoteDataContainer<FactoryModel>& get_factory_container() const { return factory_container; }
 
 	std::shared_ptr<ObjectModel> get_selected_object() const { return selected_object; }
 

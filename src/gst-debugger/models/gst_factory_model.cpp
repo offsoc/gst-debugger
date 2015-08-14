@@ -24,37 +24,3 @@ void FactoryModel::append_template(const Glib::RefPtr<Gst::PadTemplate> &tpl)
 		*it = tpl;
 	}
 }
-
-void GstFactoryContainer::update_factory(const FactoryModel &factory)
-{
-	auto it = get_factory_it(factory.get_name());
-	if (it == factories.end())
-	{
-		factories.push_back(factory);
-	}
-	else
-	{
-		*it = factory;
-	}
-}
-
-std::vector<FactoryModel>::iterator GstFactoryContainer::get_factory_it(const std::string &factory_name)
-{
-	std::vector<FactoryModel>::iterator it = std::find_if(factories.begin(), factories.end(), [factory_name] (const FactoryModel& t) {
-		return t.get_name() == factory_name;
-	});
-
-	return it;
-}
-
-bool GstFactoryContainer::has_factory(const std::string &factory_name)
-{
-	return get_factory_it(factory_name) != factories.end();
-}
-
-FactoryModel GstFactoryContainer::get_factory(const std::string &factory_name)
-{
-	auto factory_it = get_factory_it(factory_name);
-	assert(factory_it != factories.end());
-	return *factory_it;
-}

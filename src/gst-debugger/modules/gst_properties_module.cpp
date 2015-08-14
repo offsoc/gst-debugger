@@ -77,9 +77,10 @@ void GstPropertiesModule::new_property_()
 	std::shared_ptr<GValueBase> value_base = element->get_property(property->property_name());
 	std::shared_ptr<GValueEnum> value_enum = std::dynamic_pointer_cast<GValueEnum>(value_base);
 
-	if (value_enum && const_cast<GstEnumContainer&>(controller->get_enum_container()).has_type(property->type_name()))
+	auto container = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container());
+	if (value_enum && container.has_item(property->type_name()))
 	{
-		value_enum->set_type(const_cast<GstEnumContainer&>(controller->get_enum_container()).get_type(property->type_name()));
+		value_enum->set_type(container.get_item(property->type_name()));
 	}
 
 	if (!update_property(value_base, property))
