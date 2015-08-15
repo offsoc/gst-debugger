@@ -131,9 +131,7 @@ message FactoryMetaEntry {
 message FactoryInfo {
 	required string name = 1;
 	repeated TopologyTemplate templates = 2;
-	repeated string protocols = 3;
-	repeated string interfaces = 4;
-	repeated FactoryMetaEntry meta_entries = 5;
+	repeated FactoryMetaEntry meta_entries = 3;
 }
 
 message Topology {
