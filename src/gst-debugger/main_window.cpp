@@ -9,6 +9,7 @@
 #include "sigc++lambdahack.h"
 
 #include "gst-debugger-dialogs.ui.h"
+#include "gst-debugger-logo.h"
 
 #include "controller/controller.h"
 
@@ -37,11 +38,21 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("connectMenuItem", connect_menu_item);
 	connect_menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectMenuItem_activate_cb));
 
+	builder->get_widget("aboutMenuItem", about_menu_item);
+	about_menu_item->signal_activate().connect([this] { about_dialog->show(); });
+
 	builder->get_widget("mainStatusbar", main_statusbar);
 
 	enums_dialog = load_dialog<EnumsDialog>("remoteDataDialog");
 	factories_dialog = load_dialog<FactoriesDialog>("remoteDataDialog");
 	connection_properties_dialog = load_dialog<ConnectionPropertiesDialog>("connectionPropertiesDialog");
+
+	{
+		Glib::RefPtr<Gtk::Builder> dialogs_builder = get_dialog_ui_def();
+		dialogs_builder->get_widget("aboutDialog", about_dialog);
+		// todo use gio::resources
+		about_dialog->set_logo(Gdk::Pixbuf::create_from_inline(429324+24, gst_debugger_logo , false));
+	}
 
 	builder->get_widget("mainStatusbar", main_statusbar);
 

@@ -14,11 +14,19 @@ add_custom_command(
 	DEPENDS ui/gst-debugger-dialogs.glade
 )
 
+add_custom_command(
+	OUTPUT gst-debugger-logo.h
+	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ui/gst-debugger-logo.png gst-debugger-logo.png
+	COMMAND gdk-pixbuf-csource --raw gst-debugger-logo.png --name=gst_debugger_logo > gst-debugger-logo.h
+	DEPENDS ui/gst-debugger-logo.png
+)
+
 add_executable(gst-debugger
 	main.cpp
 	main_window.cpp
 	gst-debugger.ui.h
 	gst-debugger-dialogs.ui.h
+	gst-debugger-logo.h
 	ui_utils.cpp
 	
 	dialogs/connection_properties_dialog.cpp

@@ -47,9 +47,11 @@ class MainWindow : public IMainView
 	Gtk::MenuItem *remote_enum_types;
 	Gtk::MenuItem *remote_factories;
 	Gtk::ImageMenuItem *connect_menu_item;
+	Gtk::MenuItem *about_menu_item;
 	ConnectionPropertiesDialog *connection_properties_dialog;
 	EnumsDialog *enums_dialog;
 	FactoriesDialog *factories_dialog;
+	Gtk::AboutDialog *about_dialog;
 	Gtk::Statusbar *main_statusbar;
 
 	std::shared_ptr<Glib::Dispatcher> dispatcher;
