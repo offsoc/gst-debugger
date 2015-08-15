@@ -42,6 +42,7 @@ protected:
 	Gtk::CheckButton *any_path_check_button;
 	Gtk::CheckButton *any_qe_check_button;
 	Gtk::TreeView *existing_hooks_tree_view;
+	Gtk::Label *pad_path_label;
 
 	Glib::RefPtr<Gtk::ListStore> qe_list_model;
 	ListModelColumns qe_list_model_columns;
@@ -58,6 +59,7 @@ protected:
 	GstreamerInfo_InfoType info_type;
 
 	bool type_module;
+	bool pad_path_module;
 
 	virtual void append_qe_entry(GstreamerQEBM *qebm) = 0;
 
@@ -83,6 +85,9 @@ protected:
 
 	virtual void confirmation_received_();
 	void pad_confirmation_received(const PadWatch& watch, PadWatch_WatchType type);
+
+	void selected_object_changed();
+	void set_start_watch_button_sensitive();
 
 public:
 	GstQEModule(bool type_module, bool pad_path_module,

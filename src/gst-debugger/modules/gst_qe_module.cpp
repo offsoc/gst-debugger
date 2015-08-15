@@ -21,7 +21,8 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		const std::string& qe_name, GType qe_gtype, const Glib::RefPtr<Gtk::Builder>& builder)
 :  qe_gtype(qe_gtype),
    info_type(info_type),
-  type_module(type_module)
+  type_module(type_module),
+  pad_path_module(pad_path_module)
 {
 	builder->get_widget("existing" + qe_name + "HooksTreeView", existing_hooks_tree_view);
 	qe_hooks_model = Gtk::ListStore::create(qe_hooks_model_columns);
@@ -30,7 +31,9 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 	if (pad_path_module)
 	{
 		builder->get_widget("any" + qe_name + "PathCheckButton", any_path_check_button);
+		any_path_check_button->signal_clicked().connect([this]{ set_start_watch_button_sensitive(); });
 		existing_hooks_tree_view->append_column("Pad path", qe_hooks_model_columns.pad_path);
+		builder->get_widget("padPath" + qe_name + "Label", pad_path_label);
 	}
 
 	if (type_module)
@@ -69,6 +72,8 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 			info_type == GstreamerInfo_InfoType_MESSAGE ? (GDestroyNotify)free_data<MessageWatch> : (GDestroyNotify)free_data<PadWatch>);
 	create_dispatcher("enum", sigc::mem_fun(*this, &GstQEModule::enum_list_changed_), (GDestroyNotify)free_data<std::string>);
 
+	create_dispatcher("selected-object", sigc::mem_fun(*this, &GstQEModule::selected_object_changed), nullptr);
+
 }
 
 void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
@@ -81,6 +86,7 @@ void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
 	if (info_type != GstreamerInfo_InfoType_MESSAGE)
 	{
 		controller->on_pad_watch_confirmation_received.connect(sigc::mem_fun(*this, &GstQEModule::pad_confirmation_received));
+		controller->on_selected_object_changed.connect([this]{gui_emit("selected-object");});
 	}
 }
 
@@ -278,3 +284,26 @@ void GstQEModule::removeSelectedHook_click_cb()
 	send_start_stop_command(false);
 }
 
+void GstQEModule::selected_object_changed()
+{
+	std::shared_ptr<PadModel> selected_pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
+
+	if (selected_pad)
+	{
+		pad_path_label->set_text(ElementPathProcessor::get_object_path(selected_pad));
+	}
+	else
+	{
+		pad_path_label->set_text("(none)");
+	}
+	set_start_watch_button_sensitive();
+}
+
+void GstQEModule::set_start_watch_button_sensitive()
+{
+	bool enabled = pad_path_module ?
+			std::dynamic_pointer_cast<PadModel>(controller->get_selected_object()) || any_path_check_button->get_active() :
+			true;
+
+	start_watching_qe_button->set_sensitive(enabled);
+}
