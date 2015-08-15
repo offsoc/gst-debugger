@@ -240,7 +240,7 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
   g_slist_free (clients);
 }
 
-#define ENUM_FLAG_PREPARE_BUFFER_METHOD(KLASS_VALUE) \
+#define ENUM_FLAG_PREPARE_BUFFER_METHOD(KLASS_VALUE, BASE_GTYPE) \
   do { \
     KLASS_VALUE *values = klass->values; \
     guint i = 0; \
@@ -260,6 +260,7 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
     msg.entry = entries; \
     msg.n_entry = klass->n_values; \
     msg.type_name = g_strdup (G_ENUM_CLASS_TYPE_NAME (klass)); \
+    msg.base_gtype = BASE_GTYPE; \
     info.enum_type = &msg; \
     len = gstreamer_info__get_packed_size (&info); \
     if (len > size) { \
@@ -277,13 +278,13 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
 static gint
 gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, gint size)
 {
-  ENUM_FLAG_PREPARE_BUFFER_METHOD(GEnumValue)
+  ENUM_FLAG_PREPARE_BUFFER_METHOD(GEnumValue, G_TYPE_ENUM)
 }
 
 static gint
 gst_debug_server_prepare_flags_type_buffer (GFlagsClass * klass, gchar * buffer, gint size)
 {
-  ENUM_FLAG_PREPARE_BUFFER_METHOD(GFlagsValue)
+  ENUM_FLAG_PREPARE_BUFFER_METHOD(GFlagsValue, G_TYPE_FLAGS)
 }
 
 static void
