@@ -25,11 +25,12 @@ class ListModelColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
 	ListModelColumns() {
-		add(type); add(qe);
+		add(type); add(qe); add(pad_path);
 	}
 
 	Gtk::TreeModelColumn<Glib::ustring> type;
 	Gtk::TreeModelColumn<GstMiniObject*> qe;
+	Gtk::TreeModelColumn<Glib::ustring> pad_path;
 };
 
 class DetailsModelColumns : public Gtk::TreeModel::ColumnRecord

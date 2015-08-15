@@ -28,14 +28,16 @@ void GstEventModule::append_qe_entry(GstreamerQEBM *qebm)
 	Gtk::TreeModel::Row row = *(qe_list_model->append());
 	row[qe_list_model_columns.type] = std::string("Event ") + Gst::Enums::get_name(static_cast<Gst::EventType>(event->type));
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(event);
+	row[qe_list_model_columns.pad_path] = qebm->pad_path();
 }
 
-void GstEventModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
+void GstEventModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path)
 {
-	GstQEModule::display_qe_details(qe);
+	GstQEModule::display_qe_details(qe, pad_path);
 
 	Glib::RefPtr<Gst::Event> event = event.cast_static(qe);
 
+	append_details_row("pad path", pad_path);
 	append_details_row("event type", Gst::Enums::get_name(event->get_event_type()));
 	{
 		gchar buffer[20];

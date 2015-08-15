@@ -40,9 +40,9 @@ void GstMessageModule::append_qe_entry(GstreamerQEBM *qebm)
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(msg);
 }
 
-void GstMessageModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
+void GstMessageModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path)
 {
-	GstQEModule::display_qe_details(qe);
+	GstQEModule::display_qe_details(qe, pad_path);
 
 	Glib::RefPtr<Gst::Message> message = message.cast_static(qe);
 

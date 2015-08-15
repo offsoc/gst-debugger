@@ -65,7 +65,7 @@ protected:
 
 	virtual void update_hook_list(PadWatch *confirmation);
 	virtual void send_start_stop_command(bool enable);
-	virtual void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe);
+	virtual void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path);
 
 	void append_details_row(const std::string &name, const std::string &value);
 	void append_details_from_structure(Gst::Structure& structure);

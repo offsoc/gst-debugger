@@ -28,14 +28,16 @@ void GstQueryModule::append_qe_entry(GstreamerQEBM *qebm)
 	Gtk::TreeModel::Row row = *(qe_list_model->append());
 	row[qe_list_model_columns.type] = std::string("Query ") + Gst::Enums::get_name(static_cast<Gst::QueryType>(query->type));
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(query);
+	row[qe_list_model_columns.pad_path] = qebm->pad_path();
 }
 
-void GstQueryModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
+void GstQueryModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path)
 {
-	GstQEModule::display_qe_details(qe);
+	GstQEModule::display_qe_details(qe, pad_path);
 
 	Glib::RefPtr<Gst::Query> query = query.cast_static(qe);
 
+	append_details_row("pad path", pad_path);
 	append_details_row("query type", Gst::Enums::get_name(query->get_query_type()));
 
 	auto structure = query->get_structure();

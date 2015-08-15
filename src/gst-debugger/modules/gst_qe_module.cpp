@@ -205,10 +205,10 @@ void GstQEModule::qeListTreeView_row_activated_cb(const Gtk::TreeModel::Path &pa
 
 	Gtk::TreeModel::Row row = *iter;
 	Glib::RefPtr<Gst::MiniObject> qe = Glib::wrap(row[qe_list_model_columns.qe], true);
-	display_qe_details(qe);
+	display_qe_details(qe, (Glib::ustring)row[qe_list_model_columns.pad_path]);
 }
 
-void GstQEModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
+void GstQEModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path)
 {
 	qe_details_model->clear();
 }

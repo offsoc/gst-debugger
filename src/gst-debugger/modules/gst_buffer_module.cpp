@@ -31,14 +31,16 @@ void GstBufferModule::append_qe_entry(GstreamerQEBM *qebm)
 	row[qe_list_model_columns.type] = "Buffer with size " + std::to_string(gst_buffer_get_size(buffer)) +
 			", timestamp: " + std::to_string(buffer->dts);
 	row[qe_list_model_columns.qe] = GST_MINI_OBJECT(buffer);
+	row[qe_list_model_columns.pad_path] = qebm->pad_path();
 }
 
-void GstBufferModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe)
+void GstBufferModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path)
 {
-	GstQEModule::display_qe_details(qe);
+	GstQEModule::display_qe_details(qe, pad_path);
 
 	Glib::RefPtr<Gst::Buffer> buffer = buffer.cast_static(qe);
 
+	append_details_row("pad path", pad_path);
 	append_details_row("pts", std::to_string(buffer->get_pts()));
 	append_details_row("dts", std::to_string(buffer->get_dts()));
 	append_details_row("duration", std::to_string(buffer->get_duration()));

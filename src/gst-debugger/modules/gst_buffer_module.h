@@ -14,7 +14,7 @@ class GstBufferModule : public GstQEModule
 {
 	void append_qe_entry(GstreamerQEBM *qebm) override;
 
-	void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe) override;
+	void display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe, const std::string &pad_path) override;
 
 public:
 	GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder);
