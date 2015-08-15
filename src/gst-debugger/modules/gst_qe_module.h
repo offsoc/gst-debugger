@@ -20,10 +20,11 @@ class QEHooksModelColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
 	QEHooksModelColumns() {
-		add(pad_path); add(qe_type);
+		add(pad_path); add(qe_type_name); add(qe_type);
 	}
 
 	Gtk::TreeModelColumn<Glib::ustring> pad_path;
+	Gtk::TreeModelColumn<Glib::ustring> qe_type_name;
 	Gtk::TreeModelColumn<gint> qe_type;
 };
 

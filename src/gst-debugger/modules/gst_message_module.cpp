@@ -65,6 +65,7 @@ void GstMessageModule::confirmation_received_()
 	if (confirmation->toggle() == ENABLE)
 	{
 		Gtk::TreeModel::Row row = *(qe_hooks_model->append());
+		row[qe_hooks_model_columns.qe_type_name] = Gst::Enums::get_name(static_cast<Gst::MessageType>(confirmation->message_type()));
 		row[qe_hooks_model_columns.qe_type] = confirmation->message_type();
 	}
 	else

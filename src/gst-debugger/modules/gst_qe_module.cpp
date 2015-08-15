@@ -43,7 +43,7 @@ GstQEModule::GstQEModule(bool type_module, bool pad_path_module,
 		qe_types_combobox->set_model(qe_types_model);
 		qe_types_combobox->pack_start(qe_types_model_columns.type_name);
 
-		existing_hooks_tree_view->append_column(qe_name + " type", qe_hooks_model_columns.qe_type);
+		existing_hooks_tree_view->append_column(qe_name + " type", qe_hooks_model_columns.qe_type_name);
 	}
 
 	builder->get_widget(qe_name + "ListTreeView", qe_list_tree_view);
@@ -137,6 +137,13 @@ void GstQEModule::update_hook_list(PadWatch *conf)
 	{
 		Gtk::TreeModel::Row row = *(qe_hooks_model->append());
 		row[qe_hooks_model_columns.pad_path] = conf->pad_path();
+
+		if (get_watch_type() != PadWatch_WatchType_BUFFER)
+		{
+			row[qe_hooks_model_columns.qe_type_name] = get_watch_type() == PadWatch_WatchType_EVENT ?
+					Gst::Enums::get_name(static_cast<Gst::EventType>(conf->qe_type())) :
+					Gst::Enums::get_name(static_cast<Gst::QueryType>(conf->qe_type()));
+		}
 		row[qe_hooks_model_columns.qe_type] = conf->qe_type();
 	}
 	else
