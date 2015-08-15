@@ -240,91 +240,50 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
   g_slist_free (clients);
 }
 
+#define ENUM_FLAG_PREPARE_BUFFER_METHOD(KLASS_VALUE) \
+  do { \
+    KLASS_VALUE *values = klass->values; \
+    guint i = 0; \
+    EnumEntry **entries; \
+    GstreamerInfo info = GSTREAMER_INFO__INIT; \
+    EnumType msg = ENUM_TYPE__INIT; \
+    info.info_type = GSTREAMER_INFO__INFO_TYPE__ENUM_TYPE; \
+    gint len; \
+    entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));  \
+    for (i = 0; i < klass->n_values; i++) { \
+      entries[i] = g_malloc (sizeof (EnumEntry)); \
+      enum_entry__init (entries[i]); \
+      entries[i]->name = g_strdup (values[i].value_name); \
+      entries[i]->value = values[i].value; \
+      entries[i]->nick = g_strdup (values[i].value_nick); \
+    } \
+    msg.entry = entries; \
+    msg.n_entry = klass->n_values; \
+    msg.type_name = g_strdup (G_ENUM_CLASS_TYPE_NAME (klass)); \
+    info.enum_type = &msg; \
+    len = gstreamer_info__get_packed_size (&info); \
+    if (len > size) { \
+      goto finalize; \
+    } \
+    gstreamer_info__pack (&info, (uint8_t*) buffer); \
+  finalize: \
+    for (i = 0; i < klass->n_values; i++) { \
+      g_free (entries[i]); \
+    } \
+    g_free (entries); \
+    return len; \
+  } while (FALSE);
+
 static gint
 gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, gint size)
 {
-  GEnumValue *values = klass->values;
-  guint i = 0;
-  EnumEntry **entries;
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  EnumType msg = ENUM_TYPE__INIT;
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__ENUM_TYPE;
-  gint len;
-
-  entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));
-
-  for (i = 0; i < klass->n_values; i++) {
-    entries[i] = g_malloc (sizeof (EnumEntry));
-    enum_entry__init (entries[i]);
-    entries[i]->name = g_strdup (values[i].value_name);
-    entries[i]->value = values[i].value;
-    entries[i]->nick = g_strdup (values[i].value_nick);
-  }
-
-  msg.entry = entries;
-  msg.n_entry = klass->n_values;
-  msg.type_name = g_strdup (G_ENUM_CLASS_TYPE_NAME (klass));
-  info.enum_type = &msg;
-  len = gstreamer_info__get_packed_size (&info);
-
-  if (len > size) {
-    goto finalize;
-  }
-
-  gstreamer_info__pack (&info, (uint8_t*) buffer);
-
-finalize:
-  for (i = 0; i < klass->n_values; i++) {
-    g_free (entries[i]);
-  }
-
-  g_free (entries);
-
-  return len;
+  ENUM_FLAG_PREPARE_BUFFER_METHOD(GEnumValue)
 }
 
-// todo maybe I don't have to copy&paste enum method?
 static gint
 gst_debug_server_prepare_flags_type_buffer (GFlagsClass * klass, gchar * buffer, gint size)
 {
-  GFlagsValue *values = klass->values;
-  guint i = 0;
-  EnumEntry **entries;
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  EnumType msg = ENUM_TYPE__INIT;
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__ENUM_TYPE;
-  gint len;
-
-  entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));
-
-  for (i = 0; i < klass->n_values; i++) {
-    entries[i] = g_malloc (sizeof (EnumEntry));
-    enum_entry__init (entries[i]);
-    entries[i]->name = g_strdup (values[i].value_name);
-    entries[i]->value = values[i].value;
-    entries[i]->nick = g_strdup (values[i].value_nick);
-  }
-
-  msg.entry = entries;
-  msg.n_entry = klass->n_values;
-  msg.type_name = g_strdup (G_FLAGS_CLASS_TYPE_NAME (klass));
-  info.enum_type = &msg;
-  len = gstreamer_info__get_packed_size (&info);
-
-  if (len > size) {
-    goto finalize;
-  }
-
-  gstreamer_info__pack (&info, (uint8_t*) buffer);
-
-finalize:
-  for (i = 0; i < klass->n_values; i++) {
-    g_free (entries[i]);
-  }
-
-  g_free (entries);
-
-  return len;
+  ENUM_FLAG_PREPARE_BUFFER_METHOD(GFlagsValue)
 }
 
 static void
