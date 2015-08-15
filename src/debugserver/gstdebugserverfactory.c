@@ -53,12 +53,6 @@ gint gst_debugserver_factory_prepare_buffer (GstElementFactory *factory, gchar *
 
   f_info.templates = templates;
 
-  // todo
-  f_info.n_interfaces = 0;
-  f_info.interfaces = NULL;
-  f_info.n_protocols = 0;
-  f_info.protocols = NULL;
-
   gchar **keys, **k;
   int meta_cnt = 0;
   i = 0;
