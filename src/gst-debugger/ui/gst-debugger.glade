@@ -757,6 +757,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="position">130</property>
+                        <property name="position_set">True</property>
                         <child>
                           <object class="GtkScrolledWindow" id="scrolledwindow7">
                             <property name="visible">True</property>
@@ -950,6 +952,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="orientation">vertical</property>
+                        <property name="position">130</property>
+                        <property name="position_set">True</property>
                         <child>
                           <object class="GtkScrolledWindow" id="scrolledwindow10">
                             <property name="visible">True</property>
