@@ -70,6 +70,13 @@ class ElementModel : public ObjectModel
 	std::vector<std::shared_ptr<PadModel>> pads;
 	std::map<std::string, std::shared_ptr<GValueBase>> properties;
 
+	std::vector<std::shared_ptr<PadModel>>::iterator find_pad(const std::string &pad_name)
+	{
+		return std::find_if(pads.begin(), pads.end(), [pad_name](const std::shared_ptr<PadModel>& pad) {
+			return pad->get_name() == pad_name;
+		});
+	}
+
 public:
 
 	ElementModel(const std::string &name, const std::string &type_name, bool is_bin)
@@ -80,7 +87,11 @@ public:
 
 	void add_child(const std::shared_ptr<ElementModel> &child);
 
+	void remove_child(const std::string &child_name);
+
 	void add_pad(const std::shared_ptr<PadModel> &pad);
+
+	void remove_pad(const std::string &pad_name);
 
 	static std::shared_ptr<ElementModel> get_root();
 

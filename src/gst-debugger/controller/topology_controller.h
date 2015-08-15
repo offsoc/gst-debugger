@@ -18,6 +18,10 @@ class TopologyController : public virtual BaseController
 {
 	std::mutex m_topology;
 
+	void process_element(const TopologyElement &element, Topology_Action action);
+	void process_pad(const TopologyPad &pad, Topology_Action action);
+	void process_link(const TopologyLink &link, Topology_Action action);
+
 public:
 	void lock_topology() { m_topology.lock(); }
 	void unlock_topology() { m_topology.unlock(); }
