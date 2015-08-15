@@ -52,6 +52,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 		dialogs_builder->get_widget("aboutDialog", about_dialog);
 		// todo use gio::resources
 		about_dialog->set_logo(Gdk::Pixbuf::create_from_inline(429324+24, gst_debugger_logo , false));
+		about_dialog->set_transient_for(*this);
 	}
 
 	builder->get_widget("mainStatusbar", main_statusbar);
