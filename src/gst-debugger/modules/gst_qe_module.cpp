@@ -170,28 +170,41 @@ void GstQEModule::update_hook_list(PadWatch *conf)
 void GstQEModule::send_start_stop_command(bool enable)
 {
 	int qe_type = -1;
+	std::string pad_path;
 
-	if (type_module && !any_qe_check_button->get_active())
+	if (enable)
 	{
-		Gtk::TreeModel::iterator iter = qe_types_combobox->get_active();
-		if (!iter)
-			return;
+		if (type_module && !any_qe_check_button->get_active())
+		{
+			Gtk::TreeModel::iterator iter = qe_types_combobox->get_active();
+			if (!iter)
+				return;
 
+			Gtk::TreeModel::Row row = *iter;
+			if (!row)
+				return;
+			qe_type = row[qe_types_model_columns.type_id];
+		}
+
+		auto selected_pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
+
+		if (!selected_pad && !any_path_check_button->get_active())
+		{
+			return;
+		}
+
+		pad_path = any_path_check_button->get_active() ? std::string() : ElementPathProcessor::get_object_path(selected_pad);
+	}
+	else
+	{
+		auto selection = existing_hooks_tree_view->get_selection();
+		if (!selection) return;
+		auto iter = selection->get_selected();
+		if (!iter) return;
 		Gtk::TreeModel::Row row = *iter;
-		if (!row)
-			return;
-		qe_type = row[qe_types_model_columns.type_id];
+		qe_type = row[qe_hooks_model_columns.qe_type];
+		pad_path = (Glib::ustring)row[qe_hooks_model_columns.pad_path];
 	}
-
-	auto selected_pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
-
-	if (!selected_pad && !any_path_check_button->get_active())
-	{
-		return;
-	}
-
-	std::string pad_path = any_path_check_button->get_active() ? std::string() : ElementPathProcessor::get_object_path(selected_pad);
-
 	controller->send_pad_watch_command(enable, get_watch_type(), pad_path, qe_type);
 }
 
