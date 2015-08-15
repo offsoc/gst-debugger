@@ -97,7 +97,7 @@ message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (message), buff, 1024);
+    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (message), NULL, buff, 1024);
     gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
       buff, size);
     clients = clients->next;
@@ -180,7 +180,7 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
   }
 
   SAFE_PREPARE_BUFFER (
-        gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (event), m_buff, max_m_buff_size), size);
+        gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (event), gst_utils_get_object_path (GST_OBJECT_CAST (pad)), m_buff, max_m_buff_size), size);
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
@@ -204,7 +204,7 @@ do_pad_query_pre (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query)
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (query), buff, 1024);
+    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (query), gst_utils_get_object_path (GST_OBJECT_CAST (pad)), buff, 1024);
     gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
       buff, size);
     clients = clients->next;
@@ -226,7 +226,7 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
   }
 
   SAFE_PREPARE_BUFFER (
-    gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), m_buff, max_m_buff_size), size);
+    gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), gst_utils_get_object_path (GST_OBJECT_CAST (pad)), m_buff, max_m_buff_size), size);
 
   while (clients != NULL) {
     connection = (GSocketConnection*)clients->data;

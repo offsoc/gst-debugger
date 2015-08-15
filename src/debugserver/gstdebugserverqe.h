@@ -51,8 +51,8 @@ gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,
 GSList* gst_debugserver_qe_get_clients (GstDebugserverQE * qe, GstPad * pad,
   gint type);
 
-gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffer,
-  gint max_size);
+gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar *pad_path,
+  gchar * buffer, gint max_size);
 
 void gst_debugserver_qe_clean (GstDebugserverQE * qe);
 

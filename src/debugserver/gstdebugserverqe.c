@@ -68,7 +68,7 @@ gint gst_debugserver_qeb_prepare_confirmation_buffer (gchar * pad_path, gint qe_
 }
 
 // todo improve performance (when size > max_size)
-gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffer, gint max_size)
+gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar *pad_path, gchar * buffer, gint max_size)
 {
   gint size;
   SAFE_PREPARE_BUFFER_INIT (1024);
@@ -95,6 +95,7 @@ gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar * buffe
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   GstreamerQEBM evt = GSTREAMER_QEBM__INIT;
   evt.payload.len = size;
+  evt.pad_path = pad_path;
   evt.payload.data = (uint8_t*)g_malloc (size);
   memcpy (evt.payload.data, m_buff, size);
   info.info_type = info_type;
