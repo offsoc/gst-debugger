@@ -26,4 +26,6 @@ void display_template_info(const Glib::RefPtr<Gst::PadTemplate> &tpl, const Glib
 
 Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const TopologyTemplate &tpl);
 
+std::string flags_value_to_string(guint value);
+
 #endif /* SRC_GST_DEBUGGER_UI_UTILS_H_ */

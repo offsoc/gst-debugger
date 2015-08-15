@@ -139,7 +139,7 @@ void Controller::set_selected_object(const std::string &name)
 
 void Controller::update_enum_model(const EnumType &enum_type)
 {
-	GstEnumType et(enum_type.type_name());
+	GstEnumType et(enum_type.type_name(), enum_type.base_gtype());
 	for (int i = 0; i < enum_type.entry_size(); i++)
 	{
 		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value(), enum_type.entry(i).nick());

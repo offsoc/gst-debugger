@@ -42,7 +42,6 @@ add_executable(gst-debugger
 	controller/topology_controller.cpp
 
 	models/gst_pipeline_model.cpp
-	models/gst_enum_model.cpp
 	models/gst_factory_model.cpp
 )
 

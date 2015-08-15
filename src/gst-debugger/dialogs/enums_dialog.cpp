@@ -7,6 +7,8 @@
 
 #include "enums_dialog.h"
 
+#include "ui_utils.h"
+
 #include "controller/controller.h"
 
 EnumsDialog::EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
@@ -43,7 +45,7 @@ void EnumsDialog::reload_list(const Glib::ustring& enum_name)
 		{
 			auto childrow = *(tree_model->append(row.children()));
 			childrow[enums_columns.m_col_name] = enum_entry.second.nick;
-			childrow[enums_columns.m_col_value] = std::to_string(enum_entry.first);
+			childrow[enums_columns.m_col_value] = enum_type.get_gtype() == G_TYPE_ENUM ? std::to_string(enum_entry.first) : flags_value_to_string(enum_entry.first);
 			childrow[enums_columns.m_col_description] = enum_entry.second.name;
 		}
 	}

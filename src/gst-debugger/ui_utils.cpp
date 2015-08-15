@@ -69,3 +69,10 @@ Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const TopologyT
 			static_cast<Gst::PadPresence>(tpl.presence()),
 			Gst::Caps::create_from_string(tpl.caps()));
 }
+
+std::string flags_value_to_string(guint value)
+{
+	char buff[12];
+	g_snprintf(buff, 12u, "0x%08x", value);
+	return buff;
+}
