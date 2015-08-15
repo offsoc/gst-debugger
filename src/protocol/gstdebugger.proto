@@ -95,6 +95,7 @@ message GstreamerLog {
 
 message GstreamerQEBM {
 	required bytes payload = 1;
+	optional string pad_path = 2;
 }
 
 message TopologyLink {
