@@ -47,6 +47,7 @@ message EnumEntry {
 message EnumType {
 	repeated EnumEntry entry = 1;
 	required string type_name = 2;
+	required uint64 base_gtype = 3;
 }
 
 message Property {
