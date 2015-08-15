@@ -143,13 +143,13 @@ do_bin_add_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element
   if (result == FALSE) {
     return;
   }
-  gst_debugserver_topology_send_element_in_bin (bin, element, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
+  gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
 do_bin_remove_pre (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element)
 {
-  gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
+  gst_debugserver_topology_send_element_in_bin (bin, element, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
