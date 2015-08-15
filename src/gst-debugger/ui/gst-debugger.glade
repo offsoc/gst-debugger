@@ -438,13 +438,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="anyEventPathCheckButton">
-                            <property name="label" translatable="yes">any path</property>
+                          <object class="GtkComboBox" id="typesEventComboBox">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
-                            <property name="draw_indicator">True</property>
+                            <property name="can_focus">False</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -453,9 +449,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="typesEventComboBox">
+                          <object class="GtkCheckButton" id="anyEventPathCheckButton">
+                            <property name="label" translatable="yes">any path</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="xalign">0</property>
+                            <property name="draw_indicator">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -648,13 +648,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="anyQueryPathCheckButton">
-                            <property name="label" translatable="yes">any path</property>
+                          <object class="GtkComboBox" id="typesQueryComboBox">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
-                            <property name="draw_indicator">True</property>
+                            <property name="can_focus">False</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -663,9 +659,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="typesQueryComboBox">
+                          <object class="GtkCheckButton" id="anyQueryPathCheckButton">
+                            <property name="label" translatable="yes">any path</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="xalign">0</property>
+                            <property name="draw_indicator">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
