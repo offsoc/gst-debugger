@@ -31,17 +31,6 @@ class MainWindow : public IMainView
 	void connectMenuItem_activate_cb();
 	void connection_status_changed(bool connected);
 
-	Glib::RefPtr<Gtk::Builder> get_dialog_ui_def();
-
-	template<typename T>
-	T* load_dialog(const std::string &name)
-	{
-		T* tmp = nullptr;
-		Glib::RefPtr<Gtk::Builder> dialogs_builder = get_dialog_ui_def();
-		dialogs_builder->get_widget_derived(name, tmp);
-		return tmp;
-	}
-
 	Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::MenuItem *connection_properties;
 	Gtk::MenuItem *remote_enum_types;

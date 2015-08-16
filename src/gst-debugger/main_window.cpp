@@ -7,8 +7,8 @@
 
 #include "main_window.h"
 #include "sigc++lambdahack.h"
+#include "ui_utils.h"
 
-#include "gst-debugger-dialogs.ui.h"
 #include "gst-debugger-logo.h"
 
 #include "controller/controller.h"
@@ -90,11 +90,6 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	factories_dialog->set_transient_for(*this);
 
 	connection_properties_dialog->set_transient_for(*this);
-}
-
-Glib::RefPtr<Gtk::Builder> MainWindow::get_dialog_ui_def()
-{
-	return Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
 }
 
 void MainWindow::connectionPropertiesMenuItem_activate_cb()

@@ -32,7 +32,8 @@ add_executable(gst-debugger
 	dialogs/connection_properties_dialog.cpp
 	dialogs/enums_dialog.cpp
 	dialogs/factories_dialog.cpp
-	
+	dialogs/buffer_data_dialog.cpp
+
 	modules/gst_buffer_module.cpp
 	modules/gst_message_module.cpp
 	modules/gst_log_module.cpp

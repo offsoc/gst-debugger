@@ -6,6 +6,10 @@
  */
 
 #include "ui_utils.h"
+#include "gst-debugger-dialogs.ui.h"
+
+#include <iomanip>
+#include <bitset>
 
 std::string get_presence_str(Gst::PadPresence p)
 {
@@ -75,4 +79,47 @@ std::string flags_value_to_string(guint value)
 	char buff[12];
 	g_snprintf(buff, 12u, "0x%08x", value);
 	return buff;
+}
+
+std::string buffer_data_to_string(StringDataFormat format, const Glib::RefPtr<Gst::Buffer> &buffer, gsize max_size, int columns_in_row)
+{
+	std::ostringstream ss;
+	gsize display_size = std::min(max_size, buffer->get_size());
+	Glib::RefPtr<Gst::MapInfo> map_info(new Gst::MapInfo());
+
+	ss << ((format == StringDataFormat::HEX) ?
+			std::hex : format == StringDataFormat::OCT ? std::oct : std::dec)
+					<< std::setfill('0');
+
+	int width = format == StringDataFormat::HEX ? 2 : format == StringDataFormat::BINARY ? 8 : 3;
+
+	buffer->map(map_info, Gst::MAP_READ);
+
+	for (std::size_t i = 0; i < display_size; i++)
+	{
+		if (i != 0 && i % columns_in_row == 0)
+			ss << std::endl;
+		if (format == StringDataFormat::BINARY)
+		{
+			ss << std::setw(width) << std::bitset<8>(map_info->get_data()[i]) << " ";
+		}
+		else
+		{
+			ss << std::setw(width) << static_cast<int>(map_info->get_data()[i]) << " ";
+		}
+	}
+
+	if (display_size < buffer->get_size())
+	{
+		ss << std::endl << "more...";
+	}
+
+	buffer->unmap(map_info);
+
+	return ss.str();
+}
+
+Glib::RefPtr<Gtk::Builder> get_dialog_ui_def()
+{
+	return Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
 }

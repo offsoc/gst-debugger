@@ -8,13 +8,20 @@
 #include "gst_buffer_module.h"
 #include "protocol/deserializer.h"
 #include "controller/controller.h"
-
-#include <iomanip>
+#include "ui_utils.h"
 
 GstBufferModule::GstBufferModule(const Glib::RefPtr<Gtk::Builder>& builder)
 : GstQEModule(false, true, GstreamerInfo_InfoType_BUFFER,
 		"Buffer", gst_buffer_get_type(), builder)
 {
+	qe_details_tree_view->signal_row_activated().connect(sigc::mem_fun(*this, &GstBufferModule::qeDetialsTreeView_row_activated_cb));
+	data_dialog = load_dialog<BufferDataDialog>("bufferDataDialog");
+
+	{
+		Gtk::Window *wnd;
+		builder->get_widget("mainWindow", wnd);
+		data_dialog->set_transient_for(*wnd);
+	}
 }
 
 void GstBufferModule::append_qe_entry(GstreamerQEBM *qebm)
@@ -38,7 +45,7 @@ void GstBufferModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe
 {
 	GstQEModule::display_qe_details(qe, pad_path);
 
-	Glib::RefPtr<Gst::Buffer> buffer = buffer.cast_static(qe);
+	buffer = buffer.cast_static(qe);
 
 	append_details_row("pad path", pad_path);
 	append_details_row("pts", std::to_string(buffer->get_pts()));
@@ -49,19 +56,22 @@ void GstBufferModule::display_qe_details(const Glib::RefPtr<Gst::MiniObject>& qe
 	append_details_row("size", std::to_string(buffer->get_size()));
 	append_details_row("flags", std::to_string(buffer->get_flags()));
 
-	Glib::RefPtr<Gst::MapInfo> map_info(new Gst::MapInfo());
-	buffer->map(map_info, Gst::MAP_READ);
+	append_details_row("data", buffer_data_to_string(StringDataFormat::HEX, buffer, 1024, 16));
 
-	std::ostringstream ss;
-	ss << std::hex << std::setfill('0');
+}
 
-	for (std::size_t i = 0; i < buffer->get_size(); i++)
+void GstBufferModule::qeDetialsTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)
+{
+	Gtk::TreeModel::iterator iter = qe_details_model->get_iter(path);
+	if (!iter)
 	{
-		if (i != 0 && i % 16 == 0)
-			ss << std::endl;
-		ss << std::setw(2) << static_cast<int>(map_info->get_data()[i]) << " ";
+		return;
 	}
 
-	append_details_row("data", ss.str());
-	buffer->unmap(map_info);
+	Gtk::TreeModel::Row row = *iter;
+	if (row[qe_details_model_columns.name] == "data")
+	{
+		data_dialog->set_buffer(buffer);
+		data_dialog->show();
+	}
 }
