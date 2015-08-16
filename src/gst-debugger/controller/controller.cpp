@@ -15,6 +15,8 @@
 
 #include <gtkmm.h>
 
+#include <boost/algorithm/string/split.hpp>
+
 Controller::Controller(IMainView *view)
  : view(view)
 {
@@ -50,8 +52,13 @@ void Controller::process_frame(const GstreamerInfo &info)
 
 		break;
 	case GstreamerInfo_InfoType_DEBUG_CATEGORIES:
-		on_debug_categories_received(info.debug_categories());
+	{
+		boost::split(debug_categories, info.debug_categories().list(), [](char c) { return c == ';'; });
+		debug_categories.erase(std::remove_if(debug_categories.begin(), debug_categories.end(),
+				[](const std::string &s){return s.empty();}), debug_categories.end());
+		on_debug_categories_changed();
 		break;
+	}
 	case GstreamerInfo_InfoType_LOG:
 		on_log_received(info.log());
 		break;
@@ -209,4 +216,7 @@ void Controller::client_disconnected()
 		factory_container.remove_item(name);
 		on_factory_list_changed(name);
 	}
+
+	debug_categories.clear();
+	on_debug_categories_changed();
 }

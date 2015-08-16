@@ -38,7 +38,6 @@ class GstLogModule : public IBaseView
 	Gtk::CheckButton *overwrite_current_threshold_check_button;
 	Gtk::CheckButton *watch_log_check_button;
 	Gtk::ComboBoxText *debug_categories_combo_box_text;
-	Gtk::Button *refresh_debug_categories_button;
 	Gtk::TreeView *log_messages_tree_view;
 	Gtk::Button *clear_message_logs_button;
 	Gtk::Button *set_threshold_button;
@@ -46,7 +45,6 @@ class GstLogModule : public IBaseView
 
 	void setThresholdButton_clicked_cb();
 	void watchLogCheckButton_toggled_cb();
-	void refreshDebugCategoriesButton_clicked_cb();
 	void saveMessageLogsButton_clicked_cb();
 
 	GstreamerLogModelColumns model_columns;
@@ -55,7 +53,6 @@ class GstLogModule : public IBaseView
 	void new_log_entry(const GstreamerLog& log_info);
 	void new_log_entry_();
 
-	void new_debug_categories(const DebugCategoryList& debug_categories);
 	void new_debug_categories_();
 public:
 	GstLogModule(const Glib::RefPtr<Gtk::Builder>& builder);

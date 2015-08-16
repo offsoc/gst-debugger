@@ -30,6 +30,8 @@ private:
 
 	RemoteDataContainer<GstEnumType> enum_container;
 	RemoteDataContainer<FactoryModel> factory_container;
+	std::vector<std::string> debug_categories;
+
 
 	void process_frame(const GstreamerInfo& info);
 
@@ -55,13 +57,14 @@ public:
 
 	const RemoteDataContainer<GstEnumType>& get_enum_container() const { return enum_container; }
 	const RemoteDataContainer<FactoryModel>& get_factory_container() const { return factory_container; }
+	const std::vector<std::string>& get_debug_categories() const { return debug_categories; }
 
 	std::shared_ptr<ObjectModel> get_selected_object() const { return selected_object; }
 
 	void log(const std::string &message);
 
 	sigc::signal<void, const GstreamerLog&> on_log_received;
-	sigc::signal<void, const DebugCategoryList&> on_debug_categories_received;
+	sigc::signal<void> on_debug_categories_changed;
 	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
 	sigc::signal<void, const Property&> on_property_received;
 	sigc::signal<void, const GstreamerQEBM&, GstreamerInfo_InfoType> on_qebm_received;
