@@ -253,13 +253,13 @@ do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
     for (i = 0; i < klass->n_values; i++) { \
       entries[i] = g_malloc (sizeof (EnumEntry)); \
       enum_entry__init (entries[i]); \
-      entries[i]->name = g_strdup (values[i].value_name); \
+      entries[i]->name = (gchar*) values[i].value_name; \
       entries[i]->value = values[i].value; \
-      entries[i]->nick = g_strdup (values[i].value_nick); \
+      entries[i]->nick = (gchar*) values[i].value_nick; \
     } \
     msg.entry = entries; \
     msg.n_entry = klass->n_values; \
-    msg.type_name = g_strdup (G_ENUM_CLASS_TYPE_NAME (klass)); \
+    msg.type_name = (gchar*) G_ENUM_CLASS_TYPE_NAME (klass); \
     msg.base_gtype = BASE_GTYPE; \
     info.enum_type = &msg; \
     len = gstreamer_info__get_packed_size (&info); \
@@ -416,15 +416,15 @@ gst_debugserver_prepare_property (const gchar * element_path, const GstElement *
   g_value_init (&value, param->value_type);
   g_object_get_property (G_OBJECT (element), param->name, &value);
 
-  property.element_path = g_strdup (element_path);
-  property.property_name = g_strdup (param->name);
+  property.element_path = (gchar*) element_path;
+  property.property_name = (gchar*) param->name;
   property.property_value = g_value_serialize (&value, &tmptype, &internal_type);
   property.internal_type = internal_type;
   property.has_internal_type = TRUE;
   property.type = tmptype;
   property.has_type = TRUE;
-  property.type_name = g_strdup (g_type_name (value.g_type));
-  property.description = g_strdup (g_param_spec_get_blurb ((GParamSpec*) param));
+  property.type_name = (gchar*) g_type_name (value.g_type);
+  property.description = (gchar*) g_param_spec_get_blurb ((GParamSpec*) param);
   info.property = &property;
   size = gstreamer_info__get_packed_size (&info);
 
@@ -460,7 +460,7 @@ gst_debugserver_prepare_error (const gchar * message, gchar * buffer, gint max_s
   gint size;
 
   info.info_type = GSTREAMER_INFO__INFO_TYPE__SERVER_ERROR;
-  s_err.message = g_strdup (message);
+  s_err.message = (gchar*) message;
   info.server_error = &s_err;
 
   size = gstreamer_info__get_packed_size (&info);

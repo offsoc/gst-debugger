@@ -53,7 +53,7 @@ gint gst_debugserver_qeb_prepare_confirmation_buffer (gchar * pad_path, gint qe_
   GstreamerInfo info = GSTREAMER_INFO__INIT;
   PadWatch pad_watch = PAD_WATCH__INIT;
   gint size;
-  pad_watch.pad_path = g_strdup (pad_path);
+  pad_watch.pad_path = pad_path;
   pad_watch.toggle = toggle;
   pad_watch.watch_type = type;
   pad_watch.has_qe_type = 1;
@@ -96,8 +96,7 @@ gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar *pad_pa
   GstreamerQEBM evt = GSTREAMER_QEBM__INIT;
   evt.payload.len = size;
   evt.pad_path = pad_path;
-  evt.payload.data = (uint8_t*)g_malloc (size);
-  memcpy (evt.payload.data, m_buff, size);
+  evt.payload.data = (uint8_t*) m_buff;
   info.info_type = info_type;
   info.qebm = &evt;
   size = gstreamer_info__get_packed_size (&info);

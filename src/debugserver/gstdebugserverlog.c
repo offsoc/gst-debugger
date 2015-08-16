@@ -62,12 +62,12 @@ gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
   gint size;
 
   log.level = (gint)level;
-  log.category_name = g_strdup (gst_debug_category_get_name (category));
-  log.file = g_strdup (file);
+  log.category_name = (gchar*) gst_debug_category_get_name (category);
+  log.file = (gchar*) file;
   log.function = g_strdup (function);
   log.line = line;
-  log.object_path = g_strdup ("todo");
-  log.message = g_strdup (gst_debug_message_get (message));
+  log.object_path = "todo";
+  log.message = (gchar*) gst_debug_message_get (message);
   info.info_type = GSTREAMER_INFO__INFO_TYPE__LOG;
   info.log = &log;
   size = gstreamer_info__get_packed_size (&info);

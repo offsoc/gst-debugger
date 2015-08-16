@@ -33,7 +33,7 @@ get_topology_template_object (GstPadTemplate *template)
   tpl.caps = gst_caps_to_string (GST_PAD_TEMPLATE_CAPS (template));
   tpl.direction = GST_PAD_TEMPLATE_DIRECTION (template);
   tpl.presence = GST_PAD_TEMPLATE_PRESENCE (template);
-  tpl.name_template = g_strdup (GST_PAD_TEMPLATE_NAME_TEMPLATE (template));
+  tpl.name_template = GST_PAD_TEMPLATE_NAME_TEMPLATE (template);
 
   return tpl;
 }
