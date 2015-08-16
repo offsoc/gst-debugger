@@ -77,7 +77,7 @@ void GstPropertiesModule::new_property_()
 	std::shared_ptr<GValueBase> value_base = element->get_property(property->property_name());
 	std::shared_ptr<GValueEnum> value_enum = std::dynamic_pointer_cast<GValueEnum>(value_base);
 
-	auto container = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container());
+	auto& container = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container());
 	if (value_enum && container.has_item(property->type_name()))
 	{
 		value_enum->set_type(container.get_item(property->type_name()));
@@ -169,11 +169,12 @@ void GstPropertiesModule::selected_object_changed()
 
 void GstPropertiesModule::selected_object_changed_()
 {
+	clear_widgets();
+
 	auto element = std::dynamic_pointer_cast<ElementModel>(controller->get_selected_object());
 
 	if (element)
 	{
-		clear_widgets();
 		request_selected_element_property("");
 		return;
 	}
@@ -182,7 +183,6 @@ void GstPropertiesModule::selected_object_changed_()
 
 	if (pad)
 	{
-		clear_widgets();
 		show_pad_properties();
 	}
 }

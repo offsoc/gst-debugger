@@ -150,15 +150,12 @@ void GraphModule::update_selected_object_()
 {
 	auto obj = controller->get_selected_object();
 
-	if (obj)
+	std::string name = obj ? obj->get_name() : std::string();
+	if (std::dynamic_pointer_cast<PadModel>(obj))
 	{
-		std::string name = obj->get_name();
-		if (std::dynamic_pointer_cast<PadModel>(obj))
-		{
-			name = obj->get_parent()->get_name() + ":" + name;
-		}
-		selected_element_entry->set_text(name);
+		name = obj->get_parent()->get_name() + ":" + name;
 	}
+	selected_element_entry->set_text(name);
 }
 
 void GraphModule::upGraphButton_clicked_cb()

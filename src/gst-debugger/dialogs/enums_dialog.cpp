@@ -27,10 +27,10 @@ void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
 	controller->on_enum_list_changed.connect(sigc::mem_fun(*this, &EnumsDialog::reload_list));
-	reload_list("");
+	reload_list("", true);
 }
 
-void EnumsDialog::reload_list(const Glib::ustring& enum_name)
+void EnumsDialog::reload_list(const Glib::ustring& enum_name, bool add)
 {
 	tree_model->clear();
 

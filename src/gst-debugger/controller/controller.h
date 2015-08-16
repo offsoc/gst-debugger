@@ -39,6 +39,8 @@ private:
 
 	void append_property(const Property& property);
 
+	void client_disconnected();
+
 public:
 	Controller(IMainView *view);
 
@@ -65,7 +67,7 @@ public:
 	sigc::signal<void, const GstreamerQEBM&, GstreamerInfo_InfoType> on_qebm_received;
 	sigc::signal<void, const MessageWatch&> on_message_confirmation_received;
 	sigc::signal<void, const PadWatch&, PadWatch_WatchType> on_pad_watch_confirmation_received;
-	sigc::signal<void, const Glib::ustring&> on_enum_list_changed;
+	sigc::signal<void, const Glib::ustring&, bool> on_enum_list_changed; /* enum name, true - add, false - remove */
 	sigc::signal<void> on_selected_object_changed;
 	sigc::signal<void, const Glib::ustring&> on_factory_list_changed;
 	sigc::signal<void, const Glib::ustring&> on_new_log_entry;

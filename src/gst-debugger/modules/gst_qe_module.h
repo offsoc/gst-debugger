@@ -80,7 +80,7 @@ protected:
 	void qebm_received(const GstreamerQEBM &qebm, GstreamerInfo_InfoType type);
 	void qebm_received_();
 
-	void enum_list_changed(const Glib::ustring &enum_name);
+	void enum_list_changed(const Glib::ustring &enum_name, bool add);
 	void enum_list_changed_();
 
 	virtual void confirmation_received_();

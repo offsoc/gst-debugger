@@ -29,7 +29,7 @@ class EnumsDialog : public RemoteDataDialog
 {
 	EnumsModelColumns enums_columns;
 
-	void reload_list(const Glib::ustring &enum_name);
+	void reload_list(const Glib::ustring &enum_name, bool add);
 
 public:
 	EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

@@ -90,13 +90,14 @@ void GstQEModule::set_controller(const std::shared_ptr<Controller> &controller)
 	}
 }
 
-void GstQEModule::enum_list_changed(const Glib::ustring &enum_name)
+void GstQEModule::enum_list_changed(const Glib::ustring &enum_name, bool add)
 {
 	if ((qe_gtype == gst_query_type_get_type() && enum_name == "GstQueryType") ||
 			(qe_gtype == gst_event_type_get_type() && enum_name == "GstEventType") ||
 			(qe_gtype == gst_message_type_get_type() && enum_name == "GstMessageType"))
 	{
 		gui_push("enum", new std::string(enum_name));
+		gui_push("enum", new bool(add));
 		gui_emit("enum");
 	}
 }
@@ -105,17 +106,24 @@ void GstQEModule::enum_list_changed_()
 {
 	qe_types_model->clear();
 	std::string* type_name = gui_pop<std::string*>("enum");
-	GstEnumType type = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container()).get_item(*type_name);
-	for (auto val : type.get_values())
+	bool *add = gui_pop<bool*>("enum");
+
+	if (*add)
 	{
-		Gtk::TreeModel::Row row = *(qe_types_model->append());
-		row[qe_types_model_columns.type_id] = val.first;
-		row[qe_types_model_columns.type_name] = val.second.nick;
+		GstEnumType type = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container()).get_item(*type_name);
+		for (auto val : type.get_values())
+		{
+			Gtk::TreeModel::Row row = *(qe_types_model->append());
+			row[qe_types_model_columns.type_id] = val.first;
+			row[qe_types_model_columns.type_name] = val.second.nick;
+		}
+		if (qe_types_model->children().size() > 0)
+		{
+			qe_types_combobox->set_active(0);
+
+		}
 	}
-	if (qe_types_model->children().size() > 0)
-	{
-		qe_types_combobox->set_active(0);
-	}
+	delete add;
 	delete type_name;
 }
 

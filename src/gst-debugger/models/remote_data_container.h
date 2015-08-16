@@ -47,6 +47,15 @@ public:
 	const_iterator begin() const { return container.begin(); }
 	iterator end() { return container.end(); }
 	const_iterator end() const { return container.end(); }
+
+	void remove_item(const std::string &item_name)
+	{
+		auto it = get_item_it(item_name);
+		if (it != container.end())
+		{
+			container.erase(it);
+		}
+	}
 };
 
 #endif /* SRC_GST_DEBUGGER_MODELS_REMOTE_DATA_CONTAINER_H_ */

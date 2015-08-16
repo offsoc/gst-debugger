@@ -110,6 +110,8 @@ public:
 	std::map<std::string, std::shared_ptr<GValueBase>> get_properties() const { return properties; }
 
 	std::shared_ptr<GValueBase> get_property(const std::string &name) { return properties[name]; }
+
+	void clean_model() { children.clear(); pads.clear(); properties.clear(); }
 };
 
 typedef std::shared_ptr<ObjectModel> GraphObjectPtr;

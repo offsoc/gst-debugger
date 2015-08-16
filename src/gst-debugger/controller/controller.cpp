@@ -19,6 +19,7 @@ Controller::Controller(IMainView *view)
  : view(view)
 {
 	client->signal_frame_received.connect(sigc::mem_fun(*this, &Controller::process_frame));
+	client->signal_status_changed.connect([this](bool connected) { if (!connected) client_disconnected(); });
 }
 
 int Controller::run(int &argc, char **&argv)
@@ -79,7 +80,7 @@ void Controller::process_frame(const GstreamerInfo &info)
 		break;
 	case GstreamerInfo_InfoType_ENUM_TYPE:
 		update_enum_model(info.enum_type());
-		on_enum_list_changed(info.enum_type().type_name());
+		on_enum_list_changed(info.enum_type().type_name(), true);
 		break;
 	case GstreamerInfo_InfoType_FACTORY:
 		update_factory_model(info.factory_info());
@@ -184,4 +185,28 @@ void Controller::log(const std::string &message)
 	std::cerr << message << std::endl;
 
 	on_new_log_entry(message);
+}
+
+void Controller::client_disconnected()
+{
+
+	auto root_model = ElementModel::get_root();
+	root_model->clean_model();
+	on_model_changed(root_model);
+
+	selected_object = std::shared_ptr<ObjectModel>();
+	on_selected_object_changed();
+
+	while (enum_container.begin() != enum_container.end())
+	{
+		std::string name = enum_container.begin()->get_name();
+		enum_container.remove_item(name);
+		on_enum_list_changed(name, false);
+	}
+	while (factory_container.begin() != factory_container.end())
+	{
+		std::string name = factory_container.begin()->get_name();
+		factory_container.remove_item(name);
+		on_factory_list_changed(name);
+	}
 }
