@@ -60,12 +60,13 @@ gboolean gst_debugserver_buffer_remove_watch (GstDebugserverBuffer * buf,
   GstPad * pad, gpointer client_info)
 {
   GSList *listeners =
-      (GSList *) g_hash_table_lookup (buf->clients, pad);
+      (GSList *) g_hash_table_lookup (buf->clients, pad),
+      *found = NULL;
 
-  if (g_slist_find (listeners, client_info) == NULL) {
+  if ((found = g_slist_find (listeners, client_info)) == NULL) {
     return FALSE;
   } else {
-    listeners = g_slist_remove (listeners, client_info);
+    listeners = g_slist_remove_link (listeners, found);
     g_hash_table_replace (buf->clients, pad, listeners);
     return TRUE;
   }
