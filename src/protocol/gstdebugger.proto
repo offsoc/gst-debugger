@@ -68,6 +68,7 @@ message Command {
 	optional Property property = 5;
 	optional string enum_name = 6;
 	optional string factory_name = 7;
+	optional string pad_path = 8;
 
 	enum CommandType {
 		PAD_WATCH = 0;
@@ -79,8 +80,9 @@ message Command {
 		PROPERTY = 6;
 		ENUM_TYPE = 7;
 		FACTORY = 8;
+		PAD_DYNAMIC_INFO = 9;
 	}
-	required CommandType command_type = 8;
+	required CommandType command_type = 9;
 }
 
 message GstreamerLog {
@@ -123,6 +125,12 @@ message TopologyPad {
 	required int32 direction = 3;
 	required int32 presence = 4;
 	optional TopologyTemplate template = 5;
+}
+
+message PadDynamicInfo {
+	required string allowed_caps = 1;
+	required string current_caps = 2;
+	required string pad_path = 3;
 }
 
 message FactoryMetaEntry {
@@ -173,6 +181,7 @@ message GstreamerInfo {
 		SERVER_ERROR = 10;
 		ENUM_TYPE = 11;
 		FACTORY = 12;
+		PAD_DYNAMIC_INFO = 13;
 	}
 	
 	required InfoType info_type = 1;
@@ -187,4 +196,5 @@ message GstreamerInfo {
 	optional ServerError server_error = 9;
 	optional EnumType enum_type = 10;
 	optional FactoryInfo factory_info = 11;
+	optional PadDynamicInfo pad_dynamic_info = 12;
 }
