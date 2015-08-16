@@ -6,6 +6,7 @@
  */
 
 #include "controller.h"
+#include "element_path_processor.h"
 
 #include "ui_utils.h"
 
@@ -93,6 +94,9 @@ void Controller::process_frame(const GstreamerInfo &info)
 		update_factory_model(info.factory_info());
 		on_factory_list_changed(info.factory_info().name());
 		break;
+	case GstreamerInfo_InfoType_PAD_DYNAMIC_INFO:
+		update_pad_dynamic_info(info.pad_dynamic_info());
+		break;
 	default:
 		break;
 	}
@@ -121,9 +125,10 @@ void Controller::model_down(const std::string &name)
 void Controller::set_selected_object(const std::string &name)
 {
 	auto colon_pos = name.find(':');
+	bool is_pad = colon_pos != std::string::npos;
 	std::shared_ptr<ObjectModel> obj;
 
-	if (colon_pos == std::string::npos)
+	if (!is_pad)
 	{
 		obj = current_model->get_child(name);
 	}
@@ -142,6 +147,11 @@ void Controller::set_selected_object(const std::string &name)
 	{
 		selected_object = obj;
 		on_selected_object_changed();
+
+		if (obj && is_pad)
+		{
+			send_request_pad_dynamic_info(ElementPathProcessor::get_object_path(obj));
+		}
 	}
 }
 
@@ -219,4 +229,20 @@ void Controller::client_disconnected()
 
 	debug_categories.clear();
 	on_debug_categories_changed();
+}
+
+void Controller::update_pad_dynamic_info(const PadDynamicInfo &info)
+{
+	auto pad = std::dynamic_pointer_cast<PadModel>(ElementPathProcessor(info.pad_path()).get_last_obj());
+
+	if (!pad)
+		return;
+
+	pad->set_current_caps(Gst::Caps::create_from_string(info.current_caps()));
+	pad->set_allowed_caps(Gst::Caps::create_from_string(info.allowed_caps()));
+
+	if (selected_object == pad)
+	{
+		on_selected_object_changed();
+	}
 }

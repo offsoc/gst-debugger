@@ -120,3 +120,11 @@ void CommandFactory::send_request_factory(const std::string &factory_name)
 	cmd.set_factory_name(factory_name);
 	client->send_command(cmd);
 }
+
+void CommandFactory::send_request_pad_dynamic_info(const std::string &pad_path)
+{
+	Command cmd;
+	cmd.set_command_type(Command_CommandType_PAD_DYNAMIC_INFO);
+	cmd.set_pad_path(pad_path);
+	client->send_command(cmd);
+}

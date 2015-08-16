@@ -41,6 +41,8 @@ class PadModel : public ObjectModel
 	Gst::PadDirection direction;
 	Gst::PadPresence presence;
 	std::shared_ptr<PadModel> peer;
+	Glib::RefPtr<Gst::Caps> current_caps;
+	Glib::RefPtr<Gst::Caps> allowed_caps;
 
 public:
 	PadModel(const std::string &name, const Glib::RefPtr<Gst::PadTemplate>& tpl, bool is_ghost_pad,
@@ -60,6 +62,12 @@ public:
 	std::shared_ptr<PadModel> get_peer() const { return peer; }
 
 	Glib::RefPtr<Gst::PadTemplate> get_template() const { return tpl; }
+
+	Glib::RefPtr<Gst::Caps> get_allowed_caps() const { return allowed_caps; }
+	void set_allowed_caps(const Glib::RefPtr<Gst::Caps> &caps) { allowed_caps = caps; }
+
+	Glib::RefPtr<Gst::Caps> get_current_caps() const { return current_caps; }
+	void set_current_caps(const Glib::RefPtr<Gst::Caps> &caps) { current_caps = caps; }
 };
 
 class ElementModel : public ObjectModel

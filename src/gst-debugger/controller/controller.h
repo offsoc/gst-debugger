@@ -43,6 +43,8 @@ private:
 
 	void client_disconnected();
 
+	void update_pad_dynamic_info(const PadDynamicInfo& info);
+
 public:
 	Controller(IMainView *view);
 

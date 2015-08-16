@@ -25,6 +25,7 @@ public:
 	void send_enum_type_request_command(const std::string &enum_name);
 	void send_property_command(const std::string &path, const std::string &property_name, GValue *gvalue);
 	void send_request_factory(const std::string &factory_name);
+	void send_request_pad_dynamic_info(const std::string &pad_path);
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_COMMAND_FACTORY_H_ */
