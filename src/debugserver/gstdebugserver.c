@@ -398,6 +398,8 @@ gst_debugserver_tracer_client_connected (gpointer client_id, gpointer user_data)
   gst_debugserver_send_enum (debugserver, client_id, "GstEventType");
 
   gst_debugserver_send_flag (debugserver, client_id, "GstMessageType");
+
+  gst_debugserver_tracer_send_categories (debugserver, client_id);
 }
 
 static gint
