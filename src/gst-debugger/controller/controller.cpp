@@ -27,7 +27,7 @@ Controller::Controller(IMainView *view)
 
 int Controller::run(int &argc, char **&argv)
 {
-	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "gst.debugger.com");
+	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "eu.cookandcommit.gst-debugger");
 	view->set_controller(shared_from_this());
 	return app->run(*view);
 }
