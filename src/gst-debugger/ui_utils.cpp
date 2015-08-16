@@ -61,7 +61,39 @@ void display_template_info(const Glib::RefPtr<Gst::PadTemplate> &tpl,
 	}
 	APPEND_SUB_ROW("Presence", get_presence_str(tpl->get_presence()), row);
 	APPEND_SUB_ROW("Direction", get_direction_str(tpl->get_direction()), row);
-	APPEND_SUB_ROW("Caps", tpl->get_caps()->to_string(), row);
+	row = APPEND_SUB_ROW("Caps", "", row);
+	display_caps(tpl->get_caps(), model, col_name, col_value, row);
+}
+
+void display_caps(const Glib::RefPtr<Gst::Caps> &caps,
+		const Glib::RefPtr<Gtk::TreeStore> &model, const Gtk::TreeModelColumn<Glib::ustring> &col_name,
+		const Gtk::TreeModelColumn<Glib::ustring> &col_value, const Gtk::TreeModel::Row& parent_row)
+{
+	std::string caps_str;
+
+	if (!caps)
+		caps_str = "UNKNOWN";
+	else if (caps->is_any() || caps->empty())
+		caps_str = caps->to_string();
+
+	if (!caps_str.empty())
+	{
+		APPEND_SUB_ROW(caps_str, "", parent_row);
+	}
+
+	for (guint i = 0; i < caps->size(); i++)
+	{
+		Gst::Structure structure = caps->get_structure(i);
+		auto row = APPEND_SUB_ROW (structure.get_name(), "", parent_row);
+		for (int j = 0; j < structure.size(); j++)
+		{
+			Glib::ustring field_name = structure.get_nth_field_name(j);
+			Glib::ValueBase base;
+
+			structure.get_field(field_name, base);
+			APPEND_SUB_ROW (field_name, gst_value_serialize(base.gobj()), row);
+		}
+	}
 }
 
 #undef APPEND_SUB_ROW

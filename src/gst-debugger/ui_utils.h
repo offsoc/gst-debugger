@@ -32,6 +32,10 @@ void display_template_info(const Glib::RefPtr<Gst::PadTemplate> &tpl, const Glib
 		const Gtk::TreeModelColumn<Glib::ustring> &col_value,
 		boost::optional<const Gtk::TreeModel::Row&> parent_row = boost::none);
 
+void display_caps(const Glib::RefPtr<Gst::Caps> &caps,
+		const Glib::RefPtr<Gtk::TreeStore> &model, const Gtk::TreeModelColumn<Glib::ustring> &col_name,
+		const Gtk::TreeModelColumn<Glib::ustring> &col_value, const Gtk::TreeModel::Row& parent_row);
+
 Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const TopologyTemplate &tpl);
 
 std::string flags_value_to_string(guint value);

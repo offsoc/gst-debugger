@@ -236,8 +236,26 @@ void GstPropertiesModule::show_pad_properties()
 	APPEND_ROW("Presence", get_presence_str(pad->get_presence()));
 	APPEND_ROW("Direction", get_direction_str(pad->get_direction()));
 	APPEND_ROW("Peer pad", peer_pad);
-	APPEND_ROW("Current caps", pad->get_current_caps() ? pad->get_current_caps()->to_string() : Glib::ustring("unknown"));
-	APPEND_ROW("Allowed caps", pad->get_allowed_caps() ? pad->get_allowed_caps()->to_string() : Glib::ustring("unknown"));
+
+	if (pad->get_current_caps())
+	{
+		APPEND_ROW("Current caps", "");
+		display_caps(pad->get_current_caps(), model, cols.m_col_name, cols.m_col_value, row);
+	}
+	else
+	{
+		APPEND_ROW("Current caps", "unknown");
+	}
+
+	if (pad->get_allowed_caps())
+	{
+		APPEND_ROW("Allowed caps", "");
+		display_caps(pad->get_allowed_caps(), model, cols.m_col_name, cols.m_col_value, row);
+	}
+	else
+	{
+		APPEND_ROW("Allowed caps", "unknown");
+	}
 
 #undef APPEND_ROW
 
