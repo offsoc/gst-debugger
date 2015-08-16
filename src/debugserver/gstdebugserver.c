@@ -328,7 +328,8 @@ gst_debugserver_send_flag (GstDebugserverTracer * debugserver, GSocketConnection
 }
 
 static void
-gst_debugserver_send_enum_flags (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name) {
+gst_debugserver_send_enum_flags (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
+{
   GType type = g_type_from_name (klass_name);
 
   if (G_TYPE_IS_ENUM (type)) {
@@ -338,6 +339,62 @@ gst_debugserver_send_enum_flags (GstDebugserverTracer * debugserver, GSocketConn
   } else {
     gst_debugserver_handle_error (debugserver, client, "requested type info is neither enum nor flags");
   }
+}
+
+static gint
+gst_debugserver_pad_prepare_dynamic_info_buffer (GstPad * pad, gchar * buffer, gint max_size)
+{
+  GstreamerInfo info = GSTREAMER_INFO__INIT;
+  PadDynamicInfo pad_info = PAD_DYNAMIC_INFO__INIT;
+  gint size;
+  GstCaps *allowed_caps = gst_pad_get_allowed_caps (pad);
+  gchar *allowed_caps_str = gst_caps_to_string (allowed_caps);
+  GstCaps *current_caps = gst_pad_get_current_caps (pad);
+  gchar *current_caps_str = gst_caps_to_string (current_caps);
+  gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
+  pad_info.pad_path = pad_path;
+  pad_info.allowed_caps = allowed_caps_str;
+  pad_info.current_caps = current_caps_str;
+  info.pad_dynamic_info = &pad_info;
+  info.info_type = GSTREAMER_INFO__INFO_TYPE__PAD_DYNAMIC_INFO;
+
+  size = gstreamer_info__get_packed_size (&info);
+  if (size > max_size) {
+    goto finalize;
+  }
+  gstreamer_info__pack (&info, (guint8*)buffer);
+
+finalize:
+  if (allowed_caps != NULL) {
+    gst_caps_unref (allowed_caps);
+  }
+  if (current_caps != NULL) {
+    gst_caps_unref (current_caps);
+  }
+  g_free (allowed_caps_str);
+  g_free (current_caps_str);
+
+  return size;
+
+}
+
+static void
+gst_debugserver_send_pad_dynamic_info (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * pad_path)
+{
+  gint size;
+  GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (debugserver->pipeline), pad_path);
+  SAFE_PREPARE_BUFFER_INIT (1024);
+
+  if (pad == NULL) {
+    gst_debugserver_handle_error (debugserver, client, "Cannot find pad for sending dynamic info");
+    return;
+  }
+
+  SAFE_PREPARE_BUFFER (
+    gst_debugserver_pad_prepare_dynamic_info_buffer (pad, m_buff, max_m_buff_size), size);
+
+  gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
+  SAFE_PREPARE_BUFFER_CLEAN;
 }
 
 static void
@@ -611,6 +668,9 @@ gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
   case COMMAND__COMMAND_TYPE__ENUM_TYPE:
     gst_debugserver_send_enum_flags (debugserver, client_id, cmd->enum_name);
     break;
+  case COMMAND__COMMAND_TYPE__PAD_DYNAMIC_INFO:
+      gst_debugserver_send_pad_dynamic_info (debugserver, client_id, cmd->pad_path);
+      break;
   default:
     GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
   }
