@@ -1,7 +1,0 @@
-add_subdirectory(console-client)
-add_subdirectory(graphviz-plugin)
-add_subdirectory(protocol)
-add_subdirectory(debugserver)
-add_subdirectory(gst-debugger)
-add_subdirectory(tests)
-add_subdirectory(utils)

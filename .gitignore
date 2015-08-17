@@ -1,1 +1,47 @@
+# autotools 
+/aclocal.m4
+/autom4te.cache
+/compile
+/config.guess
+/config.h
+/config.log
+/config.status
+/config.sub
+/configure
+/depcomp
+/install-sh
+/libtool
+/ltmain.sh
+/missing
+/stamp-h1
+
+# libtool
+/build/libtool.m4
+/build/lt*.m4
+
+
+.deps/
+.libs
+Makefile.in
+Makefile
+
+# compiler output files
+*.a
+*.la
+*.lo
+*.o
+*.so*
+
+# backup files
 *~
+
+# gst-debugger
+/src/gst-debugger/gst-debugger
+/src/gst-debugger/gst-debugger-resources.c
+/src/gst-debugger/gst-debugger-resources.h
+
+# protocol
+/src/protocol/gstdebugger.pb-c.c
+/src/protocol/gstdebugger.pb-c.h
+/src/protocol/gstdebugger.pb.cc
+/src/protocol/gstdebugger.pb.h
