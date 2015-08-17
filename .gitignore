@@ -35,13 +35,13 @@ Makefile
 # backup files
 *~
 
-# gst-debugger
+# /src/gst-debugger
 /src/gst-debugger/gst-debugger
 /src/gst-debugger/gst-debugger-resources.c
 /src/gst-debugger/gst-debugger-resources.h
 
-# protocol
-/src/protocol/gstdebugger.pb-c.c
-/src/protocol/gstdebugger.pb-c.h
-/src/protocol/gstdebugger.pb.cc
-/src/protocol/gstdebugger.pb.h
+# /src/common
+/src/common/gstdebugger.pb-c.c
+/src/common/gstdebugger.pb-c.h
+/src/common/gstdebugger.pb.cc
+/src/common/gstdebugger.pb.h

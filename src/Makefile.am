@@ -1,1 +1,1 @@
-SUBDIRS = protocol debugserver gst-debugger
+SUBDIRS = common debugserver gst-debugger

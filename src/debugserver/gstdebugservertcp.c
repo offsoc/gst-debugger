@@ -18,7 +18,7 @@
  */
 
 #include "gstdebugservertcp.h"
-#include "protocol/protocol_utils.h"
+#include "common/protocol_utils.h"
 
 #include <gst/gst.h>
 #define GST_USE_UNSTABLE_API

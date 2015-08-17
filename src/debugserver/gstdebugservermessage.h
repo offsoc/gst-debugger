@@ -20,7 +20,7 @@
 #ifndef __GST_DEBUGSERVER_MESSAGE_H__
 #define __GST_DEBUGSERVER_MESSAGE_H__
 
-#include "protocol/gstdebugger.pb-c.h"
+#include "common/gstdebugger.pb-c.h"
 
 #include <gst/gst.h>
 #include <glib.h>

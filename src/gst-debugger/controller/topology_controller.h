@@ -10,7 +10,7 @@
 
 #include "base_controller.h"
 
-#include "protocol/gstdebugger.pb.h"
+#include "common/gstdebugger.pb.h"
 
 #include <mutex>
 

@@ -6,7 +6,7 @@
  */
 
 #include "gst_event_module.h"
-#include "protocol/deserializer.h"
+#include "common/deserializer.h"
 #include "controller/controller.h"
 
 GstEventModule::GstEventModule(const Glib::RefPtr<Gtk::Builder>& builder)

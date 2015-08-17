@@ -18,7 +18,7 @@
  */
 
 #include "gstdebugserverlog.h"
-#include "protocol/gstdebugger.pb-c.h"
+#include "common/gstdebugger.pb-c.h"
 
 #include <string.h>
 

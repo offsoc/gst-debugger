@@ -17,9 +17,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "protocol/gst-utils.h"
 #include "gstdebugservertopology.h"
-#include "protocol/gstdebugger.pb-c.h"
+#include "common/gst-utils.h"
+#include "common/gstdebugger.pb-c.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -15,7 +15,7 @@
 #include "models/gst_enum_model.h"
 #include "models/remote_data_container.h"
 #include "models/gst_factory_model.h"
-#include "protocol/gstdebugger.pb.h"
+#include "common/gstdebugger.pb.h"
 
 class Controller :
 		public std::enable_shared_from_this<Controller>,

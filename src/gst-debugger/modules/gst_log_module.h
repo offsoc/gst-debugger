@@ -9,7 +9,7 @@
 #define SRC_GST_DEBUGGER_GST_LOG_MODULE_H_
 
 #include "controller/iview.h"
-#include "protocol/gstdebugger.pb.h"
+#include "common/gstdebugger.pb.h"
 
 #include <gtkmm.h>
 

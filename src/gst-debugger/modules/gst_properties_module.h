@@ -11,7 +11,7 @@
 #include "controller/iview.h"
 #include "gvalue-converter/gvalue_base.h"
 
-#include "protocol/gstdebugger.pb.h"
+#include "common/gstdebugger.pb.h"
 
 #include <gtkmm.h>
 

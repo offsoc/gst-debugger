@@ -7,7 +7,7 @@
 
 #include "tcp_client.h"
 
-#include "protocol/protocol_utils.h"
+#include "common/protocol_utils.h"
 
 #include <cassert>
 
