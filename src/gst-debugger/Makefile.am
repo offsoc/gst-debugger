@@ -34,6 +34,8 @@ gst_debugger_SOURCES = \
 	controller/topology_controller.cpp \
 	models/gst_pipeline_model.cpp \
 	models/gst_factory_model.cpp \
+	graphviz-plugin/gvdevice_gstdebugger.c \
+	graphviz-plugin/gvplugin_gstdebugger.c \
 	gvalue-converter/gvalue_base.cpp \
 	gvalue-converter/gvalue_boolean.cpp \
 	gvalue-converter/gvalue_caps.cpp \
@@ -42,7 +44,8 @@ gst_debugger_SOURCES = \
 	gvalue-converter/gvalue_string.cpp
 
 gst_debugger_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS)
-gst_debugger_LDADD = ../protocol/libprotocol-cpp.la ../graphviz-plugin/libgvplugin-gstdebugger.la
+gst_debugger_LDADD = ../protocol/libprotocol-cpp.la -lX11
 gst_debugger_CXXFLAGS = -I.. $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS)
-gst_debugger_CFLAGS = $(GIO_CFLAGS)
+gst_debugger_CPPFLAGS = $(GVC_CFLAGS)
+gst_debugger_CFLAGS = $(GIO_CFLAGS) $(GTK_CFLAGS)
 	

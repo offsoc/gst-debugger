@@ -26,7 +26,6 @@ AC_CONFIG_FILES([
 	Makefile 
 	src/Makefile
 	src/debugserver/Makefile
-	src/graphviz-plugin/Makefile
 	src/gst-debugger/Makefile
 	src/protocol/Makefile
 ])
