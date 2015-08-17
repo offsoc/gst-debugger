@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.19.0 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk+" version="3.16"/>
   <object class="GtkWindow" id="mainWindow">
     <property name="can_focus">False</property>
     <child>
@@ -24,12 +24,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem5">
-                        <property name="label">gtk-quit</property>
+                      <object class="GtkMenuItem" id="imagemenuitem5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="label" translatable="yes">_Quit</property>
                       </object>
                     </child>
                   </object>
@@ -47,12 +45,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="connectionPropertiesMenuItem">
-                        <property name="label">gtk-preferences</property>
+                      <object class="GtkMenuItem" id="connectionPropertiesMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="label" translatable="yes">Prefere_nces...</property>
                       </object>
                     </child>
                   </object>
@@ -70,12 +66,11 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="connectMenuItem">
-                        <property name="label">gtk-connect</property>
+                      <object class="GtkMenuItem" id="connectMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Connect</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
@@ -115,12 +110,11 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="aboutMenuItem">
-                        <property name="label">gtk-about</property>
+                      <object class="GtkMenuItem" id="aboutMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">About...</property>
                         <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
                       </object>
                     </child>
                   </object>
@@ -179,7 +173,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                           </object>
                           <packing>
@@ -241,7 +234,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
                           </object>
                           <packing>
@@ -394,7 +386,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -444,7 +435,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -642,7 +632,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -692,7 +681,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -883,7 +871,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -1078,7 +1065,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -1211,11 +1197,10 @@
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkButton" id="refreshGraphButton">
-                        <property name="label">gtk-refresh</property>
+                        <property name="label">Refresh graph</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_stock">True</property>
                         <property name="always_show_image">True</property>
                       </object>
                       <packing>
@@ -1312,8 +1297,6 @@
           <object class="GtkStatusbar" id="mainStatusbar">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">10</property>
-            <property name="margin_right">10</property>
             <property name="margin_start">10</property>
             <property name="margin_end">10</property>
             <property name="margin_top">6</property>
@@ -1333,11 +1316,10 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkButton" id="upGraphButton">
-                <property name="label">gtk-go-up</property>
+                <property name="label">Up</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
                 <property name="always_show_image">True</property>
               </object>
               <packing>

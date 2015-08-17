@@ -35,7 +35,7 @@ class MainWindow : public IMainView
 	Gtk::MenuItem *connection_properties;
 	Gtk::MenuItem *remote_enum_types;
 	Gtk::MenuItem *remote_factories;
-	Gtk::ImageMenuItem *connect_menu_item;
+	Gtk::MenuItem *connect_menu_item;
 	Gtk::MenuItem *about_menu_item;
 	ConnectionPropertiesDialog *connection_properties_dialog;
 	EnumsDialog *enums_dialog;
