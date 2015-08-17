@@ -10,5 +10,5 @@ libgstdebugserver_la_SOURCES = \
 	gstdebugserverfactory.c gstdebugserverfactory.h
 
 libgstdebugserver_la_LDFLAGS  = $(GSTREAMER_LIBS) $(PROTOBUF_C_LIBS) $(GIO_LIBS)
-libgstdebugserver_la_LIBADD = ../protocol/libprotocol-c.la ../utils/libutils.la
+libgstdebugserver_la_LIBADD = ../protocol/libprotocol-c.la
 libgstdebugserver_la_CFLAGS = -I.. $(GSTREAMER_CFLAGS)

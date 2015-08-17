@@ -9,7 +9,7 @@
 
 #include "controller/controller.h"
 
-#include "utils/gst-utils.h"
+#include "protocol/gst-utils.h"
 
 #include "graphviz-plugin/graphviz-gstdebugger.h"
 

@@ -33,8 +33,8 @@
 #include "gstdebugserver.h"
 #include "gstdebugservertopology.h"
 #include "gstdebugserverfactory.h"
-#include "utils/gst-utils.h"
-#include "utils/buffer-prepare-utils.h"
+#include "protocol/gst-utils.h"
+#include "protocol/buffer-prepare-utils.h"
 #include "protocol/serializer.h"
 #include "protocol/deserializer.h"
 

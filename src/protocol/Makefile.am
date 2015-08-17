@@ -9,14 +9,14 @@ dist_noinst_DATA = gstdebugger.proto
 MOSTLYCLEANFILES = gstdebugger.pb-c.c gstdebugger.pb-c.h gstdebugger.pb.cc gstdebugger.pb.h
 BUILT_SOURCES = gstdebugger.pb-c.h gstdebugger.pb.h
 
-lib_LTLIBRARIES = libprotocol-c.la libprotocol-cpp.la
+COMMON_SOURCES = buffer-prepare-utils.h gst-utils.c gst-utils.h protocol_utils.c serializer.c deserializer.c
 
-libprotocol_c_la_SOURCES = protocol_utils.c serializer.c deserializer.c gstdebugger.pb-c.c gstdebugger.pb-c.h
-libprotocol_c_la_LIBADD = ../utils/libutils.la
+lib_LTLIBRARIES = libprotocol-c.la libprotocol-cpp.la 
+
+libprotocol_c_la_SOURCES = $(COMMON_SOURCES) gstdebugger.pb-c.c gstdebugger.pb-c.h
 libprotocol_c_la_LDFLAGS = $(PROTOBUF_C_LIBS) $(GSTREAMER_LIBS)
 libprotocol_c_la_CFLAGS = -I.. $(PROTOBUF_C_CFLAGS) $(GSTREAMER_CFLAGS)
 
-libprotocol_cpp_la_SOURCES =protocol_utils.c serializer.c deserializer.c gstdebugger.pb.cc gstdebugger.pb.h
-libprotocol_cpp_la_LIBADD = ../utils/libutils.la
+libprotocol_cpp_la_SOURCES = $(COMMON_SOURCES) gstdebugger.pb.cc gstdebugger.pb.h
 libprotocol_cpp_la_LDFLAGS  = $(PROTOBUF_LIBS) $(GSTREAMER_LIBS)
 libprotocol_cpp_la_CFLAGS = -I.. $(PROTOBUF_CFLAGS) $(GSTREAMER_CFLAGS)

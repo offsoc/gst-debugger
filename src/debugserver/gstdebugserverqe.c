@@ -22,7 +22,7 @@
 #include "protocol/serializer.h"
 #include "protocol/gstdebugger.pb-c.h"
 
-#include "utils/buffer-prepare-utils.h"
+#include "protocol/buffer-prepare-utils.h"
 
 #include <string.h>
 

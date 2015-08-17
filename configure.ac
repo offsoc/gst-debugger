@@ -29,7 +29,6 @@ AC_CONFIG_FILES([
 	src/graphviz-plugin/Makefile
 	src/gst-debugger/Makefile
 	src/protocol/Makefile
-	src/utils/Makefile
 ])
 
 AC_PROG_CC

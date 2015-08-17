@@ -1,1 +1,1 @@
-SUBDIRS = utils protocol debugserver graphviz-plugin gst-debugger
+SUBDIRS = protocol debugserver graphviz-plugin gst-debugger

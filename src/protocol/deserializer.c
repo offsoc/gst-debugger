@@ -8,7 +8,7 @@
 #include "deserializer.h"
 #include "protocol_utils.h"
 
-#include "utils/gst-utils.h"
+#include "gst-utils.h"
 
 #include <string.h>
 #include <stdlib.h>
