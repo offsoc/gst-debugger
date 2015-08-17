@@ -6,7 +6,7 @@
  */
 
 #include "ui_utils.h"
-#include "gst-debugger-dialogs.ui.h"
+#include "gst-debugger-resources.h"
 
 #include <iomanip>
 #include <bitset>
@@ -153,5 +153,5 @@ std::string buffer_data_to_string(StringDataFormat format, const Glib::RefPtr<Gs
 
 Glib::RefPtr<Gtk::Builder> get_dialog_ui_def()
 {
-	return Gtk::Builder::create_from_string(std::string((char*)gst_debugger_dialogs_glade, gst_debugger_dialogs_glade_len));
+	return Gtk::Builder::create_from_resource("/eu/cookandcommit/gst-debugger/ui/gst-debugger-dialogs.glade");
 }

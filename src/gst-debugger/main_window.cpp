@@ -9,7 +9,7 @@
 #include "sigc++lambdahack.h"
 #include "ui_utils.h"
 
-#include "gst-debugger-logo.h"
+#include "gst-debugger-resources.h"
 
 #include "controller/controller.h"
 
@@ -53,8 +53,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	{
 		Glib::RefPtr<Gtk::Builder> dialogs_builder = get_dialog_ui_def();
 		dialogs_builder->get_widget("aboutDialog", about_dialog);
-		// todo use gio::resources
-		about_dialog->set_logo(Gdk::Pixbuf::create_from_inline(429324+24, gst_debugger_logo , false));
+		about_dialog->set_logo(Gdk::Pixbuf::create_from_resource("/eu/cookandcommit/gst-debugger/ui/gst-debugger-logo.png"));
 		about_dialog->set_transient_for(*this);
 	}
 

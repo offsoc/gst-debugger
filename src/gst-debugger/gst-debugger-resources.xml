@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/eu/cookandcommit/gst-debugger">
+    <file>ui/gst-debugger-logo.png</file>
+    <file compressed="true">ui/gst-debugger.glade</file>
+    <file compressed="true">ui/gst-debugger-dialogs.glade</file>
+  </gresource>
+</gresources>

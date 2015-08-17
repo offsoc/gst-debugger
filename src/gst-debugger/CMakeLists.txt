@@ -1,32 +1,22 @@
 add_subdirectory(gvalue-converter)
 
 add_custom_command(
-	OUTPUT gst-debugger.ui.h
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ui/gst-debugger.glade gst-debugger.glade
-	COMMAND xxd -i gst-debugger.glade gst-debugger.ui.h
-	DEPENDS ui/gst-debugger.glade
-)
-
-add_custom_command(
-	OUTPUT gst-debugger-dialogs.ui.h
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ui/gst-debugger-dialogs.glade gst-debugger-dialogs.glade
-	COMMAND xxd -i gst-debugger-dialogs.glade gst-debugger-dialogs.ui.h
-	DEPENDS ui/gst-debugger-dialogs.glade
-)
-
-add_custom_command(
-	OUTPUT gst-debugger-logo.h
-	COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ui/gst-debugger-logo.png gst-debugger-logo.png
-	COMMAND gdk-pixbuf-csource --raw gst-debugger-logo.png --name=gst_debugger_logo > gst-debugger-logo.h
-	DEPENDS ui/gst-debugger-logo.png
+	OUTPUT gst-debugger-resources.c
+	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/ui/ ./ui
+	COMMAND glib-compile-resources --generate-source ${CMAKE_CURRENT_SOURCE_DIR}/gst-debugger-resources.xml --target=gst-debugger-resources.c
+	COMMAND glib-compile-resources --generate-header ${CMAKE_CURRENT_SOURCE_DIR}/gst-debugger-resources.xml --target=gst-debugger-resources.h
+	DEPENDS 
+		ui/gst-debugger-dialogs.glade 
+		ui/gst-debugger.glade 
+		ui/gst-debugger-logo.png 
+		gst-debugger-resources.xml
 )
 
 add_executable(gst-debugger
 	main.cpp
 	main_window.cpp
-	gst-debugger.ui.h
-	gst-debugger-dialogs.ui.h
-	gst-debugger-logo.h
+	gst-debugger-resources.h
+	gst-debugger-resources.c
 	ui_utils.cpp
 	
 	dialogs/connection_properties_dialog.cpp
