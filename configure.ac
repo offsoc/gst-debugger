@@ -13,7 +13,9 @@ PKG_CHECK_MODULES(GVC, libgvc >= 2.38)
 PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.15.4)
 PKG_CHECK_MODULES(GSTMM, gstreamermm-1.0 >= 1.4.3)
 
-AM_INIT_AUTOMAKE([check-news])
+AM_INIT_AUTOMAKE([1.11 check-news subdir-objects -Wall])
+AM_SILENT_RULES([yes])
+AM_PROG_AR
 
 AC_PROG_CXX
 AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])

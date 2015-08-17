@@ -19,7 +19,9 @@
 /build/libtool.m4
 /build/lt*.m4
 
+ar-lib
 
+.dirstamp
 .deps/
 .libs
 Makefile.in
