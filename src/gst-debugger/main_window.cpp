@@ -43,6 +43,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	builder->get_widget("mainStatusbar", main_statusbar);
 
+	builder->get_widget("quitMenuItem", quit_menu_item);
+	quit_menu_item->signal_activate().connect([this] { this->close(); });
+
 	enums_dialog = load_dialog<EnumsDialog>("remoteDataDialog");
 	factories_dialog = load_dialog<FactoriesDialog>("remoteDataDialog");
 	connection_properties_dialog = load_dialog<ConnectionPropertiesDialog>("connectionPropertiesDialog");

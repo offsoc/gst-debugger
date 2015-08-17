@@ -37,6 +37,8 @@ class MainWindow : public IMainView
 	Gtk::MenuItem *remote_factories;
 	Gtk::MenuItem *connect_menu_item;
 	Gtk::MenuItem *about_menu_item;
+	Gtk::MenuItem *quit_menu_item;
+
 	ConnectionPropertiesDialog *connection_properties_dialog;
 	EnumsDialog *enums_dialog;
 	FactoriesDialog *factories_dialog;
