@@ -50,3 +50,4 @@ Makefile
 /src/common/gstdebugger.pb-c.h
 /src/common/gstdebugger.pb.cc
 /src/common/gstdebugger.pb.h
+/src/common/libgst-debugger-common.pc

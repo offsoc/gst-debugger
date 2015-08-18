@@ -5,14 +5,21 @@ AC_PREREQ([2.59])
 AC_CONFIG_MACRO_DIR([build])
 AC_CONFIG_HEADERS([src/config.h])
 
-PKG_CHECK_MODULES([GIO], [gio-2.0 >= 2.45.4])
-PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.16])
-PKG_CHECK_MODULES([GSTREAMER], [gstreamer-1.0 >= 1.4.5])
-PKG_CHECK_MODULES(PROTOBUF_C, libprotobuf-c >= 1.1.1)
-PKG_CHECK_MODULES(PROTOBUF, protobuf >= 2.6.1)
-PKG_CHECK_MODULES(GVC, libgvc >= 2.38)
-PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= 3.15.4)
-PKG_CHECK_MODULES(GSTMM, gstreamermm-1.0 >= 1.4.3)
+AC_SUBST([GLIB_VERSION], [2.45.4])
+AC_SUBST([GTK_VERSION], [3.15.4])
+AC_SUBST([GSTREAMER_VERSION], 1.4.3)
+AC_SUBST([PROTOBUF_VERSION], [2.6.1])
+AC_SUBST([PROTOBUF_C_VERSION], [1.1.1])
+AC_SUBST([GVC_VERSION], [2.38])
+
+PKG_CHECK_MODULES([GIO], [gio-2.0 >= "$GLIB_VERSION"])
+PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_VERSION])
+PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= $GTK_VERSION)
+PKG_CHECK_MODULES([GSTREAMER], [gstreamer-1.0 >= $GSTREAMER_VERSION])
+PKG_CHECK_MODULES(GSTMM, gstreamermm-1.0 >= $GSTREAMER_VERSION)
+PKG_CHECK_MODULES(PROTOBUF, protobuf >= PROTOBUF_VERSION)
+PKG_CHECK_MODULES(PROTOBUF_C, libprotobuf-c >= PROTOBUF_C_VERSION)
+PKG_CHECK_MODULES(GVC, libgvc >= GVC_VERSION)
 
 AM_INIT_AUTOMAKE([1.11 check-news subdir-objects -Wall])
 AM_SILENT_RULES([yes])
@@ -29,6 +36,7 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/debugserver/Makefile
 	src/gst-debugger/Makefile
+	src/common/libgst-debugger-common.pc
 	src/common/Makefile
 ])
 

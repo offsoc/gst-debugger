@@ -4,6 +4,9 @@
 %.pb.cc %.pb.h: %.proto
 	$(PROTOC) --proto_path=$(srcdir) --cpp_out=$(builddir) $^
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libgst-debugger-common.pc
+
 dist_noinst_DATA = gstdebugger.proto
 
 MOSTLYCLEANFILES = gstdebugger.pb-c.c gstdebugger.pb-c.h gstdebugger.pb.cc gstdebugger.pb.h
