@@ -6,8 +6,8 @@
  */
 
 #include "command_factory.h"
-#include "common/common.h"
-#include "common/serializer.h"
+#include "utils/common.h"
+#include "utils/serializer.h"
 
 void CommandFactory::send_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type)
 {

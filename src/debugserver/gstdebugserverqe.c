@@ -19,10 +19,9 @@
 
 #include "gstdebugserverqe.h"
 
-#include "common/serializer.h"
-#include "common/gstdebugger.pb-c.h"
-
-#include "common/buffer-prepare-utils.h"
+#include "utils/serializer.h"
+#include "utils/gstdebugger.pb-c.h"
+#include "utils/buffer-prepare-utils.h"
 
 #include <string.h>
 

@@ -28,7 +28,7 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/debugserver/Makefile
 	src/gst-debugger/Makefile
-	src/common/Makefile
+	src/utils/Makefile
 ])
 
 AC_PROG_CC

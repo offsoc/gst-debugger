@@ -9,7 +9,7 @@
 #include "sigc++lambdahack.h"
 #include "gvalue-converter/gvalue_base.h"
 #include "gvalue-converter/gvalue_enum.h"
-#include "common/deserializer.h"
+#include "utils/deserializer.h"
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
 

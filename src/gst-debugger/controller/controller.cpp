@@ -10,9 +10,9 @@
 
 #include "ui_utils.h"
 
-#include "common/common.h"
-#include "common/deserializer.h"
-#include "common/serializer.h"
+#include "utils/common.h"
+#include "utils/deserializer.h"
+#include "utils/serializer.h"
 
 #include <gtkmm.h>
 

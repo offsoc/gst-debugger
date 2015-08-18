@@ -8,7 +8,7 @@
 #include "gst_message_module.h"
 #include "gvalue-converter/gvalue_enum.h"
 #include "sigc++lambdahack.h"
-#include "common/deserializer.h"
+#include "utils/deserializer.h"
 #include "controller/command_factory.h"
 #include "controller/controller.h"
 #include <gstreamermm.h>

@@ -7,7 +7,7 @@
 
 #include "gvalue_enum.h"
 
-#include "common/gst-utils.h"
+#include "utils/gst-utils.h"
 
 #include <glibmm.h>
 

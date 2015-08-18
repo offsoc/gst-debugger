@@ -8,7 +8,7 @@
 #ifndef SRC_GST_DEBUGGER_UI_UTILS_H_
 #define SRC_GST_DEBUGGER_UI_UTILS_H_
 
-#include "common/gstdebugger.pb.h"
+#include "utils/gstdebugger.pb.h"
 
 #include <gstreamermm.h>
 #include <gtkmm.h>

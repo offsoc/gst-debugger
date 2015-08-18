@@ -20,7 +20,7 @@
 #ifndef __GST_DEBUGSERVER_TCP_H__
 #define __GST_DEBUGSERVER_TCP_H__
 
-#include "common/gstdebugger.pb-c.h"
+#include "utils/gstdebugger.pb-c.h"
 
 #include <gio/gio.h>
 

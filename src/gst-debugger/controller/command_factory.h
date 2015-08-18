@@ -10,7 +10,7 @@
 
 #include "base_controller.h"
 
-#include "common/gstdebugger.pb.h"
+#include "utils/gstdebugger.pb.h"
 
 class CommandFactory : public virtual BaseController
 {

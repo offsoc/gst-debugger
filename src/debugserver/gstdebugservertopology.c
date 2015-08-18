@@ -18,8 +18,8 @@
  */
 
 #include "gstdebugservertopology.h"
-#include "common/gst-utils.h"
-#include "common/gstdebugger.pb-c.h"
+#include "utils/gst-utils.h"
+#include "utils/gstdebugger.pb-c.h"
 #include <stdio.h>
 #include <string.h>
 

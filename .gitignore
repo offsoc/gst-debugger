@@ -42,8 +42,8 @@ Makefile
 /src/gst-debugger/gst-debugger-resources.c
 /src/gst-debugger/gst-debugger-resources.h
 
-# /src/common
-/src/common/gstdebugger.pb-c.c
-/src/common/gstdebugger.pb-c.h
-/src/common/gstdebugger.pb.cc
-/src/common/gstdebugger.pb.h
+# /src/utils
+/src/utils/gstdebugger.pb-c.c
+/src/utils/gstdebugger.pb-c.h
+/src/utils/gstdebugger.pb.cc
+/src/utils/gstdebugger.pb.h
