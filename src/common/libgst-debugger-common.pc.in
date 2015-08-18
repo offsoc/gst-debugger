@@ -7,5 +7,5 @@ Name: libgst-debugger-common
 Description: Common infrastructure for the GStreamer Remote Debugger gst-debugger and debugserver plugin
 Version: @VERSION@
 Requires: gstreamer-1.0 >= @GSTREAMER_VERSION@ protobuf >= @PROTOBUF_VERSION@ libprotobuf-c >= @PROTOBUF_C_VERSION@
-Libs: -L${libdir} -lgst-debugger-common
+Libs: -L${libdir} -lgst-debugger-common-@GST_DEBUGGER_API_VERSION@
 Cflags: -I${includedir}

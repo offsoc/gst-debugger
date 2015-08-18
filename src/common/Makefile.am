@@ -5,7 +5,7 @@
 	$(PROTOC) --proto_path=$(srcdir) --cpp_out=$(builddir) $^
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libgst-debugger-common.pc
+pkgconfig_DATA = libgst-debugger-common-@GST_DEBUGGER_API_VERSION@.pc
 
 dist_noinst_DATA = gstdebugger.proto
 
@@ -25,18 +25,18 @@ common_headers =		\
 	protocol_utils.h	\
 	serializer.h
 
-common_include_dir = $(includedir)/gst-debugger/gst-debugger
+common_include_dir = $(includedir)/gst-debugger-@GST_DEBUGGER_API_VERSION@/gst-debugger
 
-lib_LTLIBRARIES = libgst-debugger-common-c.la libgst-debugger-common-cpp.la 
+lib_LTLIBRARIES = libgst-debugger-common-c-@GST_DEBUGGER_API_VERSION@.la libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la 
 
-libgst_debugger_common_c_la_SOURCES = $(common_sources) gstdebugger.pb-c.c
-libgst_debugger_common_c_lainclude_HEADERS = $(common_headers) gstdebugger.pb-c.h
-libgst_debugger_common_c_laincludedir = $(common_include_dir)
-libgst_debugger_common_c_la_LDFLAGS = $(PROTOBUF_C_LIBS) $(GSTREAMER_LIBS)
-libgst_debugger_common_c_la_CFLAGS = -I.. $(PROTOBUF_C_CFLAGS) $(GSTREAMER_CFLAGS)
+libgst_debugger_common_c_@GST_DEBUGGER_API_VERSION@_la_SOURCES = $(common_sources) gstdebugger.pb-c.c
+libgst_debugger_common_c_@GST_DEBUGGER_API_VERSION@_lainclude_HEADERS = $(common_headers) gstdebugger.pb-c.h
+libgst_debugger_common_c_@GST_DEBUGGER_API_VERSION@_laincludedir = $(common_include_dir)
+libgst_debugger_common_c_@GST_DEBUGGER_API_VERSION@_la_LDFLAGS = $(PROTOBUF_C_LIBS) $(GSTREAMER_LIBS)
+libgst_debugger_common_c_@GST_DEBUGGER_API_VERSION@_la_CFLAGS = -I.. $(PROTOBUF_C_CFLAGS) $(GSTREAMER_CFLAGS)
 
-libgst_debugger_common_cpp_la_SOURCES = $(common_sources) gstdebugger.pb.cc
-libgst_debugger_common_cpp_lainclude_HEADERS = $(common_headers) gstdebugger.pb.h
-libgst_debugger_common_cpp_laincludedir = $(common_include_dir)
-libgst_debugger_common_cpp_la_LDFLAGS  = $(PROTOBUF_LIBS) $(GSTREAMER_LIBS)
-libgst_debugger_common_cpp_la_CFLAGS = -I.. $(PROTOBUF_CFLAGS) $(GSTREAMER_CFLAGS)
+libgst_debugger_common_cpp_@GST_DEBUGGER_API_VERSION@_la_SOURCES = $(common_sources) gstdebugger.pb.cc
+libgst_debugger_common_cpp_@GST_DEBUGGER_API_VERSION@_lainclude_HEADERS = $(common_headers) gstdebugger.pb.h
+libgst_debugger_common_cpp_@GST_DEBUGGER_API_VERSION@_laincludedir = $(common_include_dir)
+libgst_debugger_common_cpp_@GST_DEBUGGER_API_VERSION@_la_LDFLAGS  = $(PROTOBUF_LIBS) $(GSTREAMER_LIBS)
+libgst_debugger_common_cpp_@GST_DEBUGGER_API_VERSION@_la_CFLAGS = -I.. $(PROTOBUF_CFLAGS) $(GSTREAMER_CFLAGS)

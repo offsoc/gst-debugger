@@ -1,9 +1,12 @@
 AC_INIT([gst-debugger], [0.1.0], 
 		[https://github.com/loganek/gst-debugger/issues])
+
 AC_PREREQ([2.59])
 
 AC_CONFIG_MACRO_DIR([build])
 AC_CONFIG_HEADERS([src/config.h])
+
+AC_SUBST([GST_DEBUGGER_API_VERSION], [0.1])
 
 AC_SUBST([GLIB_VERSION], [2.45.4])
 AC_SUBST([GTK_VERSION], [3.15.4])
@@ -36,7 +39,7 @@ AC_CONFIG_FILES([
 	src/Makefile
 	src/debugserver/Makefile
 	src/gst-debugger/Makefile
-	src/common/libgst-debugger-common.pc
+	src/common/libgst-debugger-common-${GST_DEBUGGER_API_VERSION}.pc:src/common/libgst-debugger-common.pc.in
 	src/common/Makefile
 ])
 

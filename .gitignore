@@ -19,6 +19,8 @@
 /build/libtool.m4
 /build/lt*.m4
 
+/gst-debugger-*.tar.*
+
 config.h
 config.h.in
 
@@ -50,4 +52,4 @@ Makefile
 /src/common/gstdebugger.pb-c.h
 /src/common/gstdebugger.pb.cc
 /src/common/gstdebugger.pb.h
-/src/common/libgst-debugger-common.pc
+/src/common/libgst-debugger-common-0.1.pc

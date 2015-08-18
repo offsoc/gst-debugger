@@ -94,4 +94,3 @@ gst_debugger_LDADD = ../common/libgst-debugger-common-cpp.la
 gst_debugger_CXXFLAGS = $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS)
 gst_debugger_CPPFLAGS = $(GVC_CFLAGS) -I$(top_srcdir)/src/
 gst_debugger_CFLAGS = $(GIO_CFLAGS) $(GTK_CFLAGS)
-
