@@ -6,7 +6,7 @@
  */
 
 #include "gst_query_module.h"
-#include "utils/deserializer.h"
+#include "common/deserializer.h"
 #include "controller/controller.h"
 
 GstQueryModule::GstQueryModule(const Glib::RefPtr<Gtk::Builder>& builder)

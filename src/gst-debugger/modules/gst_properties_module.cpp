@@ -7,7 +7,7 @@
 
 #include "gst_properties_module.h"
 #include "gvalue-converter/gvalue_enum.h"
-#include "utils/deserializer.h"
+#include "common/deserializer.h"
 #include "controller/command_factory.h"
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"

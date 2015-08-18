@@ -44,7 +44,7 @@ gst_debugger_SOURCES = \
 	gvalue-converter/gvalue_string.cpp
 
 gst_debugger_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
-gst_debugger_LDADD = ../utils/libgst-debugger-utils-cpp.la
+gst_debugger_LDADD = ../common/libgst-debugger-common-cpp.la
 gst_debugger_CXXFLAGS = -I.. $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS)
 gst_debugger_CPPFLAGS = $(GVC_CFLAGS)
 gst_debugger_CFLAGS = $(GIO_CFLAGS) $(GTK_CFLAGS)

@@ -1,5 +1,5 @@
-#include "utils/gstdebugger.pb.h"
-#include "utils/protocol_utils.h"
+#include "common/gstdebugger.pb.h"
+#include "common/protocol_utils.h"
 
 #include <giomm.h>
 #include <glibmm.h>

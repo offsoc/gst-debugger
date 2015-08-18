@@ -19,7 +19,7 @@
 
 #include "gstdebugserverfactory.h"
 
-#include "utils/gstdebugger.pb-c.h"
+#include "common/gstdebugger.pb-c.h"
 
 gint gst_debugserver_factory_prepare_buffer (GstElementFactory *factory, gchar * buffer, gint max_size)
 {

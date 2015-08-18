@@ -11,7 +11,7 @@
 #include "common_model_columns.h"
 #include "controller/iview.h"
 
-#include "utils/gstdebugger.pb.h"
+#include "common/gstdebugger.pb.h"
 
 #include <gtkmm.h>
 #include <gstreamermm.h>

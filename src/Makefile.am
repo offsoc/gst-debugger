@@ -1,1 +1,1 @@
-SUBDIRS = utils debugserver gst-debugger
+SUBDIRS = common debugserver gst-debugger

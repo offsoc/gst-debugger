@@ -6,7 +6,7 @@
  */
 
 #include "gst_buffer_module.h"
-#include "utils/deserializer.h"
+#include "common/deserializer.h"
 #include "controller/controller.h"
 #include "ui_utils.h"
 

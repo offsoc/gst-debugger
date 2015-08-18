@@ -8,7 +8,7 @@
 #ifndef SRC_GST_DEBUGGER_GST_DEBUGGER_TCP_CLIENT_H_
 #define SRC_GST_DEBUGGER_GST_DEBUGGER_TCP_CLIENT_H_
 
-#include "utils/gstdebugger.pb.h"
+#include "common/gstdebugger.pb.h"
 
 #include <sigc++/sigc++.h>
 #include <giomm.h>
