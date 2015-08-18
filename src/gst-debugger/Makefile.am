@@ -90,7 +90,7 @@ gst_debugger_SOURCES = 					\
 	$(gst_debugger_headers)
 
 gst_debugger_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
-gst_debugger_LDADD = ../common/libgst-debugger-common-cpp.la
+gst_debugger_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la
 gst_debugger_CXXFLAGS = $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS)
 gst_debugger_CPPFLAGS = $(GVC_CFLAGS) -I$(top_srcdir)/src/
 gst_debugger_CFLAGS = $(GIO_CFLAGS) $(GTK_CFLAGS)
