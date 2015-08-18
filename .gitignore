@@ -16,6 +16,7 @@
 /stamp-h1
 
 # libtool
+/build/intltool.m4
 /build/libtool.m4
 /build/lt*.m4
 
