@@ -19,6 +19,9 @@
 /build/libtool.m4
 /build/lt*.m4
 
+config.h
+config.h.in
+
 ar-lib
 
 .dirstamp

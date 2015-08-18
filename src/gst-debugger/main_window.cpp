@@ -5,6 +5,8 @@
  *      Author: mkolny
  */
 
+#include "config.h"
+
 #include "main_window.h"
 #include "sigc++lambdahack.h"
 #include "ui_utils.h"
@@ -55,6 +57,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 		dialogs_builder->get_widget("aboutDialog", about_dialog);
 		about_dialog->set_logo(Gdk::Pixbuf::create_from_resource("/eu/cookandcommit/gst-debugger/ui/gst-debugger-logo.png"));
 		about_dialog->set_transient_for(*this);
+		about_dialog->set_version(VERSION);
 	}
 
 	builder->get_widget("mainStatusbar", main_statusbar);

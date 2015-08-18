@@ -3,6 +3,7 @@ AC_INIT([gst-debugger], [0.1.0],
 AC_PREREQ([2.59])
 
 AC_CONFIG_MACRO_DIR([build])
+AC_CONFIG_HEADERS([src/config.h])
 
 PKG_CHECK_MODULES([GIO], [gio-2.0 >= 2.45.4])
 PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.16])
