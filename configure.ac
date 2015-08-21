@@ -29,6 +29,8 @@ PKG_CHECK_MODULES(GVC, libgvc >= GVC_VERSION)
 
 AM_INIT_AUTOMAKE([1.11 check-news subdir-objects -Wall])
 AM_SILENT_RULES([yes])
+AM_MAINTAINER_MODE
+
 AM_PROG_AR
 
 AC_PROG_CXX
@@ -46,8 +48,6 @@ AC_CONFIG_FILES([
 	src/gst-debugger/Makefile
 	src/common/libgst-debugger-common-${GST_DEBUGGER_API_VERSION}.pc:src/common/libgst-debugger-common.pc.in
 	src/common/Makefile
-	common/Makefile
-	common/m4/Makefile
 ])
 
 AC_PROG_CC

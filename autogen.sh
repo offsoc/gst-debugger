@@ -42,7 +42,7 @@ autoreconf --verbose --force --install -Wno-portability || exit 1
 automake --add-missing --copy >/dev/null 2>&1
 
 if [ "$NOCONFIGURE" = "" ]; then
-        $srcdir/configure "$@" || exit 1
+        $srcdir/configure --enable-maintainer-mode "$@" || exit 1
 
         if [ "$1" = "--help" ]; then exit 0 else
                 echo "Now type \`make\' to compile $PKG_NAME" || exit 1
