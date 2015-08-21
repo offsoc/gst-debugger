@@ -9,6 +9,23 @@ test -z "$srcdir" && srcdir=.
         exit 1
 }
 
+# Make sure we have common
+if test ! -f common/gst-autogen.sh;
+then
+  echo "+ Setting up common submodule"
+  git submodule init
+fi
+git submodule update
+
+# source helper functions
+if test ! -f common/gst-autogen.sh;
+then
+  echo There is something wrong with your source tree.
+  echo You are missing common/gst-autogen.sh
+  exit 1
+fi
+. common/gst-autogen.sh
+
 PKG_NAME=`autoconf --trace "AC_INIT:$1" "$srcdir/configure.ac"`
 
 if [ "$#" = 0 -a "x$NOCONFIGURE" = "x" ]; then
