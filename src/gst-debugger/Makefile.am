@@ -12,7 +12,7 @@ EXTRA_DIST = 				\
 
 BUILT_SOURCES = gst-debugger-resources.h
 
-bin_PROGRAMS = gst-debugger
+bin_PROGRAMS = gst-debugger-@GST_API_VERSION@
 
 gst_debugger_headers =					\
 	common_model_columns.h				\
@@ -55,7 +55,7 @@ gst_debugger_headers =					\
 	pipeline-drawer/gst_bin_to_dot_converter.h
 
 
-gst_debugger_SOURCES = 					\
+gst_debugger_@GST_API_VERSION@_SOURCES = 					\
 	gst-debugger-resources.c			\
 	main.cpp					\
 	main_window.cpp					\
@@ -89,8 +89,8 @@ gst_debugger_SOURCES = 					\
 	pipeline-drawer/gst_bin_to_dot_converter.cpp	\
 	$(gst_debugger_headers)
 
-gst_debugger_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
-gst_debugger_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la
-gst_debugger_CXXFLAGS = $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS)
-gst_debugger_CPPFLAGS = $(GVC_CFLAGS) -I$(top_srcdir)/src/
-gst_debugger_CFLAGS = $(GIO_CFLAGS) $(GTK_CFLAGS)
+gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
+gst_debugger_@GST_API_VERSION@_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la
+gst_debugger_@GST_API_VERSION@_CXXFLAGS = $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS)
+gst_debugger_@GST_API_VERSION@_CPPFLAGS = $(GVC_CFLAGS) -I$(top_srcdir)/src/
+gst_debugger_@GST_API_VERSION@_CFLAGS = $(GIO_CFLAGS) $(GTK_CFLAGS)

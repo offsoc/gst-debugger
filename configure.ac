@@ -3,8 +3,11 @@ AC_INIT([gst-debugger], [0.1.0],
 
 AC_PREREQ([2.59])
 
-AC_CONFIG_MACRO_DIR([build])
+AC_CONFIG_MACRO_DIR([build])]
+AC_SUBST(ACLOCAL_AMFLAGS, "-I build -I common/m4")
 AC_CONFIG_HEADERS([src/config.h])
+
+AC_SUBST([GST_API_VERSION], [1.0])
 
 AC_SUBST([GST_DEBUGGER_API_VERSION], [0.1])
 
@@ -18,8 +21,8 @@ AC_SUBST([GVC_VERSION], [2.38])
 PKG_CHECK_MODULES([GIO], [gio-2.0 >= "$GLIB_VERSION"])
 PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= $GTK_VERSION])
 PKG_CHECK_MODULES(GTKMM, gtkmm-3.0 >= $GTK_VERSION)
-PKG_CHECK_MODULES([GSTREAMER], [gstreamer-1.0 >= $GSTREAMER_VERSION])
-PKG_CHECK_MODULES(GSTMM, gstreamermm-1.0 >= $GSTREAMER_VERSION)
+PKG_CHECK_MODULES([GSTREAMER], [gstreamer-$GST_API_VERSION >= $GSTREAMER_VERSION])
+PKG_CHECK_MODULES(GSTMM, gstreamermm-$GST_API_VERSION >= $GSTREAMER_VERSION)
 PKG_CHECK_MODULES(PROTOBUF, protobuf >= PROTOBUF_VERSION)
 PKG_CHECK_MODULES(PROTOBUF_C, libprotobuf-c >= PROTOBUF_C_VERSION)
 PKG_CHECK_MODULES(GVC, libgvc >= GVC_VERSION)
@@ -34,6 +37,8 @@ AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 LT_PREREQ
 LT_INIT
 
+AG_GST_SET_PLUGINDIR
+
 AC_CONFIG_FILES([
 	Makefile 
 	src/Makefile
@@ -41,6 +46,8 @@ AC_CONFIG_FILES([
 	src/gst-debugger/Makefile
 	src/common/libgst-debugger-common-${GST_DEBUGGER_API_VERSION}.pc:src/common/libgst-debugger-common.pc.in
 	src/common/Makefile
+	common/Makefile
+	common/m4/Makefile
 ])
 
 AC_PROG_CC

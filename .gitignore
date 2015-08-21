@@ -44,7 +44,7 @@ Makefile
 *~
 
 # /src/gst-debugger
-/src/gst-debugger/gst-debugger
+/src/gst-debugger/gst-debugger-1.0
 /src/gst-debugger/gst-debugger-resources.c
 /src/gst-debugger/gst-debugger-resources.h
 

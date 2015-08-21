@@ -1,4 +1,5 @@
-lib_LTLIBRARIES = libgstdebugserver.la
+plugin_LTLIBRARIES = libgstdebugserver.la
+
 libgstdebugserver_la_SOURCES = \
 	gstdebugserver.c gstdebugserver.h \
 	gstdebugservertcp.c gstdebugservertcp.h \
