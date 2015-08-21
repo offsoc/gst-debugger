@@ -1,0 +1,23 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">gst-debugger</name>
+  <shortdesc xml:lang="en">Remote GStreamer Debugger</shortdesc>
+  <description>gst-debugger toolset allows to introspect gst-pipeline remotely. It provides graphical client, and GStreamer's plugin.</description>
+  <mailing-list rdf:resource="mailto:gstreamer-devel@lists.freedesktop.org" />
+  <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
+  <programming-language>C, C++</programming-language>
+  <bug-database rdf:resource="http://bugzilla.gnome.org/buglist.cgi?product=gst-debugger" />
+  <download-page rdf:resource="http://download.gnome.org/sources/gst-debugger/" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Marcin Kolny</foaf:name>
+      <foaf:mbox rdf:resource="mailto:marcin.kolny@gmail.com" />
+      <gnome:userid>mkolny</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
