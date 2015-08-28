@@ -6,7 +6,6 @@
  */
 
 #include "gst_qe_module.h"
-#include "sigc++lambdahack.h"
 #include "gvalue-converter/gvalue_base.h"
 #include "gvalue-converter/gvalue_enum.h"
 #include "common/deserializer.h"

@@ -18,7 +18,6 @@ gst_debugger_headers =					\
 	common_model_columns.h				\
 	gst-debugger-resources.h			\
 	main_window.h					\
-	sigc++lambdahack.h				\
 	ui_utils.h					\
 	controller/base_controller.h			\
 	controller/command_factory.h			\

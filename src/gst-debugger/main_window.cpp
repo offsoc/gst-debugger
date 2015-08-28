@@ -8,7 +8,6 @@
 #include "config.h"
 
 #include "main_window.h"
-#include "sigc++lambdahack.h"
 #include "ui_utils.h"
 
 #include "gst-debugger-resources.h"
