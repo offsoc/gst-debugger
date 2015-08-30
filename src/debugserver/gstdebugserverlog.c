@@ -64,7 +64,7 @@ gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
   log.level = (gint)level;
   log.category_name = (gchar*) gst_debug_category_get_name (category);
   log.file = (gchar*) file;
-  log.function = g_strdup (function);
+  log.function = (gchar*) function;
   log.line = line;
   log.object_path = "todo";
   log.message = (gchar*) gst_debug_message_get (message);
