@@ -72,29 +72,6 @@ void PadDataModule<T>::load_details(Gtk::TreeView *view, const Gtk::TreeModel::P
 }
 
 template<typename T>
-void PadDataModule<T>::append_details_from_structure(Gst::Structure& structure)
-{
-	if (!structure.gobj())
-		return;
-
-	structure.foreach([structure, this](const Glib::ustring &name, const Glib::ValueBase &value) -> bool {
-		GValue* tmp_val = new GValue;
-		*tmp_val = G_VALUE_INIT;
-		g_value_init(tmp_val, value.gobj()->g_type);
-		g_value_copy(value.gobj(), tmp_val);
-		auto gvalue = GValueBase::build_gvalue(tmp_val);
-		if (gvalue == nullptr)
-			append_details_row(name, std::string("<unsupported type ") + g_type_name(G_VALUE_TYPE(value.gobj())) + ">");
-		else
-		{
-			append_details_row(name, gvalue->to_string());
-			delete gvalue;
-		}
-		return true;
-	});
-}
-
-template<typename T>
 PadWatch_WatchType PadDataModule<T>::get_watch_type() const
 {
 	switch (info_type)

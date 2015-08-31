@@ -24,6 +24,7 @@ protected:
 	Glib::RefPtr<Gtk::ListStore> details_model;
 
 	void append_details_row(const std::string &name, const std::string &value);
+	void append_details_from_structure(Gst::Structure& structure);
 
 public:
 	BaseMainModule();
