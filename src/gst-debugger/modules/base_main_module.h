@@ -17,8 +17,6 @@
 
 class BaseMainModule : public IBaseView
 {
-	bool has_type;
-
 protected:
 	static DetailsModelColumns detail_columns;
 
@@ -27,7 +25,7 @@ protected:
 	Glib::RefPtr<Gtk::ListStore> hooks_model;
 
 public:
-	BaseMainModule(bool has_type);
+	BaseMainModule();
 	virtual ~BaseMainModule() {}
 
 	virtual void configure_main_list_view(Gtk::TreeView *view) = 0;

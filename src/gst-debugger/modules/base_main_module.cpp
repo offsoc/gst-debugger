@@ -9,8 +9,7 @@
 
 DetailsModelColumns BaseMainModule::detail_columns;
 
-BaseMainModule::BaseMainModule(bool has_type)
-: has_type(has_type)
+BaseMainModule::BaseMainModule()
 {
 	details_model = Gtk::ListStore::create(detail_columns);
 }

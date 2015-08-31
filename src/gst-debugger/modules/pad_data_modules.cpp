@@ -18,8 +18,7 @@ static void free_data(T *data) { delete data; }
 
 template<typename T>
 PadDataModule<T>::PadDataModule(GstreamerInfo_InfoType info_type)
-: BaseMainModule(info_type != GstreamerInfo_InfoType_BUFFER),
-  info_type(info_type)
+: info_type(info_type)
 {
 	model = Gtk::ListStore::create(columns);
 	create_dispatcher("qebm", sigc::mem_fun(*this, &PadDataModule::qebm_received_), (GDestroyNotify)free_data<GstreamerQEBM>);
