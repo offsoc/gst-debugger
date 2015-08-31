@@ -16,6 +16,12 @@
 
 class MainModule : public IBaseView
 {
+	struct MainModuleInfo
+	{
+		std::shared_ptr<BaseMainModule> module;
+		Gtk::RadioToolButton *switch_button;
+	};
+
 	Gtk::TreeView *list_tree_view;
 	Gtk::TreeView *details_tree_view;
 	Gtk::Button *add_hook_button;
@@ -31,7 +37,10 @@ class MainModule : public IBaseView
 
 	std::shared_ptr<BaseMainModule> current_module;
 
+	std::map<std::string, MainModuleInfo> submodules;
+
 	void selected_object_changed();
+	void load_submodules(const Glib::RefPtr<Gtk::Builder>& builder);
 
 	void mainListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
 	void mainDetailsTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);

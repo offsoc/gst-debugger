@@ -12,8 +12,8 @@
 #include "dialogs/connection_properties_dialog.h"
 #include "dialogs/enums_dialog.h"
 #include "dialogs/factories_dialog.h"
-#include "modules/main_module.h"
 #include "modules/gst_properties_module.h"
+#include "modules/main_module.h"
 #include "pipeline-drawer/graph_module.h"
 
 #include <gtkmm.h>
@@ -25,17 +25,9 @@
 
 class MainWindow : public IMainView
 {
-	struct MainModuleInfo
-	{
-		std::shared_ptr<BaseMainModule> module;
-		Gtk::RadioToolButton *switch_button;
-	};
-
 	void connectionPropertiesMenuItem_activate_cb();
 	void connectMenuItem_activate_cb();
 	void connection_status_changed(bool connected);
-
-	void load_base_main_modules(const Glib::RefPtr<Gtk::Builder>& builder);
 
 	Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::MenuItem *connection_properties;
@@ -55,8 +47,6 @@ class MainWindow : public IMainView
 	std::shared_ptr<MainModule> main_module;
 	std::shared_ptr<GraphModule> graph_module;
 	std::shared_ptr<GstPropertiesModule> properties_module;
-
-	std::map<std::string, MainModuleInfo> main_modules;
 
 	GstreamerInfo info;
 

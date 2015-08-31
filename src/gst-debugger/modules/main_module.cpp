@@ -7,6 +7,9 @@
 
 #include "main_module.h"
 
+#include "pad_data_modules.h"
+#include "log_module.h"
+
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
 
@@ -32,6 +35,27 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 
 	create_dispatcher("selected-object", sigc::mem_fun(*this, &MainModule::selected_object_changed), nullptr);
 
+	load_submodules(builder);
+}
+
+void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
+{
+	submodules["logMessages"].module = std::make_shared<LogModule>();
+	submodules["queries"].module = std::make_shared<QueryModule>();
+	//main_modules["busMessages"].module = std::make_shared<GstMessageModule>();
+	submodules["buffers"].module = std::make_shared<BufferModule>();
+	submodules["events"].module = std::make_shared<EventModule>();
+
+	for (auto m : submodules)
+	{
+		builder->get_widget(m.first + "ToolButton", m.second.switch_button);
+		m.second.switch_button->signal_toggled().connect([this, m] {
+			if (m.second.switch_button->get_active())
+			{
+				update_module(m.second.module);
+			}
+		});
+	}
 }
 
 void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
@@ -39,6 +63,11 @@ void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
 	IBaseView::set_controller(controller);
 
 	controller->on_selected_object_changed.connect([this]{gui_emit("selected-object");});
+
+	for (auto m : submodules)
+	{
+		m.second.module->set_controller(controller);
+	}
 }
 
 void MainModule::selected_object_changed()

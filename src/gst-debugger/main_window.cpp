@@ -14,9 +14,6 @@
 
 #include "controller/controller.h"
 
-#include "modules/pad_data_modules.h"
-#include "modules/log_module.h"
-
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : IMainView(cobject),
   builder(builder),
@@ -70,28 +67,6 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 		graph_module->free_graph();
 		return false;
 	});
-
-	load_base_main_modules(builder);
-}
-
-void MainWindow::load_base_main_modules(const Glib::RefPtr<Gtk::Builder>& builder)
-{
-	main_modules["logMessages"].module = std::make_shared<LogModule>();
-	main_modules["queries"].module = std::make_shared<QueryModule>();
-	//main_modules["busMessages"].module = std::make_shared<GstMessageModule>();
-	main_modules["buffers"].module = std::make_shared<BufferModule>();
-	main_modules["events"].module = std::make_shared<EventModule>();
-
-	for (auto m : main_modules)
-	{
-		builder->get_widget(m.first + "ToolButton", m.second.switch_button);
-		m.second.switch_button->signal_toggled().connect([this, m] {
-			if (m.second.switch_button->get_active())
-			{
-				main_module->update_module(m.second.module);
-			}
-		});
-	}
 }
 
 void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
@@ -103,11 +78,6 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	main_module->set_controller(controller);
 	graph_module->set_controller(controller);
 	properties_module->set_controller(controller);
-
-	for (auto m : main_modules)
-	{
-		m.second.module->set_controller(controller);
-	}
 
 	enums_dialog->set_controller(controller);
 	enums_dialog->set_transient_for(*this);
