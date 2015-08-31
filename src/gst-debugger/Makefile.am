@@ -43,18 +43,15 @@ gst_debugger_headers =					\
 	models/gst_factory_model.h			\
 	models/gst_pipeline_model.h			\
 	models/remote_data_container.h			\
-	modules/gst_buffer_module.h			\
-	modules/gst_event_module.h			\
+	modules/base_main_module.h			\
 	modules/gst_log_module.h			\
-	modules/gst_message_module.h			\
 	modules/gst_properties_module.h			\
-	modules/gst_qe_module.h				\
-	modules/gst_query_module.h			\
+	modules/main_module.h				\
 	pipeline-drawer/graph_module.h			\
 	pipeline-drawer/gst_bin_to_dot_converter.h
 
 
-gst_debugger_@GST_API_VERSION@_SOURCES = 					\
+gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	gst-debugger-resources.c			\
 	main.cpp					\
 	main_window.cpp					\
@@ -77,13 +74,11 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 					\
 	gvalue-converter/gvalue_string.cpp		\
 	models/gst_factory_model.cpp			\
 	models/gst_pipeline_model.cpp			\
-	modules/gst_buffer_module.cpp			\
-	modules/gst_event_module.cpp			\
+	modules/main_module.cpp				\
+	modules/base_main_module.cpp			\
+	modules/pad_data_modules.cpp			\
 	modules/gst_log_module.cpp			\
-	modules/gst_message_module.cpp			\
 	modules/gst_properties_module.cpp		\
-	modules/gst_qe_module.cpp			\
-	modules/gst_query_module.cpp			\
 	pipeline-drawer/graph_module.cpp		\
 	pipeline-drawer/gst_bin_to_dot_converter.cpp	\
 	$(gst_debugger_headers)

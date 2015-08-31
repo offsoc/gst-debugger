@@ -14,15 +14,13 @@
 
 #include "controller/controller.h"
 
+#include "modules/pad_data_modules.h"
+
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : IMainView(cobject),
   builder(builder),
   dispatcher(std::make_shared<Glib::Dispatcher>()),
-  log_module(std::make_shared<GstLogModule>(builder)),
-  event_module(std::make_shared<GstEventModule>(builder)),
-  query_module(std::make_shared<GstQueryModule>(builder)),
-  message_module(std::make_shared<GstMessageModule>(builder)),
-  buffer_module(std::make_shared<GstBufferModule>(builder)),
+  main_module(std::make_shared<MainModule>(builder)),
   properties_module(std::make_shared<GstPropertiesModule>(builder))
 {
 	graph_module = std::make_shared<GraphModule>(builder);
@@ -71,6 +69,28 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 		graph_module->free_graph();
 		return false;
 	});
+
+	load_base_main_modules(builder);
+}
+
+void MainWindow::load_base_main_modules(const Glib::RefPtr<Gtk::Builder>& builder)
+{
+	//main_modules["logMessages"].module = std::make_shared<GstLogModule>();
+	main_modules["queries"].module = std::make_shared<QueryModule>();
+	//main_modules["busMessages"].module = std::make_shared<GstMessageModule>();
+	main_modules["buffers"].module = std::make_shared<BufferModule>();
+	main_modules["events"].module = std::make_shared<EventModule>();
+
+	for (auto m : main_modules)
+	{
+		builder->get_widget(m.first + "ToolButton", m.second.switch_button);
+		m.second.switch_button->signal_toggled().connect([this, m] {
+			if (m.second.switch_button->get_active())
+			{
+				main_module->update_module(m.second.module);
+			}
+		});
+	}
 }
 
 void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
@@ -79,13 +99,14 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 
 	controller->on_connection_status_changed(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
 
-	log_module->set_controller(controller);
-	event_module->set_controller(controller);
-	query_module->set_controller(controller);
-	message_module->set_controller(controller);
-	buffer_module->set_controller(controller);
+	main_module->set_controller(controller);
 	graph_module->set_controller(controller);
 	properties_module->set_controller(controller);
+
+	for (auto m : main_modules)
+	{
+		m.second.module->set_controller(controller);
+	}
 
 	enums_dialog->set_controller(controller);
 	enums_dialog->set_transient_for(*this);
