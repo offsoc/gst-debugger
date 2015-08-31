@@ -33,3 +33,9 @@ void BaseMainModule::configure_details_view(Gtk::TreeView *view)
 	view->append_column("Value", detail_columns.value);
 }
 
+void BaseMainModule::append_details_row(const std::string &name, const std::string &value)
+{
+	Gtk::TreeModel::Row row = *(details_model->append());
+	row[detail_columns.name] = name;
+	row[detail_columns.value] = value;
+}

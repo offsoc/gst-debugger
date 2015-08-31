@@ -15,6 +15,7 @@
 #include "controller/controller.h"
 
 #include "modules/pad_data_modules.h"
+#include "modules/log_module.h"
 
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : IMainView(cobject),
@@ -75,7 +76,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 void MainWindow::load_base_main_modules(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-	//main_modules["logMessages"].module = std::make_shared<GstLogModule>();
+	main_modules["logMessages"].module = std::make_shared<LogModule>();
 	main_modules["queries"].module = std::make_shared<QueryModule>();
 	//main_modules["busMessages"].module = std::make_shared<GstMessageModule>();
 	main_modules["buffers"].module = std::make_shared<BufferModule>();

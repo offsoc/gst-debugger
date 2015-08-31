@@ -22,7 +22,8 @@ protected:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 	Glib::RefPtr<Gtk::ListStore> details_model;
-	Glib::RefPtr<Gtk::ListStore> hooks_model;
+
+	void append_details_row(const std::string &name, const std::string &value);
 
 public:
 	BaseMainModule();

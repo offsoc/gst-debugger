@@ -40,7 +40,6 @@ protected:
 	PadWatch_WatchType get_watch_type() const;
 
 	void append_details_from_structure(Gst::Structure& structure);
-	void append_details_row(const std::string &name, const std::string &value);
 	virtual void display_details(const Glib::RefPtr<Gst::MiniObject> &obj, const Glib::ustring &pad_path) = 0;
 
 public:

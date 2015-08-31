@@ -72,14 +72,6 @@ void PadDataModule<T>::load_details(Gtk::TreeView *view, const Gtk::TreeModel::P
 }
 
 template<typename T>
-void PadDataModule<T>::append_details_row(const std::string &name, const std::string &value)
-{
-	Gtk::TreeModel::Row row = *(details_model->append());
-	row[detail_columns.name] = name;
-	row[detail_columns.value] = value;
-}
-
-template<typename T>
 void PadDataModule<T>::append_details_from_structure(Gst::Structure& structure)
 {
 	if (!structure.gobj())
