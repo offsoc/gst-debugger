@@ -44,7 +44,7 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 	submodules["logMessages"].display_module = std::make_shared<LogModule>();
-	submodules["logMessages"].control_module = std::make_shared<HooksControlModule>(PadWatch_WatchType_EVENT); //todo
+	submodules["logMessages"].control_module = std::make_shared<LogControlModule>();
 
 	submodules["queries"].display_module = std::make_shared<QueryModule>();
 	submodules["queries"].control_module = std::make_shared<PadPathTypesControlModule>("GstQueryType", PadWatch_WatchType_QUERY);

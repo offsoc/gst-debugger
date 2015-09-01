@@ -13,6 +13,8 @@ static void free_log(GstreamerLog *log) { delete log; }
 
 LogModule::LogModule()
 {
+	model = Gtk::ListStore::create(columns);
+
 	create_dispatcher("new-log", sigc::mem_fun(*this, &LogModule::log_received_), (GDestroyNotify)free_log);
 }
 
@@ -62,4 +64,36 @@ void LogModule::log_received_()
 	row[columns.log] = log;
 }
 
+LogControlModule::LogControlModule()
+{
+	main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
+	set_watch_button = Gtk::manage(new Gtk::CheckButton("Watch log messages"));
+	set_watch_button->signal_toggled().connect([this] {
+		controller->send_set_log_watch_command(set_watch_button->get_active(), 10); // todo log level
+	});
+	main_box->pack_start(*set_watch_button, false, true);
+
+	main_box->pack_start(*Gtk::manage(new Gtk::Label("Debug categories")), false, true);
+	main_box->pack_start(*Gtk::manage(new Gtk::ComboBox()), false, true);
+
+	main_box->pack_start(*Gtk::manage(new Gtk::Label("Log threshold:")), false, true);
+
+	threshold_entry = Gtk::manage(new Gtk::Entry());
+	main_box->pack_start(*threshold_entry, false, true);
+
+	overwrite_threshold_check_button = Gtk::manage(new Gtk::CheckButton("Overwrite current threshold"));
+	main_box->pack_start(*overwrite_threshold_check_button, false, true);
+
+	set_threshold_button = Gtk::manage(new Gtk::Button("Set threshold"));
+	set_threshold_button->signal_clicked().connect([this] {
+		controller->send_set_threshold_command(threshold_entry->get_text(),
+			overwrite_threshold_check_button->get_active());
+	});
+	main_box->pack_start(*set_threshold_button, false, true);
+}
+
+Gtk::Widget* LogControlModule::get_widget()
+{
+	return main_box;
+}
