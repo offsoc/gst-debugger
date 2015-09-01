@@ -24,19 +24,7 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 	details_tree_view->signal_row_activated().connect(sigc::mem_fun(*this, &MainModule::mainDetailsTreeView_row_activated_cb));
 	BaseMainModule::configure_details_view(details_tree_view);
 
-	builder->get_widget("existingHooksTreeView", existing_hooks_tree_view);
-	builder->get_widget("hookPadPathLabel", pad_path_label);
-
-	builder->get_widget("addNewHookButton", add_hook_button);
-	builder->get_widget("removeSelectedHook", remove_selected_hook_button);
-
-	builder->get_widget("hookTypesComboBox", types_combobox);
-	builder->get_widget("hookTypeBox", hook_type_box);
-	builder->get_widget("hookAnyPathCheckButton", any_path_check_button);
-	builder->get_widget("hookAnyTypeCheckButton", any_type_check_button);
 	builder->get_widget("controllerFrame", controller_frame);
-
-	create_dispatcher("selected-object", sigc::mem_fun(*this, &MainModule::selected_object_changed), nullptr);
 
 	load_submodules(builder);
 }
@@ -68,6 +56,8 @@ void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 			}
 		});
 	}
+
+	update_module(submodules["logMessages"]);
 }
 
 void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
@@ -81,12 +71,6 @@ void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
 		m.second.display_module->set_controller(controller);
 		m.second.control_module->set_controller(controller);
 	}
-}
-
-void MainModule::selected_object_changed()
-{
-	std::shared_ptr<PadModel> selected_pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
-	pad_path_label->set_text(selected_pad ? ElementPathProcessor::get_object_path(selected_pad) : "(none)");
 }
 
 void MainModule::update_module(const MainModuleInfo &module_info)

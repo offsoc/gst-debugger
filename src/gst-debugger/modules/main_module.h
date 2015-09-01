@@ -26,14 +26,6 @@ class MainModule : public IBaseView
 
 	Gtk::TreeView *list_tree_view;
 	Gtk::TreeView *details_tree_view;
-	Gtk::Button *add_hook_button;
-	Gtk::Button *remove_selected_hook_button;
-	Gtk::ComboBox *types_combobox;
-	Gtk::CheckButton *any_path_check_button;
-	Gtk::CheckButton *any_type_check_button;
-	Gtk::TreeView *existing_hooks_tree_view;
-	Gtk::Label *pad_path_label;
-	Gtk::Box *hook_type_box;
 	Gtk::Frame *controller_frame;
 
 	TypesModelColumns types_columns;
@@ -42,7 +34,6 @@ class MainModule : public IBaseView
 
 	std::map<std::string, MainModuleInfo> submodules;
 
-	void selected_object_changed();
 	void load_submodules(const Glib::RefPtr<Gtk::Builder>& builder);
 	void update_module(const MainModuleInfo &module_info);
 

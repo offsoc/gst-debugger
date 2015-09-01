@@ -45,7 +45,6 @@ gst_debugger_headers =					\
 	modules/base_main_module.h			\
 	modules/bus_messages_module.h			\
 	modules/control_module.h			\
-	modules/gst_log_module.h			\
 	modules/gst_properties_module.h			\
 	modules/log_module.h				\
 	modules/main_module.h				\
@@ -81,7 +80,6 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	models/gst_pipeline_model.cpp			\
 	modules/base_main_module.cpp			\
 	modules/bus_messages_module.cpp			\
-	modules/gst_log_module.cpp			\
 	modules/gst_properties_module.cpp		\
 	modules/log_module.cpp				\
 	modules/main_module.cpp				\
