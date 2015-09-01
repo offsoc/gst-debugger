@@ -18,13 +18,18 @@
 class BaseMainModule : public IBaseView
 {
 protected:
+	std::string filter_text;
+
 	static DetailsModelColumns detail_columns;
 
+	Glib::RefPtr<Gtk::TreeModelFilter> filter;
 	Glib::RefPtr<Gtk::ListStore> model;
 	Glib::RefPtr<Gtk::ListStore> details_model;
 
 	void append_details_row(const std::string &name, const std::string &value);
 	void append_details_from_structure(Gst::Structure& structure);
+
+	virtual bool filter_function(const Gtk::TreeModel::const_iterator& it) { return true; }
 
 public:
 	BaseMainModule();
@@ -35,6 +40,8 @@ public:
 	virtual void details_activated(const Gtk::TreeModel::Path &path) {}
 
 	static void configure_details_view(Gtk::TreeView *view);
+
+	void update_filter_string(const std::string &filter_text);
 
 	Glib::RefPtr<Gtk::ListStore> get_model() const { return model; }
 };

@@ -61,7 +61,7 @@ void PadDataModule<T>::load_details(Gtk::TreeView *view, const Gtk::TreeModel::P
 {
 	BaseMainModule::load_details(view, path);
 
-	Gtk::TreeModel::iterator iter = model->get_iter(path);
+	Gtk::TreeModel::iterator iter = filter->get_iter(path);
 	if (!iter)
 	{
 		return;

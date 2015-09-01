@@ -26,6 +26,11 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 
 	builder->get_widget("controllerFrame", controller_frame);
 
+	builder->get_widget("dataFilterEntry", data_filter_entry);
+	data_filter_entry->signal_activate().connect([this]{
+		current_module->update_filter_string(data_filter_entry->get_text());
+	});
+
 	load_submodules(builder);
 }
 

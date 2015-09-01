@@ -17,13 +17,25 @@ BaseMainModule::BaseMainModule()
 void BaseMainModule::configure_main_list_view(Gtk::TreeView *view)
 {
 	view->remove_all_columns();
-	view->set_model(model);
+
+	filter = Gtk::TreeModelFilter::create(model);
+	filter->set_visible_func([this](const Gtk::TreeModel::const_iterator& it){
+		return filter_function(it);
+	});
+
+	view->set_model(filter);
 }
 
 void BaseMainModule::load_details(Gtk::TreeView *view, const Gtk::TreeModel::Path &path)
 {
 	details_model->clear();
 	view->set_model(details_model);
+}
+
+void BaseMainModule::update_filter_string(const std::string &filter_text)
+{
+	this->filter_text = filter_text;
+	filter->refilter();
 }
 
 void BaseMainModule::configure_details_view(Gtk::TreeView *view)

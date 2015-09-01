@@ -28,7 +28,7 @@ void LogModule::load_details(Gtk::TreeView *view, const Gtk::TreeModel::Path &pa
 {
 	BaseMainModule::load_details(view, path);
 
-	Gtk::TreeModel::iterator iter = model->get_iter(path);
+	Gtk::TreeModel::iterator iter = filter->get_iter(path);
 	if (!iter)
 	{
 		return;
@@ -62,6 +62,21 @@ void LogModule::log_received_()
 	Gtk::TreeModel::Row row = *(model->append());
 	row[columns.header] = log->function();
 	row[columns.log] = log;
+}
+
+bool LogModule::filter_function(const Gtk::TreeModel::const_iterator& it)
+{
+	if (filter_text.empty())
+		return true;
+
+	auto log = it->get_value(columns.log);
+
+	if (log == nullptr)
+		return true;
+
+	int line = atoi(filter_text.c_str());
+
+	return log->line() == line;
 }
 
 LogControlModule::LogControlModule()

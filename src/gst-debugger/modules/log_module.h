@@ -30,6 +30,9 @@ class LogModule : public BaseMainModule
 
 	LogModelColumns columns;
 
+protected:
+	bool filter_function(const Gtk::TreeModel::const_iterator& it) override;
+
 public:
 	LogModule();
 	virtual ~LogModule() {}
