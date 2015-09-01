@@ -32,8 +32,9 @@ bool TypesControlModule::add_hook_unlocked()
 			!!types_combobox->get_active();
 }
 
-TypesControlModule::TypesControlModule(const std::string &enum_type_name)
-: type_name(enum_type_name)
+TypesControlModule::TypesControlModule(const std::string &enum_type_name, PadWatch_WatchType watch_type)
+: HooksControlModule(watch_type),
+  type_name(enum_type_name)
 {
 	create_dispatcher("enum", sigc::mem_fun(*this, &TypesControlModule::enum_list_changed_), nullptr); // todo memleak
 
@@ -83,4 +84,19 @@ void TypesControlModule::enum_list_changed_()
 	}
 	delete add;
 	delete type_name;
+}
+
+int TypesControlModule::get_type() const
+{
+	if (any_type_check_button->get_active())
+	{
+		return -1;
+	}
+
+	Gtk::TreeModel::iterator iter = types_combobox->get_active();
+	if (!iter)
+		return -1;
+
+	Gtk::TreeModel::Row row = *iter;
+	return row ? row[types_model_columns.type_id] : -1;
 }

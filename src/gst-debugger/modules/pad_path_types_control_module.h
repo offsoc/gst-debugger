@@ -19,8 +19,10 @@ class PadPathTypesControlModule : public PadPathControlModule, public TypesContr
 	}
 
 public:
-	PadPathTypesControlModule(const std::string &type_name)
-	: TypesControlModule(type_name)
+	PadPathTypesControlModule(const std::string &type_name, PadWatch_WatchType watch_type)
+	: TypesControlModule(type_name, watch_type),
+	  PadPathControlModule(watch_type),
+	  HooksControlModule(watch_type)
 	{
 		main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possibly memleak
 

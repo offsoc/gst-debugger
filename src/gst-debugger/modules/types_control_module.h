@@ -26,8 +26,10 @@ protected:
 
 	bool add_hook_unlocked() override;
 
+	int get_type() const override;
+
 public:
-	TypesControlModule(const std::string &enum_type_name);
+	TypesControlModule(const std::string &enum_type_name, PadWatch_WatchType watch_type);
 	virtual ~TypesControlModule() {}
 
 	Gtk::Widget* get_widget() override;

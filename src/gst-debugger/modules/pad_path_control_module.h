@@ -21,8 +21,10 @@ protected:
 
 	bool add_hook_unlocked() override;
 
+	std::string get_pad_path() const override;
+
 public:
-	PadPathControlModule();
+	PadPathControlModule(PadWatch_WatchType watch_type);
 	virtual ~PadPathControlModule() {}
 
 	Gtk::Widget* get_widget() override;

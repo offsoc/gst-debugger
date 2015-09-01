@@ -8,6 +8,7 @@
 #include "pad_path_control_module.h"
 
 #include "controller/controller.h"
+#include "controller/element_path_processor.h"
 
 void PadPathControlModule::append_pad_path_widgets()
 {
@@ -33,7 +34,8 @@ void PadPathControlModule::selected_object_changed_()
 	update_add_hook();
 }
 
-PadPathControlModule::PadPathControlModule()
+PadPathControlModule::PadPathControlModule(PadWatch_WatchType watch_type)
+: HooksControlModule(watch_type)
 {
 	main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possibly memleak
 
@@ -54,4 +56,11 @@ void PadPathControlModule::set_controller(const std::shared_ptr<Controller> &con
 	controller->on_selected_object_changed.connect([this](){
 		gui_emit("selected-object");
 	});
+}
+
+std::string PadPathControlModule::get_pad_path() const
+{
+	auto selected_pad = std::dynamic_pointer_cast<PadModel>(controller->get_selected_object());
+
+	return any_path_check_button->get_active() || !selected_pad ? std::string() : ElementPathProcessor::get_object_path(selected_pad);
 }

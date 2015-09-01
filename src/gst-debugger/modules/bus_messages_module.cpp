@@ -16,6 +16,7 @@ static void free_bus_messages(GstreamerQEBM *qebm) { delete qebm; }
 
 BusMessagesModule::BusMessagesModule()
 {
+	model = Gtk::ListStore::create(columns);
 	create_dispatcher("new-message", sigc::mem_fun(*this, &BusMessagesModule::bus_message_received_), (GDestroyNotify)free_bus_messages);
 }
 

@@ -44,19 +44,19 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 {
 	submodules["logMessages"].display_module = std::make_shared<LogModule>();
-	submodules["logMessages"].control_module = std::make_shared<HooksControlModule>();
+	submodules["logMessages"].control_module = std::make_shared<HooksControlModule>(PadWatch_WatchType_EVENT); //todo
 
 	submodules["queries"].display_module = std::make_shared<QueryModule>();
-	submodules["queries"].control_module = std::make_shared<PadPathTypesControlModule>("GstQueryType");
+	submodules["queries"].control_module = std::make_shared<PadPathTypesControlModule>("GstQueryType", PadWatch_WatchType_QUERY);
 
 	submodules["busMessages"].display_module = std::make_shared<BusMessagesModule>();
-	submodules["busMessages"].control_module = std::make_shared<TypesControlModule>("GstMessageType");
+	submodules["busMessages"].control_module = std::make_shared<TypesControlModule>("GstMessageType", (PadWatch_WatchType)-1);
 
 	submodules["buffers"].display_module = std::make_shared<BufferModule>();
-	submodules["buffers"].control_module = std::make_shared<PadPathControlModule>();
+	submodules["buffers"].control_module = std::make_shared<PadPathControlModule>(PadWatch_WatchType_BUFFER);
 
 	submodules["events"].display_module = std::make_shared<EventModule>();
-	submodules["events"].control_module = std::make_shared<PadPathTypesControlModule>("GstEventType");
+	submodules["events"].control_module = std::make_shared<PadPathTypesControlModule>("GstEventType", PadWatch_WatchType_EVENT);
 
 	for (auto m : submodules)
 	{
