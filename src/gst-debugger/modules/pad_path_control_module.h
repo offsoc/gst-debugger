@@ -12,6 +12,10 @@
 
 class PadPathControlModule : virtual public HooksControlModule
 {
+	Gtk::Box *path_box;
+
+	void confirmation_received_();
+
 protected:
 	Gtk::CheckButton *any_path_check_button;
 

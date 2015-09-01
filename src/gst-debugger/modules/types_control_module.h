@@ -12,6 +12,8 @@
 
 class TypesControlModule : virtual public HooksControlModule
 {
+	Gtk::Box *type_box;
+
 protected:
 	TypesModelColumns types_model_columns;
 	Glib::RefPtr<Gtk::ListStore> types_model;
@@ -27,6 +29,8 @@ protected:
 	bool add_hook_unlocked() override;
 
 	int get_type() const override;
+
+	void message_confirmation_();
 
 public:
 	TypesControlModule(const std::string &enum_type_name, PadWatch_WatchType watch_type);

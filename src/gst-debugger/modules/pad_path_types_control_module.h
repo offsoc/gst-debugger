@@ -24,17 +24,20 @@ public:
 	  PadPathControlModule(watch_type),
 	  HooksControlModule(watch_type)
 	{
-		main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possibly memleak
-
-		append_types_widgets();
-		append_pad_path_widgets();
-		append_hook_widgets();
 	}
 
 	virtual ~PadPathTypesControlModule () {}
 
 	Gtk::Widget* get_widget() override
 	{
+		if (main_box == nullptr)
+		{
+			main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possibly memleak
+
+			append_types_widgets();
+			append_pad_path_widgets();
+			append_hook_widgets();
+		}
 		return main_box;
 	}
 

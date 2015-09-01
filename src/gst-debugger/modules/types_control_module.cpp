@@ -9,21 +9,12 @@
 
 #include "controller/controller.h"
 
+static void free_message(MessageWatch* m) { delete m; }
+
 void TypesControlModule::append_types_widgets()
 {
-	Gtk::Box *type_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
-	any_type_check_button = Gtk::manage(new Gtk::CheckButton("any event"));
-	any_type_check_button->signal_clicked().connect([this] { update_add_hook(); });
-
-	type_box->pack_start(*any_type_check_button);
-	main_box->pack_start(*type_box);
-
-	types_combobox = Gtk::manage(new Gtk::ComboBox());
+	main_box->pack_start(*type_box, false, true);
 	main_box->pack_start(*Gtk::manage(types_combobox), false, true);
-	types_model = Gtk::ListStore::create(types_model_columns);
-	types_combobox->set_model(types_model);
-	types_combobox->pack_start(types_model_columns.type_name);
-
 }
 
 bool TypesControlModule::add_hook_unlocked()
@@ -36,16 +27,36 @@ TypesControlModule::TypesControlModule(const std::string &enum_type_name, PadWat
 : HooksControlModule(watch_type),
   type_name(enum_type_name)
 {
+	type_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+	any_type_check_button = Gtk::manage(new Gtk::CheckButton("any event"));
+	any_type_check_button->signal_clicked().connect([this] { update_add_hook(); });
+
+	type_box->pack_start(*any_type_check_button);
+
+	types_combobox = Gtk::manage(new Gtk::ComboBox());
+	types_model = Gtk::ListStore::create(types_model_columns);
+	types_combobox->set_model(types_model);
+	types_combobox->pack_start(types_model_columns.type_name);
+
 	create_dispatcher("enum", sigc::mem_fun(*this, &TypesControlModule::enum_list_changed_), nullptr); // todo memleak
 
-	main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possibly memleak
+	hooks_tree_view->append_column("Type", hooks_model_columns.qe_type_name);
 
-	append_types_widgets();
-	append_hook_widgets();
+	if ((int)watch_type == -1) // todo
+	{
+		create_dispatcher("message-confirmation", sigc::mem_fun(*this, &TypesControlModule::message_confirmation_), (GDestroyNotify)free_message);
+	}
 }
 
 Gtk::Widget* TypesControlModule::get_widget()
 {
+	if (main_box == nullptr)
+	{
+		main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possibly memleak
+
+		append_types_widgets();
+		append_hook_widgets();
+	}
 	return main_box;
 }
 
@@ -60,6 +71,14 @@ void TypesControlModule::set_controller(const std::shared_ptr<Controller> &contr
 		gui_push("enum", new bool(add));
 		gui_emit("enum");
 	});
+
+	if ((int)watch_type == -1) // todo
+	{
+		controller->on_message_confirmation_received.connect([this](const MessageWatch& watch) {
+			gui_push("message-confirmation", new MessageWatch(watch));
+			gui_emit("message-confirmation");
+		});
+	}
 }
 
 void TypesControlModule::enum_list_changed_()
@@ -99,4 +118,28 @@ int TypesControlModule::get_type() const
 
 	Gtk::TreeModel::Row row = *iter;
 	return row ? row[types_model_columns.type_id] : -1;
+}
+
+void TypesControlModule::message_confirmation_()
+{
+	auto confirmation = gui_pop<MessageWatch*>("message-confirmation");
+	if (confirmation->toggle() == ENABLE)
+	{
+		Gtk::TreeModel::Row row = *(hooks_model->append());
+		row[hooks_model_columns.qe_type_name] = Gst::Enums::get_name(static_cast<Gst::MessageType>(confirmation->message_type()));
+		row[hooks_model_columns.qe_type] = confirmation->message_type();
+	}
+	else
+	{
+		for (auto iter = hooks_model->children().begin();
+				iter != hooks_model->children().end(); ++iter)
+		{
+			if ((*iter)[hooks_model_columns.qe_type] == confirmation->message_type())
+			{
+				hooks_model->erase(iter);
+				break;
+			}
+		}
+	}
+	delete confirmation;
 }
