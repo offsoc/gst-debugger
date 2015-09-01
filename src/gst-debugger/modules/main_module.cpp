@@ -9,6 +9,8 @@
 
 #include "pad_data_modules.h"
 #include "log_module.h"
+#include "bus_messages_module.h"
+#include "pad_path_types_control_module.h"
 
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
@@ -32,6 +34,7 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 	builder->get_widget("hookTypeBox", hook_type_box);
 	builder->get_widget("hookAnyPathCheckButton", any_path_check_button);
 	builder->get_widget("hookAnyTypeCheckButton", any_type_check_button);
+	builder->get_widget("controllerFrame", controller_frame);
 
 	create_dispatcher("selected-object", sigc::mem_fun(*this, &MainModule::selected_object_changed), nullptr);
 
@@ -40,11 +43,20 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 
 void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-	submodules["logMessages"].module = std::make_shared<LogModule>();
-	submodules["queries"].module = std::make_shared<QueryModule>();
-	//main_modules["busMessages"].module = std::make_shared<GstMessageModule>();
-	submodules["buffers"].module = std::make_shared<BufferModule>();
-	submodules["events"].module = std::make_shared<EventModule>();
+	submodules["logMessages"].display_module = std::make_shared<LogModule>();
+	submodules["logMessages"].control_module = std::make_shared<HooksControlModule>();
+
+	submodules["queries"].display_module = std::make_shared<QueryModule>();
+	submodules["queries"].control_module = std::make_shared<PadPathTypesControlModule>("GstQueryType");
+
+	submodules["busMessages"].display_module = std::make_shared<BusMessagesModule>();
+	submodules["busMessages"].control_module = std::make_shared<TypesControlModule>("GstMessageType");
+
+	submodules["buffers"].display_module = std::make_shared<BufferModule>();
+	submodules["buffers"].control_module = std::make_shared<PadPathControlModule>();
+
+	submodules["events"].display_module = std::make_shared<EventModule>();
+	submodules["events"].control_module = std::make_shared<PadPathTypesControlModule>("GstEventType");
 
 	for (auto m : submodules)
 	{
@@ -52,7 +64,7 @@ void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 		m.second.switch_button->signal_toggled().connect([this, m] {
 			if (m.second.switch_button->get_active())
 			{
-				update_module(m.second.module);
+				update_module(m.second);
 			}
 		});
 	}
@@ -66,7 +78,8 @@ void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
 
 	for (auto m : submodules)
 	{
-		m.second.module->set_controller(controller);
+		m.second.display_module->set_controller(controller);
+		m.second.control_module->set_controller(controller);
 	}
 }
 
@@ -76,10 +89,13 @@ void MainModule::selected_object_changed()
 	pad_path_label->set_text(selected_pad ? ElementPathProcessor::get_object_path(selected_pad) : "(none)");
 }
 
-void MainModule::update_module(const std::shared_ptr<BaseMainModule> &module)
+void MainModule::update_module(const MainModuleInfo &module_info)
 {
-	module->configure_main_list_view(list_tree_view);
-	current_module = module;
+	module_info.display_module->configure_main_list_view(list_tree_view);
+	current_module = module_info.display_module;
+	controller_frame->remove();
+	controller_frame->add(*(module_info.control_module->get_widget()));
+	controller_frame->show_all();
 }
 
 void MainModule::mainListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column)

@@ -8,9 +8,10 @@
 #ifndef SRC_GST_DEBUGGER_MODULES_MAIN_MODULE_H_
 #define SRC_GST_DEBUGGER_MODULES_MAIN_MODULE_H_
 
-#include "controller/iview.h"
-
 #include "base_main_module.h"
+#include "control_module.h"
+
+#include "controller/iview.h"
 
 #include <gtkmm.h>
 
@@ -18,7 +19,8 @@ class MainModule : public IBaseView
 {
 	struct MainModuleInfo
 	{
-		std::shared_ptr<BaseMainModule> module;
+		std::shared_ptr<BaseMainModule> display_module;
+		std::shared_ptr<ControlModule> control_module;
 		Gtk::RadioToolButton *switch_button;
 	};
 
@@ -32,6 +34,7 @@ class MainModule : public IBaseView
 	Gtk::TreeView *existing_hooks_tree_view;
 	Gtk::Label *pad_path_label;
 	Gtk::Box *hook_type_box;
+	Gtk::Frame *controller_frame;
 
 	TypesModelColumns types_columns;
 
@@ -41,6 +44,7 @@ class MainModule : public IBaseView
 
 	void selected_object_changed();
 	void load_submodules(const Glib::RefPtr<Gtk::Builder>& builder);
+	void update_module(const MainModuleInfo &module_info);
 
 	void mainListTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
 	void mainDetailsTreeView_row_activated_cb(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *column);
@@ -49,8 +53,6 @@ public:
 	MainModule(const Glib::RefPtr<Gtk::Builder>& builder);
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
-
-	void update_module(const std::shared_ptr<BaseMainModule> &module);
 };
 
 #endif /* SRC_GST_DEBUGGER_MODULES_MAIN_MODULE_H_ */

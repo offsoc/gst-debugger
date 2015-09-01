@@ -16,9 +16,6 @@ bin_PROGRAMS = gst-debugger-@GST_API_VERSION@
 
 gst_debugger_headers =					\
 	common_model_columns.h				\
-	gst-debugger-resources.h			\
-	main_window.h					\
-	ui_utils.h					\
 	controller/base_controller.h			\
 	controller/command_factory.h			\
 	controller/connection_controller.h		\
@@ -33,31 +30,34 @@ gst_debugger_headers =					\
 	dialogs/factories_dialog.h			\
 	dialogs/remote_data_dialog.h			\
 	graphviz-plugin/graphviz-gstdebugger.h		\
+	gst-debugger-resources.h			\
 	gvalue-converter/gvalue_base.h			\
 	gvalue-converter/gvalue_boolean.h		\
 	gvalue-converter/gvalue_caps.h			\
 	gvalue-converter/gvalue_enum.h			\
 	gvalue-converter/gvalue_numeric.h		\
 	gvalue-converter/gvalue_string.h		\
+	main_window.h					\
 	models/gst_enum_model.h				\
 	models/gst_factory_model.h			\
 	models/gst_pipeline_model.h			\
 	models/remote_data_container.h			\
 	modules/base_main_module.h			\
-	modules/log_module.h				\
 	modules/bus_messages_module.h			\
+	modules/control_module.h			\
 	modules/gst_log_module.h			\
 	modules/gst_properties_module.h			\
+	modules/log_module.h				\
 	modules/main_module.h				\
+	modules/pad_path_control_module.h		\
+	modules/pad_path_types_control_module.h		\
+	modules/types_control_modules.h			\
 	pipeline-drawer/graph_module.h			\
-	pipeline-drawer/gst_bin_to_dot_converter.h
+	pipeline-drawer/gst_bin_to_dot_converter.h	\
+	ui_utils.h					
 
 
 gst_debugger_@GST_API_VERSION@_SOURCES = 		\
-	gst-debugger-resources.c			\
-	main.cpp					\
-	main_window.cpp					\
-	ui_utils.cpp					\
 	controller/command_factory.cpp			\
 	controller/controller.cpp			\
 	controller/tcp_client.cpp			\
@@ -68,23 +68,29 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	dialogs/factories_dialog.cpp			\
 	graphviz-plugin/gvdevice_gstdebugger.c		\
 	graphviz-plugin/gvplugin_gstdebugger.c		\
+	gst-debugger-resources.c			\
 	gvalue-converter/gvalue_base.cpp		\
 	gvalue-converter/gvalue_boolean.cpp		\
 	gvalue-converter/gvalue_caps.cpp		\
 	gvalue-converter/gvalue_enum.cpp		\
 	gvalue-converter/gvalue_numeric.cpp		\
 	gvalue-converter/gvalue_string.cpp		\
+	main.cpp					\
+	main_window.cpp					\
 	models/gst_factory_model.cpp			\
 	models/gst_pipeline_model.cpp			\
-	modules/main_module.cpp				\
-	modules/log_module.cpp				\
-	modules/bus_messages_module.cpp			\
 	modules/base_main_module.cpp			\
-	modules/pad_data_modules.cpp			\
+	modules/bus_messages_module.cpp			\
 	modules/gst_log_module.cpp			\
 	modules/gst_properties_module.cpp		\
+	modules/log_module.cpp				\
+	modules/main_module.cpp				\
+	modules/pad_data_modules.cpp			\
+	modules/pad_path_control_module.cpp		\
+	modules/types_control_module.cpp		\
 	pipeline-drawer/graph_module.cpp		\
 	pipeline-drawer/gst_bin_to_dot_converter.cpp	\
+	ui_utils.cpp					\
 	$(gst_debugger_headers)
 
 gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
