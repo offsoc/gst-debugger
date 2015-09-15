@@ -32,10 +32,20 @@ void BaseMainModule::load_details(Gtk::TreeView *view, const Gtk::TreeModel::Pat
 	view->set_model(details_model);
 }
 
-void BaseMainModule::update_filter_string(const std::string &filter_text)
+void BaseMainModule::update_filter_expression(const std::string &expr)
 {
-	this->filter_text = filter_text;
-	filter->refilter();
+	Parser p;
+	auto prev = filter_expression;
+	try
+	{
+		filter_expression = std::make_shared<Expression>(p.parse(expr));
+	}
+	catch (...) { filter_expression = std::shared_ptr<Expression>(); }
+
+	if (prev != filter_expression)
+	{
+		filter->refilter();
+	}
 }
 
 void BaseMainModule::configure_details_view(Gtk::TreeView *view)

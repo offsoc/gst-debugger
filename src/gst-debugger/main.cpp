@@ -12,6 +12,8 @@
 #include <gtkmm.h>
 #include <gstreamermm.h>
 
+#include "filter-parser/parser.h"
+
 int main(int argc, char** argv)
 {
 	Gst::init(argc, argv);

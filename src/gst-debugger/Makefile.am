@@ -29,6 +29,10 @@ gst_debugger_headers =					\
 	dialogs/enums_dialog.h				\
 	dialogs/factories_dialog.h			\
 	dialogs/remote_data_dialog.h			\
+	filter-parser/expression.h			\
+	filter-parser/lexer.h				\
+	filter-parser/parser.cpp			\
+	filter-parser/tokens.h				\
 	graphviz-plugin/graphviz-gstdebugger.h		\
 	gst-debugger-resources.h			\
 	gvalue-converter/gvalue_base.h			\
@@ -66,6 +70,9 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	dialogs/enums_dialog.cpp			\
 	dialogs/factories_dialog.cpp			\
 	graphviz-plugin/gvdevice_gstdebugger.c		\
+	filter-parser/lexer.cpp				\
+	filter-parser/parser.cpp			\
+	filter-parser/tokens.cpp			\
 	graphviz-plugin/gvplugin_gstdebugger.c		\
 	gst-debugger-resources.c			\
 	gvalue-converter/gvalue_base.cpp		\

@@ -10,6 +10,7 @@
 
 #include "controller/iview.h"
 #include "common_model_columns.h"
+#include "filter-parser/parser.h"
 
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
@@ -18,7 +19,7 @@
 class BaseMainModule : public IBaseView
 {
 protected:
-	std::string filter_text;
+	std::shared_ptr<Expression> filter_expression;
 
 	static DetailsModelColumns detail_columns;
 
@@ -41,7 +42,7 @@ public:
 
 	static void configure_details_view(Gtk::TreeView *view);
 
-	void update_filter_string(const std::string &filter_text);
+	void update_filter_expression(const std::string &expr);
 
 	Glib::RefPtr<Gtk::ListStore> get_model() const { return model; }
 };
