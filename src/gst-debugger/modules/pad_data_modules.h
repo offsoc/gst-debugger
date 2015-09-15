@@ -28,7 +28,6 @@ public:
 template<typename T>
 class PadDataModule : public BaseMainModule
 {
-	PadDataListModelColumns<T> columns;
 	GstreamerInfo_InfoType info_type;
 
 	virtual T* deserialize(const std::string &payload) = 0;
@@ -37,9 +36,15 @@ class PadDataModule : public BaseMainModule
 	void qebm_received_();
 
 protected:
+	PadDataListModelColumns<T> columns;
+
 	PadWatch_WatchType get_watch_type() const;
 
 	virtual void display_details(const Glib::RefPtr<Gst::MiniObject> &obj, const Glib::ustring &pad_path) = 0;
+
+	bool filter_function(const Gtk::TreeModel::const_iterator& it) override;
+
+	virtual const GstStructure* get_gst_structure(const Gtk::TreeModel::const_iterator& it) const { return nullptr; }
 
 public:
 	PadDataModule(GstreamerInfo_InfoType info_type);
@@ -57,6 +62,8 @@ class EventModule : public PadDataModule<GstEvent>
 
 	void display_details(const Glib::RefPtr<Gst::MiniObject>& obj, const Glib::ustring &pad_path) override;
 
+	const GstStructure* get_gst_structure(const Gtk::TreeModel::const_iterator &it) const override;
+
 public:
 	EventModule() : PadDataModule<GstEvent>(GstreamerInfo_InfoType_EVENT) {}
 
@@ -67,6 +74,8 @@ class QueryModule : public PadDataModule<GstQuery>
 	GstQuery *deserialize(const std::string &payload) override;
 
 	void display_details(const Glib::RefPtr<Gst::MiniObject>& obj, const Glib::ustring &pad_path) override;
+
+	const GstStructure* get_gst_structure(const Gtk::TreeModel::const_iterator &it) const override;
 
 public:
 	QueryModule() : PadDataModule<GstQuery>(GstreamerInfo_InfoType_QUERY) {}

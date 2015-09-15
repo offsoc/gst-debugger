@@ -6,6 +6,7 @@
  */
 
 #include "pad_data_modules.h"
+#include "filter_utils.h"
 
 #include "dialogs/buffer_data_dialog.h"
 
@@ -87,6 +88,20 @@ PadWatch_WatchType PadDataModule<T>::get_watch_type() const
 	}
 }
 
+template<typename T>
+bool PadDataModule<T>::filter_function(const Gtk::TreeModel::const_iterator& it)
+{
+	if (!filter_expression)
+		return true;
+
+	std::shared_ptr<TokenIdentifier> ident;
+	std::shared_ptr<TokenBase> value;
+
+	read_tokens_by_type(filter_expression, ident, value);
+
+	return filter_structure(get_gst_structure(it), ident->get_value().c_str(), value);
+}
+
 GstEvent* EventModule::deserialize(const std::string &payload)
 {
 	return gst_event_deserialize(payload.c_str(), payload.length());
@@ -110,6 +125,16 @@ void EventModule::display_details(const Glib::RefPtr<Gst::MiniObject>& obj, cons
 	append_details_from_structure(structure);
 }
 
+const GstStructure* EventModule::get_gst_structure(const Gtk::TreeModel::const_iterator &it) const
+{
+	auto obj = it->get_value(columns.object);
+
+	if (obj == nullptr)
+		return nullptr;
+
+	return gst_event_get_structure(obj);
+}
+
 GstQuery* QueryModule::deserialize(const std::string &payload)
 {
 	return gst_query_deserialize(payload.c_str(), payload.length());
@@ -124,6 +149,16 @@ void QueryModule::display_details(const Glib::RefPtr<Gst::MiniObject>& obj, cons
 
 	auto structure = query->get_structure();
 	append_details_from_structure(structure);
+}
+
+const GstStructure* QueryModule::get_gst_structure(const Gtk::TreeModel::const_iterator &it) const
+{
+	auto obj = it->get_value(columns.object);
+
+	if (obj == nullptr)
+		return nullptr;
+
+	return gst_query_get_structure(obj);
 }
 
 GstBuffer* BufferModule::deserialize(const std::string &payload)

@@ -6,6 +6,7 @@
  */
 
 #include "bus_messages_module.h"
+#include "filter_utils.h"
 
 #include "controller/controller.h"
 
@@ -73,4 +74,22 @@ void BusMessagesModule::bus_message_received_()
 	row[columns.header] = "Message";
 	row[columns.message] = message;
 	delete qebm;
+}
+
+bool BusMessagesModule::filter_function(const Gtk::TreeModel::const_iterator& it)
+{
+	if (!filter_expression)
+		return true;
+
+	std::shared_ptr<TokenIdentifier> ident;
+	std::shared_ptr<TokenBase> value;
+
+	read_tokens_by_type(filter_expression, ident, value);
+
+	auto obj = it->get_value(columns.message);
+
+	if (obj == nullptr)
+		return true;
+
+	return filter_structure(gst_message_get_structure(obj), ident->get_value().c_str(), value);
 }

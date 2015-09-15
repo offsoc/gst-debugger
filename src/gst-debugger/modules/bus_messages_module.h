@@ -37,6 +37,8 @@ public:
 	void load_details(Gtk::TreeView *view, const Gtk::TreeModel::Path &path) override;
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
+
+	bool filter_function(const Gtk::TreeModel::const_iterator& it) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_MODULES_BUS_MESSAGES_MODULE_H_ */

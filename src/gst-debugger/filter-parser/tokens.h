@@ -56,7 +56,7 @@ public:
 	T get_value() const { return value; }
 };
 
-class TokenNumber : public Token<int>
+class TokenNumber : public Token<long long>
 {
 public:
 	TokenNumber(const std::string &number);

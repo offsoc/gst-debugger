@@ -13,7 +13,7 @@
 TokenNumber::TokenNumber(const std::string &number)
  : Token(TokenType::NUMBER_LITERAL)
 {
-	value = atoi(number.c_str());
+	value = atoll(number.c_str());
 }
 
 TokenString::TokenString(const std::string &str)
