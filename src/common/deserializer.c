@@ -113,6 +113,7 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
   }
   case INTERNAL_GTYPE_GST_OBJECT: // and with pointers
   case INTERNAL_GTYPE_FUNDAMENTAL:
+  case INTERNAL_GTYPE_UNKNOWN:
     g_value_init (value, type);
     gst_value_deserialize (value, data);
     break;

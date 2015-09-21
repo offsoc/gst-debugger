@@ -144,6 +144,13 @@ gchar * g_value_serialize (GValue * value, GType * type, InternalGType * interna
     *type = G_TYPE_STRING;
     g_value_set_string (&tmp, g_strdup (buffer));
     *internal_type = INTERNAL_GTYPE_GST_OBJECT;
+  } else {
+    g_value_init(&tmp, G_TYPE_STRING);
+    gchar buffer[128];
+    snprintf (buffer, 128, "<unknown type '%s', can not read value>", g_type_name (value->g_type));
+    *type = G_TYPE_STRING;
+    *internal_type = INTERNAL_GTYPE_UNKNOWN;
+    g_value_set_string (&tmp, g_strdup (buffer));
   }
 
   return gst_value_serialize (&tmp);
