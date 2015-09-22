@@ -58,6 +58,7 @@ message Property {
 	optional string type_name = 5;
 	optional string property_value = 6;
 	optional string description = 7;
+	optional int32 flags = 8;
 }
 
 message Command {	

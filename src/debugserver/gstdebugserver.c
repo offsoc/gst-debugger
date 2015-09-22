@@ -482,6 +482,8 @@ gst_debugserver_prepare_property (const gchar * element_path, const GstElement *
   property.has_type = TRUE;
   property.type_name = (gchar*) g_type_name (value.g_type);
   property.description = (gchar*) g_param_spec_get_blurb ((GParamSpec*) param);
+  property.has_flags = TRUE;
+  property.flags = param->flags;
   info.property = &property;
   size = gstreamer_info__get_packed_size (&info);
 
