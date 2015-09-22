@@ -149,6 +149,7 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	hbox->pack_start(*lbl, false, false);
 	auto value_widget = value_base->get_widget();
 	value_widget->show();
+	value_widget->set_sensitive(property->flags() & G_PARAM_WRITABLE);
 	hbox->pack_start(*value_widget, true, true);
 	hbox->pack_start(*btn, false, false);
 	properties_box->pack_start(*hbox);
