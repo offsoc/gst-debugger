@@ -1,5 +1,6 @@
-AC_INIT([gst-debugger], [0.1.0], 
-		[https://github.com/loganek/gst-debugger/issues])
+AC_INIT([gst-debugger], [0.2.0], 
+		[http://bugzilla.gnome.org/enter_bug.cgi?product=gst-debugger],
+		[gst-debugger], [https://wiki.gnome.org/Apps/GstDebugger])
 
 AC_PREREQ([2.59])
 

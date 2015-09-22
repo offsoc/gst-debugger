@@ -1,4 +1,14 @@
 ========================
+Version 0.2.0 - September 22, 2015
+========================
+ 
+ * Fix memory leaks
+ * Support all types of properties
+ * Add data filter to a main module
+ * Protect against changing non-writable properties
+
+
+========================
 Version 0.1.0 - August 21, 2015
 ========================
 First release
