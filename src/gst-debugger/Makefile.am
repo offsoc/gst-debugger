@@ -31,7 +31,7 @@ gst_debugger_headers =					\
 	dialogs/remote_data_dialog.h			\
 	filter-parser/expression.h			\
 	filter-parser/lexer.h				\
-	filter-parser/parser.cpp			\
+	filter-parser/parser.h				\
 	filter-parser/tokens.h				\
 	graphviz-plugin/graphviz-gstdebugger.h		\
 	gst-debugger-resources.h			\
@@ -53,9 +53,10 @@ gst_debugger_headers =					\
 	modules/gst_properties_module.h			\
 	modules/log_module.h				\
 	modules/main_module.h				\
+	modules/pad_data_modules.h			\
 	modules/pad_path_control_module.h		\
 	modules/pad_path_types_control_module.h		\
-	modules/types_control_modules.h			\
+	modules/types_control_module.h			\
 	pipeline-drawer/graph_module.h			\
 	pipeline-drawer/gst_bin_to_dot_converter.h	\
 	ui_utils.h					
