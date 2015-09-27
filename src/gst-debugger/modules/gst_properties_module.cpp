@@ -6,7 +6,6 @@
  */
 
 #include "gst_properties_module.h"
-#include "gvalue-converter/gvalue_enum.h"
 #include "common/deserializer.h"
 #include "controller/command_factory.h"
 #include "controller/controller.h"
@@ -15,7 +14,7 @@
 
 #include <gst/gst.h>
 
-static void free_properties(Property *property) { delete property; }
+static void free_properties(GstDebugger::PropertyInfo *property) { delete property; }
 
 GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
@@ -35,9 +34,9 @@ void GstPropertiesModule::set_controller(const std::shared_ptr<Controller> &cont
 	controller->on_selected_object_changed.connect(sigc::mem_fun(*this, &GstPropertiesModule::selected_object_changed));
 }
 
-void GstPropertiesModule::new_property(const Property &property)
+void GstPropertiesModule::new_property(const GstDebugger::PropertyInfo &property)
 {
-	gui_push("property", new Property (property));
+	gui_push("property", new GstDebugger::PropertyInfo(property));
 	gui_emit("property");
 }
 
@@ -66,15 +65,15 @@ void GstPropertiesModule::showPropertiesButton_clicked_cb()
 
 void GstPropertiesModule::new_property_()
 {
-	auto property = gui_pop<Property*>("property");
+	auto property = gui_pop<GstDebugger::PropertyInfo*>("property");
 
-	auto element = std::dynamic_pointer_cast<ElementModel>(ElementPathProcessor(property->element_path()).get_last_obj());
+	auto element = std::dynamic_pointer_cast<ElementModel>(ElementPathProcessor(property->object()).get_last_obj());
 	if (!element)
 	{
 		return;
 	}
 
-	std::shared_ptr<GValueBase> value_base = element->get_property(property->property_name());
+	/* todo std::shared_ptr<GValueBase> value_base = element->get_property(property->name());
 	std::shared_ptr<GValueEnum> value_enum = std::dynamic_pointer_cast<GValueEnum>(value_base);
 
 	auto& container = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container());
@@ -86,11 +85,11 @@ void GstPropertiesModule::new_property_()
 	if (!update_property(value_base, property))
 	{
 		append_property(value_base, property);
-	}
+	}*/
 	delete property;
 }
 
-bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& value_base, Property *property)
+/*bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& value_base, GstDebugger::PropertyInfo *property)
 {
 	for (auto internal_box : properties_box->get_children())
 	{
@@ -107,7 +106,7 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 		{
 			if (label == nullptr && (label = dynamic_cast<Gtk::Label*>(cd)) != nullptr)
 			{
-				if (label->get_text() != property->property_name())
+				if (label->get_text() != property->name())
 				{
 					label = nullptr;
 					break;
@@ -133,15 +132,15 @@ bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& val
 	}
 
 	return false;
-}
-
-void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& value_base, Property *property)
+}*/
+/*
+void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& value_base, GstDebugger::PropertyInfo *property)
 {
 	Gtk::Box *hbox = new Gtk::Box (Gtk::ORIENTATION_HORIZONTAL, 0);
 	hbox->show();
-	auto prop_name = property->property_name();
+	auto prop_name = property->name();
 	Gtk::Label *lbl = Gtk::manage(new Gtk::Label(prop_name));
-	lbl->set_tooltip_text(property->description());
+	lbl->set_tooltip_text(property->blurb());
 	lbl->show();
 	Gtk::Button *btn = Gtk::manage(new Gtk::Button("Refresh"));
 	btn->signal_clicked().connect([this, prop_name] {request_selected_element_property(prop_name);});
@@ -154,7 +153,7 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	hbox->pack_start(*btn, false, false);
 	properties_box->pack_start(*hbox);
 }
-
+*/
 void GstPropertiesModule::clear_widgets()
 {
 	for (auto c : properties_box->get_children())

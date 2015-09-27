@@ -25,10 +25,10 @@
 
 GSList *src_pads;
 
-static TopologyTemplate
+static GstDebugger__PadTemplate
 get_topology_template_object (GstPadTemplate *template)
 {
-  TopologyTemplate tpl = TOPOLOGY_TEMPLATE__INIT;
+  GstDebugger__PadTemplate tpl = GST_DEBUGGER__PAD_TEMPLATE__INIT;
 
   tpl.caps = gst_caps_to_string (GST_PAD_TEMPLATE_CAPS (template));
   tpl.direction = GST_PAD_TEMPLATE_DIRECTION (template);
@@ -39,17 +39,17 @@ get_topology_template_object (GstPadTemplate *template)
 }
 
 static void
-send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * server, GSocketConnection * client)
+send_object (GstObject *object, GstDebugger__Action action, GstDebugserverTcp * server, TcpClient * client)
 {
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  Topology topology = TOPOLOGY__INIT;
+  GstDebugger__GStreamerData info = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__TopologyInfo topology = GST_DEBUGGER__TOPOLOGY_INFO__INIT;
   gint size;
   gchar buffer[1024];
-  TopologyElement element_tp = TOPOLOGY_ELEMENT__INIT;
-  TopologyPad pad_tp = TOPOLOGY_PAD__INIT;
-  TopologyTemplate template = TOPOLOGY_TEMPLATE__INIT;
+  GstDebugger__TopologyElement element_tp = GST_DEBUGGER__TOPOLOGY_ELEMENT__INIT;
+  GstDebugger__TopologyPad pad_tp = GST_DEBUGGER__TOPOLOGY_PAD__INIT;
+  GstDebugger__PadTemplate template = GST_DEBUGGER__PAD_TEMPLATE__INIT;
 
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__TOPOLOGY;
+  info.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_TOPOLOGY_INFO;
   topology.action = action;
 
   if (GST_IS_ELEMENT (object)) {
@@ -58,7 +58,7 @@ send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * ser
     element_tp.is_bin = GST_IS_BIN (object);
     element_tp.factory_name = gst_plugin_feature_get_name (gst_element_get_factory (GST_ELEMENT_CAST (object)));
     topology.element = &element_tp;
-    topology.type = TOPOLOGY__OBJECT_TYPE__ELEMENT;
+    topology.topology_type_case = GST_DEBUGGER__TOPOLOGY_INFO__TOPOLOGY_TYPE_ELEMENT;
   } else if (GST_IS_PAD (object)) {
     GstPad *pad = GST_PAD (object);
     pad_tp.path = gst_utils_get_object_path (object);
@@ -70,42 +70,39 @@ send_object (GstObject *object, Topology__Action action, GstDebugserverTcp * ser
       pad_tp.template_ = &template;
     }
     topology.pad = &pad_tp;
-    topology.type = TOPOLOGY__OBJECT_TYPE__PAD;
+    topology.topology_type_case = GST_DEBUGGER__TOPOLOGY_INFO__TOPOLOGY_TYPE_PAD;
   } else {
     assert (FALSE);
   }
-  info.topology = &topology;
-  size = gstreamer_info__get_packed_size (&info);
-  assert(size <= 1024);
-  gstreamer_info__pack (&info, (guint8*)buffer);
+  info.topology_info = &topology;
 
+  gst_debugserver_tcp_send_packet (server, client, &info);
   g_free (template.caps);
 
-  gst_debugserver_tcp_send_packet (server, client, buffer, size);
 }
 
 static void
-send_link (GstPad *src_pad, GstPad *sink_pad, Topology__Action action, GstDebugserverTcp *server, GSocketConnection * client)
+send_link (GstPad *src_pad, GstPad *sink_pad, GstDebugger__Action action, GstDebugserverTcp *server, TcpClient * client)
 {
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  Topology topology = TOPOLOGY__INIT;
+  GstDebugger__GStreamerData info = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__TopologyInfo topology = GST_DEBUGGER__TOPOLOGY_INFO__INIT;
   gint size;
   gchar buffer[1024];
-  TopologyLink link_tp = TOPOLOGY_LINK__INIT;
+  GstDebugger__TopologyLink link_tp = GST_DEBUGGER__TOPOLOGY_LINK__INIT;
 
   if (!gst_utils_check_pad_has_element_parent (src_pad) || !gst_utils_check_pad_has_element_parent (sink_pad)) {
     return;
   }
 
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__TOPOLOGY;
+  info.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_TOPOLOGY_INFO;
   topology.action = action;
-  topology.type = TOPOLOGY__OBJECT_TYPE__LINK;
+  topology.topology_type_case = GST_DEBUGGER__TOPOLOGY_INFO__TOPOLOGY_TYPE_LINK;
 
   if (GST_IS_PROXY_PAD (src_pad) && !GST_IS_GHOST_PAD (src_pad)) {
     return;
   }
 
-  link_tp.src_pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (src_pad));
+  link_tp.src_pad = gst_utils_get_object_path (GST_OBJECT_CAST (src_pad));
   if (GST_IS_PROXY_PAD (sink_pad)) {
     if (GST_IS_GHOST_PAD (sink_pad)) {
       GstPad *internal = gst_pad_get_peer (GST_PAD_CAST (gst_proxy_pad_get_internal (GST_PROXY_PAD (sink_pad))));
@@ -117,18 +114,16 @@ send_link (GstPad *src_pad, GstPad *sink_pad, Topology__Action action, GstDebugs
     }
   }
 
-  link_tp.sink_pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (sink_pad));
+  link_tp.sink_pad = gst_utils_get_object_path (GST_OBJECT_CAST (sink_pad));
   topology.link = &link_tp;
-  topology.type = TOPOLOGY__OBJECT_TYPE__LINK;
-  info.topology = &topology;
-  size = gstreamer_info__get_packed_size (&info);
-  assert(size <= 1024);
-  gstreamer_info__pack (&info, (guint8*)buffer);
-  gst_debugserver_tcp_send_packet (server, client, buffer, size);
+  topology.topology_type_case = GST_DEBUGGER__TOPOLOGY_INFO__TOPOLOGY_TYPE_LINK;
+  info.topology_info = &topology;
+
+  gst_debugserver_tcp_send_packet (server, client, &info);
 }
 
 static void
-send_element_pads (GstElement * element, GstDebugserverTcp *server, GSocketConnection * client)
+send_element_pads (GstElement * element, GstDebugserverTcp *server, TcpClient * client)
 {
   gboolean done;
   GstPad *pad;
@@ -143,7 +138,7 @@ send_element_pads (GstElement * element, GstDebugserverTcp *server, GSocketConne
         if (gst_pad_get_direction (pad) == GST_PAD_SRC && gst_pad_get_peer (pad)) {
           src_pads = g_slist_append (src_pads, pad);
         }
-        send_object (GST_OBJECT (pad), TOPOLOGY__ACTION__ADD, server, client);
+        send_object (GST_OBJECT (pad), GST_DEBUGGER__ACTION__ADD, server, client);
         g_value_reset (&item);
         break;
       case GST_ITERATOR_RESYNC:
@@ -160,13 +155,13 @@ send_element_pads (GstElement * element, GstDebugserverTcp *server, GSocketConne
 }
 
 static void
-gst_debugserver_topology_send_element (GstElement * element, GstDebugserverTcp *server, GSocketConnection * client)
+gst_debugserver_topology_send_element (GstElement * element, GstDebugserverTcp *server, TcpClient * client)
 {
   GstIterator *element_it;
   gboolean done;
 
   if (GST_ELEMENT_PARENT (element) != NULL) {
-    send_object (GST_OBJECT (element), TOPOLOGY__ACTION__ADD, server, client);
+    send_object (GST_OBJECT (element), GST_DEBUGGER__ACTION__ADD, server, client);
   }
 
   send_element_pads (element, server, client);
@@ -198,36 +193,36 @@ gst_debugserver_topology_send_element (GstElement * element, GstDebugserverTcp *
   gst_iterator_free (element_it);
 }
 
-void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverTcp * server, GSocketConnection * client)
+void gst_debugserver_topology_send_entire_topology (GstBin *bin, GstDebugserverTcp * server, TcpClient * client)
 {
   src_pads = NULL;
   gst_debugserver_topology_send_element (GST_ELEMENT (bin), server, client);
   GSList *tmp_list = src_pads;
   while (tmp_list != NULL) {
     GstPad *pad = (GstPad*)tmp_list->data;
-    send_link (pad, gst_pad_get_peer (pad), TOPOLOGY__ACTION__ADD, server, client);
+    send_link (pad, gst_pad_get_peer (pad), GST_DEBUGGER__ACTION__ADD, server, client);
     tmp_list = tmp_list->next;
   }
 
   g_slist_free (src_pads);
 }
 
-void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server, GSocketConnection * client)
+void gst_debugserver_topology_send_pad_link (GstPad * src, GstPad * sink, gboolean link, GstDebugserverTcp * server, TcpClient * client)
 {
-  send_link (src, sink, link ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server, client);
+  send_link (src, sink, link ? GST_DEBUGGER__ACTION__ADD : GST_DEBUGGER__ACTION__REMOVE, server, client);
 }
 
-void gst_debugserver_topology_send_element_in_bin (GstBin * bin, GstElement * element, gboolean add, GstDebugserverTcp * server, GSocketConnection * client)
+void gst_debugserver_topology_send_element_in_bin (GstBin * bin, GstElement * element, gboolean add, GstDebugserverTcp * server, TcpClient * client)
 {
-  send_object (GST_OBJECT_CAST (element), add ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server, client);
+  send_object (GST_OBJECT_CAST (element), add ? GST_DEBUGGER__ACTION__ADD : GST_DEBUGGER__ACTION__REMOVE, server, client);
 }
 
-void gst_debugserver_topology_send_pad_in_element (GstElement * element, GstPad * pad, gboolean add, GstDebugserverTcp * server, GSocketConnection * client)
+void gst_debugserver_topology_send_pad_in_element (GstElement * element, GstPad * pad, gboolean add, GstDebugserverTcp * server, TcpClient * client)
 {
   if (GST_OBJECT_PARENT (element) == NULL) {
     return;
   }
 
-  send_object (GST_OBJECT_CAST (pad), add ? TOPOLOGY__ACTION__ADD : TOPOLOGY__ACTION__REMOVE, server, client);
+  send_object (GST_OBJECT_CAST (pad), add ? GST_DEBUGGER__ACTION__ADD : GST_DEBUGGER__ACTION__REMOVE, server, client);
 }
 

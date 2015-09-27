@@ -7,10 +7,12 @@
 
 #include "main_module.h"
 
-#include "pad_data_modules.h"
+//#include "pad_data_modules.h"
 #include "log_module.h"
-#include "bus_messages_module.h"
-#include "pad_path_types_control_module.h"
+#include "message_module.h"
+#include "event_module.h"
+#include "query_module.h"
+//#include "pad_path_types_control_module.h"
 
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
@@ -40,16 +42,16 @@ void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 	submodules["logMessages"].control_module = std::make_shared<LogControlModule>();
 
 	submodules["queries"].display_module = std::make_shared<QueryModule>();
-	submodules["queries"].control_module = std::make_shared<PadPathTypesControlModule>("GstQueryType", PadWatch_WatchType_QUERY);
+	submodules["queries"].control_module = std::make_shared<QueryControlModule>();
 
-	submodules["busMessages"].display_module = std::make_shared<BusMessagesModule>();
-	submodules["busMessages"].control_module = std::make_shared<TypesControlModule>("GstMessageType", (PadWatch_WatchType)-1);
+	submodules["busMessages"].display_module = std::make_shared<MessageModule>();
+	submodules["busMessages"].control_module = std::make_shared<MessageControlModule>();
 
-	submodules["buffers"].display_module = std::make_shared<BufferModule>();
+	/*submodules["buffers"].display_module = std::make_shared<BufferModule>();
 	submodules["buffers"].control_module = std::make_shared<PadPathControlModule>(PadWatch_WatchType_BUFFER);
-
+*/
 	submodules["events"].display_module = std::make_shared<EventModule>();
-	submodules["events"].control_module = std::make_shared<PadPathTypesControlModule>("GstEventType", PadWatch_WatchType_EVENT);
+	submodules["events"].control_module = std::make_shared<EventControlModule>();
 
 	for (auto m : submodules)
 	{
@@ -69,7 +71,7 @@ void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
 
-	controller->on_selected_object_changed.connect([this]{gui_emit("selected-object");});
+	//controller->on_selected_object_changed.connect([this]{gui_emit("selected-object");});
 
 	for (auto m : submodules)
 	{

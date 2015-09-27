@@ -25,11 +25,13 @@ void FactoriesDialog::set_controller(const std::shared_ptr<Controller> &controll
 {
 	IBaseView::set_controller(controller);
 	controller->on_factory_list_changed.connect(sigc::mem_fun(*this, &FactoriesDialog::reload_list));
-	reload_list("");
+	reload_list("", true);
 }
 
-void FactoriesDialog::reload_list(const Glib::ustring &factory_name)
+void FactoriesDialog::reload_list(const Glib::ustring &factory_name, bool add)
 {
+	// todo if (add)
+
 	tree_model->clear();
 
 #define APPEND_SUB_ROW(name, value, parent) \
@@ -40,7 +42,7 @@ void FactoriesDialog::reload_list(const Glib::ustring &factory_name)
 		return childrow; \
 	} ()
 
-	for (auto factory : controller->get_factory_container())
+	for (auto factory : controller->get_factories())
 	{
 		auto row = *(tree_model->append());
 		row[factories_columns.m_col_name] = factory.get_name();

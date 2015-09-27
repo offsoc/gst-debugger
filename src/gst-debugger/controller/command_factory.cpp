@@ -9,88 +9,125 @@
 #include "common/common.h"
 #include "common/serializer.h"
 
-void CommandFactory::send_pad_watch_command(bool enable, PadWatch_WatchType watch_type, const std::string &pad_path, int qe_type)
+void CommandFactory::send_property_request_command(const std::string &element_path, const std::string &property_name)
 {
-	Command cmd;
-	PadWatch *pad_watch = new PadWatch();
-	pad_watch->set_toggle(enable ? ENABLE : DISABLE);
-	pad_watch->set_watch_type(watch_type);
-	pad_watch->set_pad_path(pad_path);
-	pad_watch->set_qe_type(qe_type);
-	cmd.set_command_type(Command_CommandType_PAD_WATCH);
-	cmd.set_allocated_pad_watch(pad_watch);
+	GstDebugger::Command cmd;
+	GstDebugger::PropertyRequest *request = new GstDebugger::PropertyRequest();
+	request->set_object(element_path);
+	request->set_name(property_name);
+	cmd.set_allocated_property(request);
 
 	client->send_command(cmd);
 }
 
-void CommandFactory::send_property_request_command(const std::string &element_path, const std::string &property_name)
+
+void CommandFactory::send_request_entire_topology_command()
 {
-	Command cmd;
-	Property *property = new Property();
-	property->set_element_path(element_path);
-	property->set_property_name(property_name);
-	cmd.set_command_type(Command_CommandType_PROPERTY);
-	cmd.set_allocated_property(property);
+	GstDebugger::Command cmd;
+	cmd.set_entire_topology(true);
+
+	client->send_command(cmd);
+}
+
+GstDebugger::PadWatchRequest* CommandFactory::create_pad_watch_request(bool enable, const std::string &pad_path)
+{
+	GstDebugger::PadWatchRequest *request = new GstDebugger::PadWatchRequest();
+	request->set_pad(pad_path);
+	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
+	return request;
+}
+
+void CommandFactory::send_query_request_command(bool enable, const std::string &pad_path, int type)
+{
+	auto request = create_pad_watch_request(enable, pad_path);
+	GstDebugger::QueryWatchRequest *ev_request = new GstDebugger::QueryWatchRequest();
+	ev_request->set_type(type);
+	request->set_allocated_query(ev_request);
+	GstDebugger::Command cmd;
+	cmd.set_allocated_pad_watch(request);
+
+	client->send_command(cmd);
+}
+
+void CommandFactory::send_event_request_command(bool enable, const std::string &pad_path, int type)
+{
+	auto request = create_pad_watch_request(enable, pad_path);
+	GstDebugger::EventWatchRequest *ev_request = new GstDebugger::EventWatchRequest();
+	ev_request->set_type(type);
+	request->set_allocated_event(ev_request);
+	GstDebugger::Command cmd;
+	cmd.set_allocated_pad_watch(request);
+
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_message_request_command(int message_type, bool enable)
 {
-	MessageWatch *msg_watch = new MessageWatch();
-	msg_watch->set_message_type(message_type);
-	msg_watch->set_toggle(enable ? ENABLE : DISABLE);
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_MESSAGE_WATCH);
-	cmd.set_allocated_message_watch(msg_watch);
+	GstDebugger::MessageRequest *request = new GstDebugger::MessageRequest();
+	request->set_type(message_type);
+	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
+	GstDebugger::Command cmd;
+	cmd.set_allocated_message(request);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_set_threshold_command(const std::string &threshold_list, bool overwrite)
 {
-	Command cmd;
-	LogThreshold *log_threshold = new LogThreshold();
-	log_threshold->set_list(threshold_list);
-	log_threshold->set_overwrite(overwrite);
-	cmd.set_command_type(Command_CommandType_LOG_THRESHOLD);
-	cmd.set_allocated_log_threshold(log_threshold);
+	GstDebugger::Command cmd;
+	// todo overwrite
+	cmd.set_log_threshold(threshold_list);
+	client->send_command(cmd);
+}
+
+void CommandFactory::send_set_log_watch_command(bool enable, const std::string &category, int log_level)
+{
+	GstDebugger::Command cmd;
+	GstDebugger::LogRequest *request = new GstDebugger::LogRequest();
+	request->set_level(log_level);
+	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
+	request->set_category(category);
+	cmd.set_allocated_log(request);
 
 	client->send_command(cmd);
 }
 
-void CommandFactory::send_set_log_watch_command(bool enable, int log_level)
+void CommandFactory::send_data_type_request_command(const std::string &type_name, GstDebugger::TypeDescriptionRequest_Type type)
 {
-	Command cmd;
-	LogWatch *log_watch = new LogWatch();
-	log_watch->set_toggle(enable ? ENABLE : DISABLE);
-	log_watch->set_log_level(log_level);
-	cmd.set_command_type(Command_CommandType_LOG_WATCH);
-	cmd.set_allocated_log_watch(log_watch);
+	GstDebugger::Command cmd;
+	GstDebugger::TypeDescriptionRequest *request = new GstDebugger::TypeDescriptionRequest();
+	request->set_type(type);
+	request->set_name(type_name);
+	cmd.set_allocated_type_description(request);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_request_debug_categories_command()
 {
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_DEBUG_CATEGORIES);
+	GstDebugger::Command cmd;
+	cmd.set_debug_categories_list(true);
 
 	client->send_command(cmd);
 }
 
+void CommandFactory::send_request_factory_command(const std::string &factory_name)
+{
+	GstDebugger::Command cmd;
+	auto rq = new GstDebugger::TypeDescriptionRequest();
+	rq->set_type(GstDebugger::TypeDescriptionRequest_Type_FACTORY);
+	rq->set_name(factory_name);
+	cmd.set_allocated_type_description(rq);
+
+	client->send_command(cmd);
+}
+
+
+/*
 void CommandFactory::send_request_topology_command()
 {
 	Command cmd;
 	cmd.set_command_type(Command_CommandType_TOPOLOGY);
-
-	client->send_command(cmd);
-}
-
-void CommandFactory::send_enum_type_request_command(const std::string &enum_name)
-{
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_ENUM_TYPE);
-	cmd.set_enum_name(enum_name);
 
 	client->send_command(cmd);
 }
@@ -113,14 +150,6 @@ void CommandFactory::send_property_command(const std::string &path, const std::s
 	client->send_command(cmd);
 }
 
-void CommandFactory::send_request_factory(const std::string &factory_name)
-{
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_FACTORY);
-	cmd.set_factory_name(factory_name);
-	client->send_command(cmd);
-}
-
 void CommandFactory::send_request_pad_dynamic_info(const std::string &pad_path)
 {
 	Command cmd;
@@ -128,3 +157,4 @@ void CommandFactory::send_request_pad_dynamic_info(const std::string &pad_path)
 	cmd.set_pad_path(pad_path);
 	client->send_command(cmd);
 }
+*/

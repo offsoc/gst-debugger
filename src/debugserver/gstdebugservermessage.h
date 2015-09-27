@@ -20,7 +20,8 @@
 #ifndef __GST_DEBUGSERVER_MESSAGE_H__
 #define __GST_DEBUGSERVER_MESSAGE_H__
 
-#include "common/gstdebugger.pb-c.h"
+#include "gstdebugservertcp.h"
+#include "gstdebugserverwatcher.h"
 
 #include <gst/gst.h>
 #include <glib.h>
@@ -29,35 +30,34 @@ G_BEGIN_DECLS
 
 typedef struct _GstDebugserverMessage GstDebugserverMessage;
 
-struct _GstDebugserverMessage {
+typedef struct {
   GHashTable *clients;
+
+  gboolean (*accept_client) (gpointer);
+  void (*serialize_data) (GstDebugger__GStreamerData*);
+  void (*free_data) (GstDebugger__GStreamerData*);
+  void (*compare) (gpointer, gpointer);
+} Watcher;
+
+
+struct _GstDebugserverMessage {
+  GstDebugserverWatcher watcher;
 };
 
 GstDebugserverMessage * gst_debugserver_message_new (void);
+
 void gst_debugserver_message_free (GstDebugserverMessage * msg);
 
-gboolean gst_debugserver_message_add_watch (GstDebugserverMessage * msg,
-  GstMessageType msg_type, gpointer client_info);
-
-gboolean gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
-  GstMessageType msg_type, gpointer client_info);
+void gst_debugserver_message_clean (GstDebugserverMessage * msg);
 
 gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
-  gboolean enable, GstMessageType msg_type, gpointer client_info);
+  TcpClient * client, GstDebugger__MessageRequest * request);
 
 void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
-  gpointer client_info);
+  TcpClient * client);
 
-GSList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
-  GstMessageType msg_type);
-
-gint gst_debugserver_message_prepare_buffer (GstMessage * gst_msg,
-  gchar * buffer, gint max_size);
-
-gint gst_debugserver_message_prepare_confirmation_buffer (MessageWatch *msg_watch,
-  gchar * buffer, gint max_size);
-
-void gst_debugserver_message_clean (GstDebugserverMessage * msg);
+void gst_debugserver_message_send_message (GstDebugserverMessage * msg,
+  GstDebugserverTcp * tcp_server, GstMessage * gst_msg);
 
 G_END_DECLS
 

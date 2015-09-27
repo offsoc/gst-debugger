@@ -34,7 +34,7 @@ void EnumsDialog::reload_list(const Glib::ustring& enum_name, bool add)
 {
 	tree_model->clear();
 
-	for (auto enum_type : controller->get_enum_container())
+	for (auto enum_type : controller->get_enums())
 	{
 		auto row = *(tree_model->append());
 		row[enums_columns.m_col_name] = enum_type.get_name();

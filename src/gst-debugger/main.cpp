@@ -12,8 +12,6 @@
 #include <gtkmm.h>
 #include <gstreamermm.h>
 
-#include "filter-parser/parser.h"
-
 int main(int argc, char** argv)
 {
 	Gst::init(argc, argv);
@@ -22,7 +20,7 @@ int main(int argc, char** argv)
 	MainWindow* wnd_handler;
 	builder->get_widget_derived("mainWindow", wnd_handler);
 
-	 std::shared_ptr<Controller> controller(new Controller(wnd_handler));
+	std::shared_ptr<Controller> controller(new Controller(wnd_handler));
 
 	controller->run(argc, argv);
 

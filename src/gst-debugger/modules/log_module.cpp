@@ -9,64 +9,33 @@
 
 #include "controller/controller.h"
 
-static void free_log(GstreamerLog *log) { delete log; }
-
 LogModule::LogModule()
+: BaseMainModule(GstDebugger::GStreamerData::kLogInfo, "logs")
 {
-	model = Gtk::ListStore::create(columns);
-
-	create_dispatcher("new-log", sigc::mem_fun(*this, &LogModule::log_received_), (GDestroyNotify)free_log);
 }
 
-void LogModule::configure_main_list_view(Gtk::TreeView *view)
+void LogModule::load_details(gpointer data)
 {
-	BaseMainModule::configure_main_list_view(view);
-	view->append_column("Logs", columns.header);
-}
-
-void LogModule::load_details(Gtk::TreeView *view, const Gtk::TreeModel::Path &path)
-{
-	BaseMainModule::load_details(view, path);
-
-	Gtk::TreeModel::iterator iter = filter->get_iter(path);
-	if (!iter)
-	{
-		return;
-	}
-
-	Gtk::TreeModel::Row row = *iter;
-	auto log_info = (GstreamerLog*)row[columns.log];
+	auto log_info = (GstDebugger::LogInfo*)data;
 
 	append_details_row("Level", std::to_string(log_info->level()));
-	append_details_row("Category name", log_info->category_name());
+	append_details_row("Category name", log_info->category());
 	append_details_row("File", log_info->file());
 	append_details_row("Function", log_info->function());
 	append_details_row("Line", std::to_string(log_info->line()));
-	append_details_row("Object path", log_info->object_path());
+	append_details_row("Object path", log_info->object());
 	append_details_row("Message", log_info->message());
 }
 
-void LogModule::set_controller(const std::shared_ptr<Controller> &controller)
+void LogModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data)
 {
-	BaseMainModule::set_controller(controller);
-
-	controller->on_log_received.connect([this] (const GstreamerLog &log) {
-		gui_push("new-log", new GstreamerLog (log));
-		gui_emit("new-log");
-	});
-}
-
-void LogModule::log_received_()
-{
-	auto log = gui_pop<GstreamerLog*>("new-log");
-	Gtk::TreeModel::Row row = *(model->append());
-	row[columns.header] = log->function();
-	row[columns.log] = log;
+	row[columns.header] = data->log_info().function();
+	row[columns.data] = new GstDebugger::LogInfo(data->log_info());
 }
 
 bool LogModule::filter_function(const Gtk::TreeModel::const_iterator& it)
 {
-	if (!filter_expression)
+/*	if (!filter_expression)
 		return true;
 
 	auto log = it->get_value(columns.log);
@@ -102,22 +71,24 @@ bool LogModule::filter_function(const Gtk::TreeModel::const_iterator& it)
 	MAKE_FIELD_FILTER("function", function, TokenString);
 	MAKE_FIELD_FILTER("object_path", object_path, TokenString);
 	MAKE_FIELD_FILTER("message", message, TokenString);
-
+*/
 	return true;
 }
 
 LogControlModule::LogControlModule()
+: ControlModule()
 {
-	main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	auto lbl = Gtk::manage(new Gtk::Label("Debug categories"));
+	main_box->pack_start(*lbl, false, true);
+	main_box->reorder_child(*lbl, 0);
 
-	set_watch_button = Gtk::manage(new Gtk::CheckButton("Watch log messages"));
-	set_watch_button->signal_toggled().connect([this] {
-		controller->send_set_log_watch_command(set_watch_button->get_active(), 10); // todo log level
-	});
-	main_box->pack_start(*set_watch_button, false, true);
+	debug_categories_combobox = Gtk::manage(new Gtk::ComboBoxText());
+	main_box->pack_start(*debug_categories_combobox, false, true);
+	main_box->reorder_child(*debug_categories_combobox, 1);
 
-	main_box->pack_start(*Gtk::manage(new Gtk::Label("Debug categories")), false, true);
-	main_box->pack_start(*Gtk::manage(new Gtk::ComboBox()), false, true);
+	log_level_entry = Gtk::manage(new Gtk::Entry());
+	main_box->pack_start(*log_level_entry, false, true);
+	main_box->reorder_child(*log_level_entry, 0);
 
 	main_box->pack_start(*Gtk::manage(new Gtk::Label("Log threshold:")), false, true);
 
@@ -133,9 +104,54 @@ LogControlModule::LogControlModule()
 			overwrite_threshold_check_button->get_active());
 	});
 	main_box->pack_start(*set_threshold_button, false, true);
+
+	hooks_tree_view->append_column("Level", hooks_model_columns.str1);
+	hooks_tree_view->append_column("Category", hooks_model_columns.str2);
 }
 
-Gtk::Widget* LogControlModule::get_widget()
+void LogControlModule::set_controller(const std::shared_ptr<Controller> &controller)
 {
-	return main_box;
+	ControlModule::set_controller(controller);
+
+	controller->on_debug_categories_changed.connect([this] {
+		debug_categories_combobox->remove_all();
+		for (auto c : this->controller->get_debug_categories())
+		{
+			debug_categories_combobox->append(c);
+		}
+		if (!this->controller->get_debug_categories().empty())
+			debug_categories_combobox->set_active(0);
+	});
+}
+
+void LogControlModule::add_watch()
+{
+	controller->send_set_log_watch_command(true, debug_categories_combobox->get_active_text(),
+			atoi(log_level_entry->get_text().c_str()));
+}
+
+void LogControlModule::remove_watch(const Gtk::TreeModel::Row& row)
+{
+	Glib::ustring category = row[hooks_model_columns.str2];
+	int level = row[hooks_model_columns.int1];
+	controller->send_set_log_watch_command(false, category, level);
+}
+
+void LogControlModule::confirmation_received(GstDebugger::Command* cmd)
+{
+	if (!cmd->has_log())
+		return;
+
+	auto confirmation = cmd->log();
+	if (confirmation.action() == GstDebugger::ADD)
+	{
+		Gtk::TreeModel::Row row = *(hooks_model->append());
+		row[hooks_model_columns.str1] = gst_debug_level_get_name (static_cast<GstDebugLevel>(confirmation.level()));
+		row[hooks_model_columns.int1] = confirmation.level();
+		row[hooks_model_columns.str2] = confirmation.category();
+	}
+	else
+	{
+		remove_hook(confirmation);
+	}
 }

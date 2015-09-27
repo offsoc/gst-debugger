@@ -17,34 +17,36 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GST_DEBUGSERVER_EVENT_H__
-#define __GST_DEBUGSERVER_EVENT_H__
+#ifndef __GST_DEBUGSERVER_WATCHER_H__
+#define __GST_DEBUGSERVER_WATCHER_H__
 
-#include "gstdebugserverwatcher.h"
+#include "gstdebugservertcp.h"
 
-#include <gst/gst.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
-typedef struct _GstDebugserverQE GstDebugserverQE;
+typedef gboolean (*OkFunction)(GstDebugger__GStreamerData*, gpointer);
 
-struct _GstDebugserverQE {
-  GstDebugserverWatcher watcher;
-};
+typedef struct {
+  GHashTable *clients;
+  GMutex mutex;
+  OkFunction ok_function;
+  GCompareFunc cmp_function;
+} GstDebugserverWatcher;
 
-GstDebugserverQE * gst_debugserver_qe_new (void);
+void gst_debugserver_watcher_init (GstDebugserverWatcher * watcher, OkFunction ok_function, GDestroyNotify hash_destroy, GCompareFunc cmp_func);
 
-void gst_debugserver_qe_free (GstDebugserverQE * qe);
+void gst_debugserver_watcher_deinit (GstDebugserverWatcher * watcher);
 
-gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,
-  gint qe_type, GstPad * pad, gchar * pad_path, TcpClient * client);
+void gst_debugserver_watcher_clean (GstDebugserverWatcher * watcher);
 
-void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj);
+gboolean gst_debugserver_watcher_add_watch (GstDebugserverWatcher * watcher,
+  gpointer data, TcpClient * client);
 
-void gst_debugserver_qe_clean (GstDebugserverQE * qe);
-
-void gst_debugserver_qe_remove_client (GstDebugserverQE * evt, TcpClient * client);
+gboolean gst_debugserver_watcher_remove_watch (GstDebugserverWatcher * watcher,
+  gpointer data, TcpClient * client);
 
 G_END_DECLS
 
-#endif /* __GST_DEBUGSERVER_EVENT_H__ */
+#endif

@@ -15,110 +15,106 @@
 
 #include <gtkmm/widget.h>
 
-class ControlModule : public IBaseView
-{
-public:
-	virtual ~ControlModule() {};
-
-	virtual Gtk::Widget* get_widget() = 0;
-};
-
 class HooksModelColumns : public Gtk::TreeModel::ColumnRecord
 {
 public:
 	HooksModelColumns() {
-		add(pad_path); add(qe_type_name); add(qe_type);
+		add(str1); add(str2); add(int1); add(int2);
 	}
 
-	Gtk::TreeModelColumn<Glib::ustring> pad_path;
-	Gtk::TreeModelColumn<Glib::ustring> qe_type_name;
-	Gtk::TreeModelColumn<gint> qe_type;
+	Gtk::TreeModelColumn<Glib::ustring> str1;
+	Gtk::TreeModelColumn<Glib::ustring> str2;
+	Gtk::TreeModelColumn<gint> int1;
+	Gtk::TreeModelColumn<gint> int2;
 };
 
+inline void free_confirmation(GstDebugger::Command *cmd) { delete cmd; }
 
-class HooksControlModule : public ControlModule
+class ControlModule : public IBaseView
 {
-	Gtk::ScrolledWindow *wnd;
-
 protected:
-	PadWatch_WatchType watch_type;
-
 	Glib::RefPtr<Gtk::ListStore> hooks_model;
 	HooksModelColumns hooks_model_columns;
 
+	Gtk::Box *main_box;
+	Gtk::Button *add_watch_button;
+	Gtk::Button *remove_watch_button;
 	Gtk::TreeView *hooks_tree_view;
-	Gtk::Box *main_box = nullptr;
-	Gtk::Button *remove_hook_button;
-	Gtk::Button *add_hook_button;
+	Gtk::ScrolledWindow *wnd;
 
-	void append_hook_widgets()
+	void confirmation_()
 	{
-		main_box->pack_start(*add_hook_button, false, true);
-		main_box->pack_start(*Gtk::manage(new Gtk::Label("Existing hooks:")), false, true);
-
-		main_box->pack_start(*wnd, true, true);
-		main_box->pack_start(*remove_hook_button, false, true);
-
-		update_add_hook();
+		auto confirmation = gui_pop<GstDebugger::Command*>("confirmation");
+		confirmation_received(confirmation);
+		delete confirmation;
 	}
 
-	virtual bool add_hook_unlocked() { return true; }
-
-	void update_add_hook()
+	template<typename T>
+	void remove_hook(const T& confirmation)
 	{
-		add_hook_button->set_sensitive(add_hook_unlocked());
+		for (auto iter = hooks_model->children().begin();
+				iter != hooks_model->children().end(); ++iter)
+		{
+			if (hook_is_the_same(*iter, &confirmation))
+			{
+				hooks_model->erase(iter);
+				break;
+			}
+		}
 	}
 
-	virtual int get_type() const { return -1; }
-	virtual std::string get_pad_path() const { return std::string(); }
+	virtual bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) = 0;
+	virtual void add_watch() {}
+	virtual void remove_watch(const Gtk::TreeModel::Row& row) {}
+	virtual void confirmation_received(GstDebugger::Command* cmd) {}
 
 public:
-	HooksControlModule(PadWatch_WatchType w_type)
-	: watch_type(w_type)
+	ControlModule()
 	{
-		add_hook_button = Gtk::manage(new Gtk::Button("Add hook"));
-		add_hook_button->signal_clicked().connect([this]{
-			if ((int)watch_type == -1)  // todo it has to be fixed on design protocol level
-				controller->send_message_request_command(get_type(), true);
-			else
-				controller->send_pad_watch_command(true, watch_type, get_pad_path(), get_type());
-		});
+		main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-		wnd = Gtk::manage(new Gtk::ScrolledWindow);
+		add_watch_button = Gtk::manage(new Gtk::Button("Add watch"));
+		add_watch_button->signal_clicked().connect([this] {
+			add_watch();
+		});
+		main_box->pack_start(*add_watch_button, false, true);
 
 		hooks_tree_view = Gtk::manage(new Gtk::TreeView());
+		wnd = Gtk::manage(new Gtk::ScrolledWindow);
 		wnd->add(*hooks_tree_view);
+		main_box->pack_start(*wnd, true, true);
 		hooks_model = Gtk::ListStore::create(hooks_model_columns);
 		hooks_tree_view->set_model(hooks_model);
 
-		remove_hook_button = Gtk::manage(new Gtk::Button("Remove selected hook"));
-		remove_hook_button->signal_clicked().connect([this]{
+		remove_watch_button = Gtk::manage(new Gtk::Button("Remove watch"));
+		main_box->pack_start(*remove_watch_button, false, true);
+		remove_watch_button->signal_clicked().connect([this]{
 			auto selection = hooks_tree_view->get_selection();
 			if (!selection) return;
 			auto iter = selection->get_selected();
 			if (!iter) return;
-			Gtk::TreeModel::Row row = *iter;
-			auto type = row[hooks_model_columns.qe_type];
-			auto pad_path = (Glib::ustring)row[hooks_model_columns.pad_path];
-
-			if ((int)watch_type == -1)  // todo
-				controller->send_message_request_command(type, false);
-			else
-				controller->send_pad_watch_command(false, watch_type, pad_path, type);
+			remove_watch(*iter);
 		});
+
+		create_dispatcher("confirmation", sigc::mem_fun(*this, &ControlModule::confirmation_), (GDestroyNotify)free_confirmation);
 	}
 
-	virtual ~HooksControlModule() {}
+	virtual ~ControlModule() {};
 
-	Gtk::Widget* get_widget() override
+	Gtk::Widget* get_widget()
 	{
-		if (main_box == nullptr)
-		{
-			main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)); // todo possible memleak
-
-			append_hook_widgets();
-		}
 		return main_box;
+	}
+
+	void set_controller(const std::shared_ptr<Controller> &controller)
+	{
+		IBaseView::set_controller(controller);
+
+			controller->on_confirmation_received.connect([this](const GstDebugger::Command& command) {
+
+			gui_push("confirmation", new GstDebugger::Command(command));
+			gui_emit("confirmation");
+		});
 	}
 };
 

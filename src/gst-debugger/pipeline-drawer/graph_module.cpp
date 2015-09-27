@@ -300,5 +300,5 @@ void GraphModule::update_model_()
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	controller->send_request_topology_command();
+	controller->send_request_entire_topology_command();
 }

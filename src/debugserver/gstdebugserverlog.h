@@ -20,33 +20,37 @@
 #ifndef __GST_DEBUGSERVER_LOG_H__
 #define __GST_DEBUGSERVER_LOG_H__
 
+#include "gstdebugserverwatcher.h"
+
 #include <gst/gst.h>
-#include <glib.h>
 
 G_BEGIN_DECLS
 
 typedef struct _GstDebugserverLog GstDebugserverLog;
 
 struct _GstDebugserverLog {
-  GSList *clients;
+  GstDebugserverWatcher watcher;
 };
 
 GstDebugserverLog * gst_debugserver_log_new (void);
 
 void gst_debugserver_log_free (GstDebugserverLog * log);
 
-gint gst_debugserver_log_prepare_buffer (GstDebugCategory * category,
-  GstDebugLevel level, const gchar * file, const gchar * function, gint line,
-  GObject * object, GstDebugMessage * message, gchar * buffer, gint max_size);
+void gst_debugserver_log_send_log (GstDebugserverLog * log, GstDebugserverTcp * tcp_server,
+  GstDebugCategory * category, GstDebugLevel level, const gchar * file, const gchar * function,
+  gint line, GObject * object, GstDebugMessage * message);
 
-GSList* gst_debugserver_log_get_clients (GstDebugserverLog * log);
+gboolean gst_debugserver_log_set_watch (GstDebugserverLog * log, gboolean enable, gint level,
+  const gchar * category, TcpClient * client);
 
-void gst_debugserver_log_set_watch (GstDebugserverLog * log, gboolean enable,
-  gpointer client_info);
+void gst_debugserver_log_send_debug_categories (GstDebugserverTcp *tcp_server, TcpClient *client);
 
-gint gst_debugserver_log_prepare_categories_buffer (gchar * buffer, gint max_size);
+void gst_debugserver_log_set_threshold (const gchar * threshold);
 
 void gst_debugserver_log_clean (GstDebugserverLog * log);
+
+void gst_debugserver_log_remove_client (GstDebugserverLog * log,
+  TcpClient * client);
 
 G_END_DECLS
 

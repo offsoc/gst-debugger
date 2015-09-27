@@ -56,13 +56,14 @@ void TcpClient::read_data()
 			m_buff = buffer;
 		}
 		gst_debugger_protocol_utils_read_requested_size(input_stream->gobj(), size, m_buff, cancel->gobj());
-		GstreamerInfo info;
-		info.ParseFromArray(m_buff, size);
+
+		GstDebugger::GStreamerData data;
+		data.ParseFromArray(m_buff, size);
 		if (m_buff != buffer)
 		{
 			delete m_buff;
 		}
-		signal_frame_received(info);
+		signal_frame_received(data);
 	}
 
 	connected = false;
@@ -84,7 +85,7 @@ void TcpClient::write_data(char *data, int size)
 	stream->write(data, size);
 }
 
-void TcpClient::send_command(const Command &cmd)
+void TcpClient::send_command(const GstDebugger::Command &cmd)
 {
 	if (!is_connected())
 		throw Gio::Error(Gio::Error::FAILED, "No connection!");

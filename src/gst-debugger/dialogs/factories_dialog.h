@@ -29,7 +29,7 @@ class FactoriesDialog : public RemoteDataDialog
 	FactoryModelColumns factories_columns;
 	Glib::RefPtr<Gtk::TreeStore> factories_tree_model;
 
-	void reload_list(const Glib::ustring &factory_name);
+	void reload_list(const Glib::ustring &factory_name, bool add);
 
 public:
 	FactoriesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

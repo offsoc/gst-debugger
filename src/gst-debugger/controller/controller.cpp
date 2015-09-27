@@ -6,23 +6,25 @@
  */
 
 #include "controller.h"
-#include "element_path_processor.h"
-
 #include "ui_utils.h"
 
-#include "common/common.h"
-#include "common/deserializer.h"
-#include "common/serializer.h"
-
 #include <gtkmm.h>
-
-#include <boost/algorithm/string/split.hpp>
 
 Controller::Controller(IMainView *view)
  : view(view)
 {
 	client->signal_frame_received.connect(sigc::mem_fun(*this, &Controller::process_frame));
-	client->signal_status_changed.connect([this](bool connected) { if (!connected) client_disconnected(); });
+	client->signal_status_changed.connect([this](bool connected) {
+		if (!connected) client_disconnected();
+		else
+		{
+			send_data_type_request_command("GstMessageType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
+			send_data_type_request_command("GstEventType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
+			send_data_type_request_command("GstQueryType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
+			send_request_entire_topology_command();
+			send_request_debug_categories_command();
+		}
+	});
 }
 
 int Controller::run(int &argc, char **&argv)
@@ -32,37 +34,40 @@ int Controller::run(int &argc, char **&argv)
 	return app->run(*view);
 }
 
-void Controller::send_command(const Command& cmd)
+void Controller::process_frame(const GstDebugger::GStreamerData &data)
 {
-	client->send_command(cmd);
-}
+	on_frame_received(data);
 
-void Controller::process_frame(const GstreamerInfo &info)
-{
-	switch (info.info_type())
+	switch (data.info_type_case())
 	{
-	case GstreamerInfo_InfoType_TOPOLOGY:
-		process(info.topology());
-		on_model_changed(current_model);
-
-		// todo get info from process??
-		if (info.topology().type() == Topology_ObjectType_ELEMENT)
-		{
-			send_request_factory(info.topology().element().factory_name());
-		}
-
-		break;
-	case GstreamerInfo_InfoType_DEBUG_CATEGORIES:
-	{
-		boost::split(debug_categories, info.debug_categories().list(), [](char c) { return c == ';'; });
-		debug_categories.erase(std::remove_if(debug_categories.begin(), debug_categories.end(),
-				[](const std::string &s){return s.empty();}), debug_categories.end());
+	case GstDebugger::GStreamerData::kDebugCategories:
+		debug_categories.clear();
+		for (auto c : data.debug_categories().category())
+			debug_categories.push_back(c);
 		on_debug_categories_changed();
 		break;
-	}
-	case GstreamerInfo_InfoType_LOG:
-		on_log_received(info.log());
+	case GstDebugger::GStreamerData::kEnumFlagsType:
+		update_enum_model(data.enum_flags_type());
+		on_enum_list_changed(data.enum_flags_type().type_name(), true);
 		break;
+	case GstDebugger::GStreamerData::kConfirmation:
+		on_confirmation_received(data.confirmation());
+		break;
+	case GstDebugger::GStreamerData::kTopologyInfo:
+		process(data.topology_info());
+		on_model_changed(current_model);
+
+		if (data.topology_info().has_element() && !get_factory(data.topology_info().element().factory_name()))
+		{
+			send_request_factory_command(data.topology_info().element().factory_name());
+		}
+		break;
+	case GstDebugger::GStreamerData::kFactory:
+		update_factory_model(data.factory());
+		on_factory_list_changed(data.factory().name(), true);
+		break;
+	}
+	/*
 	case GstreamerInfo_InfoType_PROPERTY:
 	{
 		std::string name = info.property().type_name();
@@ -74,22 +79,6 @@ void Controller::process_frame(const GstreamerInfo &info)
 		on_property_received(info.property());
 		break;
 	}
-	case GstreamerInfo_InfoType_BUFFER:
-	case GstreamerInfo_InfoType_EVENT:
-	case GstreamerInfo_InfoType_QUERY:
-	case GstreamerInfo_InfoType_MESSAGE:
-		on_qebm_received(info.qebm(), info.info_type());
-		break;
-	case GstreamerInfo_InfoType_PAD_WATCH_CONFIRMATION:
-		on_pad_watch_confirmation_received(info.confirmation(), info.confirmation().watch_type());
-		break;
-	case GstreamerInfo_InfoType_MESSAGE_CONFIRMATION:
-		on_message_confirmation_received(info.bus_msg_confirmation());
-		break;
-	case GstreamerInfo_InfoType_ENUM_TYPE:
-		update_enum_model(info.enum_type());
-		on_enum_list_changed(info.enum_type().type_name(), true);
-		break;
 	case GstreamerInfo_InfoType_FACTORY:
 		update_factory_model(info.factory_info());
 		on_factory_list_changed(info.factory_info().name());
@@ -99,8 +88,32 @@ void Controller::process_frame(const GstreamerInfo &info)
 		break;
 	default:
 		break;
-	}
+	}*/
 }
+
+template<typename T>
+boost::optional<T> get_from_container(const std::vector<T>& container, const std::string &name, std::function<std::string(const T& val)> get_t_name)
+{
+	auto it = std::find_if(container.begin(), container.end(), [name, get_t_name](const T& enum_type) {
+		return get_t_name(enum_type) == name;
+	});
+
+	if (it == container.end())
+		return boost::none;
+	else
+		return *it;
+}
+
+boost::optional<GstEnumType> Controller::get_enum_type(const std::string &name)
+{
+	return get_from_container<GstEnumType>(enum_container, name, [](const GstEnumType& enum_type) {return enum_type.get_name(); } );
+}
+
+boost::optional<FactoryModel> Controller::get_factory(const std::string &name)
+{
+	return get_from_container<FactoryModel>(factory_container, name, [](const FactoryModel& factory) {return factory.get_name(); } );
+}
+
 
 void Controller::model_up()
 {
@@ -150,22 +163,35 @@ void Controller::set_selected_object(const std::string &name)
 
 		if (obj && is_pad)
 		{
-			send_request_pad_dynamic_info(ElementPathProcessor::get_object_path(obj));
+		//	send_request_pad_dynamic_info(ElementPathProcessor::get_object_path(obj));
 		}
 	}
 }
 
-void Controller::update_enum_model(const EnumType &enum_type)
+void Controller::update_enum_model(const GstDebugger::EnumFlagsType &enum_type)
 {
-	GstEnumType et(enum_type.type_name(), enum_type.base_gtype());
-	for (int i = 0; i < enum_type.entry_size(); i++)
+	GstEnumType et(enum_type.type_name(), G_TYPE_ENUM); // todo G_TYPE_FLAGS
+	for (int i = 0; i < enum_type.values_size(); i++)
 	{
-		et.add_value(enum_type.entry(i).name(), enum_type.entry(i).value(), enum_type.entry(i).nick());
+		et.add_value(enum_type.values(i).name(), enum_type.values(i).value(), enum_type.values(i).nick());
 	}
-	enum_container.update_item(et);
+
+	// todo copy & paste get_enum_type()
+	auto it = std::find_if(enum_container.begin(), enum_container.end(), [enum_type](const GstEnumType& type) {
+		return type.get_name() == enum_type.type_name();
+	});
+
+	if (it == enum_container.end())
+	{
+		enum_container.push_back(et);
+	}
+	else
+	{
+		*it = et;
+	}
 }
 
-void Controller::update_factory_model(const FactoryInfo &factory_info)
+void Controller::update_factory_model(const GstDebugger::FactoryType &factory_info)
 {
 	FactoryModel model(factory_info.name());
 
@@ -174,14 +200,26 @@ void Controller::update_factory_model(const FactoryInfo &factory_info)
 		model.append_template(protocol_template_to_gst_template(factory_info.templates(i)));
 	}
 
-	for (int i = 0; i < factory_info.meta_entries_size(); i++)
+	for (int i = 0; i < factory_info.metadata_size(); i++)
 	{
-		model.append_meta(factory_info.meta_entries(i).key(), factory_info.meta_entries(i).value());
+		model.append_meta(factory_info.metadata(i).key(), factory_info.metadata(i).value());
 	}
 
-	factory_container.update_item(model);
-}
+	// todo copy & paste get_enum_type()
+	auto it = std::find_if(factory_container.begin(), factory_container.end(), [model](const FactoryModel& type) {
+		return type.get_name() == model.get_name();
+	});
 
+	if (it == factory_container.end())
+	{
+		factory_container.push_back(model);
+	}
+	else
+	{
+		*it = model;
+	}
+}
+/*
 void Controller::append_property(const Property& property)
 {
 	GValue *value = new GValue;
@@ -195,19 +233,19 @@ void Controller::append_property(const Property& property)
 		this->send_property_command(property.element_path(), property.property_name(), gvalue->get_gvalue());
 	});
 }
-
+*/
 void Controller::log(const std::string &message)
 {
 	// todo date/time?
 	std::cerr << message << std::endl;
 
-	on_new_log_entry(message);
+	//on_new_log_entry(message);
 }
 
 void Controller::client_disconnected()
 {
 
-	auto root_model = ElementModel::get_root();
+/*	auto root_model = ElementModel::get_root();
 	root_model->clean_model();
 	on_model_changed(root_model);
 
@@ -228,9 +266,9 @@ void Controller::client_disconnected()
 	}
 
 	debug_categories.clear();
-	on_debug_categories_changed();
+	on_debug_categories_changed();*/
 }
-
+/*
 void Controller::update_pad_dynamic_info(const PadDynamicInfo &info)
 {
 	auto pad = std::dynamic_pointer_cast<PadModel>(ElementPathProcessor(info.pad_path()).get_last_obj());
@@ -245,4 +283,5 @@ void Controller::update_pad_dynamic_info(const PadDynamicInfo &info)
 	{
 		on_selected_object_changed();
 	}
-}
+}*/
+

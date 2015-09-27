@@ -19,116 +19,84 @@
 
 #include "gstdebugservermessage.h"
 
+#include <string.h>
 #include <assert.h>
+
+static gint g_int_cmp (gconstpointer v1, gconstpointer v2)
+{
+  return GPOINTER_TO_INT (v1) != GPOINTER_TO_INT (v2);
+}
+
+static gboolean gst_debugserver_message_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
+{
+  GSList *list = new_ptr;
+  GstDebugger__MessageInfo *msg = original->message_info;
+
+  while (list) {
+    if (msg->type == GPOINTER_TO_INT (list->data) || GPOINTER_TO_INT (list->data) == GST_MESSAGE_ANY) {
+      return TRUE;
+    }
+    list = g_slist_next (list);
+  }
+
+  return FALSE;
+}
 
 GstDebugserverMessage * gst_debugserver_message_new (void)
 {
   GstDebugserverMessage *msg = (GstDebugserverMessage*)g_malloc (sizeof(GstDebugserverMessage));
-  msg->clients = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL,
-    (GDestroyNotify) g_slist_free);
+
+  gst_debugserver_watcher_init (&msg->watcher, gst_debugserver_message_ok, (GDestroyNotify) g_slist_free, g_int_cmp);
 
   return msg;
 }
 
 void gst_debugserver_message_free (GstDebugserverMessage * msg)
 {
-  g_hash_table_unref (msg->clients);
+  gst_debugserver_log_clean (msg);
+  gst_debugserver_watcher_deinit (&msg->watcher);
   g_free (msg);
-}
-
-gboolean gst_debugserver_message_add_watch (GstDebugserverMessage * msg,
-  GstMessageType msg_type, gpointer client_info)
-{
-  GSList *listeners =
-      (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
-
-  if (listeners == NULL) {
-    listeners = g_slist_append (listeners, client_info);
-    g_hash_table_insert (msg->clients, GINT_TO_POINTER (msg_type), listeners);
-    return TRUE;
-  }
-
-  if (g_slist_find (listeners, client_info) == NULL) {
-    listeners = g_slist_append (listeners, client_info);
-    g_hash_table_replace (msg->clients, GINT_TO_POINTER (msg_type),
-        listeners);
-    return TRUE;
-  } else {
-    return FALSE;
-  }
-}
-
-gboolean gst_debugserver_message_remove_watch (GstDebugserverMessage * msg,
-  GstMessageType msg_type, gpointer client_info)
-{
-  GSList *listeners =
-      (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
-
-  if (g_slist_find (listeners, client_info) == NULL) {
-    return FALSE;
-  } else {
-    listeners = g_slist_remove (listeners, client_info);
-    g_hash_table_replace (msg->clients, GINT_TO_POINTER (msg_type), listeners);
-    return TRUE;
-  }
-}
-
-void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
-  gpointer client_info)
-{
-  GList * keys = g_hash_table_get_keys (msg->clients);
-
-  while (keys) {
-    gst_debugserver_message_remove_watch (msg, GPOINTER_TO_INT (keys->data), client_info);
-    keys = keys->next;
-  }
-}
-
-GSList* gst_debugserver_message_get_clients (GstDebugserverMessage * msg,
-  GstMessageType msg_type)
-{
-  GSList *base = (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER (msg_type));
-  GSList *clients = g_slist_copy (base);
-  base = (GSList *) g_hash_table_lookup (msg->clients, GINT_TO_POINTER(GST_MESSAGE_ANY));
-
-  for (; base != NULL; base = g_slist_next (base)) {
-    if (g_slist_find (clients, base->data) == NULL) {
-      clients = g_slist_append(clients, base->data);
-    }
-  }
-
-  return clients;
-}
-
-gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
-  gboolean enable, GstMessageType msg_type, gpointer client_info)
-{
-  if (enable) {
-    return gst_debugserver_message_add_watch (msg, msg_type, client_info);
-  } else {
-    return gst_debugserver_message_remove_watch (msg, msg_type, client_info);
-  }
-}
-
-gint gst_debugserver_message_prepare_confirmation_buffer (MessageWatch *watch,
-  gchar * buffer, gint max_size)
-{
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  gint size;
-  MessageWatch msg_watch = MESSAGE_WATCH__INIT;
-
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE_CONFIRMATION;
-  msg_watch.message_type = watch->message_type;
-  msg_watch.toggle = watch->toggle;
-  info.bus_msg_confirmation = &msg_watch;
-  size = gstreamer_info__get_packed_size (&info);
-  assert(size <= max_size);
-  gstreamer_info__pack (&info, (guint8*)buffer);
-
-  return size;
 }
 
 void gst_debugserver_message_clean (GstDebugserverMessage * msg)
 {
-  g_hash_table_remove_all (msg->clients);
+  gst_debugserver_watcher_clean (&msg->watcher);
+}
+
+gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
+  TcpClient * client, GstDebugger__MessageRequest * request)
+{
+  if (request->action == GST_DEBUGGER__ACTION__ADD) {
+    return gst_debugserver_watcher_add_watch (&msg->watcher, GINT_TO_POINTER (request->type), client);
+  } else {
+    return gst_debugserver_watcher_remove_watch (&msg->watcher, GINT_TO_POINTER (request->type), client);
+  }
+}
+
+void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
+  TcpClient * client)
+{
+  g_hash_table_remove (msg->watcher.clients, client);
+}
+
+
+void gst_debugserver_message_send_message (GstDebugserverMessage * msg, GstDebugserverTcp * tcp_server,
+  GstMessage * gst_msg)
+{
+  GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__MessageInfo msg_info = GST_DEBUGGER__MESSAGE_INFO__INIT;
+  gchar *structure_data = gst_structure_to_string (gst_message_get_structure (gst_msg));
+
+  msg_info.seqnum = gst_msg->seqnum;
+  msg_info.timestamp = gst_msg->timestamp;
+  msg_info.type = gst_msg->type;
+  msg_info.structure_data.data = structure_data;
+  msg_info.structure_data.len = strlen (structure_data);
+
+  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_MESSAGE_INFO;
+  gst_data.message_info = &msg_info;
+
+  gst_debugserver_watcher_send_data (&msg->watcher, tcp_server, &gst_data);
+
+  g_free (structure_data);
 }

@@ -24,9 +24,8 @@
 #define __GST_DEBUGSERVER_TRACER_H__
 
 #include "gstdebugservertcp.h"
-#include "gstdebugservermessage.h"
 #include "gstdebugserverlog.h"
-#include "gstdebugserverbuffer.h"
+#include "gstdebugservermessage.h"
 #include "gstdebugserverqe.h"
 
 #include <gst/gst.h>
@@ -60,14 +59,13 @@ struct _GstDebugserverTracer {
   GstTracer 	 parent;
 
   /*< private >*/
+  GstPipeline *pipeline;
   gint port;
-  GstPipeline * pipeline;
-  GstDebugserverTcp * tcp_server;
-  GstDebugserverMessage * msg_handler;
-  GstDebugserverLog * log_handler;
-  GstDebugserverQE * event_handler;
-  GstDebugserverQE * query_handler;
-  GstDebugserverBuffer * buffer_handler;
+  GstDebugserverTcp *tcp_server;
+  GstDebugserverLog *log;
+  GstDebugserverMessage *message;
+  GstDebugserverQE *event;
+  GstDebugserverQE *query;
 };
 
 struct _GstDebugserverTracerClass {

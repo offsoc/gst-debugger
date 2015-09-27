@@ -19,10 +19,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
   builder(builder),
   dispatcher(std::make_shared<Glib::Dispatcher>()),
   main_module(std::make_shared<MainModule>(builder)),
+  graph_module(std::make_shared<GraphModule>(builder)),
   properties_module(std::make_shared<GstPropertiesModule>(builder))
 {
-	graph_module = std::make_shared<GraphModule>(builder);
-
 	builder->get_widget("connectionPropertiesMenuItem", connection_properties);
 	connection_properties->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectionPropertiesMenuItem_activate_cb));
 
@@ -77,13 +76,14 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 
 	main_module->set_controller(controller);
 	graph_module->set_controller(controller);
-	properties_module->set_controller(controller);
 
 	enums_dialog->set_controller(controller);
 	enums_dialog->set_transient_for(*this);
 
 	factories_dialog->set_controller(controller);
 	factories_dialog->set_transient_for(*this);
+
+	properties_module->set_controller(controller);
 
 	connection_properties_dialog->set_transient_for(*this);
 }
@@ -117,4 +117,3 @@ void MainWindow::connection_status_changed(bool connected)
 		((Gtk::Label*)connect_menu_item->get_child())->set_text("Connect");
 	}
 }
-

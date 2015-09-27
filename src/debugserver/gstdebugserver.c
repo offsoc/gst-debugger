@@ -31,12 +31,11 @@
 #endif
 
 #include "gstdebugserver.h"
+
 #include "gstdebugservertopology.h"
-#include "gstdebugserverfactory.h"
+
 #include "common/gst-utils.h"
-#include "common/buffer-prepare-utils.h"
 #include "common/serializer.h"
-#include "common/deserializer.h"
 
 #include <string.h>
 
@@ -61,49 +60,33 @@ static void gst_debugserver_tracer_set_property (GObject * object,
 static void gst_debugserver_tracer_get_property (GObject * object,
     guint prop_id, GValue * value, GParamSpec * pspec);
 
+static void gst_debugserver_command_handler (GstDebugger__Command * command,
+    gpointer debugtracer, TcpClient * client);
+
 static void gst_debugserver_tracer_finalize (GObject * obj);
 
 static void
-gst_debugserver_handle_error (GstDebugserverTracer *server,
-  GSocketConnection * client_id, const gchar * message);
+gst_debugserver_log_handler (GstDebugCategory *category, GstDebugLevel level,
+  const gchar *file, const gchar *function, gint line, GObject *object,
+  GstDebugMessage *message, gpointer user_data) G_GNUC_NO_INSTRUMENT;
 
 static void
-gst_debugserver_tracer_log_function (GstDebugCategory * category,
-    GstDebugLevel level, const gchar * file, const gchar * function, gint line,
-    GObject * object, GstDebugMessage * message, gpointer user_data)
-    G_GNUC_NO_INSTRUMENT;
-
-static void gst_debugserver_tracer_close_connection (GstDebugserverTracer * debugserver)
+gst_debugserver_log_handler (GstDebugCategory *category, GstDebugLevel level,
+  const gchar *file, const gchar *function, gint line, GObject *object,
+  GstDebugMessage *message, gpointer user_data)
 {
-  gst_debugserver_message_clean (debugserver->msg_handler);
-  gst_debugserver_log_clean (debugserver->log_handler);
-  gst_debugserver_qe_clean (debugserver->event_handler);
-  gst_debugserver_qe_clean (debugserver->query_handler);
-  gst_debugserver_buffer_clean (debugserver->buffer_handler);
+  GstDebugserverTracer *tracer = GST_DEBUGSERVER_TRACER (user_data);
 
-  gst_debugserver_tcp_stop_server (debugserver->tcp_server);
+  gst_debugserver_log_send_log (tracer->log, tracer->tcp_server, category, level,
+    file, function, line, object, message);
 }
 
 static void
 message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-  GSocketConnection *connection;
-  GSList *clients = gst_debugserver_message_get_clients (debugserver->msg_handler,
-    GST_MESSAGE_TYPE (message));
-  GSList *cl_tmp = clients;
-  gsize size;
-  gchar buff[1024];
+  GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (user_data);
 
-  while (clients != NULL) {
-    connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (message), NULL, buff, 1024);
-    gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
-      buff, size);
-    clients = clients->next;
-  }
-
-  g_slist_free (cl_tmp);
+  gst_debugserver_message_send_message (self->message, self->tcp_server, message);
 }
 
 static void
@@ -122,28 +105,25 @@ do_element_new (GstTracer * self, guint64 ts, GstElement * element)
 static void
 do_pad_unlink_post (GstTracer * self, guint64 ts, GstPad * src, GstPad * sink, gboolean result)
 {
-  if (result == FALSE) {
-    return;
+  if (result == TRUE) {
+    gst_debugserver_topology_send_pad_link (src, sink, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
   }
-  gst_debugserver_topology_send_pad_link (src, sink, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
 do_pad_link_post (GstTracer * self, guint64 ts, GstPad * src, GstPad * sink, GstPadLinkReturn result)
 {
-  if (result == FALSE) {
-    return;
+  if (result == TRUE) {
+    gst_debugserver_topology_send_pad_link (src, sink, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
   }
-  gst_debugserver_topology_send_pad_link (src, sink, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
 do_bin_add_post (GstTracer * self, gint64 ts, GstBin * bin, GstElement * element, gboolean result)
 {
-  if (result == FALSE) {
-    return;
+  if (result == TRUE) {
+    gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
   }
-  gst_debugserver_topology_send_element_in_bin (bin, element, TRUE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
 static void
@@ -164,518 +144,36 @@ do_element_remove_pad (GstTracer * self, gint64 ts, GstElement * element, GstPad
   gst_debugserver_topology_send_pad_in_element (element, pad, FALSE, GST_DEBUGSERVER_TRACER (self)->tcp_server, NULL);
 }
 
-
 static void
 do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
-  GSocketConnection *connection;
-  GSList *clients = gst_debugserver_qe_get_clients (debugserver->event_handler,
-    pad, event->type);
-  gsize size;
-  SAFE_PREPARE_BUFFER_INIT (1024);
+  GstDebugserverTracer *tracer = GST_DEBUGSERVER_TRACER (self);
 
-  if (clients == NULL) {
-    return;
-  }
-
-  SAFE_PREPARE_BUFFER (
-        gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (event), gst_utils_get_object_path (GST_OBJECT_CAST (pad)), m_buff, max_m_buff_size), size);
-
-  while (clients != NULL) {
-    connection = (GSocketConnection*)clients->data;
-    gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
-      m_buff, size);
-    clients = clients->next;
-  }
-
-  SAFE_PREPARE_BUFFER_CLEAN;
+  gst_debugserver_qe_send_qe (tracer->event, tracer->tcp_server, pad, GST_MINI_OBJECT_CAST (event));
 }
 
 static void
 do_pad_query_pre (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
-  GSocketConnection *connection;
-  GSList *clients = gst_debugserver_qe_get_clients (debugserver->query_handler,
-    pad, query->type);
-  gsize size;
-  gchar buff[1024];
+  GstDebugserverTracer *tracer = GST_DEBUGSERVER_TRACER (self);
 
-  while (clients != NULL) {
-    connection = (GSocketConnection*)clients->data;
-    size = gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (query), gst_utils_get_object_path (GST_OBJECT_CAST (pad)), buff, 1024);
-    gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
-      buff, size);
-    clients = clients->next;
-  }
+  gst_debugserver_qe_send_qe (tracer->query, tracer->tcp_server, pad, GST_MINI_OBJECT_CAST (query));
 }
 
 static void
 do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (self);
-  GSocketConnection *connection;
-  GSList *clients = gst_debugserver_buffer_get_clients (debugserver->buffer_handler,
-    pad);
-  gsize size;
-  SAFE_PREPARE_BUFFER_INIT (1024);
-
-  if (clients == NULL) {
-    return;
-  }
-
-  SAFE_PREPARE_BUFFER (
-    gst_debugserver_qebm_prepare_buffer (GST_MINI_OBJECT (buffer), gst_utils_get_object_path (GST_OBJECT_CAST (pad)), m_buff, max_m_buff_size), size);
-
-  while (clients != NULL) {
-    connection = (GSocketConnection*)clients->data;
-    gst_debugserver_tcp_send_packet (GST_DEBUGSERVER_TRACER (self)->tcp_server, connection,
-      m_buff, size);
-    clients = clients->next;
-  }
-
-  SAFE_PREPARE_BUFFER_CLEAN;
-
-  g_slist_free (clients);
-}
-
-#define ENUM_FLAG_PREPARE_BUFFER_METHOD(KLASS_VALUE, BASE_GTYPE) \
-  do { \
-    KLASS_VALUE *values = klass->values; \
-    guint i = 0; \
-    EnumEntry **entries; \
-    GstreamerInfo info = GSTREAMER_INFO__INIT; \
-    EnumType msg = ENUM_TYPE__INIT; \
-    info.info_type = GSTREAMER_INFO__INFO_TYPE__ENUM_TYPE; \
-    gint len; \
-    entries = g_malloc (sizeof (EnumEntry) * (klass->n_values));  \
-    for (i = 0; i < klass->n_values; i++) { \
-      entries[i] = g_malloc (sizeof (EnumEntry)); \
-      enum_entry__init (entries[i]); \
-      entries[i]->name = (gchar*) values[i].value_name; \
-      entries[i]->value = values[i].value; \
-      entries[i]->nick = (gchar*) values[i].value_nick; \
-    } \
-    msg.entry = entries; \
-    msg.n_entry = klass->n_values; \
-    msg.type_name = (gchar*) G_ENUM_CLASS_TYPE_NAME (klass); \
-    msg.base_gtype = BASE_GTYPE; \
-    info.enum_type = &msg; \
-    len = gstreamer_info__get_packed_size (&info); \
-    if (len > size) { \
-      goto finalize; \
-    } \
-    gstreamer_info__pack (&info, (uint8_t*) buffer); \
-  finalize: \
-    for (i = 0; i < klass->n_values; i++) { \
-      g_free (entries[i]); \
-    } \
-    g_free (entries); \
-    return len; \
-  } while (FALSE);
-
-static gint
-gst_debug_server_prepare_enum_type_buffer (GEnumClass * klass, gchar * buffer, gint size)
-{
-  ENUM_FLAG_PREPARE_BUFFER_METHOD(GEnumValue, G_TYPE_ENUM)
-}
-
-static gint
-gst_debug_server_prepare_flags_type_buffer (GFlagsClass * klass, gchar * buffer, gint size)
-{
-  ENUM_FLAG_PREPARE_BUFFER_METHOD(GFlagsValue, G_TYPE_FLAGS)
 }
 
 static void
-gst_debugserver_send_enum (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
+gst_debugserver_tracer_client_disconnected (TcpClient * client, gpointer user_data)
 {
-  GType type = g_type_from_name (klass_name);
-  GEnumClass *klass = g_type_class_peek (type);
-  SAFE_PREPARE_BUFFER_INIT (1024);
-  gint size;
+  GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (user_data);
 
-  if (klass == NULL) {
-    gst_debugserver_handle_error (debugserver, client, "Cannot find enum type");
-    return;
-  }
-
-  SAFE_PREPARE_BUFFER (
-    gst_debug_server_prepare_enum_type_buffer (klass, m_buff, max_m_buff_size), size);
-
-  gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
-  SAFE_PREPARE_BUFFER_CLEAN;
-}
-
-static void
-gst_debugserver_send_flag (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
-{
-  GType type = g_type_from_name (klass_name);
-  GFlagsClass *klass = g_type_class_peek (type);
-  SAFE_PREPARE_BUFFER_INIT (1024);
-  gint size;
-
-  if (klass == NULL) {
-    gst_debugserver_handle_error (debugserver, client, "Cannot find flags type");
-    return;
-  }
-
-  SAFE_PREPARE_BUFFER (
-    gst_debug_server_prepare_flags_type_buffer (klass, m_buff, max_m_buff_size), size);
-
-  gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
-  SAFE_PREPARE_BUFFER_CLEAN;
-}
-
-static void
-gst_debugserver_send_enum_flags (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * klass_name)
-{
-  GType type = g_type_from_name (klass_name);
-
-  if (G_TYPE_IS_ENUM (type)) {
-    gst_debugserver_send_enum (debugserver, client, klass_name);
-  } else if (G_TYPE_IS_FLAGS (type)) {
-    gst_debugserver_send_flag (debugserver, client, klass_name);
-  } else {
-    gst_debugserver_handle_error (debugserver, client, "requested type info is neither enum nor flags");
-  }
-}
-
-static gint
-gst_debugserver_pad_prepare_dynamic_info_buffer (GstPad * pad, gchar * buffer, gint max_size)
-{
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  PadDynamicInfo pad_info = PAD_DYNAMIC_INFO__INIT;
-  gint size;
-  GstCaps *allowed_caps = gst_pad_get_allowed_caps (pad);
-  gchar *allowed_caps_str = gst_caps_to_string (allowed_caps);
-  GstCaps *current_caps = gst_pad_get_current_caps (pad);
-  gchar *current_caps_str = gst_caps_to_string (current_caps);
-  gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
-  pad_info.pad_path = pad_path;
-  pad_info.allowed_caps = allowed_caps_str;
-  pad_info.current_caps = current_caps_str;
-  info.pad_dynamic_info = &pad_info;
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__PAD_DYNAMIC_INFO;
-
-  size = gstreamer_info__get_packed_size (&info);
-  if (size > max_size) {
-    goto finalize;
-  }
-  gstreamer_info__pack (&info, (guint8*)buffer);
-
-finalize:
-  if (allowed_caps != NULL) {
-    gst_caps_unref (allowed_caps);
-  }
-  if (current_caps != NULL) {
-    gst_caps_unref (current_caps);
-  }
-  g_free (allowed_caps_str);
-  g_free (current_caps_str);
-
-  return size;
-
-}
-
-static void
-gst_debugserver_send_pad_dynamic_info (GstDebugserverTracer * debugserver, GSocketConnection * client, const gchar * pad_path)
-{
-  gint size;
-  GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (debugserver->pipeline), pad_path);
-  SAFE_PREPARE_BUFFER_INIT (1024);
-
-  if (pad == NULL) {
-    gst_debugserver_handle_error (debugserver, client, "Cannot find pad for sending dynamic info");
-    return;
-  }
-
-  SAFE_PREPARE_BUFFER (
-    gst_debugserver_pad_prepare_dynamic_info_buffer (pad, m_buff, max_m_buff_size), size);
-
-  gst_debugserver_tcp_send_packet (debugserver->tcp_server, client, m_buff, size);
-  SAFE_PREPARE_BUFFER_CLEAN;
-}
-
-static void
-gst_debugserver_tracer_send_categories (GstDebugserverTracer * debugserver, gpointer client_id)
-{
-  gint size;
-  GSocketConnection *connection = (GSocketConnection*) client_id;
-  SAFE_PREPARE_BUFFER_INIT (1024);
-  SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_categories_buffer (m_buff, max_m_buff_size), size);
-  gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
-    m_buff, size);
-  SAFE_PREPARE_BUFFER_CLEAN;
-}
-
-static void
-gst_debugserver_tracer_send_factory (GstDebugserverTracer * debugserver, gpointer client_id, const gchar * factory_name)
-{
-  gint size;
-  GstElementFactory *factory = gst_element_factory_find (factory_name);
-  if (factory == NULL) {
-    gchar *msg = g_strdup_printf ("Cannot find factory %s", factory_name);
-    gst_debugserver_handle_error (debugserver, client_id, msg);
-    g_free (msg);
-    return;
-  }
-  GSocketConnection *connection = (GSocketConnection*) client_id;
-  SAFE_PREPARE_BUFFER_INIT (1024);
-  SAFE_PREPARE_BUFFER (gst_debugserver_factory_prepare_buffer (factory, m_buff, max_m_buff_size), size);
-  gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
-    m_buff, size);
-  SAFE_PREPARE_BUFFER_CLEAN;
-
-  gst_object_unref (factory);
-}
-
-static void
-gst_debugserver_tracer_client_disconnected (gpointer client_id, gpointer user_data)
-{
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-
-  gst_debugserver_log_set_watch (debugserver->log_handler, FALSE, client_id);
-  gst_debugserver_qe_remove_client (debugserver->event_handler, client_id);
-  gst_debugserver_qe_remove_client (debugserver->query_handler, client_id);
-  gst_debugserver_buffer_remove_client (debugserver->buffer_handler, client_id);
-  gst_debugserver_message_remove_client (debugserver->msg_handler, client_id);
-}
-
-static void
-gst_debugserver_tracer_client_connected (gpointer client_id, gpointer user_data)
-{
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-
-  gst_debugserver_topology_send_entire_topology (
-    GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
-
-  gst_debugserver_send_enum (debugserver, client_id, "GstQueryType");
-
-  gst_debugserver_send_enum (debugserver, client_id, "GstEventType");
-
-  gst_debugserver_send_flag (debugserver, client_id, "GstMessageType");
-
-  gst_debugserver_tracer_send_categories (debugserver, client_id);
-}
-
-static gint
-gst_debugserver_prepare_property (const gchar * element_path, const GstElement *element, const GParamSpec *param, gchar * buffer, gint max_size)
-{
-  GValue value = {0};
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  Property property = PROPERTY__INIT;
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__PROPERTY;
-  gint size;
-  GType tmptype;
-  InternalGType internal_type;
-
-  g_value_init (&value, param->value_type);
-  g_object_get_property (G_OBJECT (element), param->name, &value);
-
-  property.element_path = (gchar*) element_path;
-  property.property_name = (gchar*) param->name;
-  property.property_value = g_value_serialize (&value, &tmptype, &internal_type);
-  property.internal_type = internal_type;
-  property.has_internal_type = TRUE;
-  property.type = tmptype;
-  property.has_type = TRUE;
-  property.type_name = (gchar*) g_type_name (value.g_type);
-  property.description = (gchar*) g_param_spec_get_blurb ((GParamSpec*) param);
-  property.has_flags = TRUE;
-  property.flags = param->flags;
-  info.property = &property;
-  size = gstreamer_info__get_packed_size (&info);
-
-  if (size > max_size) {
-    goto finalize;
-   }
-  gstreamer_info__pack (&info, (guint8*)buffer);
-
-finalize:
-  return size;
-}
-
-static void
-gst_debugserver_property_send_single_property (GstDebugserverTracer * server, GSocketConnection * client_id,
-  const gchar * element_path, const GstElement *element, const GParamSpec *param)
-{
-  gint size;
-  SAFE_PREPARE_BUFFER_INIT (1024);
-
-  SAFE_PREPARE_BUFFER (
-    gst_debugserver_prepare_property (element_path, element, param, m_buff, max_m_buff_size), size);
-
-  gst_debugserver_tcp_send_packet (server->tcp_server, client_id, m_buff, size);
-
-  SAFE_PREPARE_BUFFER_CLEAN;
-}
-
-static gint
-gst_debugserver_prepare_error (const gchar * message, gchar * buffer, gint max_size)
-{
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  ServerError s_err = SERVER_ERROR__INIT;
-  gint size;
-
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__SERVER_ERROR;
-  s_err.message = (gchar*) message;
-  info.server_error = &s_err;
-
-  size = gstreamer_info__get_packed_size (&info);
-
-  if (size > max_size) {
-    goto finalize;
-  }
-
-  gstreamer_info__pack (&info, (guint8*)buffer);
-
-finalize:
-  return size;
-}
-
-static void
-gst_debugserver_handle_error (GstDebugserverTracer *server, GSocketConnection * client_id, const gchar * message)
-{
-  gint size;
-  SAFE_PREPARE_BUFFER_INIT (1024);
-
-  GST_WARNING_OBJECT (server, "%s", message);
-
-  SAFE_PREPARE_BUFFER (
-    gst_debugserver_prepare_error (message, m_buff, max_m_buff_size), size);
-
-  gst_debugserver_tcp_send_packet (server->tcp_server, client_id, m_buff, size);
-
-  SAFE_PREPARE_BUFFER_CLEAN;
-}
-
-static void
-gst_debugserver_property_send_property (GstDebugserverTracer * server, GSocketConnection * client_id, const gchar * element_path, const gchar * property_name)
-{
-  GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (server->pipeline), element_path);
-
-  if (element == NULL) {
-    gst_debugserver_handle_error (server, client_id, "Cannot find element");
-    return;
-  }
-
-  GstElementClass *element_class = GST_ELEMENT_GET_CLASS (element);
-
-  if (property_name == NULL || strlen (property_name) == 0) {
-    guint num_properties, i;
-    GParamSpec **property_specs = g_object_class_list_properties
-        (G_OBJECT_GET_CLASS (element), &num_properties);
-
-    for (i = 0; i < num_properties; i++) {
-      gst_debugserver_property_send_single_property (server, client_id, element_path, element, property_specs[i]);
-    }
-
-    g_free (property_specs);
-  } else {
-    GParamSpec *param = g_object_class_find_property ((GObjectClass *)element_class, property_name);
-    if (param == NULL) {
-      gst_debugserver_handle_error (server, client_id, "Cannot find property");
-      return;
-    }
-    gst_debugserver_property_send_single_property (server, client_id, element_path, element, param);
-  }
-}
-
-static void
-gst_debugserver_tracer_process_pad_watch_command (GstDebugserverTracer* debugserver, PadWatch *watch, gpointer client_id)
-{
-  gint size;
-  gchar buff[1024];
-
-  switch (watch->watch_type) {
-  case PAD_WATCH__WATCH_TYPE__EVENT:
-  case PAD_WATCH__WATCH_TYPE__QUERY:
-    if (gst_debugserver_qe_set_watch (
-            watch->watch_type == PAD_WATCH__WATCH_TYPE__EVENT ?  debugserver->event_handler : debugserver->query_handler,
-            watch->toggle == TOGGLE__ENABLE,
-            gst_utils_get_pad_from_path (GST_ELEMENT (debugserver->pipeline), watch->pad_path),
-            watch->qe_type, client_id)) {
-      size = gst_debugserver_qeb_prepare_confirmation_buffer (watch->pad_path,
-          watch->qe_type, watch->toggle, buff, 1024, watch->watch_type);
-      gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
-          buff, size);
-      }
-      break;
-  case PAD_WATCH__WATCH_TYPE__BUFFER:
-    if (gst_debugserver_buffer_set_watch (debugserver->buffer_handler,
-          watch->toggle == TOGGLE__ENABLE,
-          gst_utils_get_pad_from_path (GST_ELEMENT (debugserver->pipeline), watch->pad_path),
-          client_id)) {
-      size = gst_debugserver_qeb_prepare_confirmation_buffer (watch->pad_path,
-          -1, watch->toggle, buff, 1024, PAD_WATCH__WATCH_TYPE__BUFFER);
-      gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
-          buff, size);
-    }
-    break;
-  default:
-    break;
-  }
-}
-
-static void
-gst_debugserver_tracer_process_command (Command * cmd, gpointer client_id,
-  gpointer user_data)
-{
-  gchar buff[1024];
-  gint size;
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-
-  switch (cmd->command_type) {
-  case COMMAND__COMMAND_TYPE__LOG_THRESHOLD:
-    gst_debug_set_threshold_from_string (cmd->log_threshold->list, cmd->log_threshold->overwrite);
-    break;
-  case COMMAND__COMMAND_TYPE__MESSAGE_WATCH:
-    if (gst_debugserver_message_set_watch (debugserver->msg_handler,
-          cmd->message_watch->toggle == TOGGLE__ENABLE,
-          cmd->message_watch->message_type, client_id)) {
-      size = gst_debugserver_message_prepare_confirmation_buffer (cmd->message_watch,
-        buff, 1024);
-      gst_debugserver_tcp_send_packet (debugserver->tcp_server, client_id,
-        buff, size);
-    }
-    break;
-  case COMMAND__COMMAND_TYPE__LOG_WATCH:
-    gst_debugserver_log_set_watch (debugserver->log_handler,
-          cmd->log_watch->toggle == TOGGLE__ENABLE, client_id);
-    break;
-  case COMMAND__COMMAND_TYPE__PAD_WATCH:
-    gst_debugserver_tracer_process_pad_watch_command (debugserver, cmd->pad_watch, client_id);
-    break;
-  case COMMAND__COMMAND_TYPE__DEBUG_CATEGORIES:
-      gst_debugserver_tracer_send_categories (debugserver, client_id);
-      break;
-  case COMMAND__COMMAND_TYPE__FACTORY:
-      gst_debugserver_tracer_send_factory (debugserver, client_id, cmd->factory_name);
-      break;
-  case COMMAND__COMMAND_TYPE__TOPOLOGY:
-    gst_debugserver_topology_send_entire_topology (GST_BIN (debugserver->pipeline), debugserver->tcp_server, client_id);
-    break;
-  case COMMAND__COMMAND_TYPE__PROPERTY:
-    if (cmd->property->has_type == FALSE) {
-      gst_debugserver_property_send_property (debugserver, client_id, cmd->property->element_path, cmd->property->property_name);
-    } else {
-      GValue val = G_VALUE_INIT;
-      GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (debugserver->pipeline), cmd->property->element_path);
-      g_value_deserialize (&val, cmd->property->type, cmd->property->internal_type, cmd->property->property_value);
-      g_object_set_property (G_OBJECT (element), cmd->property->property_name, &val);
-      g_value_unset (&val);
-    }
-    break;
-  case COMMAND__COMMAND_TYPE__ENUM_TYPE:
-    gst_debugserver_send_enum_flags (debugserver, client_id, cmd->enum_name);
-    break;
-  case COMMAND__COMMAND_TYPE__PAD_DYNAMIC_INFO:
-      gst_debugserver_send_pad_dynamic_info (debugserver, client_id, cmd->pad_path);
-      break;
-  default:
-    GST_WARNING_OBJECT (debugserver, "Unsupported command type %d", cmd->command_type);
-  }
+  gst_debugserver_log_remove_client (self->log, client);
+  gst_debugserver_message_remove_client (self->message, client);
+  gst_debugserver_qe_remove_client (self->event, client);
+  gst_debugserver_qe_remove_client (self->query, client);
 }
 
 static void
@@ -694,31 +192,52 @@ gst_debugserver_tracer_class_init (GstDebugserverTracerClass * klass)
 }
 
 static void
-gst_debugserver_tracer_log_function (GstDebugCategory * category,
-    GstDebugLevel level, const gchar * file, const gchar * function, gint line,
-    GObject * object, GstDebugMessage * message, gpointer user_data)
+gst_debugserver_tracer_send_property (GstDebugserverTcp * tcp_server, TcpClient * client, GParamSpec * spec, GstElement * element)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (user_data);
-  GSocketConnection *connection;
-  GSList *clients = gst_debugserver_log_get_clients (debugserver->log_handler);
-  gsize size;
-  SAFE_PREPARE_BUFFER_INIT (1024);
+  GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__PropertyInfo property = GST_DEBUGGER__PROPERTY_INFO__INIT;
+  GstDebugger__Value value = GST_DEBUGGER__VALUE__INIT;
+  GType out_gtype;
+  InternalGType out_internal_type;
+  GValue gvalue = G_VALUE_INIT;
+  gchar *object = gst_utils_get_object_path (GST_OBJECT_CAST (element));
+  gchar *serialized_data = NULL;
 
-  if (clients == NULL) {
+  if (spec == NULL) {
     return;
   }
 
-  SAFE_PREPARE_BUFFER (gst_debugserver_log_prepare_buffer (category, level, file, function,
-    line, object, message, m_buff, max_m_buff_size), size);
+  property.blurb = (gchar*) g_param_spec_get_blurb (spec);
+  property.flags = spec->flags;
+  property.name = (gchar*) g_param_spec_get_name (spec);
+  property.nick = (gchar*) g_param_spec_get_nick (spec);
+  property.object = (gchar*) object;
 
-  while (clients != NULL) {
-    connection = (GSocketConnection*)clients->data;
-    gst_debugserver_tcp_send_packet (debugserver->tcp_server, connection,
-      m_buff, size);
-    clients = clients->next;
+  g_value_init (&gvalue, spec->value_type);
+  g_object_get_property (G_OBJECT (element), g_param_spec_get_name (spec), &gvalue);
+
+  serialized_data = g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
+
+  value.data.data = serialized_data;
+  value.data.len = serialized_data == NULL ? 0 : strlen (serialized_data);
+  value.gtype = out_gtype;
+
+  if (out_gtype == spec->value_type) {
+    value.internal_type = out_internal_type;
+    value.has_internal_type = TRUE;
+  } else {
+    value.has_internal_type = FALSE;
   }
 
-  SAFE_PREPARE_BUFFER_CLEAN;
+  property.value = &value;
+  gst_data.property_info = &property;
+  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_PROPERTY_INFO;
+
+  gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
+
+  g_value_unset (&gvalue);
+  g_free (serialized_data);
+  g_free (object);
 }
 
 static void
@@ -726,13 +245,22 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
 {
   GstTracer *tracer = GST_TRACER (self);
 
-  self->pipeline = NULL;
   self->port = DEFAULT_PORT;
-  self->msg_handler = gst_debugserver_message_new ();
-  self->log_handler = gst_debugserver_log_new ();
-  self->event_handler = gst_debugserver_qe_new ();
-  self->query_handler = gst_debugserver_qe_new ();
-  self->buffer_handler = gst_debugserver_buffer_new ();
+
+  self->log = gst_debugserver_log_new ();
+  gst_debug_add_log_function (gst_debugserver_log_handler, self, NULL);
+
+  self->tcp_server = gst_debugserver_tcp_new ();
+  self->tcp_server->command_handler = gst_debugserver_command_handler;
+  self->tcp_server->client_disconnected_handler = gst_debugserver_tracer_client_disconnected;
+  self->tcp_server->owner = self;
+  gst_debugserver_tcp_start_server (self->tcp_server, self->port);
+
+  self->message = gst_debugserver_message_new ();
+
+  self->event = gst_debugserver_qe_new ();
+
+  self->query = gst_debugserver_qe_new ();
 
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
@@ -754,52 +282,36 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
       G_CALLBACK (do_pad_link_post));
   gst_tracing_register_hook (tracer, "pad-unlink-post",
       G_CALLBACK (do_pad_unlink_post));
-
-  gst_debug_add_log_function (gst_debugserver_tracer_log_function, self, NULL);
-
-  self->tcp_server = gst_debugserver_tcp_new ();
-  self->tcp_server->process_command = gst_debugserver_tracer_process_command;
-  self->tcp_server->process_command_user_data = self;
-  self->tcp_server->client_disconnected = gst_debugserver_tracer_client_disconnected;
-  self->tcp_server->parent = self;
-  self->tcp_server->client_connected = gst_debugserver_tracer_client_connected;
-  gst_debugserver_tcp_start_server (self->tcp_server, self->port);
 }
 
 static void
 gst_debugserver_tracer_finalize (GObject * obj)
 {
-  GstDebugserverTracer *debugserver = GST_DEBUGSERVER_TRACER (obj);
+  GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (obj);
 
-  gst_debug_remove_log_function (gst_debugserver_tracer_log_function);
+  gst_object_unref (GST_DEBUGSERVER_TCP (self->tcp_server));
 
-  gst_debugserver_tracer_close_connection (debugserver);
-
-  gst_debugserver_message_free (debugserver->msg_handler);
-  gst_debugserver_log_free (debugserver->log_handler);
-  gst_debugserver_qe_free (debugserver->event_handler);
-  gst_debugserver_qe_free (debugserver->query_handler);
- // gst_debugserver_buffer_free (debugserver->buffer_handler);
-
-  g_object_unref (G_OBJECT (debugserver->tcp_server));
+  gst_debug_remove_log_function (gst_debugserver_log_handler);
+  gst_debugserver_log_free (self->log);
+  gst_debugserver_message_free (self->message);
+  gst_debugserver_qe_free (self->event);
+  gst_debugserver_qe_free (self->query);
 }
 
 static void
 gst_debugserver_tracer_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-  GstDebugserverTracer *debugserver;
+  GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (object);
   gint tmp_port;
-
-  debugserver = GST_DEBUGSERVER_TRACER (object);
 
   switch (prop_id) {
     case PROP_PORT:
       tmp_port = g_value_get_int (value);
-      if (tmp_port != debugserver->port) {
-        debugserver->port = g_value_get_int (value);
-        gst_debugserver_tracer_close_connection (debugserver);
-        gst_debugserver_tcp_start_server (debugserver->tcp_server, debugserver->port);
+      if (tmp_port != self->port) {
+        self->port = g_value_get_int (value);
+        gst_debugserver_tcp_stop_server (self->tcp_server);
+        gst_debugserver_tcp_start_server (self->tcp_server, self->port);
       }
       break;
     default:
@@ -823,6 +335,106 @@ gst_debugserver_tracer_get_property (GObject * object, guint prop_id,
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
+  }
+}
+
+static void gst_debugserver_process_pad_watch (GstDebugserverTracer * self, GstDebugger__Command * command, TcpClient * client)
+{
+  GstDebugger__PadWatchRequest *request = command->pad_watch;
+  GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (self->pipeline), request->pad);
+
+  switch (request->pad_watch_type_case)
+  {
+  case GST_DEBUGGER__PAD_WATCH_REQUEST__PAD_WATCH_TYPE_EVENT:
+    if (gst_debugserver_qe_set_watch (self->event, request->action == GST_DEBUGGER__ACTION__ADD, request->event->type, pad, request->pad, client)) {
+      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+      data.confirmation = command;
+      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
+      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+    }
+    break;
+  case GST_DEBUGGER__PAD_WATCH_REQUEST__PAD_WATCH_TYPE_QUERY:
+    if (gst_debugserver_qe_set_watch (self->query, request->action == GST_DEBUGGER__ACTION__ADD, request->query->type, pad, request->pad, client)) {
+      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+      data.confirmation = command;
+      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
+      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+    }
+    break;
+  }
+}
+
+static void gst_debugserver_send_single_property (GstDebugserverTracer * self, TcpClient * client, GstElement * element, const gchar * name)
+{
+  GParamSpec *spec = g_object_class_find_property (G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS (element)), name);
+
+  gst_debugserver_tracer_send_property (self->tcp_server, client, spec, element);
+}
+
+static void gst_debugserver_process_property_request (GstDebugserverTracer * self, TcpClient * client,
+  GstDebugger__PropertyRequest * request)
+{
+  GstElement * element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (self->pipeline), request->object);
+  gint n_properties, i;
+  GParamSpec **spec;
+
+  if (element == NULL) {
+    return;
+  }
+
+  if (request->name == NULL || request->name[0] == '\0') {
+    spec = g_object_class_list_properties (G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS (element)), &n_properties);
+
+    for (i = 0; i < n_properties; i++) {
+      gst_debugserver_send_single_property (self, client, element, spec[i]->name);
+    }
+  } else {
+    gst_debugserver_send_single_property (self, client, element, request->name);
+  }
+}
+
+static void gst_debugserver_command_handler (GstDebugger__Command * command,
+    gpointer debugtracer, TcpClient * client)
+{
+  GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (debugtracer);
+  GstDebugserverTcp * tcp = self->tcp_server;
+
+  switch (command->command_type_case) {
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_TYPE_DESCRIPTION:
+    gst_debugserver_types_send_type (tcp, client, command->type_description);
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_DEBUG_CATEGORIES_LIST:
+    gst_debugserver_log_send_debug_categories (tcp, client);
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_LOG_THRESHOLD:
+    gst_debugserver_log_set_threshold (command->log_threshold);
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_MESSAGE:
+    if (gst_debugserver_message_set_watch (self->message, client, command->message)) {
+      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+      data.confirmation = command;
+      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
+      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+    }
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_LOG:
+    if (gst_debugserver_log_set_watch (self->log, command->log->action == GST_DEBUGGER__ACTION__ADD,
+          command->log->level, command->log->category, client)) {
+      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+      data.confirmation = command;
+      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
+      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+    }
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_PAD_WATCH:
+    gst_debugserver_process_pad_watch (self, command, client);
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_ENTIRE_TOPOLOGY:
+    gst_debugserver_topology_send_entire_topology (GST_BIN_CAST (self->pipeline), self->tcp_server, client);
+    break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_PROPERTY:
+    gst_debugserver_process_property_request (self, client, command->property);
+    break;
   }
 }
 

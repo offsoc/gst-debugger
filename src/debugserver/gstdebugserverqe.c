@@ -21,137 +21,36 @@
 
 #include "common/serializer.h"
 #include "common/gstdebugger.pb-c.h"
-
-#include "common/buffer-prepare-utils.h"
+#include "common/gst-utils.h"
 
 #include <string.h>
 
-GstDebugserverQE * gst_debugserver_qe_new (void)
-{
-  GstDebugserverQE *qe = (GstDebugserverQE*)g_malloc (sizeof(GstDebugserverQE));
-  qe->watches = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
+typedef struct _QEWatch {
+  gint qe_type;
+  GstPad * pad;
+  gchar * pad_path;
+} QEWatch;
 
-  return qe;
+static QEWatch * qe_watch_new (gint type, GstPad * pad, gchar * pad_path)
+{
+  QEWatch * watch = (QEWatch *) g_malloc (sizeof (QEWatch));
+
+  watch->qe_type = type;
+  watch->pad = pad;
+  watch->pad_path = g_strdup (pad_path);
+
+  return watch;
 }
 
-static void gst_debugserver_qe_clean_client (gpointer key, gpointer value,
-  gpointer user_data)
+static void qe_watch_free (QEWatch * watch)
 {
-  g_slist_free_full (value, g_free);
+  g_free (watch->pad_path);
+  g_free (watch);
 }
 
-void gst_debugserver_qe_free (GstDebugserverQE * qe)
+static void qe_watch_list_free (gpointer ptr)
 {
-  g_hash_table_foreach (qe->watches, gst_debugserver_qe_clean_client, NULL);
-  g_hash_table_destroy (qe->watches);
-  g_free (qe);
-}
-
-gint gst_debugserver_qeb_prepare_confirmation_buffer (gchar * pad_path, gint qe_type,
-  gboolean toggle, gchar * buffer, gint max_size, PadWatch__WatchType type)
-{
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  PadWatch pad_watch = PAD_WATCH__INIT;
-  gint size;
-  pad_watch.pad_path = pad_path;
-  pad_watch.toggle = toggle;
-  pad_watch.watch_type = type;
-  pad_watch.has_qe_type = 1;
-  pad_watch.qe_type = qe_type;
-  info.confirmation = &pad_watch;
-  info.info_type = GSTREAMER_INFO__INFO_TYPE__PAD_WATCH_CONFIRMATION;
-
-  size = gstreamer_info__get_packed_size (&info);
-  assert(size <= max_size);
-  gstreamer_info__pack (&info, (guint8*)buffer);
-  return size;
-}
-
-// todo improve performance (when size > max_size)
-gint gst_debugserver_qebm_prepare_buffer (GstMiniObject * miniobj, gchar *pad_path, gchar * buffer, gint max_size)
-{
-  gint size;
-  SAFE_PREPARE_BUFFER_INIT (1024);
-
-  GstreamerInfo__InfoType info_type;
-  if (GST_IS_QUERY (miniobj)) {
-    SAFE_PREPARE_BUFFER (
-      gst_query_serialize (GST_QUERY (miniobj), m_buff, max_m_buff_size), size);
-    info_type = GSTREAMER_INFO__INFO_TYPE__QUERY;
-  } else if (GST_IS_EVENT (miniobj)) {
-    SAFE_PREPARE_BUFFER (
-      gst_event_serialize (GST_EVENT (miniobj), m_buff, max_m_buff_size), size);
-    info_type = GSTREAMER_INFO__INFO_TYPE__EVENT;
-  } else if (GST_IS_MESSAGE (miniobj)) {
-    SAFE_PREPARE_BUFFER (
-      gst_message_serialize (GST_MESSAGE (miniobj), m_buff, max_m_buff_size), size);
-    info_type = GSTREAMER_INFO__INFO_TYPE__MESSAGE;
-  } else if (GST_IS_BUFFER (miniobj)) {
-    SAFE_PREPARE_BUFFER (
-      gst_buffer_serialize (GST_BUFFER (miniobj), m_buff, max_m_buff_size), size);
-    info_type = GSTREAMER_INFO__INFO_TYPE__BUFFER;
-  }
-
-  GstreamerInfo info = GSTREAMER_INFO__INIT;
-  GstreamerQEBM evt = GSTREAMER_QEBM__INIT;
-  evt.payload.len = size;
-  evt.pad_path = pad_path;
-  evt.payload.data = (uint8_t*) m_buff;
-  info.info_type = info_type;
-  info.qebm = &evt;
-  size = gstreamer_info__get_packed_size (&info);
-
-  if (size > max_size) {
-    goto finalize;
-  }
-
-  gstreamer_info__pack (&info, (guint8*)buffer);
-
-finalize:
-  SAFE_PREPARE_BUFFER_CLEAN;
-  return size;
-}
-
-static void gst_debugserver_qe_append_client (gpointer key, gpointer value,
-  gpointer user_data)
-{
-  GArray *tmp = (GArray *) user_data;
-  GSList **clients = g_array_index (tmp, GSList**, 0);
-  gint type = *g_array_index (tmp, gint*, 1);
-  GstPad *pad = g_array_index (tmp, GstPad*, 2);
-  GSList * watches = (GSList*) value;
-  QEWatch *watch;
-  gboolean pad_ok, type_ok;
-
-  while (watches != NULL) {
-    watch = (QEWatch*)watches->data;
-    pad_ok = watch->pad == NULL || watch->pad == pad;
-    type_ok = watch->qe_type == -1 || type == watch->qe_type;
-
-    if (pad_ok && type_ok) {
-      *clients = g_slist_append (*clients, key);
-      break;
-    }
-    watches = watches->next;
-  }
-}
-
-GSList* gst_debugserver_qe_get_clients (GstDebugserverQE * evt, GstPad * pad,
-  gint type)
-{
-  GSList * clients = NULL;
-  GSList ** ptr_clients = &clients;
-  GArray *tmp = g_array_new (FALSE, FALSE, sizeof (gpointer));
-  gpointer type_ptr = &type;
-
-  g_array_insert_val (tmp, 0, ptr_clients);
-  g_array_insert_val (tmp, 1, type_ptr);
-  g_array_insert_val (tmp, 2, pad);
-
-  g_hash_table_foreach (evt->watches, gst_debugserver_qe_append_client, tmp);
-  g_array_unref (tmp);
-
-  return clients;
+  g_slist_free_full (ptr, (GDestroyNotify) qe_watch_free);
 }
 
 static gint qe_watch_compare (gconstpointer a, gconstpointer b)
@@ -159,61 +58,110 @@ static gint qe_watch_compare (gconstpointer a, gconstpointer b)
   QEWatch *a1 = (QEWatch*) a;
   QEWatch *b1 = (QEWatch*) b;
 
-  if (a1->qe_type == b1->qe_type && a1->pad == b1->pad) {
+  if (a1->qe_type == b1->qe_type && (g_strcmp0 (a1->pad_path, b1->pad_path) == 0 || a1->pad == NULL)) {
     return 0;
   } else {
     return 1;
   }
 }
 
-gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * evt, gboolean enable,
-  GstPad * pad, gint type, gpointer client_info)
+static gboolean gst_debugserver_qe_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
 {
-  if (enable == TRUE) {
-	  QEWatch *watch = g_malloc (sizeof (QEWatch));
-    watch->qe_type = type;
-    watch->pad = pad;
-    GSList *watches = g_hash_table_lookup (evt->watches, client_info);
-    if (watches == NULL) {
-      watches = g_slist_append (watches, watch);
-      g_hash_table_insert (evt->watches, client_info, watches);
-      return TRUE;
-    } else if (g_slist_find_custom (watches, watch, qe_watch_compare) != NULL) {
-      return FALSE;
-    }
+  GSList *list = new_ptr;
+  QEWatch watch;
 
-    watches = g_slist_append (watches, watch);
-    g_hash_table_replace (evt->watches, client_info, watches);
+  watch.pad = NULL;
+
+  if (original->event_info != NULL) {
+    watch.qe_type = original->event_info->type;
+    watch.pad_path = original->event_info->pad;
+  } else {
+    watch.qe_type = original->query_info->type;
+    watch.pad_path = original->query_info->pad;
+  }
+
+  return g_slist_find_custom (list, &watch, qe_watch_compare) != NULL;
+}
+
+GstDebugserverQE * gst_debugserver_qe_new (void)
+{
+  GstDebugserverQE *qe = (GstDebugserverQE*)g_malloc (sizeof(GstDebugserverQE));
+  gst_debugserver_watcher_init (&qe->watcher, gst_debugserver_qe_ok, (GDestroyNotify) qe_watch_list_free, qe_watch_compare);
+
+  return qe;
+}
+
+void gst_debugserver_qe_free (GstDebugserverQE * qe)
+{
+  gst_debugserver_qe_clean (qe);
+  gst_debugserver_watcher_deinit (&qe->watcher);
+  g_free (qe);
+}
+
+static gboolean gst_debugserver_qe_add_watch (GstDebugserverQE * qe, gint type,
+  GstPad * pad, gchar * pad_path, TcpClient * client)
+{
+  QEWatch *w = qe_watch_new (type, pad, pad_path);
+  if (gst_debugserver_watcher_add_watch (&qe->watcher, w, client) == TRUE) {
     return TRUE;
   } else {
-    GSList *list = g_hash_table_lookup (evt->watches, client_info);
-    if (list == NULL) {
-      return FALSE;
-    }
-    QEWatch w; w.pad = pad; w.qe_type = type;
-    GSList *link = g_slist_find_custom (list, &w, qe_watch_compare);
-    if (link == NULL) {
-      return FALSE;
-    }
-    g_free (link->data);
-    list = g_slist_delete_link (list, link);
-    g_hash_table_replace (evt->watches, client_info, list);
-    return TRUE;
+    qe_watch_free (w);
+    return FALSE;
   }
 }
 
-void gst_debugserver_qe_remove_client (GstDebugserverQE * evt, gpointer client_info)
+static gboolean gst_debugserver_qe_remove_watch (GstDebugserverQE * qe,
+  gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
-  GSList *list = g_hash_table_lookup (evt->watches, client_info);
-  if (list == NULL) {
-    return;
+  QEWatch w = { type, pad, pad_path };
+
+  return gst_debugserver_watcher_remove_watch (&qe->watcher, &w, client);
+}
+
+gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,
+  gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
+{
+  if (enable) {
+    return gst_debugserver_qe_add_watch (qe, type, pad, pad_path, client);
+  } else {
+    return gst_debugserver_qe_remove_watch (qe, type, pad, pad_path, client);
+  }
+}
+
+void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj)
+{
+  GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__EventInfo event_info = GST_DEBUGGER__EVENT_INFO__INIT;
+  GstDebugger__QueryInfo query_info = GST_DEBUGGER__QUERY_INFO__INIT;
+  gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
+
+  if (GST_IS_EVENT (obj)) {
+    GstEvent *event = GST_EVENT_CAST (obj);
+    event_info.type = event->type;
+    event_info.seqnum = event->seqnum;
+    event_info.timestamp = event->timestamp;
+    event_info.pad = pad_path;
+    gst_data.event_info = &event_info;
+    gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO;
+  } else if (GST_IS_QUERY (obj)) {
+    GstQuery *query = GST_QUERY_CAST (obj);
+    query_info.type = query->type;
+    query_info.pad = pad_path;
+    gst_data.query_info = &query_info;
+    gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_QUERY_INFO;
   }
 
-  g_slist_free_full (list, g_free);
-  g_hash_table_remove (evt->watches, client_info);
+  gst_debugserver_watcher_send_data (&qe->watcher, tcp_server, &gst_data);
+
+  g_free (pad_path);
 }
 
 void gst_debugserver_qe_clean (GstDebugserverQE * qe)
 {
-  g_hash_table_remove_all (qe->watches);
+  gst_debugserver_watcher_clean (&qe->watcher);
+}
+
+void gst_debugserver_qe_remove_client (GstDebugserverQE * qe, TcpClient * client)
+{
+  g_hash_table_remove (qe->watcher.clients, client);
 }

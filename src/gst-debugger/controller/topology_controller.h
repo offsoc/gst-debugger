@@ -18,14 +18,14 @@ class TopologyController : public virtual BaseController
 {
 	std::mutex m_topology;
 
-	void process_element(const TopologyElement &element, Topology_Action action);
-	void process_pad(const TopologyPad &pad, Topology_Action action);
-	void process_link(const TopologyLink &link, Topology_Action action);
+	void process_element(const GstDebugger::TopologyElement &element, GstDebugger::Action action);
+	void process_pad(const GstDebugger::TopologyPad &pad, GstDebugger::Action action);
+	void process_link(const GstDebugger::TopologyLink &link, GstDebugger::Action action);
 
 public:
 	void lock_topology() { m_topology.lock(); }
 	void unlock_topology() { m_topology.unlock(); }
-	void process(const Topology &topology);
+	void process(const GstDebugger::TopologyInfo &topology);
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_TOPOLOGY_CONTROLLER_H_ */

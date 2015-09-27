@@ -38,29 +38,26 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_DEBUGSERVER_TCP))
 #define GST_DEBUGSERVER_TCP_CAST(obj) ((GstDebugserverTcp *)(obj))
 
-typedef struct _GstDebugserverTcp GstDebugserverTcp;
-typedef struct _GstDebugserverTcpClass GstDebugserverTcpClass;
-
-typedef void (*GstDebugserverTcpProcessCommandFunction)
-    (Command * command, gpointer client_id, gpointer user_data);
-
-typedef void (*GstDebugserverTcpClientChanged)
-    (gpointer client_id, gpointer user_data);
-
 typedef struct _TcpClient {
   GSocketConnection * connection;
   GMutex mutex;
 } TcpClient;
 
+typedef void (*GstDebugserverTcpHandleCommandFunction)
+    (GstDebugger__Command * command, gpointer user_data, TcpClient * client);
+
+typedef void (*GstDebugserverTcpClientDisconnectedFunction)
+    (TcpClient * client, gpointer user_data);
+
+typedef struct _GstDebugserverTcp GstDebugserverTcp;
+typedef struct _GstDebugserverTcpClass GstDebugserverTcpClass;
+
 struct _GstDebugserverTcp {
   GObject parent_instance;
+  gpointer owner;
 
-  GstDebugserverTcpProcessCommandFunction process_command;
-  gpointer process_command_user_data;
-
-  GstDebugserverTcpClientChanged client_disconnected;
-  GstDebugserverTcpClientChanged client_connected;
-  gpointer parent;
+  GstDebugserverTcpHandleCommandFunction command_handler;
+  GstDebugserverTcpClientDisconnectedFunction client_disconnected_handler;
 
   /*< private >*/
   GSocketService * service;
@@ -71,18 +68,18 @@ struct _GstDebugserverTcp {
 struct _GstDebugserverTcpClass
 {
   GObjectClass parent_class;
+
+  void (*command_received)     (gpointer *tracer, GstDebugger__Command *command);
 };
 
 GstDebugserverTcp * gst_debugserver_tcp_new (void);
 
-void gst_debugserver_tcp_start_server (GstDebugserverTcp * tcp, guint port);
+gboolean gst_debugserver_tcp_start_server (GstDebugserverTcp * tcp, guint port);
 
 void gst_debugserver_tcp_stop_server (GstDebugserverTcp * tcp);
 
-gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, GSocketConnection * connection,
-  gchar * buffer, gint size);
-
-gboolean gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp * tcp, gchar * buffer, gint size);
+gboolean gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
+  GstDebugger__GStreamerData * gst_data);
 
 G_GNUC_INTERNAL GType gst_debugserver_tcp_get_type (void);
 

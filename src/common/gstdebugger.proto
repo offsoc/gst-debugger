@@ -1,116 +1,164 @@
 syntax = "proto2";
 
-enum Toggle {
-	ENABLE = 0;
-	DISABLE = 1;
+package GstDebugger;
+
+enum Action {
+	ADD = 0;
+	REMOVE = 1;
 }
 
-message PadWatch {
-	required string pad_path = 1;
-	required Toggle toggle = 2;
+message Value {
+	required uint64 gtype = 1;
+	optional int32 internal_type = 2;
+	required bytes data = 3;
+}
 
-	enum WatchType {
-		BUFFER = 0;
-		EVENT = 1;
-		QUERY = 2;
+message PropertyInfo {
+	required string name = 1;
+	required string nick = 2;
+	required string blurb = 3;
+	required int32 flags = 4;
+	required Value value = 5;
+	required string object = 6;
+}
+
+message PropertyRequest {
+	optional string name = 1;
+	required string object = 2;
+}
+
+message MessageRequest {
+	required Action action = 1;
+	required int32 type = 2;
+}
+
+message MessageInfo {
+	required int32 type = 1;
+	required uint64 timestamp = 2;
+	required string source = 3;
+	required uint32 seqnum = 4;
+	required bytes structure_data = 5;
+}
+
+message LogRequest {
+	required Action action = 1;
+	required int32 level = 2;
+	optional string category = 3;
+}
+
+message QueryWatchRequest {
+	required int32 type = 1;
+}
+
+message BufferWatchRequest {
+	required bool send_data = 1;
+}
+
+message EventWatchRequest {
+	required int32 type = 1;
+}
+
+message PadWatchRequest {
+	required Action action = 1;
+	optional string pad = 2;
+	
+	oneof pad_watch_type {
+		QueryWatchRequest query = 3;
+		BufferWatchRequest buffer = 4;
+		EventWatchRequest event = 5;
 	}
-	required WatchType watch_type = 3;
-	optional int32 qe_type = 4;
 }
 
-message LogWatch {
-	required int32 log_level = 1; // not supported yet
-	required Toggle toggle = 2;
-	optional string log_category = 3; // not supported yet
+message EventInfo {
+	required int32 type = 1;
+	required uint64 timestamp = 2;
+	required uint32 seqnum = 3;
+	required string pad = 4;
+	required bytes structure_data = 5;
 }
 
-message MessageWatch {
-	required int32 message_type = 1;
-	required Toggle toggle = 2;
+message QueryInfo {
+	required int32 type = 1;
+	required string pad = 2;
+	required bytes structure_data = 3;
 }
 
-message DebugCategoryList {
-	required string list = 1;
+message TypeDescriptionRequest {
+	enum Type {
+		FACTORY = 0;
+		ENUM_FLAGS = 1;
+		KLASS = 2;
+	}
+	
+	required string name = 1;
+	required Type type = 2;
 }
 
-message LogThreshold {
-	required string list = 1;
-	required bool overwrite = 2;
+message Command {
+	oneof command_type {
+		TypeDescriptionRequest type_description = 1;
+		bool debug_categories_list = 2;
+		MessageRequest message = 3;
+		LogRequest log = 4;
+		PadWatchRequest pad_watch = 5;
+		string log_threshold = 6;
+		bool entire_topology = 7;
+		PropertyRequest property = 8;
+	}
 }
 
-message EnumEntry {
+message DebugCategories {
+	repeated string category = 1;
+}
+
+message LogInfo {
+	required int32 level = 1;
+	required string category = 2;
+	required string file = 3;
+	required string function = 4;
+	required int32 line = 5;
+	required string object = 6;
+	required string message = 7;
+}
+
+message EnumFlagsValue {
 	required string name = 1;
 	required int32 value = 2;
 	required string nick = 3;
 }
 
-message EnumType {
-	repeated EnumEntry entry = 1;
-	required string type_name = 2;
-	required uint64 base_gtype = 3;
-}
-
-message Property {
-	required string element_path = 1;
-	required string property_name = 2;
-	optional uint32 type = 3;
-	optional int32 internal_type = 4;
-	optional string type_name = 5;
-	optional string property_value = 6;
-	optional string description = 7;
-	optional int32 flags = 8;
-}
-
-message Command {	
-	optional PadWatch pad_watch = 1;
-	optional LogWatch log_watch = 2;
-	optional MessageWatch message_watch = 3;
-	optional LogThreshold log_threshold = 4;
-	optional Property property = 5;
-	optional string enum_name = 6;
-	optional string factory_name = 7;
-	optional string pad_path = 8;
-
-	enum CommandType {
-		PAD_WATCH = 0;
-		LOG_WATCH = 1;
-		MESSAGE_WATCH = 2;
-		LOG_THRESHOLD = 3;
-		DEBUG_CATEGORIES = 4;
-		TOPOLOGY = 5;
-		PROPERTY = 6;
-		ENUM_TYPE = 7;
-		FACTORY = 8;
-		PAD_DYNAMIC_INFO = 9;
+message EnumFlagsType {
+	enum EnumFlagsKind {
+		ENUM = 0;
+		FLAGS = 1;
 	}
-	required CommandType command_type = 9;
+
+	required string type_name = 1;
+	required EnumFlagsKind kind = 2;
+	repeated EnumFlagsValue values = 3;
 }
 
-message GstreamerLog {
-	required int32 level = 1;
-	required string category_name = 2;
-	required string file = 3;
-	required string function = 4;
-	required int32 line = 5;
-	required string object_path = 6;
-	required string message = 7;
+message FactoryMeta {
+	required string key = 1;
+	required string value = 2;
 }
 
-message GstreamerQEBM {
-	required bytes payload = 1;
-	optional string pad_path = 2;
-}
-
-message TopologyLink {
-	required string src_pad_path = 1;
-	required string sink_pad_path = 2;
-}
-
-message TopologyTemplate {
+message PadTemplate {
 	required string name_template = 1;
 	required int32 direction = 2;
 	required int32 presence = 3;
 	required string caps = 4;
+}
+
+message FactoryType {
+	required string name = 1;
+	repeated FactoryMeta metadata = 2;
+	repeated PadTemplate templates = 3;
+}
+
+message TopologyLink {
+	required string src_pad = 1;
+	required string sink_pad = 2;
 }
 
 message TopologyElement {
@@ -125,77 +173,30 @@ message TopologyPad {
 	required bool is_ghostpad = 2;
 	required int32 direction = 3;
 	required int32 presence = 4;
-	optional TopologyTemplate template = 5;
+	optional PadTemplate template = 5;
 }
 
-message PadDynamicInfo {
-	required string allowed_caps = 1;
-	required string current_caps = 2;
-	required string pad_path = 3;
-}
+message TopologyInfo {
+	required Action action = 1;
 
-message FactoryMetaEntry {
-	required string key = 1;
-	required string value = 2;
-}
-
-message FactoryInfo {
-	required string name = 1;
-	repeated TopologyTemplate templates = 2;
-	repeated FactoryMetaEntry meta_entries = 3;
-}
-
-message Topology {
-	enum ObjectType {
-		PAD = 0;
-		ELEMENT = 1;
-		LINK = 2;
+	oneof topology_type {
+		TopologyLink link = 2;
+		TopologyElement element = 3;
+		TopologyPad pad = 4;
 	}
-	enum Action {
-		ADD = 0;
-		REMOVE = 1;
-	}
-	
-	required ObjectType type = 1;
-	required Action action = 2;
-	optional TopologyPad pad = 3;
-	optional TopologyElement element = 4;
-	optional TopologyLink link = 5;
 }
 
-message ServerError {
-	required string message = 1;
-}
-
-message GstreamerInfo {
-	enum InfoType {
-		BUFFER = 0;
-		EVENT = 1;
-		QUERY = 2;
-		MESSAGE = 3;
-		LOG = 4;
-		DEBUG_CATEGORIES = 5;
-		TOPOLOGY = 6;
-		PAD_WATCH_CONFIRMATION = 7;
-		MESSAGE_CONFIRMATION = 8;
-		PROPERTY = 9;
-		SERVER_ERROR = 10;
-		ENUM_TYPE = 11;
-		FACTORY = 12;
-		PAD_DYNAMIC_INFO = 13;
+message GStreamerData {
+	oneof info_type {
+		DebugCategories debug_categories = 1;
+		LogInfo log_info = 2;
+		EnumFlagsType enum_flags_type = 3;
+		FactoryType factory = 4;
+		MessageInfo message_info = 5;
+		Command confirmation = 6;
+		EventInfo event_info = 7;
+		TopologyInfo topology_info = 8;
+		QueryInfo query_info = 9;
+		PropertyInfo property_info = 10;
 	}
-	
-	required InfoType info_type = 1;
-	
-	optional GstreamerLog log = 2;
-	optional DebugCategoryList debug_categories = 3;
-	optional GstreamerQEBM qebm = 4;
-	optional PadWatch confirmation = 5;
-	optional MessageWatch bus_msg_confirmation = 6;
-	optional Topology topology = 7;
-	optional Property property = 8;
-	optional ServerError server_error = 9;
-	optional EnumType enum_type = 10;
-	optional FactoryInfo factory_info = 11;
-	optional PadDynamicInfo pad_dynamic_info = 12;
 }

@@ -98,7 +98,7 @@ void display_caps(const Glib::RefPtr<Gst::Caps> &caps,
 
 #undef APPEND_SUB_ROW
 
-Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const TopologyTemplate &tpl)
+Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const GstDebugger::PadTemplate &tpl)
 {
 	return Gst::PadTemplate::create(tpl.name_template(),
 			static_cast<Gst::PadDirection>(tpl.direction()),

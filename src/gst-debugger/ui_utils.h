@@ -36,7 +36,7 @@ void display_caps(const Glib::RefPtr<Gst::Caps> &caps,
 		const Glib::RefPtr<Gtk::TreeStore> &model, const Gtk::TreeModelColumn<Glib::ustring> &col_name,
 		const Gtk::TreeModelColumn<Glib::ustring> &col_value, const Gtk::TreeModel::Row& parent_row);
 
-Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const TopologyTemplate &tpl);
+Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const GstDebugger::PadTemplate &tpl);
 
 std::string flags_value_to_string(guint value);
 

@@ -19,7 +19,7 @@
 class TcpClient
 {
 public:
-	typedef sigc::signal1<void, const GstreamerInfo&> frame_received_slot;
+	typedef sigc::signal1<void, const GstDebugger::GStreamerData&> frame_received_slot;
 
 private:
 	Glib::RefPtr<Gio::SocketClient> client;
@@ -36,12 +36,13 @@ public:
 	bool connect(const std::string &address, int port);
 	bool disconnect();
 	void write_data(char *data, int size);
-	void send_command(const Command &cmd);
+	void send_command(const GstDebugger::Command &gst_data);
 
 	bool is_connected() const { return connected; }
 
 	sigc::signal1<void, bool> signal_status_changed;
 	frame_received_slot signal_frame_received;
+
 };
 
 #endif /* SRC_GST_DEBUGGER_GST_DEBUGGER_TCP_CLIENT_H_ */

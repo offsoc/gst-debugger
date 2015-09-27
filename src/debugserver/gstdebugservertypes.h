@@ -1,6 +1,9 @@
 /* GStreamer
  * Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>
  *
+ * gstdebugserver.c: tracing module that sends serialized data to
+ * an user.
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either
@@ -17,11 +20,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GST_DEBUGSERVER_FACTORY_H__
-#define __GST_DEBUGSERVER_FACTORY_H__
+#ifndef __GST_DEBUGSERVER_ENUM_H__
+#define __GST_DEBUGSERVER_ENUM_H__
 
-#include <gst/gst.h>
+#include "gstdebugservertcp.h"
 
-gint gst_debugserver_factory_prepare_buffer (GstElementFactory *factory, gchar * buffer, gint max_size);
+void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *client,
+    const GstDebugger__TypeDescriptionRequest *request);
 
-#endif /* __GST_DEBUGSERVER_FACTORY_H__ */
+
+#endif /* __GST_DEBUGSERVER_ENUM_H__ */
