@@ -28,7 +28,6 @@ public:
 	void send_data_type_request_command(const std::string &type_name, GstDebugger::TypeDescriptionRequest_Type type);
 	void send_request_debug_categories_command();
 	void send_request_entire_topology_command();
-	void send_request_factory_command(const std::string &factory_name);
 	/*void send_property_command(const std::string &path, const std::string &property_name, GValue *gvalue);
 	void send_request_pad_dynamic_info(const std::string &pad_path);*/
 };

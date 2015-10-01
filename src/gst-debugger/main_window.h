@@ -11,6 +11,7 @@
 #include "dialogs/connection_properties_dialog.h"
 #include "dialogs/enums_dialog.h"
 #include "dialogs/factories_dialog.h"
+#include "dialogs/klasses_dialog.h"
 #include "modules/main_module.h"
 #include "modules/gst_properties_module.h"
 #include "pipeline-drawer/graph_module.h"
@@ -31,6 +32,7 @@ class MainWindow : public IMainView
 	Gtk::MenuItem *connection_properties;
 	Gtk::MenuItem *remote_enum_types;
 	Gtk::MenuItem *remote_factories;
+	Gtk::MenuItem *remote_klasses;
 	Gtk::MenuItem *connect_menu_item;
 	Gtk::MenuItem *about_menu_item;
 	Gtk::MenuItem *quit_menu_item;
@@ -41,6 +43,7 @@ class MainWindow : public IMainView
 	ConnectionPropertiesDialog *connection_properties_dialog;
 	EnumsDialog *enums_dialog;
 	FactoriesDialog *factories_dialog;
+	KlassesDialog *klasses_dialog;
 
 	std::shared_ptr<Glib::Dispatcher> dispatcher;
 	std::shared_ptr<MainModule> main_module;

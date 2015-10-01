@@ -31,7 +31,7 @@ private:
 
 	void show_pad_properties();
 
-	void new_property(const GstDebugger::PropertyInfo& property);
+	void new_property(const GstDebugger::PropertyValue& property);
 	void new_property_();
 
 	void selected_object_changed();

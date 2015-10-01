@@ -111,17 +111,6 @@ void CommandFactory::send_request_debug_categories_command()
 	client->send_command(cmd);
 }
 
-void CommandFactory::send_request_factory_command(const std::string &factory_name)
-{
-	GstDebugger::Command cmd;
-	auto rq = new GstDebugger::TypeDescriptionRequest();
-	rq->set_type(GstDebugger::TypeDescriptionRequest_Type_FACTORY);
-	rq->set_name(factory_name);
-	cmd.set_allocated_type_description(rq);
-
-	client->send_command(cmd);
-}
-
 
 /*
 void CommandFactory::send_request_topology_command()

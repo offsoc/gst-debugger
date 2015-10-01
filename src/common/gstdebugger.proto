@@ -18,8 +18,13 @@ message PropertyInfo {
 	required string nick = 2;
 	required string blurb = 3;
 	required int32 flags = 4;
-	required Value value = 5;
-	required string object = 6;
+	required Value default_value = 5;
+}
+
+message PropertyValue {
+	required string name = 1;
+	required string object = 2;
+	required Value value = 3;
 }
 
 message PropertyRequest {
@@ -156,6 +161,11 @@ message FactoryType {
 	repeated PadTemplate templates = 3;
 }
 
+message ElementKlass {
+	required string name = 1;
+	repeated PropertyInfo property_info = 2;
+}
+
 message TopologyLink {
 	required string src_pad = 1;
 	required string sink_pad = 2;
@@ -197,6 +207,7 @@ message GStreamerData {
 		EventInfo event_info = 7;
 		TopologyInfo topology_info = 8;
 		QueryInfo query_info = 9;
-		PropertyInfo property_info = 10;
+		PropertyValue property_value = 10;
+		ElementKlass element_klass = 11;
 	}
 }

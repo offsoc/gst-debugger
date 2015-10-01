@@ -30,13 +30,13 @@ GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& build
 void GstPropertiesModule::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
-	controller->on_property_received.connect(sigc::mem_fun(*this, &GstPropertiesModule::new_property));
+	controller->on_property_value_received.connect(sigc::mem_fun(*this, &GstPropertiesModule::new_property));
 	controller->on_selected_object_changed.connect(sigc::mem_fun(*this, &GstPropertiesModule::selected_object_changed));
 }
 
-void GstPropertiesModule::new_property(const GstDebugger::PropertyInfo &property)
+void GstPropertiesModule::new_property(const GstDebugger::PropertyValue &property)
 {
-	gui_push("property", new GstDebugger::PropertyInfo(property));
+	gui_push("property", new GstDebugger::PropertyValue(property));
 	gui_emit("property");
 }
 
@@ -65,7 +65,7 @@ void GstPropertiesModule::showPropertiesButton_clicked_cb()
 
 void GstPropertiesModule::new_property_()
 {
-	auto property = gui_pop<GstDebugger::PropertyInfo*>("property");
+	auto property = gui_pop<GstDebugger::PropertyValue*>("property");
 
 	auto element = std::dynamic_pointer_cast<ElementModel>(ElementPathProcessor(property->object()).get_last_obj());
 	if (!element)

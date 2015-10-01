@@ -195,7 +195,7 @@ static void
 gst_debugserver_tracer_send_property (GstDebugserverTcp * tcp_server, TcpClient * client, GParamSpec * spec, GstElement * element)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-  GstDebugger__PropertyInfo property = GST_DEBUGGER__PROPERTY_INFO__INIT;
+  GstDebugger__PropertyValue property = GST_DEBUGGER__PROPERTY_VALUE__INIT;
   GstDebugger__Value value = GST_DEBUGGER__VALUE__INIT;
   GType out_gtype;
   InternalGType out_internal_type;
@@ -207,10 +207,7 @@ gst_debugserver_tracer_send_property (GstDebugserverTcp * tcp_server, TcpClient 
     return;
   }
 
-  property.blurb = (gchar*) g_param_spec_get_blurb (spec);
-  property.flags = spec->flags;
   property.name = (gchar*) g_param_spec_get_name (spec);
-  property.nick = (gchar*) g_param_spec_get_nick (spec);
   property.object = (gchar*) object;
 
   g_value_init (&gvalue, spec->value_type);
@@ -230,8 +227,8 @@ gst_debugserver_tracer_send_property (GstDebugserverTcp * tcp_server, TcpClient 
   }
 
   property.value = &value;
-  gst_data.property_info = &property;
-  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_PROPERTY_INFO;
+  gst_data.property_value = &property;
+  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_PROPERTY_VALUE;
 
   gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
 

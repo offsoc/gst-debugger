@@ -22,7 +22,12 @@
 
 #include "gstdebugservertypes.h"
 
+#include "common/serializer.h"
+#include "common/common.h"
+
 #include <gst/gst.h>
+
+#include <string.h>
 
 #define SERIALIZE_ENUM_FLAGS \
   do { \
@@ -145,6 +150,74 @@ static void gst_debugserver_types_send_factory (GstDebugserverTcp *tcp_server, T
   g_strfreev (keys);
 }
 
+static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, TcpClient *client, const gchar * name)
+{
+  GType type = g_type_from_name (name);
+  GObjectClass *obj_klass = G_OBJECT_CLASS (g_type_class_peek (type));
+  GstElementClass *element_klass = GST_ELEMENT_CLASS (obj_klass);
+  GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__ElementKlass klass = GST_DEBUGGER__ELEMENT_KLASS__INIT;
+  GstDebugger__PropertyInfo **properties_info = NULL;
+  GParamSpec **specs;
+  GValue gvalue = G_VALUE_INIT;
+  gint n_specs, i;
+  GstElement *element = NULL;
+  GType out_gtype;
+  InternalGType out_internal_type;
+  GstDebugger__Value *value = NULL;
+
+  if (element_klass == NULL) {
+    // todo
+    return;
+  }
+
+  klass.name = (gchar*) name;
+  specs = g_object_class_list_properties (obj_klass, &n_specs);
+  klass.n_property_info = n_specs;
+
+  properties_info = g_malloc (sizeof (GstDebugger__PropertyInfo*) * n_specs);
+
+  for (i = 0; i < n_specs; i++) {
+    properties_info[i] = g_malloc (sizeof (GstDebugger__PropertyInfo));
+    gst_debugger__property_info__init (properties_info[i]);
+    properties_info[i]->blurb = (gchar*) g_param_spec_get_blurb (specs[i]);
+    properties_info[i]->flags = specs[i]->flags;
+    properties_info[i]->name = (gchar*) g_param_spec_get_name (specs[i]);
+    properties_info[i]->nick = (gchar*) g_param_spec_get_nick (specs[i]);
+
+    g_value_init (&gvalue, specs[i]->value_type);
+    g_param_value_set_default (specs[i], &gvalue);
+    value = (GstDebugger__Value*) g_malloc (sizeof (GstDebugger__Value));
+    gst_debugger__value__init (value);
+    value->data.data = (uint8_t*) g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
+    value->data.len = value->data.data == NULL ? 0 : strlen (value->data.data);
+    value->gtype = out_gtype;
+
+    if (out_gtype == specs[i]->value_type) {
+      value->internal_type = out_internal_type;
+      value->has_internal_type = TRUE;
+    } else {
+      value->has_internal_type = FALSE;
+    }
+    properties_info[i]->default_value = value;
+
+    g_value_unset (&gvalue);
+  }
+
+  klass.property_info = properties_info;
+  gst_data.element_klass = &klass;
+  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_ELEMENT_KLASS;
+
+  gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
+
+  for (i = 0; i < (gint) n_specs; i++) {
+    g_free (properties_info[i]->default_value);
+    g_free (properties_info[i]);
+  }
+
+  g_free (properties_info);
+}
+
 void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *client, const GstDebugger__TypeDescriptionRequest *request)
 {
   switch (request->type) {
@@ -153,5 +226,9 @@ void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *
     break;
   case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__ENUM_FLAGS:
     gst_debugserver_types_send_enum_flags (tcp_server, client, request->name);
+    break;
+  case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__KLASS:
+    gst_debugserver_types_send_klass (tcp_server, client, request->name);
+    break;
   }
 }

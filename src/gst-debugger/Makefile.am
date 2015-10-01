@@ -66,7 +66,10 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	dialogs/factories_dialog.cpp \
 	dialogs/factories_dialog.h \
 	modules/gst_properties_module.cpp \
-	modules/gst_properties_module.h
+	modules/gst_properties_module.h \
+	models/gst_klass_model.h \
+	dialogs/klasses_dialog.h \
+	dialogs/klasses_dialog.cpp
 
 gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
 gst_debugger_@GST_API_VERSION@_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la

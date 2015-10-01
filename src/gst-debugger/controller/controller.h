@@ -15,6 +15,7 @@
 
 #include "models/gst_enum_model.h"
 #include "models/gst_factory_model.h"
+#include "models/gst_klass_model.h"
 
 #include <boost/optional/optional.hpp>
 
@@ -29,6 +30,7 @@ private:
 
 	std::vector<GstEnumType> enum_container;
 	std::vector<FactoryModel> factory_container;
+	std::vector<KlassModel> klass_container;
 	std::vector<std::string> debug_categories;
 
 	std::shared_ptr<ObjectModel> selected_object;
@@ -38,6 +40,7 @@ private:
 
 	void update_enum_model(const GstDebugger::EnumFlagsType &enum_type);
 	void update_factory_model(const GstDebugger::FactoryType &factory_info);
+	void update_klass_model(const GstDebugger::ElementKlass &klass_element);
 
 	/*
 
@@ -63,9 +66,11 @@ public:
 
 	boost::optional<GstEnumType> get_enum_type(const std::string &name);
 	boost::optional<FactoryModel> get_factory(const std::string &name);
+	boost::optional<KlassModel> get_klass(const std::string &name);
 
 	const std::vector<FactoryModel>& get_factories() const { return factory_container; }
-	const std::vector<GstEnumType> get_enums() const { return enum_container; }
+	const std::vector<GstEnumType>& get_enums() const { return enum_container; }
+	const std::vector<KlassModel>& get_klasses() const { return klass_container; }
 
 	std::shared_ptr<ObjectModel> get_selected_object() const { return selected_object; }
 
@@ -76,8 +81,9 @@ public:
 	sigc::signal<void, const GstDebugger::Command&> on_confirmation_received;
 	sigc::signal<void, const Glib::ustring&, bool> on_enum_list_changed; /* enum name, true - add, false - remove */
 	sigc::signal<void, const Glib::ustring&, bool> on_factory_list_changed;
+	sigc::signal<void, const Glib::ustring&, bool> on_klass_list_changed;
 	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
-	sigc::signal<void, const GstDebugger::PropertyInfo&> on_property_received;
+	sigc::signal<void, const GstDebugger::PropertyValue&> on_property_value_received;
 	sigc::signal<void> on_selected_object_changed;
 /*	sigc::signal<void, const Glib::ustring&> on_new_log_entry;*/
 };

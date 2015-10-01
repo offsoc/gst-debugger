@@ -57,14 +57,24 @@ void Controller::process_frame(const GstDebugger::GStreamerData &data)
 		process(data.topology_info());
 		on_model_changed(current_model);
 
-		if (data.topology_info().has_element() && !get_factory(data.topology_info().element().factory_name()))
+		if (data.topology_info().has_element())
 		{
-			send_request_factory_command(data.topology_info().element().factory_name());
+			if (!get_factory(data.topology_info().element().factory_name()))
+				send_data_type_request_command(data.topology_info().element().factory_name(), GstDebugger::TypeDescriptionRequest_Type_FACTORY);
+			if (!get_klass(data.topology_info().element().type_name()))
+				send_data_type_request_command(data.topology_info().element().type_name(), GstDebugger::TypeDescriptionRequest_Type_KLASS);
 		}
 		break;
 	case GstDebugger::GStreamerData::kFactory:
 		update_factory_model(data.factory());
 		on_factory_list_changed(data.factory().name(), true);
+		break;
+	case GstDebugger::GStreamerData::kElementKlass:
+		update_klass_model(data.element_klass());
+		on_klass_list_changed(data.element_klass().name(), true);
+		break;
+	case GstDebugger::GStreamerData::kPropertyValue:
+		on_property_value_received(data.property_value());
 		break;
 	}
 	/*
@@ -114,6 +124,10 @@ boost::optional<FactoryModel> Controller::get_factory(const std::string &name)
 	return get_from_container<FactoryModel>(factory_container, name, [](const FactoryModel& factory) {return factory.get_name(); } );
 }
 
+boost::optional<KlassModel> Controller::get_klass(const std::string &name)
+{
+	return get_from_container<KlassModel>(klass_container, name, [](const KlassModel& klass) {return klass.get_name(); } );
+}
 
 void Controller::model_up()
 {
@@ -213,6 +227,30 @@ void Controller::update_factory_model(const GstDebugger::FactoryType &factory_in
 	if (it == factory_container.end())
 	{
 		factory_container.push_back(model);
+	}
+	else
+	{
+		*it = model;
+	}
+}
+
+void Controller::update_klass_model(const GstDebugger::ElementKlass &klass_info)
+{
+	KlassModel model(klass_info.name());
+
+	// todo copy & paste get_enum_type()
+	auto it = std::find_if(klass_container.begin(), klass_container.end(), [model](const KlassModel& type) {
+		return type.get_name() == model.get_name();
+	});
+
+	for (auto property : klass_info.property_info())
+	{
+		model.append_property(PropertyModel(property.name(), property.nick(), property.blurb(), (GParamFlags)property.flags()));
+	}
+
+	if (it == klass_container.end())
+	{
+		klass_container.push_back(model);
 	}
 	else
 	{

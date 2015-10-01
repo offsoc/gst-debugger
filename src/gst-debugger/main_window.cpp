@@ -31,6 +31,9 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("remoteFactoriesMenuitem", remote_factories);
 	remote_factories->signal_activate().connect([this] { factories_dialog->show(); });
 
+	builder->get_widget("remoteKlassesMenuitem", remote_klasses);
+	remote_klasses->signal_activate().connect([this] { klasses_dialog->show(); });
+
 	builder->get_widget("connectMenuItem", connect_menu_item);
 	connect_menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectMenuItem_activate_cb));
 
@@ -44,6 +47,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 
 	enums_dialog = load_dialog<EnumsDialog>("remoteDataDialog");
 	factories_dialog = load_dialog<FactoriesDialog>("remoteDataDialog");
+	klasses_dialog = load_dialog<KlassesDialog>("remoteDataDialog");
 	connection_properties_dialog = load_dialog<ConnectionPropertiesDialog>("connectionPropertiesDialog");
 
 	{
@@ -82,6 +86,9 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 
 	factories_dialog->set_controller(controller);
 	factories_dialog->set_transient_for(*this);
+
+	klasses_dialog->set_controller(controller);
+	klasses_dialog->set_transient_for(*this);
 
 	properties_module->set_controller(controller);
 
