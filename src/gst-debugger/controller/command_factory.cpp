@@ -111,34 +111,29 @@ void CommandFactory::send_request_debug_categories_command()
 	client->send_command(cmd);
 }
 
+void CommandFactory::send_set_property_command(const std::string &path, const std::string &property_name, GValue *gvalue)
+{
+	GstDebugger::Value *value = new GstDebugger::Value();
+	GType gtype; InternalGType internal_type;
+	char *data = g_value_serialize(gvalue, &gtype, &internal_type);
+	value->set_data(data);
+	g_free (data);
+	value->set_gtype(gtype);
+	value->set_internal_type(internal_type);
+	value->set_type_name("xxx"); // todo
 
+	GstDebugger::PropertyValue *prop_val = new GstDebugger::PropertyValue();
+	prop_val->set_object(path);
+	prop_val->set_name(property_name);
+	prop_val->set_allocated_value(value);
+
+	GstDebugger::Command cmd;
+	cmd.set_allocated_property_set(prop_val);
+
+	client->send_command(cmd);
+
+}
 /*
-void CommandFactory::send_request_topology_command()
-{
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_TOPOLOGY);
-
-	client->send_command(cmd);
-}
-
-void CommandFactory::send_property_command(const std::string &path, const std::string &property_name, GValue *gvalue)
-{
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_PROPERTY);
-	Property *property = new Property();
-	property->set_element_path(path);
-	property->set_property_name(property_name);
-	GType type; InternalGType internal_type;
-	gchar *serialized = g_value_serialize(gvalue, &type, &internal_type);
-	property->set_property_value(serialized);
-	g_free(serialized);
-	property->set_internal_type(internal_type);
-	property->set_type(type);
-	cmd.set_allocated_property(property);
-
-	client->send_command(cmd);
-}
-
 void CommandFactory::send_request_pad_dynamic_info(const std::string &pad_path)
 {
 	Command cmd;

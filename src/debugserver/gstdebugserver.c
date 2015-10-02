@@ -218,8 +218,9 @@ gst_debugserver_tracer_send_property (GstDebugserverTcp * tcp_server, TcpClient 
   value.data.data = serialized_data;
   value.data.len = serialized_data == NULL ? 0 : strlen (serialized_data);
   value.gtype = out_gtype;
+  value.type_name = (gchar*) g_type_name (spec->value_type);
 
-  if (out_gtype == spec->value_type) {
+  if (out_gtype != spec->value_type) {
     value.internal_type = out_internal_type;
     value.has_internal_type = TRUE;
   } else {
@@ -432,6 +433,15 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
   case GST_DEBUGGER__COMMAND__COMMAND_TYPE_PROPERTY:
     gst_debugserver_process_property_request (self, client, command->property);
     break;
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_PROPERTY_SET:
+  {
+    GValue val = G_VALUE_INIT;
+    GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (self->pipeline), command->property_set->object);
+    g_value_deserialize (&val, command->property_set->value->gtype, command->property_set->value->internal_type,
+      command->property_set->value->data.data, command->property_set->value->data.len);
+    g_object_set_property (G_OBJECT (element), command->property_set->name, &val);
+    g_value_unset (&val);
+  }
   }
 }
 

@@ -73,23 +73,23 @@ void GstPropertiesModule::new_property_()
 		return;
 	}
 
-	/* todo std::shared_ptr<GValueBase> value_base = element->get_property(property->name());
-	std::shared_ptr<GValueEnum> value_enum = std::dynamic_pointer_cast<GValueEnum>(value_base);
+	std::shared_ptr<GValueBase> value_base = element->get_property(property->name());
+	/*std::shared_ptr<GValueEnum> value_enum = std::dynamic_pointer_cast<GValueEnum>(value_base);
 
-	auto& container = const_cast<RemoteDataContainer<GstEnumType>&>(controller->get_enum_container());
-	if (value_enum && container.has_item(property->type_name()))
+	if (value_enum && controller->get_enum_type(property->value().type_name()))
 	{
-		value_enum->set_type(container.get_item(property->type_name()));
+		value_enum->set_type(container.get_item(property->value().type_name()));
+	}*/
+
+	if (!update_property(value_base, property->name()))
+	{
+		append_property(value_base, property->name());
 	}
 
-	if (!update_property(value_base, property))
-	{
-		append_property(value_base, property);
-	}*/
 	delete property;
 }
 
-/*bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& value_base, GstDebugger::PropertyInfo *property)
+bool GstPropertiesModule::update_property(const std::shared_ptr<GValueBase>& value_base, const std::string prop_name)
 {
 	for (auto internal_box : properties_box->get_children())
 	{
@@ -99,61 +99,52 @@ void GstPropertiesModule::new_property_()
 			continue;
 		}
 
-		Gtk::Label *label = nullptr;
-		Gtk::Widget *widget = nullptr;
-
-		for (auto cd : hb->get_children())
-		{
-			if (label == nullptr && (label = dynamic_cast<Gtk::Label*>(cd)) != nullptr)
-			{
-				if (label->get_text() != property->name())
-				{
-					label = nullptr;
-					break;
-				}
-			}
-			else if (dynamic_cast<Gtk::Button*>(cd) == nullptr || dynamic_cast<Gtk::CheckButton*>(cd) != nullptr)
-			{
-				widget = cd;
-			}
-		}
-
-		if (label == nullptr || widget == nullptr)
-		{
+		if (reinterpret_cast<gchar*>(hb->get_data("property-name")) != prop_name)
 			continue;
-		}
 
-		hb->remove(*widget);
-		widget = value_base->get_widget();
-		widget->show();
-		hb->pack_start(*widget, true, 10);
-		hb->reorder_child(*widget, 1);
-		return true;
+		for (auto widget : hb->get_children())
+		{
+			if (widget->get_data("is-gvalue-widget") == GINT_TO_POINTER(1))
+			{
+				bool sensitive = widget->get_sensitive();
+				hb->remove(*widget);
+				widget = value_base->get_widget();
+				widget->set_sensitive(sensitive);
+				widget->show();
+				hb->pack_start(*widget, true, 10);
+				hb->reorder_child(*widget, 1);
+				return true;
+			}
+		}
 	}
 
 	return false;
-}*/
-/*
-void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& value_base, GstDebugger::PropertyInfo *property)
+}
+
+void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& value_base, const std::string &prop_name)
 {
+	auto e = std::dynamic_pointer_cast<ElementModel>(controller->get_selected_object());
+	if (!e) return;
+	auto klass = controller->get_klass(e->get_type_name());
+	if (!klass) return;
+	auto prop = klass.get().get_property(prop_name);
+	if (!prop) return;
+
 	Gtk::Box *hbox = new Gtk::Box (Gtk::ORIENTATION_HORIZONTAL, 0);
-	hbox->show();
-	auto prop_name = property->name();
+	hbox->set_data("property-name", g_strdup (prop_name.c_str()), g_free);
 	Gtk::Label *lbl = Gtk::manage(new Gtk::Label(prop_name));
-	lbl->set_tooltip_text(property->blurb());
-	lbl->show();
+	lbl->set_tooltip_text(prop->get_blurb());
 	Gtk::Button *btn = Gtk::manage(new Gtk::Button("Refresh"));
 	btn->signal_clicked().connect([this, prop_name] {request_selected_element_property(prop_name);});
-	btn->show();
 	hbox->pack_start(*lbl, false, false);
 	auto value_widget = value_base->get_widget();
-	value_widget->show();
-	value_widget->set_sensitive(property->flags() & G_PARAM_WRITABLE);
+	value_widget->set_sensitive(prop.get().get_flags() & G_PARAM_WRITABLE);
 	hbox->pack_start(*value_widget, true, true);
 	hbox->pack_start(*btn, false, false);
 	properties_box->pack_start(*hbox);
+	hbox->show_all();
 }
-*/
+
 void GstPropertiesModule::clear_widgets()
 {
 	for (auto c : properties_box->get_children())

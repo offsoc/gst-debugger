@@ -51,6 +51,16 @@ public:
 	}
 
 	const std::vector<PropertyModel>& get_properties() const { return properties; }
+
+	boost::optional<PropertyModel> get_property(const std::string &property_name) const
+	{
+		auto it = std::find_if(properties.begin(), properties.end(), [property_name](const PropertyModel& m) { return m.get_name() == property_name; });
+
+		if (it == properties.end())
+			return boost::none;
+
+		return *it;
+	}
 };
 
 #endif /* SRC_GST_DEBUGGER_MODELS_GST_KLASS_MODEL_H_ */

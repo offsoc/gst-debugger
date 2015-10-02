@@ -12,12 +12,14 @@
 
 class GValueCaps : public GValueBase
 {
+	Gtk::Widget* create_widget() override;
+
+	void update_widget(Gtk::Widget* widget) override;
+
 public:
 	GValueCaps(GValue* gobj);
 
 	std::string to_string() const override;
-
-	Gtk::Widget* get_widget() const override;
 };
 
 #endif /* SRC_GST_DEBUGGER_GVALUE_CONVERTER_GVALUE_CAPS_H_ */

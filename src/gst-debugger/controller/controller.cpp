@@ -7,6 +7,10 @@
 
 #include "controller.h"
 #include "ui_utils.h"
+#include "element_path_processor.h"
+
+#include "common/common.h"
+#include "common/deserializer.h"
 
 #include <gtkmm.h>
 
@@ -30,6 +34,7 @@ Controller::Controller(IMainView *view)
 int Controller::run(int &argc, char **&argv)
 {
 	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "eu.cookandcommit.gst-debugger");
+	app->set_flags(app->get_flags() | Gio::APPLICATION_NON_UNIQUE);
 	view->set_controller(shared_from_this());
 	return app->run(*view);
 }
@@ -74,31 +79,10 @@ void Controller::process_frame(const GstDebugger::GStreamerData &data)
 		on_klass_list_changed(data.element_klass().name(), true);
 		break;
 	case GstDebugger::GStreamerData::kPropertyValue:
+		add_property(data.property_value());
 		on_property_value_received(data.property_value());
 		break;
 	}
-	/*
-	case GstreamerInfo_InfoType_PROPERTY:
-	{
-		std::string name = info.property().type_name();
-		if ((info.property().internal_type() == INTERNAL_GTYPE_ENUM || info.property().internal_type() == INTERNAL_GTYPE_FLAGS) && !enum_container.has_item(name))
-		{
-			send_enum_type_request_command(name);
-		}
-		append_property(info.property());
-		on_property_received(info.property());
-		break;
-	}
-	case GstreamerInfo_InfoType_FACTORY:
-		update_factory_model(info.factory_info());
-		on_factory_list_changed(info.factory_info().name());
-		break;
-	case GstreamerInfo_InfoType_PAD_DYNAMIC_INFO:
-		update_pad_dynamic_info(info.pad_dynamic_info());
-		break;
-	default:
-		break;
-	}*/
 }
 
 template<typename T>
@@ -257,21 +241,32 @@ void Controller::update_klass_model(const GstDebugger::ElementKlass &klass_info)
 		*it = model;
 	}
 }
-/*
-void Controller::append_property(const Property& property)
-{
-	GValue *value = new GValue;
-	*value = {0};
-	g_value_deserialize(value, property.type(), (InternalGType)property.internal_type(), property.property_value().c_str());
 
-	auto element = ElementModel::get_parent_element_from_path(property.element_path());
-	std::shared_ptr<GValueBase> gvalue(GValueBase::build_gvalue(value));
-	element->add_property(property.property_name(), gvalue);
-	gvalue->widget_value_changed.connect([gvalue, property, this] {
-		this->send_property_command(property.element_path(), property.property_name(), gvalue->get_gvalue());
-	});
+void Controller::add_property(const GstDebugger::PropertyValue &value)
+{
+	auto element = std::dynamic_pointer_cast<ElementModel>(ElementPathProcessor(value.object()).get_last_obj());
+
+	if (!element)
+		return;
+
+	GValue *g_val = new GValue;
+	*g_val = {0};
+	g_value_deserialize(g_val, value.value().gtype(), (InternalGType)value.value().internal_type(),
+			value.value().data().c_str(), value.value().data().length());
+
+	bool had_property = element->has_property(value.name());
+
+	auto vb = element->add_property(value.name(), g_val);
+
+	if (!had_property)
+	{
+		auto obj = value.object(); auto name = value.name();
+		vb->widget_value_changed.connect([this, name, obj, vb]{
+			this->send_set_property_command(obj, name, vb->get_gvalue());
+		});
+	}
 }
-*/
+
 void Controller::log(const std::string &message)
 {
 	// todo date/time?

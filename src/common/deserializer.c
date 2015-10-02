@@ -92,15 +92,19 @@ GstBuffer* gst_buffer_deserialize (const gchar * buffer, gint size)
   return gstbuffer;
 }
 
-void g_value_deserialize (GValue * value, GType type, InternalGType internal_type, const gchar * data)
+void g_value_deserialize (GValue * value, GType type, InternalGType internal_type,
+  const gchar * data, gint len)
 {
+  // I don't use string for Value::data field, because serializer implementation
+  // might change in the future (I don't break the API then).
+  gchar *t_data = g_strndup (data, len);
   switch (internal_type) {
   case INTERNAL_GTYPE_ENUM:
   case INTERNAL_GTYPE_FLAGS:
   {
     GValue tmp = G_VALUE_INIT;
     g_value_init (&tmp, type);
-    gst_value_deserialize (&tmp, data);
+    gst_value_deserialize (&tmp, t_data);
     if (internal_type == INTERNAL_GTYPE_ENUM) {
       g_value_init(value, gst_utils_get_virtual_enum_type ());
       g_value_set_enum (value, g_value_get_int (&tmp));
@@ -113,15 +117,25 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
   }
   case INTERNAL_GTYPE_GST_OBJECT: // and with pointers
   case INTERNAL_GTYPE_FUNDAMENTAL:
-  case INTERNAL_GTYPE_UNKNOWN:
     g_value_init (value, type);
-    gst_value_deserialize (value, data);
+    gst_value_deserialize (value, t_data);
     break;
+  case INTERNAL_GTYPE_UNKNOWN:
+  {
+    GValue tmp = G_VALUE_INIT;
+    g_value_init (&tmp, G_TYPE_STRING);
+    gst_value_deserialize (&tmp, t_data);
+    g_value_init (value, gst_unknown_type_get_type ());
+    g_value_take_boxed (value, gst_unknown_type_new (g_value_get_string (&tmp)));
+    g_value_unset (&tmp);
+
+    break;
+  }
   case INTERNAL_GTYPE_CAPS:
   {
     GstCaps *caps;
     g_value_init (value, G_TYPE_STRING);
-    gst_value_deserialize (value, data);
+    gst_value_deserialize (value, t_data);
     caps = gst_caps_from_string (g_value_get_string (value));
     g_value_unset (value);
     g_value_init (value, GST_TYPE_CAPS);
@@ -129,4 +143,6 @@ void g_value_deserialize (GValue * value, GType type, InternalGType internal_typ
     break;
   }
   }
+
+  g_free (t_data);
 }

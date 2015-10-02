@@ -21,13 +21,20 @@ std::string GValueString::to_string() const
 	return v.get();
 }
 
-Gtk::Widget* GValueString::get_widget() const
+Gtk::Widget* GValueString::create_widget()
 {
-	if (widget == nullptr)
-	{
-		widget = new Gtk::Entry();
-	}
+	auto entry = new Gtk::Entry();
+	entry->signal_activate().connect([this, entry] {
+		g_value_set_string(g_value, entry->get_text().c_str());
+		update_gvalue(this->g_value);
+	});
 
+	entry->signal_activate().connect(widget_value_changed);
+	update_widget(entry);
+	return entry;
+}
+
+void GValueString::update_widget(Gtk::Widget* widget)
+{
 	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
-	return widget;
 }

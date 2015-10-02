@@ -28,17 +28,18 @@ std::string GValueBoolean::to_string() const
 	return get_value() ? "true" : "false";
 }
 
-Gtk::Widget* GValueBoolean::get_widget() const
+Gtk::Widget* GValueBoolean::create_widget()
 {
-	if (widget == nullptr)
-	{
-		auto cb = new Gtk::CheckButton();
+	auto cb = new Gtk::CheckButton();
 
-		cb->signal_toggled().connect([this, cb]{ g_value_set_boolean(g_value, cb->get_active()); });
-		cb->signal_toggled().connect(widget_value_changed);
+	cb->signal_toggled().connect([this, cb]{ g_value_set_boolean(g_value, cb->get_active()); });
+	cb->signal_toggled().connect(widget_value_changed);
+	update_widget(cb);
 
-		widget = cb;
-	}
+	return cb;
+}
+
+void GValueBoolean::update_widget(Gtk::Widget* widget)
+{
 	dynamic_cast<Gtk::CheckButton*>(widget)->set_active(get_value());
-	return widget;
 }

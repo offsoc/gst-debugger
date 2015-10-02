@@ -13,14 +13,14 @@
 template<typename T>
 class GValueNumeric : public GValueBase
 {
+	void update_value(const T &val);
+	Gtk::Widget* create_widget() override;
+	void update_widget(Gtk::Widget* widget) override;
+
 public:
 	GValueNumeric(GValue* gobj);
 
 	std::string to_string() const override;
-
-	Gtk::Widget* get_widget() const override;
-
-	void update_value(const T &val);
 };
 
 

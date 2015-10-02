@@ -13,27 +13,39 @@
 #include <gtkmm.h>
 
 #include <string>
+#include <vector>
 
 class GValueBase
 {
+	void clear_gvalue();
+
 protected:
 	GValue* g_value;
-	mutable Gtk::Widget *widget = nullptr;
+	mutable std::vector<Gtk::Widget*> widgets;
 
-	virtual void update_widget() {}
+	virtual Gtk::Widget *create_widget() = 0;
+
+	virtual void update_widget(Gtk::Widget* widget) = 0;
+
+	static void destroy_widget(GtkWidget *object, gpointer user_data);
+
 public:
 	GValueBase(GValue* gobj);
 	virtual ~GValueBase();
 
 	virtual std::string to_string() const = 0;
 
-	virtual Gtk::Widget* get_widget() const = 0;
-
-	void update_gvalue(const std::shared_ptr<GValueBase> &gvalue);
+	/*
+	 * caller should manage returned object
+	 * by adding it to the container
+	 * */
+	Gtk::Widget* get_widget();
 
 	static GValueBase* build_gvalue(GValue* g_value);
 
 	GValue* get_gvalue() const { return g_value; }
+
+	void update_gvalue(GValue* gobj);
 
 	sigc::signal<void> widget_value_changed;
 };

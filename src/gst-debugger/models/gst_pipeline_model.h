@@ -111,11 +111,15 @@ public:
 
 	const std::vector<std::shared_ptr<PadModel>>& get_pads() const { return pads; }
 
-	//void add_property(const std::string &name, const std::shared_ptr<GValueBase>& gvalue);
+	std::shared_ptr<GValueBase> add_property(const std::string &name, GValue *g_val);
+
+	bool has_property(const std::string &name) const { return properties.find(name) != properties.end(); }
 
 	static std::shared_ptr<ElementModel> get_parent_element_from_path(const std::string &path);
 
 	std::map<std::string, std::shared_ptr<GValueBase>> get_properties() const { return properties; }
+
+	std::string get_type_name() const { return type_name; }
 
 	std::shared_ptr<GValueBase> get_property(const std::string &name) { return properties[name]; }
 

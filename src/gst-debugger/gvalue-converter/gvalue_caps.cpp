@@ -16,19 +16,28 @@ GValueCaps::GValueCaps(GValue *gobj)
 
 std::string GValueCaps::to_string() const
 {
-	Glib::Value<Glib::RefPtr<Gst::Caps>> v;
-	v.init(g_value);
-
-	return v.get()->to_string();
+	gchar *str = gst_caps_to_string(gst_value_get_caps(g_value));
+	std::string caps_str = str;
+	g_free(str);
+	return caps_str;
 }
 
-Gtk::Widget* GValueCaps::get_widget() const
+Gtk::Widget* GValueCaps::create_widget()
 {
-	if (widget == nullptr)
-	{
-		widget = new Gtk::Entry();
-	}
-	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
-	return widget;
+	auto entry = new Gtk::Entry();
+	entry->signal_activate().connect([this, entry] {
+		GstCaps *caps = gst_caps_from_string(entry->get_text().c_str());
+		gst_value_set_caps(this->g_value, caps);
+		gst_caps_unref(caps);
+		update_gvalue(this->g_value);
+	});
+
+	entry->signal_activate().connect(widget_value_changed);
+	update_widget(entry);
+	return entry;
 }
 
+void GValueCaps::update_widget(Gtk::Widget* widget)
+{
+	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
+}

@@ -37,7 +37,7 @@ void KlassesDialog::set_controller(const std::shared_ptr<Controller> &controller
 		c[klasses_columns.m_col_value] = VALUE; \
 	} while (false)
 
-std::string KlassesDialog::g_param_flags_to_string(GParamFlags v, std::string flags_name)
+std::string KlassesDialog::g_param_flags_to_string(GParamFlags v)
 {
 #define xstr(s) str(s)
 #define str(s) #s
@@ -95,7 +95,7 @@ void KlassesDialog::reload_list(const Glib::ustring &klass_name, bool add)
 
 			APPEND_SUB_ROW(cr, "Nick", property.get_nick());
 			APPEND_SUB_ROW(cr, "Blurb", property.get_blurb());
-			APPEND_SUB_ROW(cr, "Flags", g_param_flags_to_string(property.get_flags(), "GParamFlags"));
+			APPEND_SUB_ROW(cr, "Flags", g_param_flags_to_string(property.get_flags()));
 		}
 	}
 }

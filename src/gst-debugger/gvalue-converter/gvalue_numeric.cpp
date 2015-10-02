@@ -30,22 +30,28 @@ void GValueNumeric<T>::update_value(const T &val)
 	v.set(val);
 	g_value_reset(this->g_value);
 	g_value_copy(v.gobj(), this->g_value);
+
+	update_gvalue(this->g_value);
 }
 
 template<typename T>
-Gtk::Widget* GValueNumeric<T>::get_widget() const
+void GValueNumeric<T>::update_widget(Gtk::Widget* widget)
 {
-	if (widget == nullptr)
-	{
-		auto entry = new Gtk::Entry();
-		entry->signal_activate().connect([this, entry]{
-			update_value(std::atol(entry->get_text().c_str()));
-		});
-		entry->signal_activate().connect(widget_value_changed);
-		widget = entry;
-	}
 	dynamic_cast<Gtk::Entry*>(widget)->set_text(to_string());
-	return widget;
+}
+
+template<typename T>
+Gtk::Widget* GValueNumeric<T>::create_widget()
+{
+	auto entry = new Gtk::Entry();
+	entry->signal_activate().connect([this, entry]{
+		update_value((T)std::atol(entry->get_text().c_str()));
+	});
+
+	entry->signal_activate().connect(widget_value_changed);
+	update_widget(entry);
+
+	return entry;
 }
 
 // Check GCC

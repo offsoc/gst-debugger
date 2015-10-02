@@ -42,6 +42,8 @@ private:
 	void update_factory_model(const GstDebugger::FactoryType &factory_info);
 	void update_klass_model(const GstDebugger::ElementKlass &klass_element);
 
+	void add_property(const GstDebugger::PropertyValue &value);
+
 	/*
 
 

@@ -189,6 +189,7 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
     g_param_value_set_default (specs[i], &gvalue);
     value = (GstDebugger__Value*) g_malloc (sizeof (GstDebugger__Value));
     gst_debugger__value__init (value);
+    value->type_name = (gchar*) g_type_name (specs[i]->value_type);
     value->data.data = (uint8_t*) g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
     value->data.len = value->data.data == NULL ? 0 : strlen (value->data.data);
     value->gtype = out_gtype;

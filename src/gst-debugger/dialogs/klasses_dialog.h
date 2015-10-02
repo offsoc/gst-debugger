@@ -31,7 +31,7 @@ class KlassesDialog : public RemoteDataDialog
 
 	void reload_list(const Glib::ustring &klass_name, bool add);
 
-	std::string g_param_flags_to_string(GParamFlags v, std::string flags_name);
+	std::string g_param_flags_to_string(GParamFlags v);
 
 public:
 	KlassesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);

@@ -69,7 +69,20 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	modules/gst_properties_module.h \
 	models/gst_klass_model.h \
 	dialogs/klasses_dialog.h \
-	dialogs/klasses_dialog.cpp
+	dialogs/klasses_dialog.cpp \
+	gvalue-converter/gvalue_base.cpp \
+	gvalue-converter/gvalue_base.h \
+	gvalue-converter/gvalue_unknown.cpp \
+	gvalue-converter/gvalue_unknown.h \
+	gvalue-converter/gvalue_numeric.cpp \
+	gvalue-converter/gvalue_numeric.h \
+	gvalue-converter/gvalue_boolean.cpp \
+	gvalue-converter/gvalue_boolean.h \
+	gvalue-converter/gvalue_caps.cpp \
+	gvalue-converter/gvalue_caps.h \
+	gvalue-converter/gvalue_string.cpp \
+	gvalue-converter/gvalue_string.h
+	
 
 gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
 gst_debugger_@GST_API_VERSION@_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la

@@ -6,11 +6,13 @@
  */
 
 #include "gvalue_base.h"
+#include "gvalue_unknown.h"
+#include "gvalue_numeric.h"
 #include "gvalue_boolean.h"
 #include "gvalue_caps.h"
-#include "gvalue_enum.h"
-#include "gvalue_numeric.h"
 #include "gvalue_string.h"
+/*#include "gvalue_enum.h"
+*/
 
 #include <gst/gst.h>
 
@@ -21,18 +23,21 @@ GValueBase::GValueBase(GValue *gobj)
 
 GValueBase::~GValueBase()
 {
+	clear_gvalue();
+}
+
+void GValueBase::clear_gvalue()
+{
 	if (g_value != nullptr)
 	{
 		g_value_unset(g_value);
 		delete g_value;
 	}
-	delete widget;
 }
 
 GValueBase* GValueBase::build_gvalue(GValue* gobj)
 {
 	GType value_type = G_VALUE_TYPE(gobj);
-
 	switch (value_type)
 	{
 	case G_TYPE_STRING:
@@ -59,23 +64,51 @@ GValueBase* GValueBase::build_gvalue(GValue* gobj)
 		break;
 	}
 
-	if (G_TYPE_IS_ENUM(G_VALUE_TYPE(gobj)) || G_TYPE_IS_FLAGS(G_VALUE_TYPE(gobj)))
+	/*if (G_TYPE_IS_ENUM(G_VALUE_TYPE(gobj)) || G_TYPE_IS_FLAGS(G_VALUE_TYPE(gobj)))
 	{
 		return new GValueEnum(gobj);
 	}
+*/
 
-	if (G_VALUE_TYPE(gobj) == gst_caps_get_type())
+	if (G_VALUE_TYPE(gobj) == GST_TYPE_CAPS)
 	{
 		return new GValueCaps(gobj);
 	}
 
-	return nullptr;
+	return new GValueUnknown(gobj);
 }
 
-void GValueBase::update_gvalue(const std::shared_ptr<GValueBase> &gvalue)
+void GValueBase::destroy_widget(GtkWidget *object, gpointer user_data)
 {
-	this->g_value = gvalue->g_value;
-	gvalue->g_value = nullptr;
+	GValueBase *val = reinterpret_cast<GValueBase*>(user_data);
 
-	update_widget();
+	val->widgets.erase(std::remove(val->widgets.begin(),
+			val->widgets.end(), Glib::wrap(object)), val->widgets.end());
 }
+
+Gtk::Widget* GValueBase::get_widget()
+{
+	Gtk::Widget* widget = Gtk::manage(create_widget());
+
+	g_signal_connect((gpointer)widget->gobj(), "destroy",
+			(GCallback)&GValueBase::destroy_widget, (gpointer)this);
+
+	widgets.push_back(widget);
+
+	widget->set_data("is-gvalue-widget", GINT_TO_POINTER(1));
+
+	return widget;
+}
+
+void GValueBase::update_gvalue(GValue* gobj)
+{
+	if (gobj != g_value)
+	{
+		clear_gvalue();
+		g_value = gobj;
+	}
+
+	for (auto widget : widgets)
+		update_widget(widget);
+}
+

@@ -70,18 +70,21 @@ std::shared_ptr<ElementModel> ElementModel::get_child(const std::string &child_n
 	return (it != children.end()) ? *it : std::shared_ptr<ElementModel>();
 }
 
-/*void ElementModel::add_property(const std::string &name, const std::shared_ptr<GValueBase>& gvalue)
+std::shared_ptr<GValueBase> ElementModel::add_property(const std::string &name, GValue *g_val)
 {
 	if (properties.find(name) == properties.end())
 	{
-		properties[name] = gvalue;
+		auto vb = std::shared_ptr<GValueBase>(GValueBase::build_gvalue(g_val));
+		properties[name] = vb;
+		return vb;
 	}
 	else
 	{
-		gvalue->update_gvalue(gvalue);
+		properties[name]->update_gvalue(g_val);
+		return properties[name];
 	}
 }
-*/
+
 std::shared_ptr<ElementModel> ElementModel::get_parent_element_from_path(const std::string &path)
 {
 	ElementPathProcessor proc(path);

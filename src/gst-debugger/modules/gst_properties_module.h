@@ -25,8 +25,8 @@ private:
 
 	std::string previous_element_path;
 
-//	void append_property(const std::shared_ptr<GValueBase>& value_base, GstDebugger::PropertyInfo *property);
-//	bool update_property(const std::shared_ptr<GValueBase>& value_base, GstDebugger::PropertyInfo *property);
+	void append_property(const std::shared_ptr<GValueBase>& value_base, const std::string &prop_name);
+	bool update_property(const std::shared_ptr<GValueBase>& value_base, const std::string prop_name);
 	void request_selected_element_property(const std::string &property_name);
 
 	void show_pad_properties();

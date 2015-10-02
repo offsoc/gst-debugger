@@ -11,6 +11,7 @@ message Value {
 	required uint64 gtype = 1;
 	optional int32 internal_type = 2;
 	required bytes data = 3;
+	required string type_name = 4;
 }
 
 message PropertyInfo {
@@ -109,6 +110,7 @@ message Command {
 		string log_threshold = 6;
 		bool entire_topology = 7;
 		PropertyRequest property = 8;
+		PropertyValue property_set = 9;
 	}
 }
 
