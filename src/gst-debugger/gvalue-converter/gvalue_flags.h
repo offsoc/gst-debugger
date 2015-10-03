@@ -13,8 +13,8 @@
 #include "../models/gst_enum_model.h"
 
 #include <boost/optional/optional.hpp>
-#include <mutex>
 
+#include <mutex>
 #include <vector>
 #include <utility>
 

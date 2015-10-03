@@ -43,9 +43,11 @@ Gtk::Widget* GValueEnum::create_widget()
 	{
 		Gtk::ComboBoxText *widget = new Gtk::ComboBoxText();
 		widget->signal_changed().connect([this, widget]{
+			if (!emit_m.try_lock()) return;
 			g_value_set_enum(g_value, gtk_combo_box_get_active(GTK_COMBO_BOX(widget->gobj())));
+			widget_value_changed();
+			emit_m.unlock();
 		});
-		widget->signal_changed().connect(widget_value_changed);
 
 		for (auto entry : type.get().get_values())
 		{
@@ -70,7 +72,9 @@ void GValueEnum::update_widget(Gtk::Widget* widget)
 		{
 			if (entry.first == value)
 			{
+				emit_m.lock();
 				dynamic_cast<Gtk::ComboBoxText*>(widget)->set_active(pos);
+				emit_m.unlock();
 				break;
 			}
 			pos++;

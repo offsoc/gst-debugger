@@ -87,7 +87,6 @@ public:
 	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
 	sigc::signal<void, const GstDebugger::PropertyValue&> on_property_value_received;
 	sigc::signal<void> on_selected_object_changed;
-/*	sigc::signal<void, const Glib::ustring&> on_new_log_entry;*/
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */

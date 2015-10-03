@@ -14,12 +14,14 @@
 
 #include <boost/optional/optional.hpp>
 
+#include <mutex>
 #include <vector>
 #include <utility>
 
 class GValueEnum : public GValueBase
 {
 	boost::optional<GstEnumType> type;
+	std::mutex emit_m;
 
 	Gtk::Widget* create_widget() override;
 

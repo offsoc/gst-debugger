@@ -43,7 +43,7 @@ Gtk::Widget* GValueFlags::create_widget()
 	if (type)
 	{
 		auto widget = new Gtk::ScrolledWindow();
-		Gtk::Viewport *vp = Gtk::manage(new Gtk::Viewport(Gtk::Adjustment::create(10, 0, 20), Gtk::Adjustment::create(10, 0, 50)));
+		Gtk::Viewport *vp = Gtk::manage(new Gtk::Viewport(Gtk::Adjustment::create(30, 0, 20), Gtk::Adjustment::create(10, 0, 50)));
 		Gtk::Box *box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
 		for (auto val : type->get_values())
 		{
@@ -61,7 +61,7 @@ Gtk::Widget* GValueFlags::create_widget()
 			cb->set_data("flags-data-value", GINT_TO_POINTER(val.first));
 			box->pack_start(*cb, false, 5);
 		}
-		update_widget(widget);
+
 		vp->add(*box);
 		widget->add(*vp);
 		widget->show_all();

@@ -294,8 +294,6 @@ void Controller::log(const std::string &message)
 {
 	// todo date/time?
 	std::cerr << message << std::endl;
-
-	//on_new_log_entry(message);
 }
 
 void Controller::client_disconnected()
