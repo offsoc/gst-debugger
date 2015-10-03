@@ -48,6 +48,8 @@ public:
 	void update_gvalue(GValue* gobj);
 
 	sigc::signal<void> widget_value_changed;
+
+	virtual void set_sensitive(bool sensitive);
 };
 
 #endif /* SRC_GST_DEBUGGER_GVALUE_CONVERTER_GVALUE_BASE_H_ */

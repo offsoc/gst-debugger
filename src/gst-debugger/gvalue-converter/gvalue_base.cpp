@@ -11,8 +11,8 @@
 #include "gvalue_boolean.h"
 #include "gvalue_caps.h"
 #include "gvalue_string.h"
-/*#include "gvalue_enum.h"
-*/
+#include "gvalue_enum.h"
+#include "gvalue_flags.h"
 
 #include <gst/gst.h>
 
@@ -64,11 +64,16 @@ GValueBase* GValueBase::build_gvalue(GValue* gobj)
 		break;
 	}
 
-	/*if (G_TYPE_IS_ENUM(G_VALUE_TYPE(gobj)) || G_TYPE_IS_FLAGS(G_VALUE_TYPE(gobj)))
+	if (G_TYPE_IS_ENUM(G_VALUE_TYPE(gobj)))
 	{
 		return new GValueEnum(gobj);
 	}
-*/
+
+	if (G_TYPE_IS_FLAGS(G_VALUE_TYPE(gobj)))
+	{
+		return new GValueFlags(gobj);
+	}
+
 
 	if (G_VALUE_TYPE(gobj) == GST_TYPE_CAPS)
 	{
@@ -96,6 +101,7 @@ Gtk::Widget* GValueBase::get_widget()
 	widgets.push_back(widget);
 
 	widget->set_data("is-gvalue-widget", GINT_TO_POINTER(1));
+	update_widget(widget);
 
 	return widget;
 }
@@ -112,3 +118,8 @@ void GValueBase::update_gvalue(GValue* gobj)
 		update_widget(widget);
 }
 
+void GValueBase::set_sensitive(bool sensitive)
+{
+	for (auto widget : widgets)
+		widget->set_sensitive(sensitive);
+}

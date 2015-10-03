@@ -138,7 +138,7 @@ void GstPropertiesModule::append_property(const std::shared_ptr<GValueBase>& val
 	btn->signal_clicked().connect([this, prop_name] {request_selected_element_property(prop_name);});
 	hbox->pack_start(*lbl, false, false);
 	auto value_widget = value_base->get_widget();
-	value_widget->set_sensitive(prop.get().get_flags() & G_PARAM_WRITABLE);
+	value_base->set_sensitive(prop.get().get_flags() & G_PARAM_WRITABLE);
 	hbox->pack_start(*value_widget, true, true);
 	hbox->pack_start(*btn, false, false);
 	properties_box->pack_start(*hbox);

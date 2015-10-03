@@ -33,7 +33,7 @@ Gtk::Widget* GValueCaps::create_widget()
 	});
 
 	entry->signal_activate().connect(widget_value_changed);
-	update_widget(entry);
+
 	return entry;
 }
 

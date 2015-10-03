@@ -34,7 +34,6 @@ Gtk::Widget* GValueBoolean::create_widget()
 
 	cb->signal_toggled().connect([this, cb]{ g_value_set_boolean(g_value, cb->get_active()); });
 	cb->signal_toggled().connect(widget_value_changed);
-	update_widget(cb);
 
 	return cb;
 }

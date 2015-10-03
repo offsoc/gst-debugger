@@ -81,7 +81,11 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	gvalue-converter/gvalue_caps.cpp \
 	gvalue-converter/gvalue_caps.h \
 	gvalue-converter/gvalue_string.cpp \
-	gvalue-converter/gvalue_string.h
+	gvalue-converter/gvalue_string.h \
+	gvalue-converter/gvalue_enum.cpp \
+	gvalue-converter/gvalue_enum.h \
+	gvalue-converter/gvalue_flags.cpp \
+	gvalue-converter/gvalue_flags.h
 	
 
 gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11

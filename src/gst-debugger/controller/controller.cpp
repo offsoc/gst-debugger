@@ -9,6 +9,9 @@
 #include "ui_utils.h"
 #include "element_path_processor.h"
 
+#include "gvalue-converter/gvalue_enum.h"
+#include "gvalue-converter/gvalue_flags.h"
+
 #include "common/common.h"
 #include "common/deserializer.h"
 
@@ -168,7 +171,8 @@ void Controller::set_selected_object(const std::string &name)
 
 void Controller::update_enum_model(const GstDebugger::EnumFlagsType &enum_type)
 {
-	GstEnumType et(enum_type.type_name(), G_TYPE_ENUM); // todo G_TYPE_FLAGS
+	GstEnumType et(enum_type.type_name(),
+			enum_type.kind() == GstDebugger::EnumFlagsType_EnumFlagsKind_ENUM ? G_TYPE_ENUM : G_TYPE_FLAGS);
 	for (int i = 0; i < enum_type.values_size(); i++)
 	{
 		et.add_value(enum_type.values(i).name(), enum_type.values(i).value(), enum_type.values(i).nick());
@@ -264,6 +268,20 @@ void Controller::add_property(const GstDebugger::PropertyValue &value)
 		vb->widget_value_changed.connect([this, name, obj, vb]{
 			this->send_set_property_command(obj, name, vb->get_gvalue());
 		});
+	}
+
+	if (G_TYPE_IS_ENUM(g_val->g_type) || G_TYPE_IS_FLAGS(g_val->g_type))
+	{
+		auto enum_type = get_enum_type(value.value().type_name());
+		if (enum_type)
+		{
+			if (G_TYPE_IS_ENUM(g_val->g_type))
+				std::dynamic_pointer_cast<GValueEnum>(vb)->set_type(enum_type.get());
+			else
+				std::dynamic_pointer_cast<GValueFlags>(vb)->set_type(enum_type.get());
+		}
+		else
+			send_data_type_request_command(value.value().type_name(), GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 	}
 }
 
