@@ -233,7 +233,12 @@ void Controller::update_klass_model(const GstDebugger::ElementKlass &klass_info)
 
 	for (auto property : klass_info.property_info())
 	{
-		model.append_property(PropertyModel(property.name(), property.nick(), property.blurb(), (GParamFlags)property.flags()));
+		GValue *g_val = new GValue;
+		*g_val = {0};
+		g_value_deserialize(g_val, property.default_value().gtype(), (InternalGType)property.default_value().internal_type(),
+				property.default_value().data().c_str(), property.default_value().data().length());
+		model.append_property(PropertyModel(property.name(), property.nick(),
+				property.blurb(), (GParamFlags)property.flags(), std::shared_ptr<GValueBase>(GValueBase::build_gvalue(g_val))));
 	}
 
 	if (it == klass_container.end())

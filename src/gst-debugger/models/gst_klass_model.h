@@ -8,6 +8,8 @@
 #ifndef SRC_GST_DEBUGGER_MODELS_GST_KLASS_MODEL_H_
 #define SRC_GST_DEBUGGER_MODELS_GST_KLASS_MODEL_H_
 
+#include "gvalue-converter/gvalue_base.h"
+
 #include <string>
 
 class PropertyModel
@@ -16,15 +18,18 @@ class PropertyModel
 	std::string nick;
 	std::string blurb;
 	GParamFlags flags;
+	std::shared_ptr<GValueBase> value;
 
 public:
-	PropertyModel(const std::string &name, const std::string &nick, const std::string &blurb, GParamFlags flags)
-	: name(name), nick(nick), blurb(blurb), flags(flags) {}
+	PropertyModel(const std::string &name, const std::string &nick,
+			const std::string &blurb, GParamFlags flags, const std::shared_ptr<GValueBase> &value)
+	: name(name), nick(nick), blurb(blurb), flags(flags), value(value) {}
 
 	std::string get_name() const { return name; }
 	std::string get_nick() const { return nick; }
 	std::string get_blurb() const { return blurb; }
 	GParamFlags get_flags() const { return flags; }
+	std::shared_ptr<GValueBase> get_default_value() const { return value; }
 };
 
 class KlassModel

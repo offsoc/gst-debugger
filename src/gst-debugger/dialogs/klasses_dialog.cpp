@@ -44,7 +44,7 @@ std::string KlassesDialog::g_param_flags_to_string(GParamFlags v)
 #define PARAM_FLAG(NAME) { NAME, xstr(NAME) }
 	std::map<int, std::string> values = {
 			PARAM_FLAG(G_PARAM_READABLE),
-			PARAM_FLAG(G_PARAM_READWRITE),
+			PARAM_FLAG(G_PARAM_WRITABLE),
 			PARAM_FLAG(G_PARAM_CONSTRUCT),
 			PARAM_FLAG(G_PARAM_CONSTRUCT_ONLY),
 			PARAM_FLAG(G_PARAM_LAX_VALIDATION),
@@ -96,6 +96,7 @@ void KlassesDialog::reload_list(const Glib::ustring &klass_name, bool add)
 			APPEND_SUB_ROW(cr, "Nick", property.get_nick());
 			APPEND_SUB_ROW(cr, "Blurb", property.get_blurb());
 			APPEND_SUB_ROW(cr, "Flags", g_param_flags_to_string(property.get_flags()));
+			APPEND_SUB_ROW(cr, "Default value", property.get_default_value()->to_string());
 		}
 	}
 }
