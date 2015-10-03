@@ -80,6 +80,7 @@ BufferControlModule::BufferControlModule()
 	}, nullptr);
 
 	hooks_tree_view->append_column("Pad", hooks_model_columns.str1);
+	hooks_tree_view->append_column("With data", hooks_model_columns.str2);
 }
 
 void BufferControlModule::add_watch()
@@ -105,6 +106,7 @@ void BufferControlModule::confirmation_received(GstDebugger::Command* cmd)
 	{
 		Gtk::TreeModel::Row row = *(hooks_model->append());
 		row[hooks_model_columns.str1] = confirmation.pad();
+		row[hooks_model_columns.str2] = confirmation.buffer().send_data() ? "yes" : "no";
 	}
 	else
 	{
