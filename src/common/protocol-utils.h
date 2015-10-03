@@ -1,5 +1,5 @@
 /*
- * protocol_utils.h
+ * protocol-utils.h
  *
  *  Created on: Jun 9, 2015
  *      Author: mkolny
@@ -16,13 +16,7 @@ gboolean gst_debugger_protocol_utils_read_requested_size (GInputStream * istream
 
 gint gst_debugger_protocol_utils_read_header (GInputStream * istream, GCancellable *cancel);
 
-void gst_debugger_protocol_utils_serialize_integer64 (gint64 value, gchar * buffer, gint size);
-
-gint64 gst_debugger_protocol_utils_deserialize_integer64 (const gchar * buffer, gint size);
-
-void gst_debugger_protocol_utils_serialize_uinteger64 (guint64 value, gchar * buffer, gint size);
-
-guint64 gst_debugger_protocol_utils_deserialize_uinteger64 (const gchar * buffer, gint size);
+GError* gst_debugger_protocol_write_header (GOutputStream * ostream, gint64 value);
 
 G_END_DECLS
 

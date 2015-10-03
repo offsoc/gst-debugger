@@ -7,9 +7,8 @@
 
 #include "tcp_client.h"
 
-#include "common/protocol_utils.h"
-
 #include <cassert>
+#include "../../common/protocol-utils.h"
 
 bool TcpClient::connect(const std::string &address, int port)
 {
@@ -90,9 +89,6 @@ void TcpClient::send_command(const GstDebugger::Command &cmd)
 	if (!is_connected())
 		throw Gio::Error(Gio::Error::FAILED, "No connection!");
 
-	char buffer[4];
-	auto size = cmd.ByteSize();
-	gst_debugger_protocol_utils_serialize_integer64(size, buffer, 4);
-	connection->get_output_stream()->write(buffer, 4);
+	gst_debugger_protocol_write_header(connection->get_output_stream()->gobj(), cmd.ByteSize());
 	cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
 }

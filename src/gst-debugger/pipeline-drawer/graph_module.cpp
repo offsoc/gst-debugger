@@ -9,11 +9,10 @@
 
 #include "controller/controller.h"
 
-#include "common/gst-utils.h"
-
 #include "graphviz-plugin/graphviz-gstdebugger.h"
 
 #include <boost/algorithm/string.hpp>
+#include "../../common/gst-utils.h"
 
 static void ptr_free(std::shared_ptr<ElementModel>* ptr)
 {

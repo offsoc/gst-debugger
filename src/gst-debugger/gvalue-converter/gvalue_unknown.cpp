@@ -6,7 +6,8 @@
  */
 
 #include "gvalue_unknown.h"
-#include "common/gst-utils.h"
+
+#include "../../common/gst-utils.h"
 GValueUnknown::GValueUnknown(GValue *gobj)
 : GValueBase(gobj)
 {}

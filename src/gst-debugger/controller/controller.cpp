@@ -12,8 +12,8 @@
 #include "gvalue-converter/gvalue_enum.h"
 #include "gvalue-converter/gvalue_flags.h"
 
+#include "common/serializer.h"
 #include "common/common.h"
-#include "common/deserializer.h"
 
 #include <gtkmm.h>
 

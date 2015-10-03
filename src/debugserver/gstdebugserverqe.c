@@ -21,9 +21,8 @@
 
 #include "common/serializer.h"
 #include "common/gstdebugger.pb-c.h"
-#include "common/gst-utils.h"
-
 #include <string.h>
+#include "../common/gst-utils.h"
 
 typedef struct _QEWatch {
   gint qe_type;

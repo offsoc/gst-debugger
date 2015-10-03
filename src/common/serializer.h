@@ -14,15 +14,10 @@
 
 G_BEGIN_DECLS
 
-gint gst_query_serialize(GstQuery * query, gchar * buffer, gint size);
-
-gint gst_event_serialize(GstEvent * event, gchar * buffer, gint size);
-
-gint gst_message_serialize(GstMessage * message, gchar * buffer, gint size);
-
-gint gst_buffer_serialize(GstBuffer * gstbuffer, gchar * buffer, gint size);
-
 gchar * g_value_serialize (GValue * value, GType * type, InternalGType * internal_type);
+
+void g_value_deserialize (GValue * value, GType type, InternalGType internal_type,
+  const gchar * data, gint len);
 
 G_END_DECLS
 

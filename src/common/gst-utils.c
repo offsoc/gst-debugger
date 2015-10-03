@@ -1,26 +1,26 @@
 #include "gst-utils.h"
 
-#include <glib.h>
-
-#include <limits.h>
 #include <assert.h>
 #include <string.h>
 
-GstObject* gst_utils_get_root (GstObject * start)
+static gpointer gst_unknown_type_copy (gpointer *object)
 {
-  GstObject *tmp;
+  return gst_unknown_type_new (((GstUnknownType*)object)->type_name);
+}
 
-  if (start == NULL) {
-    return NULL;
-  }
+static void gst_unknown_type_free (gpointer *object)
+{
+  g_free (((GstUnknownType*)object)->type_name);
+  g_slice_free1 (sizeof (GstUnknownType), object);
+}
 
-  tmp = start;
+G_DEFINE_BOXED_TYPE (GstUnknownType, gst_unknown_type, (GBoxedCopyFunc)gst_unknown_type_copy, (GBoxedFreeFunc)gst_unknown_type_free);
 
-  do {
-    start = tmp;
-  } while ((tmp = gst_object_get_parent (start)) != NULL);
-
-  return start;
+GstUnknownType* gst_unknown_type_new (const gchar *type_name)
+{
+  GstUnknownType *self = g_slice_new (GstUnknownType);
+  self->type_name = g_strdup (type_name);
+  return self;
 }
 
 GstElement* gst_utils_get_element_from_path (GstElement * root, const gchar * path)
@@ -167,26 +167,3 @@ GType gst_utils_get_virtual_flags_type (void)
 
   return (GType) id;
 }
-
-
-static gpointer gst_unknown_type_copy (gpointer *object)
-{
-  return gst_unknown_type_new (((GstUnknownType*)object)->type_name);
-}
-
-static void gst_unknown_type_free (gpointer *object)
-{
-  g_free (((GstUnknownType*)object)->type_name);
-  g_slice_free1 (sizeof (GstUnknownType), object);
-}
-
-G_DEFINE_BOXED_TYPE (GstUnknownType, gst_unknown_type, (GBoxedCopyFunc)gst_unknown_type_copy, (GBoxedFreeFunc)gst_unknown_type_free);
-
-GstUnknownType* gst_unknown_type_new (const gchar *type_name)
-{
-  GstUnknownType *self = g_slice_new (GstUnknownType);
-  self->type_name = g_strdup (type_name);
-  return self;
-}
-
-

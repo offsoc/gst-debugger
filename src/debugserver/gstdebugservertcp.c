@@ -19,10 +19,11 @@
 
 #include "gstdebugservertcp.h"
 
-#include "common/protocol_utils.h"
 #include "common/gstdebugger.pb-c.h"
 
 #include <gst/gst.h>
+
+#include "../common/protocol-utils.h"
 #define GST_USE_UNSTABLE_API
 #include <gst/gsttracer.h>
 
@@ -207,35 +208,13 @@ gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConnection * co
  return NULL;
 }
 
-#define SAFE_PREPARE_BUFFER_INIT(BUFFER_SIZE) \
-  gchar buff[BUFFER_SIZE]; \
-  gchar *m_buff = buff; \
-  gint max_m_buff_size = BUFFER_SIZE;
-
-#define SAFE_PREPARE_BUFFER(FUNCTION_CALL, SIZE_VAR) \
-  do { \
-    SIZE_VAR = (FUNCTION_CALL); \
-    if (SIZE_VAR > 1024) { \
-      m_buff = (gchar *) g_malloc (SIZE_VAR); \
-      max_m_buff_size = SIZE_VAR; \
-      SIZE_VAR = (FUNCTION_CALL); \
-    } \
-  } while (0)
-
-#define SAFE_PREPARE_BUFFER_CLEAN \
-  do { \
-    if (m_buff != buff) { \
-      g_free (m_buff); \
-    } \
-  } while (0)
-
 gboolean
 gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
   GstDebugger__GStreamerData * gst_data)
 {
   GError *err = NULL;
   gchar size_buffer[4];
-  GSocket *socket;
+  GOutputStream *ostream;
   gchar buff[1024];
   gchar *m_buff = buff;
   gint size;
@@ -250,12 +229,11 @@ gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
     return FALSE;
   }
 
-  socket = g_socket_connection_get_socket (client->connection);
+  ostream = g_io_stream_get_output_stream (G_IO_STREAM (client->connection));
 
   size = gst_debugger__gstreamer_data__get_packed_size (gst_data);
-  gst_debugger_protocol_utils_serialize_integer64 (size, size_buffer, 4);
 
-  g_socket_send (socket, (gchar*)size_buffer, 4, NULL, &err);
+  err = gst_debugger_protocol_write_header (ostream, size);
 
   if (err) {
     g_mutex_unlock (&client->mutex);
@@ -270,7 +248,7 @@ gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
 
   gst_debugger__gstreamer_data__pack (gst_data, m_buff);
 
-  g_socket_send (socket, (gchar*)m_buff, size, NULL, &err);
+  g_output_stream_write (ostream, (gchar*)m_buff, size, NULL, &err);
 
   if (m_buff != buff) {
     g_free (m_buff);

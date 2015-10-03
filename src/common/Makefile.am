@@ -12,17 +12,14 @@ dist_noinst_DATA = gstdebugger.proto
 MOSTLYCLEANFILES = gstdebugger.pb-c.c gstdebugger.pb-c.h gstdebugger.pb.cc gstdebugger.pb.h
 
 common_sources =		\
-	deserializer.c		\
 	gst-utils.c		\
-	protocol_utils.c	\
+	protocol-utils.c	\
 	serializer.c
 
 common_headers =		\
-	buffer-prepare-utils.h	\
 	common.h		\
-	deserializer.h		\
 	gst-utils.h		\
-	protocol_utils.h	\
+	protocol-utils.h	\
 	serializer.h
 
 common_include_dir = $(includedir)/gst-debugger-@GST_DEBUGGER_API_VERSION@/gst-debugger

@@ -19,7 +19,7 @@
 
 #include "gstdebugserverbuffer.h"
 
-#include "common/gst-utils.h"
+#include "../common/gst-utils.h"
 
 typedef struct {
   gboolean send_data;

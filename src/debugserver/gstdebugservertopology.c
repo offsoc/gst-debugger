@@ -18,10 +18,10 @@
  */
 
 #include "gstdebugservertopology.h"
-#include "common/gst-utils.h"
 #include "common/gstdebugger.pb-c.h"
 #include <stdio.h>
 #include <string.h>
+#include "../common/gst-utils.h"
 
 GSList *src_pads;
 

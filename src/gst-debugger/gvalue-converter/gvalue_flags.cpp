@@ -8,9 +8,8 @@
 #include "gvalue_flags.h"
 #include "ui_utils.h"
 
-#include "common/gst-utils.h"
-
 #include <glibmm.h>
+#include "../../common/gst-utils.h"
 
 GValueFlags::GValueFlags(GValue *gobj)
 : GValueBase(gobj)

@@ -7,9 +7,8 @@
 
 #include "gvalue_enum.h"
 
-#include "common/gst-utils.h"
-
 #include <glibmm.h>
+#include "../../common/gst-utils.h"
 
 GValueEnum::GValueEnum(GValue *gobj)
 : GValueBase(gobj)
