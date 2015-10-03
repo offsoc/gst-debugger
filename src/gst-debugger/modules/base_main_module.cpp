@@ -104,3 +104,12 @@ void BaseMainModule::set_controller(const std::shared_ptr<Controller> &controlle
 		gui_emit("new-data");
 	});
 }
+
+void BaseMainModule::clear_model()
+{
+	for (auto it : model->children())
+	{
+		gpointer data = (*it)[columns.data];
+		delete reinterpret_cast<::google::protobuf::Message*>(data);
+	}
+}

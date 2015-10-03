@@ -28,6 +28,12 @@ MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 
 	builder->get_widget("controllerFrame", controller_frame);
 
+	builder->get_widget("clearMainListButton", clear_main_list_button);
+	clear_main_list_button->signal_clicked().connect([this] {
+		current_module->clear_model();
+		current_module->get_model()->clear();
+	});
+
 	load_submodules(builder);
 }
 
@@ -65,8 +71,6 @@ void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
 {
 	IBaseView::set_controller(controller);
-
-	//controller->on_selected_object_changed.connect([this]{gui_emit("selected-object");});
 
 	for (auto m : submodules)
 	{

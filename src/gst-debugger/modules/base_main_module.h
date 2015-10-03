@@ -67,6 +67,8 @@ public:
 	Glib::RefPtr<Gtk::ListStore> get_model() const { return model; }
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
+
+	void clear_model();
 };
 
 #endif /* SRC_GST_DEBUGGER_MODULES_BASE_MAIN_MODULE_H_ */
