@@ -61,22 +61,11 @@ static gint buffer_watch_compare (gconstpointer a, gconstpointer b)
   }
 }
 
-static gboolean gst_debugserver_buffer_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
-{
-  GSList *list = new_ptr;
-  BufferWatch watch;
-
-  watch.pad = NULL;
-  watch.pad_path = original->buffer_info->pad;
-
-  return g_slist_find_custom (list, &watch, buffer_watch_compare) != NULL;
-}
-
 GstDebugserverBuffer * gst_debugserver_buffer_new (void)
 {
   GstDebugserverBuffer *buf = (GstDebugserverBuffer*)g_malloc (sizeof(GstDebugserverBuffer));
 
-  gst_debugserver_watcher_init (&buf->watcher, gst_debugserver_buffer_ok, (GDestroyNotify) buffer_watch_list_free, buffer_watch_compare);
+  gst_debugserver_watcher_init (&buf->watcher, NULL, (GDestroyNotify) buffer_watch_list_free, buffer_watch_compare);
 
   return buf;
 }
@@ -121,9 +110,14 @@ gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf, gboolean 
 void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
   GstDebugserverTcp * tcp_server, GstPad * pad, GstBuffer * gst_buffer)
 {
+  GHashTableIter iter;
+  gpointer client, value;
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__BufferInfo buffer_info = GST_DEBUGGER__BUFFER_INFO__INIT;
   gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
+  GSList *list = NULL;
+  BufferWatch watch = { FALSE, pad, pad_path };
+  gchar *buff_data = NULL;
 
   buffer_info.dts = GST_BUFFER_DTS (gst_buffer);
   buffer_info.pts = GST_BUFFER_PTS (gst_buffer);
@@ -132,13 +126,28 @@ void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
   buffer_info.offset = GST_BUFFER_OFFSET_END (gst_buffer);
   buffer_info.pad = pad_path;
   buffer_info.size = gst_buffer_get_size (gst_buffer);
-  buffer_info.has_data = FALSE; // todo
+
+  buff_data = (gchar*) g_malloc (sizeof (gchar) * buffer_info.size);
+  gst_buffer_extract (gst_buffer, 0, buff_data, buffer_info.size);
+
+  buffer_info.data.data = buff_data;
+  buffer_info.data.len = buffer_info.size;
 
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_BUFFER_INFO;
   gst_data.buffer_info = &buffer_info;
 
-  gst_debugserver_watcher_send_data (&buffer->watcher, tcp_server, &gst_data);
+  g_mutex_lock (&buffer->watcher.mutex);
+  g_hash_table_iter_init (&iter, buffer->watcher.clients);
+  while (g_hash_table_iter_next (&iter, &client, &value)) {
+    list = g_slist_find_custom ((GSList*) value, &watch, buffer_watch_compare);
+    if (list != NULL) {
+      buffer_info.has_data = ((BufferWatch*)list->data)->send_data;
+      gst_debugserver_tcp_send_packet (tcp_server, (TcpClient*) client, &gst_data);
+    }
+  }
+  g_mutex_unlock (&buffer->watcher.mutex);
 
+  g_free (buff_data);
   g_free (pad_path);
 }
 

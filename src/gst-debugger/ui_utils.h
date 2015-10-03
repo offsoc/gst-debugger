@@ -40,7 +40,7 @@ Glib::RefPtr<Gst::PadTemplate> protocol_template_to_gst_template(const GstDebugg
 
 std::string flags_value_to_string(guint value);
 
-std::string buffer_data_to_string(StringDataFormat format, const Glib::RefPtr<Gst::Buffer> &buffer, gsize max_size, int columns_in_row);
+std::string buffer_data_to_string(StringDataFormat format, const std::string &buffer, gsize max_size, int columns_in_row);
 
 Glib::RefPtr<Gtk::Builder> get_dialog_ui_def();
 

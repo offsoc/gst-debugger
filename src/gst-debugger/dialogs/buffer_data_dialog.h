@@ -23,7 +23,7 @@ class BufferDataDialog : public Gtk::Dialog
 	Gtk::Entry *columns_in_row_entry;
 	Gtk::Button *set_columns_in_row_button;
 
-	Glib::RefPtr<Gst::Buffer> buf;
+	std::string buf;
 	Glib::RefPtr<Gtk::TextBuffer> text_buffer;
 
 	int cols_in_row = 16;
@@ -35,7 +35,7 @@ public:
 
 	void change_format(int i);
 
-	void set_buffer(const Glib::RefPtr<Gst::Buffer> &buffer);
+	void set_data(const std::string &data);
 };
 
 #endif /* SRC_GST_DEBUGGER_DIALOGS_BUFFER_DATA_DIALOG_H_ */

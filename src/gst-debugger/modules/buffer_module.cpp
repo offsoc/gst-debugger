@@ -7,12 +7,16 @@
 
 
 #include "buffer_module.h"
+#include "ui_utils.h"
+
+#include "dialogs/buffer_data_dialog.h"
 
 #include "controller/controller.h"
 
 BufferModule::BufferModule()
 : BaseMainModule(GstDebugger::GStreamerData::kBufferInfo, "buffers")
 {
+	data_dialog = load_dialog<BufferDataDialog>("bufferDataDialog");
 }
 
 void BufferModule::load_details(gpointer data)
@@ -29,7 +33,25 @@ void BufferModule::load_details(gpointer data)
 
 	if (buffer_info->has_data())
 	{
-		append_details_row("Data", "data"); // todo
+		buffer = buffer_info->data();
+		append_details_row("Data", buffer_data_to_string(StringDataFormat::HEX, buffer, 1024, 16));
+	}
+}
+
+
+void BufferModule::details_activated(const Gtk::TreeModel::Path &path)
+{
+	Gtk::TreeModel::iterator iter = details_model->get_iter(path);
+	if (!iter)
+	{
+		return;
+	}
+
+	Gtk::TreeModel::Row row = *iter;
+	if (row[detail_columns.name] == "Data")
+	{
+		data_dialog->set_data(buffer);
+		data_dialog->show();
 	}
 }
 

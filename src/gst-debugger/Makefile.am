@@ -63,6 +63,8 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	modules/qe_control_module.h \
 	dialogs/enums_dialog.cpp \
 	dialogs/enums_dialog.h \
+	dialogs/buffer_data_dialog.cpp \
+	dialogs/buffer_data_dialog.h \
 	dialogs/factories_dialog.cpp \
 	dialogs/factories_dialog.h \
 	modules/gst_properties_module.cpp \

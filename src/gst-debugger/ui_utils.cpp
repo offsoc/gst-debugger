@@ -113,11 +113,10 @@ std::string flags_value_to_string(guint value)
 	return buff;
 }
 
-std::string buffer_data_to_string(StringDataFormat format, const Glib::RefPtr<Gst::Buffer> &buffer, gsize max_size, int columns_in_row)
+std::string buffer_data_to_string(StringDataFormat format, const std::string &buffer, gsize max_size, int columns_in_row)
 {
 	std::ostringstream ss;
-	gsize display_size = std::min(max_size, buffer->get_size());
-	Glib::RefPtr<Gst::MapInfo> map_info(new Gst::MapInfo());
+	gsize display_size = std::min(max_size, buffer.length());
 
 	ss << ((format == StringDataFormat::HEX) ?
 			std::hex : format == StringDataFormat::OCT ? std::oct : std::dec)
@@ -125,28 +124,24 @@ std::string buffer_data_to_string(StringDataFormat format, const Glib::RefPtr<Gs
 
 	int width = format == StringDataFormat::HEX ? 2 : format == StringDataFormat::BINARY ? 8 : 3;
 
-	buffer->map(map_info, Gst::MAP_READ);
-
 	for (std::size_t i = 0; i < display_size; i++)
 	{
 		if (i != 0 && i % columns_in_row == 0)
 			ss << std::endl;
 		if (format == StringDataFormat::BINARY)
 		{
-			ss << std::setw(width) << std::bitset<8>(map_info->get_data()[i]) << " ";
+			ss << std::setw(width) << std::bitset<8>(buffer[i]) << " ";
 		}
 		else
 		{
-			ss << std::setw(width) << static_cast<int>(map_info->get_data()[i]) << " ";
+			ss << std::setw(width) << static_cast<int>((unsigned char)buffer[i]) << " ";
 		}
 	}
 
-	if (display_size < buffer->get_size())
+	if (display_size < buffer.length())
 	{
 		ss << std::endl << "more...";
 	}
-
-	buffer->unmap(map_info);
 
 	return ss.str();
 }

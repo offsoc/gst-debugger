@@ -11,10 +11,17 @@
 #include "control_module.h"
 #include "base_main_module.h"
 
+class BufferDataDialog;
+
 class BufferModule : public BaseMainModule
 {
+	BufferDataDialog *data_dialog;
+	std::string buffer;
+
 	void data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data) override;
 	void load_details(gpointer data) override;
+
+	void details_activated(const Gtk::TreeModel::Path &path) override;
 
 public:
 	BufferModule();

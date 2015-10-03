@@ -41,7 +41,7 @@ BufferDataDialog::BufferDataDialog(BaseObjectType* cobject, const Glib::RefPtr<G
 	builder->get_widget("setColumnsInRowButton", set_columns_in_row_button);
 	set_columns_in_row_button->signal_clicked().connect([this] {
 		cols_in_row = std::max(1, std::atoi(columns_in_row_entry->get_text().c_str()));
-		set_buffer(buf);
+		set_data(buf);
 	});
 }
 
@@ -49,13 +49,13 @@ void BufferDataDialog::change_format(int i)
 {
 	if (format_buttons[i]->get_active())
 	{
-		set_buffer(buf);
+		set_data(buf);
 	}
 }
 
-void BufferDataDialog::set_buffer(const Glib::RefPtr<Gst::Buffer> &buffer)
+void BufferDataDialog::set_data(const std::string &data)
 {
-	buf = buffer;
-	text_buffer->set_text(buffer_data_to_string(get_selected_format(), buf, buf->get_size(), cols_in_row));
+	buf = data;
+	text_buffer->set_text(buffer_data_to_string(get_selected_format(), data, data.length(), cols_in_row));
 }
 
