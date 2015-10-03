@@ -20,7 +20,7 @@
 #ifndef __GST_DEBUGSERVER_BUFFER_H__
 #define __GST_DEBUGSERVER_BUFFER_H__
 
-#include "common/gstdebugger.pb-c.h"
+#include "gstdebugserverwatcher.h"
 
 #include <gst/gst.h>
 
@@ -29,28 +29,23 @@ G_BEGIN_DECLS
 typedef struct _GstDebugserverBuffer GstDebugserverBuffer;
 
 struct _GstDebugserverBuffer {
-  GHashTable *clients;
+  GstDebugserverWatcher watcher;
 };
 
 GstDebugserverBuffer * gst_debugserver_buffer_new (void);
+
 void gst_debugserver_buffer_free (GstDebugserverBuffer * buf);
 
-gboolean gst_debugserver_buffer_add_watch (GstDebugserverBuffer * buf,
-  GstPad * pad, gpointer client_info);
+gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf, gboolean enable,
+  gboolean send_data, GstPad * pad, gchar * pad_path, TcpClient * client);
 
-gboolean gst_debugserver_buffer_remove_watch (GstDebugserverBuffer * buf,
-  GstPad * pad, gpointer client_info);
-
-gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf,
-  gboolean enable, GstPad * pad, gpointer client_info);
-
-GSList* gst_debugserver_buffer_get_clients (GstDebugserverBuffer * buf,
-  GstPad * pad);
+void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
+  GstDebugserverTcp * tcp_server, GstPad * pad, GstBuffer * gst_buffer);
 
 void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf);
 
 void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf,
-  gpointer client_info);
+  TcpClient * client);
 
 G_END_DECLS
 

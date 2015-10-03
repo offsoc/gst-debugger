@@ -22,6 +22,7 @@ public:
 	void send_property_request_command(const std::string &element_path, const std::string &property_name);
 	void send_event_request_command(bool enable, const std::string &pad_path, int type);
 	void send_query_request_command(bool enable, const std::string &pad_path, int type);
+	void send_buffer_request_command(bool enable, const std::string &pad_path, bool send_data);
 	void send_message_request_command(int message_type, bool enable);
 	void send_set_threshold_command(const std::string &threshold_list, bool overwrite);
 	void send_set_log_watch_command(bool enable, const std::string &category, int log_level);

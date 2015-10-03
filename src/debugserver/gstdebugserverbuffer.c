@@ -19,99 +19,135 @@
 
 #include "gstdebugserverbuffer.h"
 
+#include "common/gst-utils.h"
+
+typedef struct {
+  gboolean send_data;
+  GstPad * pad;
+  gchar * pad_path;
+} BufferWatch;
+
+static BufferWatch * buffer_watch_new (gboolean send_data, GstPad * pad, gchar * pad_path)
+{
+  BufferWatch * watch = (BufferWatch *) g_malloc (sizeof (BufferWatch));
+
+  watch->send_data = send_data;
+  watch->pad = pad;
+  watch->pad_path = g_strdup (pad_path);
+
+  return watch;
+}
+
+static void buffer_watch_free (BufferWatch * watch)
+{
+  g_free (watch->pad_path);
+  g_free (watch);
+}
+
+static void buffer_watch_list_free (gpointer ptr)
+{
+  g_slist_free_full (ptr, (GDestroyNotify) buffer_watch_free);
+}
+
+static gint buffer_watch_compare (gconstpointer a, gconstpointer b)
+{
+  BufferWatch *a1 = (BufferWatch*) a;
+  BufferWatch *b1 = (BufferWatch*) b;
+
+  if (g_strcmp0 (a1->pad_path, b1->pad_path) == 0 || a1->pad == NULL) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
+static gboolean gst_debugserver_buffer_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
+{
+  GSList *list = new_ptr;
+  BufferWatch watch;
+
+  watch.pad = NULL;
+  watch.pad_path = original->buffer_info->pad;
+
+  return g_slist_find_custom (list, &watch, buffer_watch_compare) != NULL;
+}
+
 GstDebugserverBuffer * gst_debugserver_buffer_new (void)
 {
   GstDebugserverBuffer *buf = (GstDebugserverBuffer*)g_malloc (sizeof(GstDebugserverBuffer));
-  buf->clients = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL,
-    (GDestroyNotify) g_slist_free);
+
+  gst_debugserver_watcher_init (&buf->watcher, gst_debugserver_buffer_ok, (GDestroyNotify) buffer_watch_list_free, buffer_watch_compare);
 
   return buf;
 }
 
 void gst_debugserver_buffer_free (GstDebugserverBuffer * buf)
 {
-  g_hash_table_unref (buf->clients);
+  gst_debugserver_buffer_clean (buf);
+  gst_debugserver_watcher_deinit (&buf->watcher);
   g_free (buf);
 }
 
 gboolean gst_debugserver_buffer_add_watch (GstDebugserverBuffer * buf,
-  GstPad * pad, gpointer client_info)
+  gboolean send_data, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
-  GSList *listeners =
-      (GSList *) g_hash_table_lookup (buf->clients, pad);
-
-  if (listeners == NULL) {
-    listeners = g_slist_append (listeners, client_info);
-    g_hash_table_insert (buf->clients, pad, listeners);
-    return TRUE;
-  }
-
-  if (g_slist_find (listeners, client_info) == NULL) {
-    listeners = g_slist_append (listeners, client_info);
-    g_hash_table_replace (buf->clients, pad,
-        listeners);
+  BufferWatch *w = buffer_watch_new (send_data, pad, pad_path);
+  if (gst_debugserver_watcher_add_watch (&buf->watcher, w, client) == TRUE) {
     return TRUE;
   } else {
+    buffer_watch_free (w);
     return FALSE;
   }
 }
 
 gboolean gst_debugserver_buffer_remove_watch (GstDebugserverBuffer * buf,
-  GstPad * pad, gpointer client_info)
+  gboolean send_data, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
-  GSList *listeners =
-      (GSList *) g_hash_table_lookup (buf->clients, pad),
-      *found = NULL;
+  BufferWatch w = { send_data, pad, pad_path };
 
-  if ((found = g_slist_find (listeners, client_info)) == NULL) {
-    return FALSE;
-  } else {
-    listeners = g_slist_remove_link (listeners, found);
-    g_hash_table_replace (buf->clients, pad, listeners);
-    return TRUE;
-  }
+  return gst_debugserver_watcher_remove_watch (&buf->watcher, &w, client);
 }
 
-GSList* gst_debugserver_buffer_get_clients (GstDebugserverBuffer * buf,
-  GstPad * pad)
-{
-  GSList *base = (GSList *) g_hash_table_lookup (buf->clients, pad);
-  GSList *clients = g_slist_copy (base);
-  base = (GSList *) g_hash_table_lookup (buf->clients, NULL);
-
-  for (; base != NULL; base = g_slist_next (base)) {
-    if (g_slist_find (clients, base->data) == NULL) {
-      clients = g_slist_append(clients, base->data);
-    }
-  }
-
-  return clients;
-}
-
-gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf,
-  gboolean enable, GstPad * pad, gpointer client_info)
+gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf, gboolean enable,
+  gboolean send_data, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
   if (enable) {
-    return gst_debugserver_buffer_add_watch (buf, pad, client_info);
+    return gst_debugserver_buffer_add_watch (buf, send_data, pad, pad_path, client);
   } else {
-    return gst_debugserver_buffer_remove_watch (buf, pad, client_info);
+    return gst_debugserver_buffer_remove_watch (buf, send_data, pad, pad_path, client);
   }
 }
 
-void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf, gpointer client_info)
+void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
+  GstDebugserverTcp * tcp_server, GstPad * pad, GstBuffer * gst_buffer)
 {
-  GList *list = g_hash_table_get_keys (buf->clients);
-  GList *free_list = list;
+  GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__BufferInfo buffer_info = GST_DEBUGGER__BUFFER_INFO__INIT;
+  gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
 
-  while (list) {
-    gst_debugserver_buffer_remove_watch (buf, GST_PAD_CAST (list->data), client_info);
-    list = g_list_next (list);
-  }
+  buffer_info.dts = GST_BUFFER_DTS (gst_buffer);
+  buffer_info.pts = GST_BUFFER_PTS (gst_buffer);
+  buffer_info.duration = GST_BUFFER_DURATION (gst_buffer);
+  buffer_info.offset = GST_BUFFER_OFFSET (gst_buffer);
+  buffer_info.offset = GST_BUFFER_OFFSET_END (gst_buffer);
+  buffer_info.pad = pad_path;
+  buffer_info.size = gst_buffer_get_size (gst_buffer);
+  buffer_info.has_data = FALSE; // todo
 
-  g_list_free (free_list);
+  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_BUFFER_INFO;
+  gst_data.buffer_info = &buffer_info;
+
+  gst_debugserver_watcher_send_data (&buffer->watcher, tcp_server, &gst_data);
+
+  g_free (pad_path);
+}
+
+void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf, TcpClient * client)
+{
+  g_hash_table_remove (buf->watcher.clients, client);
 }
 
 void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf)
 {
-  g_hash_table_remove_all (buf->clients);
+  gst_debugserver_watcher_clean (&buf->watcher);
 }

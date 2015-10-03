@@ -89,6 +89,17 @@ message QueryInfo {
 	required bytes structure_data = 3;
 }
 
+message BufferInfo {
+	required uint64 pts = 1;
+	required uint64 dts = 2;
+	required uint64 duration = 3;
+	required uint64 offset = 4;
+	required uint64 offset_end = 5;
+	required uint64 size = 6;
+	required string pad = 7;
+	optional bytes data = 8;
+}
+
 message TypeDescriptionRequest {
 	enum Type {
 		FACTORY = 0;
@@ -211,5 +222,6 @@ message GStreamerData {
 		QueryInfo query_info = 9;
 		PropertyValue property_value = 10;
 		ElementKlass element_klass = 11;
+		BufferInfo buffer_info = 12;
 	}
 }

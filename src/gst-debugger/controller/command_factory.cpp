@@ -61,6 +61,18 @@ void CommandFactory::send_event_request_command(bool enable, const std::string &
 	client->send_command(cmd);
 }
 
+void CommandFactory::send_buffer_request_command(bool enable, const std::string &pad_path, bool send_data)
+{
+	auto request = create_pad_watch_request(enable, pad_path);
+	GstDebugger::BufferWatchRequest *buf_request = new GstDebugger::BufferWatchRequest();
+	buf_request->set_send_data(send_data);
+	request->set_allocated_buffer(buf_request);
+	GstDebugger::Command cmd;
+	cmd.set_allocated_pad_watch(request);
+
+	client->send_command(cmd);
+}
+
 void CommandFactory::send_message_request_command(int message_type, bool enable)
 {
 	GstDebugger::MessageRequest *request = new GstDebugger::MessageRequest();

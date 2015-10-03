@@ -76,6 +76,8 @@ public:
 
 	std::shared_ptr<ObjectModel> get_selected_object() const { return selected_object; }
 
+	std::string get_selected_pad_path() const;
+
 	void log(const std::string &message);
 
 	sigc::signal<void> on_debug_categories_changed;

@@ -163,6 +163,10 @@ do_pad_query_pre (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query)
 static void
 do_pad_push_pre (GstTracer * self, guint64 ts, GstPad * pad, GstBuffer * buffer)
 {
+  GstDebugserverTracer *tracer = GST_DEBUGSERVER_TRACER (self);
+
+  gst_debugserver_buffer_send_buffer (tracer->buffer, tracer->tcp_server, pad, buffer);
+
 }
 
 static void
@@ -174,6 +178,7 @@ gst_debugserver_tracer_client_disconnected (TcpClient * client, gpointer user_da
   gst_debugserver_message_remove_client (self->message, client);
   gst_debugserver_qe_remove_client (self->event, client);
   gst_debugserver_qe_remove_client (self->query, client);
+  gst_debugserver_buffer_remove_client (self->buffer, client);
 }
 
 static void
@@ -260,6 +265,8 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
 
   self->query = gst_debugserver_qe_new ();
 
+  self->buffer = gst_debugserver_buffer_new ();
+
   gst_tracing_register_hook (tracer, "element-new",
       G_CALLBACK (do_element_new));
   gst_tracing_register_hook (tracer, "pad-push-event-pre",
@@ -294,6 +301,7 @@ gst_debugserver_tracer_finalize (GObject * obj)
   gst_debugserver_message_free (self->message);
   gst_debugserver_qe_free (self->event);
   gst_debugserver_qe_free (self->query);
+  gst_debugserver_buffer_free (self->buffer);
 }
 
 static void
@@ -353,6 +361,15 @@ static void gst_debugserver_process_pad_watch (GstDebugserverTracer * self, GstD
     break;
   case GST_DEBUGGER__PAD_WATCH_REQUEST__PAD_WATCH_TYPE_QUERY:
     if (gst_debugserver_qe_set_watch (self->query, request->action == GST_DEBUGGER__ACTION__ADD, request->query->type, pad, request->pad, client)) {
+      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+      data.confirmation = command;
+      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
+      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+    }
+    break;
+  case GST_DEBUGGER__PAD_WATCH_REQUEST__PAD_WATCH_TYPE_BUFFER:
+    if (gst_debugserver_buffer_set_watch (self->buffer, request->action == GST_DEBUGGER__ACTION__ADD, request->buffer->send_data, pad,
+        request->pad, client)) {
       GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
       data.confirmation = command;
       data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;

@@ -12,7 +12,7 @@
 #include "message_module.h"
 #include "event_module.h"
 #include "query_module.h"
-//#include "pad_path_types_control_module.h"
+#include "buffer_module.h"
 
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
@@ -47,9 +47,9 @@ void MainModule::load_submodules(const Glib::RefPtr<Gtk::Builder>& builder)
 	submodules["busMessages"].display_module = std::make_shared<MessageModule>();
 	submodules["busMessages"].control_module = std::make_shared<MessageControlModule>();
 
-	/*submodules["buffers"].display_module = std::make_shared<BufferModule>();
-	submodules["buffers"].control_module = std::make_shared<PadPathControlModule>(PadWatch_WatchType_BUFFER);
-*/
+	submodules["buffers"].display_module = std::make_shared<BufferModule>();
+	submodules["buffers"].control_module = std::make_shared<BufferControlModule>();
+
 	submodules["events"].display_module = std::make_shared<EventModule>();
 	submodules["events"].control_module = std::make_shared<EventControlModule>();
 

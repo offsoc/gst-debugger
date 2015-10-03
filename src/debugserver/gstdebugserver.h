@@ -27,6 +27,7 @@
 #include "gstdebugserverlog.h"
 #include "gstdebugservermessage.h"
 #include "gstdebugserverqe.h"
+#include "gstdebugserverbuffer.h"
 
 #include <gst/gst.h>
 
@@ -66,6 +67,7 @@ struct _GstDebugserverTracer {
   GstDebugserverMessage *message;
   GstDebugserverQE *event;
   GstDebugserverQE *query;
+  GstDebugserverBuffer *buffer;
 };
 
 struct _GstDebugserverTracerClass {

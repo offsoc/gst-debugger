@@ -290,6 +290,13 @@ void Controller::add_property(const GstDebugger::PropertyValue &value)
 	}
 }
 
+std::string Controller::get_selected_pad_path() const
+{
+	return (selected_object && std::dynamic_pointer_cast<PadModel>(selected_object)) ?
+			ElementPathProcessor::get_object_path(selected_object) :
+			std::string();
+}
+
 void Controller::log(const std::string &message)
 {
 	// todo date/time?

@@ -10,8 +10,6 @@
 
 #include "control_module.h"
 
-#include "controller/element_path_processor.h"
-
 class QEControlModule : virtual public ControlModule
 {
 	const std::string enum_name;
@@ -22,15 +20,6 @@ protected:
 
 	Gtk::Label *pad_path_label;
 	Gtk::ComboBox *types_combobox;
-
-	std::string get_pad_path() const
-	{
-		auto obj = controller->get_selected_object();
-
-		return (obj && std::dynamic_pointer_cast<PadModel>(obj)) ?
-				ElementPathProcessor::get_object_path(obj) :
-				std::string();
-	}
 
 	bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) override
 	{
@@ -57,7 +46,7 @@ public:
 		hooks_tree_view->append_column("Pad", hooks_model_columns.str2);
 
 		create_dispatcher("selected-object", [this] {
-			auto pad_path = get_pad_path();
+			auto pad_path = controller->get_selected_pad_path();
 			if (pad_path.empty())
 				pad_path = "none (any path)";
 			pad_path_label->set_text(pad_path);

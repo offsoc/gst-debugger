@@ -8,8 +8,8 @@ libgstdebugserver_la_SOURCES = \
 	gstdebugservertypes.c gstdebugservertypes.h \
 	gstdebugserverqe.c gstdebugserverqe.h \
 	gstdebugservertopology.c gstdebugservertopology.h \
-	gstdebugserverwatcher.c gstdebugserverwatcher.h
-#	gstdebugserverbuffer.c gstdebugserverbuffer.h \
+	gstdebugserverwatcher.c gstdebugserverwatcher.h \
+	gstdebugserverbuffer.c gstdebugserverbuffer.h
 #	gstdebugserverfactory.c gstdebugserverfactory.h
 
 libgstdebugserver_la_LDFLAGS  = $(GSTREAMER_LIBS) $(PROTOBUF_C_LIBS) $(GIO_LIBS)

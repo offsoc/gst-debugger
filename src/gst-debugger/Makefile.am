@@ -67,6 +67,8 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	dialogs/factories_dialog.h \
 	modules/gst_properties_module.cpp \
 	modules/gst_properties_module.h \
+	modules/buffer_module.cpp \
+	modules/buffer_module.h \
 	models/gst_klass_model.h \
 	dialogs/klasses_dialog.h \
 	dialogs/klasses_dialog.cpp \

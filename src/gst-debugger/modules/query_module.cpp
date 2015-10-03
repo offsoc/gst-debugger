@@ -43,7 +43,7 @@ void QueryControlModule::add_watch()
 	if (it)
 	{
 		Gtk::TreeModel::Row row = *it;
-		controller->send_query_request_command(true, get_pad_path(), row[types_model_columns.type_id]);
+		controller->send_query_request_command(true, controller->get_selected_pad_path(), row[types_model_columns.type_id]);
 	}
 }
 
