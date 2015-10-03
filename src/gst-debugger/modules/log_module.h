@@ -16,9 +16,6 @@ class LogModule : public BaseMainModule
 	void data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data) override;
 	void load_details(gpointer data) override;
 
-protected:
-	bool filter_function(const Gtk::TreeModel::const_iterator& it) override;
-
 public:
 	LogModule();
 	virtual ~LogModule() {}

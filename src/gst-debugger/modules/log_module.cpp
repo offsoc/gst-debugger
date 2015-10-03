@@ -33,48 +33,6 @@ void LogModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStre
 	row[columns.data] = new GstDebugger::LogInfo(data->log_info());
 }
 
-bool LogModule::filter_function(const Gtk::TreeModel::const_iterator& it)
-{
-/*	if (!filter_expression)
-		return true;
-
-	auto log = it->get_value(columns.log);
-
-	if (log == nullptr)
-		return true;
-
-	std::shared_ptr<TokenIdentifier> ident;
-	std::shared_ptr<TokenBase> value;
-
-	if (filter_expression->left->get_type() == TokenType::IDENTIFIER)
-	{
-		ident = std::static_pointer_cast<TokenIdentifier>(filter_expression->left);
-		value = filter_expression->right;
-	}
-	else
-	{
-		ident = std::static_pointer_cast<TokenIdentifier>(filter_expression->right);
-		value = filter_expression->left;
-	}
-
-#define MAKE_FIELD_FILTER(FIELD, GETTER, TOKEN_CLASS) \
-	do { \
-		if (ident->get_value() == FIELD) \
-			return filter_expression->op->get_value() == OpType::EQ ? (log->GETTER() == std::static_pointer_cast<TOKEN_CLASS>(value)->get_value()) : \
-					(log->GETTER() != std::static_pointer_cast<TOKEN_CLASS>(value)->get_value()); \
-	} while (false);
-
-	MAKE_FIELD_FILTER("line", line, TokenNumber);
-	MAKE_FIELD_FILTER("level", level, TokenNumber);
-	MAKE_FIELD_FILTER("category", category_name, TokenString);
-	MAKE_FIELD_FILTER("file", file, TokenString);
-	MAKE_FIELD_FILTER("function", function, TokenString);
-	MAKE_FIELD_FILTER("object_path", object_path, TokenString);
-	MAKE_FIELD_FILTER("message", message, TokenString);
-*/
-	return true;
-}
-
 LogControlModule::LogControlModule()
 : ControlModule()
 {

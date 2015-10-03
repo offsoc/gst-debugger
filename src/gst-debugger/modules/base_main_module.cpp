@@ -48,22 +48,6 @@ void BaseMainModule::load_details(Gtk::TreeView *view, const Gtk::TreeModel::Pat
 	load_details((*iter)[columns.data]);
 }
 
-void BaseMainModule::update_filter_expression(const std::string &expr)
-{
-/*	Parser p;
-	auto prev = filter_expression;
-	try
-	{
-		filter_expression = std::make_shared<Expression>(p.parse(expr));
-	}
-	catch (...) { filter_expression = std::shared_ptr<Expression>(); }
-
-	if (prev != filter_expression)
-	{
-		filter->refilter();
-	}*/
-}
-
 void BaseMainModule::configure_details_view(Gtk::TreeView *view)
 {
 	view->remove_all_columns();

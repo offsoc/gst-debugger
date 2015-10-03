@@ -64,8 +64,6 @@ public:
 
 	static void configure_details_view(Gtk::TreeView *view);
 
-	void update_filter_expression(const std::string &expr);
-
 	Glib::RefPtr<Gtk::ListStore> get_model() const { return model; }
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;

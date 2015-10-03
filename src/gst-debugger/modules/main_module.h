@@ -27,7 +27,6 @@ class MainModule : public IBaseView
 	Gtk::TreeView *list_tree_view;
 	Gtk::TreeView *details_tree_view;
 	Gtk::Frame *controller_frame;
-	Gtk::Entry *data_filter_entry;
 
 	TypesModelColumns types_columns;
 
