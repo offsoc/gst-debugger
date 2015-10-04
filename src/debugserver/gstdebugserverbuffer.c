@@ -153,7 +153,7 @@ void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
 
 void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf, TcpClient * client)
 {
-  g_hash_table_remove (buf->hooks.clients, client);
+  gst_debugserver_hooks_remove_client (&buf->hooks, client);
 }
 
 void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf)

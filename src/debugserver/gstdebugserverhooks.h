@@ -47,6 +47,8 @@ gboolean gst_debugserver_hooks_add_hook (GstDebugserverHooks * hooks,
 gboolean gst_debugserver_hooks_remove_hook (GstDebugserverHooks * hooks,
   gpointer data, TcpClient * client);
 
+void gst_debugserver_hooks_remove_client (GstDebugserverHooks * hooks, TcpClient * client);
+
 G_END_DECLS
 
 #endif

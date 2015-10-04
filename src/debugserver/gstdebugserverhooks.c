@@ -22,7 +22,7 @@
 void gst_debugserver_hooks_init (GstDebugserverHooks * hooks, OkFunction ok_function,
   GDestroyNotify hash_destroy, GCompareFunc cmp_func)
 {
-	hooks->clients = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, hash_destroy);
+  hooks->clients = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, hash_destroy);
   g_mutex_init (&hooks->mutex);
   hooks->ok_function = ok_function;
   hooks->cmp_function = cmp_func;
@@ -58,38 +58,56 @@ void gst_debugserver_hooks_send_data (GstDebugserverHooks * hooks, GstDebugserve
 
 gboolean gst_debugserver_hooks_add_hook (GstDebugserverHooks * hooks, gpointer data, TcpClient * client)
 {
-  GSList *listeners =
-      (GSList *) g_hash_table_lookup (hooks->clients, client);
+  GSList *listeners;
+  gboolean ret = FALSE;
+
+  g_mutex_lock (&hooks->mutex);
+  listeners = (GSList *) g_hash_table_lookup (hooks->clients, client);
 
   if (listeners == NULL) {
     listeners = g_slist_append (listeners, data);
     g_hash_table_insert (hooks->clients, client, listeners);
-    return TRUE;
+    ret = TRUE;
+    goto finalize;
   }
 
   if (g_slist_find_custom (listeners, data, hooks->cmp_function) == NULL) {
     listeners = g_slist_append (listeners, data);
     g_hash_table_steal (hooks->clients, client);
     g_hash_table_insert (hooks->clients, client, listeners);
-    return TRUE;
-  } else {
-    return FALSE;
+    ret = TRUE;
+    goto finalize;
   }
+
+finalize:
+  g_mutex_unlock (&hooks->mutex);
+  return ret;
 }
 
 gboolean gst_debugserver_hooks_remove_hook (GstDebugserverHooks * hooks,
   gpointer data, TcpClient * client)
 {
-  GSList *listeners =
-      (GSList *) g_hash_table_lookup (hooks->clients, client);
+  GSList *listeners;
+
+  g_mutex_lock (&hooks->mutex);
+  listeners = (GSList *) g_hash_table_lookup (hooks->clients, client);
 
   GSList *l = g_slist_find_custom (listeners, data, hooks->cmp_function);
   if (l == NULL) {
+    g_mutex_unlock (&hooks->mutex);
     return FALSE;
   } else {
     listeners = g_slist_remove_link (listeners, l);
     g_hash_table_steal (hooks->clients, client);
     g_hash_table_insert (hooks->clients, client, listeners);
+    g_mutex_unlock (&hooks->mutex);
     return TRUE;
   }
+}
+
+void gst_debugserver_hooks_remove_client (GstDebugserverHooks * hooks, TcpClient * client)
+{
+  g_mutex_lock (&hooks->mutex);
+  g_hash_table_remove (hooks->clients, client);
+  g_mutex_unlock (&hooks->mutex);
 }

@@ -162,5 +162,5 @@ void gst_debugserver_qe_clean (GstDebugserverQE * qe)
 
 void gst_debugserver_qe_remove_client (GstDebugserverQE * qe, TcpClient * client)
 {
-  g_hash_table_remove (qe->hooks.clients, client);
+  gst_debugserver_hooks_remove_client (&qe->hooks, client);
 }

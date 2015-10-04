@@ -185,5 +185,5 @@ void gst_debugserver_log_set_threshold (const gchar * threshold)
 void gst_debugserver_log_remove_client (GstDebugserverLog * log,
   TcpClient * client)
 {
-  g_hash_table_remove (log->hooks.clients, client);
+  gst_debugserver_hooks_remove_client (&log->hooks, client);
 }

@@ -76,7 +76,7 @@ gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
 void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
   TcpClient * client)
 {
-  g_hash_table_remove (msg->hooks.clients, client);
+  gst_debugserver_hooks_remove_client (&msg->hooks, client);
 }
 
 
