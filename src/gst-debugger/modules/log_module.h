@@ -29,8 +29,8 @@ class LogControlModule : public ControlModule
 	Gtk::Button *set_threshold_button;
 	Gtk::Entry *threshold_entry;
 
-	void add_watch() override;
-	void remove_watch(const Gtk::TreeModel::Row& row) override;
+	void add_hook() override;
+	void remove_hook(const Gtk::TreeModel::Row& row) override;
 	void confirmation_received(GstDebugger::Command* cmd) override;
 
 	bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) override

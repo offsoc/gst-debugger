@@ -17,8 +17,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __GST_DEBUGSERVER_WATCHER_H__
-#define __GST_DEBUGSERVER_WATCHER_H__
+#ifndef __GST_DEBUGSERVER_HOOKS_H__
+#define __GST_DEBUGSERVER_HOOKS_H__
 
 #include "gstdebugservertcp.h"
 
@@ -33,18 +33,18 @@ typedef struct {
   GMutex mutex;
   OkFunction ok_function;
   GCompareFunc cmp_function;
-} GstDebugserverWatcher;
+} GstDebugserverHooks;
 
-void gst_debugserver_watcher_init (GstDebugserverWatcher * watcher, OkFunction ok_function, GDestroyNotify hash_destroy, GCompareFunc cmp_func);
+void gst_debugserver_hooks_init (GstDebugserverHooks * hooks, OkFunction ok_function, GDestroyNotify hash_destroy, GCompareFunc cmp_func);
 
-void gst_debugserver_watcher_deinit (GstDebugserverWatcher * watcher);
+void gst_debugserver_hooks_deinit (GstDebugserverHooks * hooks);
 
-void gst_debugserver_watcher_clean (GstDebugserverWatcher * watcher);
+void gst_debugserver_hooks_clean (GstDebugserverHooks * hooks);
 
-gboolean gst_debugserver_watcher_add_watch (GstDebugserverWatcher * watcher,
+gboolean gst_debugserver_hooks_add_hook (GstDebugserverHooks * hooks,
   gpointer data, TcpClient * client);
 
-gboolean gst_debugserver_watcher_remove_watch (GstDebugserverWatcher * watcher,
+gboolean gst_debugserver_hooks_remove_hook (GstDebugserverHooks * hooks,
   gpointer data, TcpClient * client);
 
 G_END_DECLS

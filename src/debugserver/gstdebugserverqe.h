@@ -20,23 +20,22 @@
 #ifndef __GST_DEBUGSERVER_EVENT_H__
 #define __GST_DEBUGSERVER_EVENT_H__
 
-#include "gstdebugserverwatcher.h"
-
 #include <gst/gst.h>
+#include "gstdebugserverhooks.h"
 
 G_BEGIN_DECLS
 
 typedef struct _GstDebugserverQE GstDebugserverQE;
 
 struct _GstDebugserverQE {
-  GstDebugserverWatcher watcher;
+  GstDebugserverHooks hooks;
 };
 
 GstDebugserverQE * gst_debugserver_qe_new (void);
 
 void gst_debugserver_qe_free (GstDebugserverQE * qe);
 
-gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,
+gboolean gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
   gint qe_type, GstPad * pad, gchar * pad_path, TcpClient * client);
 
 void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj);

@@ -82,17 +82,17 @@ void LogControlModule::set_controller(const std::shared_ptr<Controller> &control
 	});
 }
 
-void LogControlModule::add_watch()
+void LogControlModule::add_hook()
 {
-	controller->send_set_log_watch_command(true, debug_categories_combobox->get_active_text(),
+	controller->send_set_log_hook_command(true, debug_categories_combobox->get_active_text(),
 			atoi(log_level_entry->get_text().c_str()));
 }
 
-void LogControlModule::remove_watch(const Gtk::TreeModel::Row& row)
+void LogControlModule::remove_hook(const Gtk::TreeModel::Row& row)
 {
 	Glib::ustring category = row[hooks_model_columns.str2];
 	int level = row[hooks_model_columns.int1];
-	controller->send_set_log_watch_command(false, category, level);
+	controller->send_set_log_hook_command(false, category, level);
 }
 
 void LogControlModule::confirmation_received(GstDebugger::Command* cmd)
@@ -110,6 +110,6 @@ void LogControlModule::confirmation_received(GstDebugger::Command* cmd)
 	}
 	else
 	{
-		remove_hook(confirmation);
+		remove_confirmation_hook(confirmation);
 	}
 }

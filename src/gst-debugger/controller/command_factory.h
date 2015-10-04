@@ -16,7 +16,7 @@
 
 class CommandFactory : public virtual BaseController
 {
-	static GstDebugger::PadWatchRequest* create_pad_watch_request(bool enable, const std::string &pad_path);
+	static GstDebugger::PadHookRequest* create_pad_hook_request(bool enable, const std::string &pad_path);
 
 public:
 	void send_property_request_command(const std::string &element_path, const std::string &property_name);
@@ -25,7 +25,7 @@ public:
 	void send_buffer_request_command(bool enable, const std::string &pad_path, bool send_data);
 	void send_message_request_command(int message_type, bool enable);
 	void send_set_threshold_command(const std::string &threshold_list, bool overwrite);
-	void send_set_log_watch_command(bool enable, const std::string &category, int log_level);
+	void send_set_log_hook_command(bool enable, const std::string &category, int log_level);
 	void send_data_type_request_command(const std::string &type_name, GstDebugger::TypeDescriptionRequest_Type type);
 	void send_request_debug_categories_command();
 	void send_request_entire_topology_command();

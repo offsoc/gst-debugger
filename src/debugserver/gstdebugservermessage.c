@@ -46,7 +46,7 @@ GstDebugserverMessage * gst_debugserver_message_new (void)
 {
   GstDebugserverMessage *msg = (GstDebugserverMessage*)g_malloc (sizeof(GstDebugserverMessage));
 
-  gst_debugserver_watcher_init (&msg->watcher, gst_debugserver_message_ok, (GDestroyNotify) g_slist_free, g_int_cmp);
+  gst_debugserver_hooks_init (&msg->hooks, gst_debugserver_message_ok, (GDestroyNotify) g_slist_free, g_int_cmp);
 
   return msg;
 }
@@ -54,29 +54,29 @@ GstDebugserverMessage * gst_debugserver_message_new (void)
 void gst_debugserver_message_free (GstDebugserverMessage * msg)
 {
   gst_debugserver_log_clean (msg);
-  gst_debugserver_watcher_deinit (&msg->watcher);
+  gst_debugserver_hooks_deinit (&msg->hooks);
   g_free (msg);
 }
 
 void gst_debugserver_message_clean (GstDebugserverMessage * msg)
 {
-  gst_debugserver_watcher_clean (&msg->watcher);
+  gst_debugserver_hooks_clean (&msg->hooks);
 }
 
-gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
+gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
   TcpClient * client, GstDebugger__MessageRequest * request)
 {
   if (request->action == GST_DEBUGGER__ACTION__ADD) {
-    return gst_debugserver_watcher_add_watch (&msg->watcher, GINT_TO_POINTER (request->type), client);
+    return gst_debugserver_hooks_add_hook (&msg->hooks, GINT_TO_POINTER (request->type), client);
   } else {
-    return gst_debugserver_watcher_remove_watch (&msg->watcher, GINT_TO_POINTER (request->type), client);
+    return gst_debugserver_hooks_remove_hook (&msg->hooks, GINT_TO_POINTER (request->type), client);
   }
 }
 
 void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
   TcpClient * client)
 {
-  g_hash_table_remove (msg->watcher.clients, client);
+  g_hash_table_remove (msg->hooks.clients, client);
 }
 
 
@@ -96,7 +96,7 @@ void gst_debugserver_message_send_message (GstDebugserverMessage * msg, GstDebug
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_MESSAGE_INFO;
   gst_data.message_info = &msg_info;
 
-  gst_debugserver_watcher_send_data (&msg->watcher, tcp_server, &gst_data);
+  gst_debugserver_hooks_send_data (&msg->hooks, tcp_server, &gst_data);
 
   g_free (structure_data);
 }

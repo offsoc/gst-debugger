@@ -24,38 +24,38 @@
 #include <string.h>
 #include "../common/gst-utils.h"
 
-typedef struct _QEWatch {
+typedef struct _QEHook {
   gint qe_type;
   GstPad * pad;
   gchar * pad_path;
-} QEWatch;
+} QEHook;
 
-static QEWatch * qe_watch_new (gint type, GstPad * pad, gchar * pad_path)
+static QEHook * qe_hook_new (gint type, GstPad * pad, gchar * pad_path)
 {
-  QEWatch * watch = (QEWatch *) g_malloc (sizeof (QEWatch));
+  QEHook * hook = (QEHook *) g_malloc (sizeof (QEHook));
 
-  watch->qe_type = type;
-  watch->pad = pad;
-  watch->pad_path = g_strdup (pad_path);
+  hook->qe_type = type;
+  hook->pad = pad;
+  hook->pad_path = g_strdup (pad_path);
 
-  return watch;
+  return hook;
 }
 
-static void qe_watch_free (QEWatch * watch)
+static void qe_hook_free (QEHook * hook)
 {
-  g_free (watch->pad_path);
-  g_free (watch);
+  g_free (hook->pad_path);
+  g_free (hook);
 }
 
-static void qe_watch_list_free (gpointer ptr)
+static void qe_hook_list_free (gpointer ptr)
 {
-  g_slist_free_full (ptr, (GDestroyNotify) qe_watch_free);
+  g_slist_free_full (ptr, (GDestroyNotify) qe_hook_free);
 }
 
-static gint qe_watch_compare (gconstpointer a, gconstpointer b)
+static gint qe_hook_compare (gconstpointer a, gconstpointer b)
 {
-  QEWatch *a1 = (QEWatch*) a;
-  QEWatch *b1 = (QEWatch*) b;
+  QEHook *a1 = (QEHook*) a;
+  QEHook *b1 = (QEHook*) b;
 
   if (a1->qe_type == b1->qe_type && (g_strcmp0 (a1->pad_path, b1->pad_path) == 0 || a1->pad == NULL)) {
     return 0;
@@ -67,25 +67,25 @@ static gint qe_watch_compare (gconstpointer a, gconstpointer b)
 static gboolean gst_debugserver_qe_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
 {
   GSList *list = new_ptr;
-  QEWatch watch;
+  QEHook hook;
 
-  watch.pad = NULL;
+  hook.pad = NULL;
 
   if (original->event_info != NULL) {
-    watch.qe_type = original->event_info->type;
-    watch.pad_path = original->event_info->pad;
+    hook.qe_type = original->event_info->type;
+    hook.pad_path = original->event_info->pad;
   } else {
-    watch.qe_type = original->query_info->type;
-    watch.pad_path = original->query_info->pad;
+    hook.qe_type = original->query_info->type;
+    hook.pad_path = original->query_info->pad;
   }
 
-  return g_slist_find_custom (list, &watch, qe_watch_compare) != NULL;
+  return g_slist_find_custom (list, &hook, qe_hook_compare) != NULL;
 }
 
 GstDebugserverQE * gst_debugserver_qe_new (void)
 {
   GstDebugserverQE *qe = (GstDebugserverQE*)g_malloc (sizeof(GstDebugserverQE));
-  gst_debugserver_watcher_init (&qe->watcher, gst_debugserver_qe_ok, (GDestroyNotify) qe_watch_list_free, qe_watch_compare);
+  gst_debugserver_hooks_init (&qe->hooks, gst_debugserver_qe_ok, (GDestroyNotify) qe_hook_list_free, qe_hook_compare);
 
   return qe;
 }
@@ -93,37 +93,37 @@ GstDebugserverQE * gst_debugserver_qe_new (void)
 void gst_debugserver_qe_free (GstDebugserverQE * qe)
 {
   gst_debugserver_qe_clean (qe);
-  gst_debugserver_watcher_deinit (&qe->watcher);
+  gst_debugserver_hooks_deinit (&qe->hooks);
   g_free (qe);
 }
 
-static gboolean gst_debugserver_qe_add_watch (GstDebugserverQE * qe, gint type,
+static gboolean gst_debugserver_qe_add_hook (GstDebugserverQE * qe, gint type,
   GstPad * pad, gchar * pad_path, TcpClient * client)
 {
-  QEWatch *w = qe_watch_new (type, pad, pad_path);
-  if (gst_debugserver_watcher_add_watch (&qe->watcher, w, client) == TRUE) {
+  QEHook *w = qe_hook_new (type, pad, pad_path);
+  if (gst_debugserver_hooks_add_hook (&qe->hooks, w, client) == TRUE) {
     return TRUE;
   } else {
-    qe_watch_free (w);
+    qe_hook_free (w);
     return FALSE;
   }
 }
 
-static gboolean gst_debugserver_qe_remove_watch (GstDebugserverQE * qe,
+static gboolean gst_debugserver_qe_remove_hook (GstDebugserverQE * qe,
   gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
-  QEWatch w = { type, pad, pad_path };
+  QEHook w = { type, pad, pad_path };
 
-  return gst_debugserver_watcher_remove_watch (&qe->watcher, &w, client);
+  return gst_debugserver_hooks_remove_hook (&qe->hooks, &w, client);
 }
 
-gboolean gst_debugserver_qe_set_watch (GstDebugserverQE * qe, gboolean enable,
+gboolean gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
   gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
   if (enable) {
-    return gst_debugserver_qe_add_watch (qe, type, pad, pad_path, client);
+    return gst_debugserver_qe_add_hook (qe, type, pad, pad_path, client);
   } else {
-    return gst_debugserver_qe_remove_watch (qe, type, pad, pad_path, client);
+    return gst_debugserver_qe_remove_hook (qe, type, pad, pad_path, client);
   }
 }
 
@@ -150,17 +150,17 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
     gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_QUERY_INFO;
   }
 
-  gst_debugserver_watcher_send_data (&qe->watcher, tcp_server, &gst_data);
+  gst_debugserver_hooks_send_data (&qe->hooks, tcp_server, &gst_data);
 
   g_free (pad_path);
 }
 
 void gst_debugserver_qe_clean (GstDebugserverQE * qe)
 {
-  gst_debugserver_watcher_clean (&qe->watcher);
+  gst_debugserver_hooks_clean (&qe->hooks);
 }
 
 void gst_debugserver_qe_remove_client (GstDebugserverQE * qe, TcpClient * client)
 {
-  g_hash_table_remove (qe->watcher.clients, client);
+  g_hash_table_remove (qe->hooks.clients, client);
 }

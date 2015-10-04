@@ -29,9 +29,9 @@ void CommandFactory::send_request_entire_topology_command()
 	client->send_command(cmd);
 }
 
-GstDebugger::PadWatchRequest* CommandFactory::create_pad_watch_request(bool enable, const std::string &pad_path)
+GstDebugger::PadHookRequest* CommandFactory::create_pad_hook_request(bool enable, const std::string &pad_path)
 {
-	GstDebugger::PadWatchRequest *request = new GstDebugger::PadWatchRequest();
+	auto *request = new GstDebugger::PadHookRequest();
 	request->set_pad(pad_path);
 	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
 	return request;
@@ -39,36 +39,36 @@ GstDebugger::PadWatchRequest* CommandFactory::create_pad_watch_request(bool enab
 
 void CommandFactory::send_query_request_command(bool enable, const std::string &pad_path, int type)
 {
-	auto request = create_pad_watch_request(enable, pad_path);
-	GstDebugger::QueryWatchRequest *ev_request = new GstDebugger::QueryWatchRequest();
+	auto request = create_pad_hook_request(enable, pad_path);
+	auto *ev_request = new GstDebugger::QueryHookRequest();
 	ev_request->set_type(type);
 	request->set_allocated_query(ev_request);
 	GstDebugger::Command cmd;
-	cmd.set_allocated_pad_watch(request);
+	cmd.set_allocated_pad_hook(request);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_event_request_command(bool enable, const std::string &pad_path, int type)
 {
-	auto request = create_pad_watch_request(enable, pad_path);
-	GstDebugger::EventWatchRequest *ev_request = new GstDebugger::EventWatchRequest();
+	auto request = create_pad_hook_request(enable, pad_path);
+	GstDebugger::EventHookRequest *ev_request = new GstDebugger::EventHookRequest();
 	ev_request->set_type(type);
 	request->set_allocated_event(ev_request);
 	GstDebugger::Command cmd;
-	cmd.set_allocated_pad_watch(request);
+	cmd.set_allocated_pad_hook(request);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_buffer_request_command(bool enable, const std::string &pad_path, bool send_data)
 {
-	auto request = create_pad_watch_request(enable, pad_path);
-	GstDebugger::BufferWatchRequest *buf_request = new GstDebugger::BufferWatchRequest();
+	auto request = create_pad_hook_request(enable, pad_path);
+	auto *buf_request = new GstDebugger::BufferHookRequest();
 	buf_request->set_send_data(send_data);
 	request->set_allocated_buffer(buf_request);
 	GstDebugger::Command cmd;
-	cmd.set_allocated_pad_watch(request);
+	cmd.set_allocated_pad_hook(request);
 
 	client->send_command(cmd);
 }
@@ -92,7 +92,7 @@ void CommandFactory::send_set_threshold_command(const std::string &threshold_lis
 	client->send_command(cmd);
 }
 
-void CommandFactory::send_set_log_watch_command(bool enable, const std::string &category, int log_level)
+void CommandFactory::send_set_log_hook_command(bool enable, const std::string &category, int log_level)
 {
 	GstDebugger::Command cmd;
 	GstDebugger::LogRequest *request = new GstDebugger::LogRequest();

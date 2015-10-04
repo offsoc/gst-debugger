@@ -43,7 +43,7 @@ EventControlModule::EventControlModule()
 {
 }
 
-void EventControlModule::add_watch()
+void EventControlModule::add_hook()
 {
 	auto it = types_combobox->get_active();
 	if (it)
@@ -53,7 +53,7 @@ void EventControlModule::add_watch()
 	}
 }
 
-void EventControlModule::remove_watch(const Gtk::TreeModel::Row& row)
+void EventControlModule::remove_hook(const Gtk::TreeModel::Row& row)
 {
 	Glib::ustring pad = row[hooks_model_columns.str2];
 	controller->send_event_request_command(false, pad, row[hooks_model_columns.int1]);
@@ -61,10 +61,10 @@ void EventControlModule::remove_watch(const Gtk::TreeModel::Row& row)
 
 void EventControlModule::confirmation_received(GstDebugger::Command* cmd)
 {
-	if (!cmd->has_pad_watch() || !cmd->pad_watch().has_event())
+	if (!cmd->has_pad_hook() || !cmd->pad_hook().has_event())
 		return;
 
-	auto confirmation = cmd->pad_watch();
+	auto confirmation = cmd->pad_hook();
 	if (confirmation.action() == GstDebugger::ADD)
 	{
 		Gtk::TreeModel::Row row = *(hooks_model->append());
@@ -74,6 +74,6 @@ void EventControlModule::confirmation_received(GstDebugger::Command* cmd)
 	}
 	else
 	{
-		remove_hook(confirmation);
+		remove_confirmation_hook(confirmation);
 	}
 }

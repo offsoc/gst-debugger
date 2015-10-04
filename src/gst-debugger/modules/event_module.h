@@ -26,8 +26,8 @@ class EventControlModule : virtual public ControlModule, public QEControlModule
 {
 	void confirmation_received(GstDebugger::Command* cmd) override;
 
-	void add_watch() override;
-	void remove_watch(const Gtk::TreeModel::Row& row) override;
+	void add_hook() override;
+	void remove_hook(const Gtk::TreeModel::Row& row) override;
 
 public:
 	EventControlModule();

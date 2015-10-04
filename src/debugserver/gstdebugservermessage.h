@@ -21,27 +21,16 @@
 #define __GST_DEBUGSERVER_MESSAGE_H__
 
 #include "gstdebugservertcp.h"
-#include "gstdebugserverwatcher.h"
-
 #include <gst/gst.h>
 #include <glib.h>
+#include "gstdebugserverhooks.h"
 
 G_BEGIN_DECLS
 
 typedef struct _GstDebugserverMessage GstDebugserverMessage;
 
-typedef struct {
-  GHashTable *clients;
-
-  gboolean (*accept_client) (gpointer);
-  void (*serialize_data) (GstDebugger__GStreamerData*);
-  void (*free_data) (GstDebugger__GStreamerData*);
-  void (*compare) (gpointer, gpointer);
-} Watcher;
-
-
 struct _GstDebugserverMessage {
-  GstDebugserverWatcher watcher;
+  GstDebugserverHooks hooks;
 };
 
 GstDebugserverMessage * gst_debugserver_message_new (void);
@@ -50,7 +39,7 @@ void gst_debugserver_message_free (GstDebugserverMessage * msg);
 
 void gst_debugserver_message_clean (GstDebugserverMessage * msg);
 
-gboolean gst_debugserver_message_set_watch (GstDebugserverMessage * msg,
+gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
   TcpClient * client, GstDebugger__MessageRequest * request);
 
 void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,

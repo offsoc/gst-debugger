@@ -33,13 +33,13 @@ class BufferControlModule : public ControlModule
 	Gtk::Label *pad_path_label;
 	Gtk::CheckButton *data_check_button;
 
-	void add_watch() override;
-	void remove_watch(const Gtk::TreeModel::Row& row) override;
+	void add_hook() override;
+	void remove_hook(const Gtk::TreeModel::Row& row) override;
 	void confirmation_received(GstDebugger::Command* cmd) override;
 
 	bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) override
 	{
-		auto buffer = reinterpret_cast<const GstDebugger::PadWatchRequest*>(confirmation);
+		auto buffer = reinterpret_cast<const GstDebugger::PadHookRequest*>(confirmation);
 		return row[hooks_model_columns.str1] == buffer->pad();
 	}
 

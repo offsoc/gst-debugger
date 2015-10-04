@@ -52,7 +52,7 @@ MessageControlModule::MessageControlModule()
 	hooks_tree_view->append_column("Type", hooks_model_columns.str1);
 }
 
-void MessageControlModule::add_watch()
+void MessageControlModule::add_hook()
 {
 	auto it = types_combobox->get_active();
 	if (it)
@@ -62,7 +62,7 @@ void MessageControlModule::add_watch()
 	}
 }
 
-void MessageControlModule::remove_watch(const Gtk::TreeModel::Row& row)
+void MessageControlModule::remove_hook(const Gtk::TreeModel::Row& row)
 {
 	controller->send_message_request_command(row[hooks_model_columns.int1], false);
 }
@@ -108,6 +108,6 @@ void MessageControlModule::confirmation_received(GstDebugger::Command* cmd)
 	}
 	else
 	{
-		remove_hook(confirmation);
+		remove_confirmation_hook(confirmation);
 	}
 }

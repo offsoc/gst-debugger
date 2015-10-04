@@ -25,32 +25,32 @@
 typedef struct {
   GstDebugLevel level;
   gchar * category;
-} DebugWatch;
+} DebugHook;
 
-static DebugWatch * debug_watch_new (GstDebugLevel level, const gchar * category)
+static DebugHook * debug_hook_new (GstDebugLevel level, const gchar * category)
 {
-  DebugWatch * watch = (DebugWatch *) g_malloc (sizeof (DebugWatch));
+  DebugHook * hook = (DebugHook *) g_malloc (sizeof (DebugHook));
 
-  watch->level = level;
-  watch->category = g_strdup (category);
+  hook->level = level;
+  hook->category = g_strdup (category);
 
-  return watch;
+  return hook;
 }
 
-static void debug_watch_free (DebugWatch * watch)
+static void debug_hook_free (DebugHook * hook)
 {
-  g_free (watch->category);
-  g_free (watch);
+  g_free (hook->category);
+  g_free (hook);
 }
 
-static void debug_watch_list_free (gpointer ptr)
+static void debug_hook_list_free (gpointer ptr)
 {
-  g_slist_free_full (ptr, (GDestroyNotify) debug_watch_free);
+  g_slist_free_full (ptr, (GDestroyNotify) debug_hook_free);
 }
 
-static gint debug_watch_compare (gconstpointer p1, gconstpointer p2)
+static gint debug_hook_compare (gconstpointer p1, gconstpointer p2)
 {
-  const DebugWatch *w1 = p1, *w2 = p2;
+  const DebugHook *w1 = p1, *w2 = p2;
 
   if (w1->level >= w2->level && (w1->category == NULL ||
       g_strcmp0 (w1->category, w2->category) == 0)) {
@@ -64,15 +64,15 @@ static gboolean gst_debugserver_log_ok (GstDebugger__GStreamerData* original, gp
 {
   GstDebugger__LogInfo* info = original->log_info;
   GSList *list = new_ptr;
-  DebugWatch watch = { info->level, info->category };
+  DebugHook hook = { info->level, info->category };
 
-  return g_slist_find_custom (list, &watch, debug_watch_compare) != NULL;
+  return g_slist_find_custom (list, &hook, debug_hook_compare) != NULL;
 }
 
 GstDebugserverLog * gst_debugserver_log_new (void)
 {
   GstDebugserverLog *log = (GstDebugserverLog*)g_malloc (sizeof(GstDebugserverLog));
-  gst_debugserver_watcher_init (&log->watcher, gst_debugserver_log_ok, (GDestroyNotify) debug_watch_list_free, debug_watch_compare);
+  gst_debugserver_hooks_init (&log->hooks, gst_debugserver_log_ok, (GDestroyNotify) debug_hook_list_free, debug_hook_compare);
 
   return log;
 }
@@ -80,42 +80,42 @@ GstDebugserverLog * gst_debugserver_log_new (void)
 void gst_debugserver_log_free (GstDebugserverLog * log)
 {
   gst_debugserver_log_clean (log);
-  gst_debugserver_watcher_deinit (&log->watcher);
+  gst_debugserver_hooks_deinit (&log->hooks);
   g_free (log);
 }
 
 void gst_debugserver_log_clean (GstDebugserverLog * log)
 {
-  gst_debugserver_watcher_clean (&log->watcher);
+  gst_debugserver_hooks_clean (&log->hooks);
 }
 
-static gboolean gst_debugserver_log_add_watch (GstDebugserverLog * log, gint level,
+static gboolean gst_debugserver_log_add_hook (GstDebugserverLog * log, gint level,
   const gchar * category, TcpClient * client)
 {
-  DebugWatch *w = debug_watch_new (level, category);
-  if (gst_debugserver_watcher_add_watch (&log->watcher, w, client) == TRUE) {
+  DebugHook *w = debug_hook_new (level, category);
+  if (gst_debugserver_hooks_add_hook (&log->hooks, w, client) == TRUE) {
     return TRUE;
   } else {
-    debug_watch_free (w);
+    debug_hook_free (w);
     return FALSE;
   }
 }
 
-static gboolean gst_debugserver_log_remove_watch (GstDebugserverLog * log,
+static gboolean gst_debugserver_log_remove_hook (GstDebugserverLog * log,
   gint level, const gchar * category, TcpClient * client)
 {
-  DebugWatch w = { level, (gchar*)category };
+  DebugHook w = { level, (gchar*)category };
 
-  return gst_debugserver_watcher_remove_watch (&log->watcher, &w, client);
+  return gst_debugserver_hooks_remove_hook (&log->hooks, &w, client);
 }
 
-gboolean gst_debugserver_log_set_watch (GstDebugserverLog * log, gboolean enable,
+gboolean gst_debugserver_log_set_hook (GstDebugserverLog * log, gboolean enable,
   gint level, const gchar * category, TcpClient * client)
 {
   if (enable) {
-    return gst_debugserver_log_add_watch (log, level, category, client);
+    return gst_debugserver_log_add_hook (log, level, category, client);
   } else {
-    return gst_debugserver_log_remove_watch (log, level, category, client);
+    return gst_debugserver_log_remove_hook (log, level, category, client);
   }
 }
 
@@ -137,7 +137,7 @@ void gst_debugserver_log_send_log (GstDebugserverLog * log, GstDebugserverTcp * 
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_LOG_INFO;
   gst_data.log_info = &log_info;
 
-  gst_debugserver_watcher_send_data (&log->watcher, tcp_server, &gst_data);
+  gst_debugserver_hooks_send_data (&log->hooks, tcp_server, &gst_data);
 }
 
 static gint
@@ -185,5 +185,5 @@ void gst_debugserver_log_set_threshold (const gchar * threshold)
 void gst_debugserver_log_remove_client (GstDebugserverLog * log,
   TcpClient * client)
 {
-  g_hash_table_remove (log->watcher.clients, client);
+  g_hash_table_remove (log->hooks.clients, client);
 }

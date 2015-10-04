@@ -37,8 +37,8 @@ protected:
 	HooksModelColumns hooks_model_columns;
 
 	Gtk::Box *main_box;
-	Gtk::Button *add_watch_button;
-	Gtk::Button *remove_watch_button;
+	Gtk::Button *add_hook_button;
+	Gtk::Button *remove_hook_button;
 	Gtk::TreeView *hooks_tree_view;
 	Gtk::ScrolledWindow *wnd;
 
@@ -50,7 +50,7 @@ protected:
 	}
 
 	template<typename T>
-	void remove_hook(const T& confirmation)
+	void remove_confirmation_hook(const T& confirmation)
 	{
 		for (auto iter = hooks_model->children().begin();
 				iter != hooks_model->children().end(); ++iter)
@@ -64,8 +64,8 @@ protected:
 	}
 
 	virtual bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) = 0;
-	virtual void add_watch() {}
-	virtual void remove_watch(const Gtk::TreeModel::Row& row) {}
+	virtual void add_hook() {}
+	virtual void remove_hook(const Gtk::TreeModel::Row& row) {}
 	virtual void confirmation_received(GstDebugger::Command* cmd) {}
 
 public:
@@ -73,11 +73,11 @@ public:
 	{
 		main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-		add_watch_button = Gtk::manage(new Gtk::Button("Add watch"));
-		add_watch_button->signal_clicked().connect([this] {
-			add_watch();
+		add_hook_button = Gtk::manage(new Gtk::Button("Add hook"));
+		add_hook_button->signal_clicked().connect([this] {
+			add_hook();
 		});
-		main_box->pack_start(*add_watch_button, false, true);
+		main_box->pack_start(*add_hook_button, false, true);
 
 		hooks_tree_view = Gtk::manage(new Gtk::TreeView());
 		wnd = Gtk::manage(new Gtk::ScrolledWindow);
@@ -86,14 +86,14 @@ public:
 		hooks_model = Gtk::ListStore::create(hooks_model_columns);
 		hooks_tree_view->set_model(hooks_model);
 
-		remove_watch_button = Gtk::manage(new Gtk::Button("Remove watch"));
-		main_box->pack_start(*remove_watch_button, false, true);
-		remove_watch_button->signal_clicked().connect([this]{
+		remove_hook_button = Gtk::manage(new Gtk::Button("Remove hook"));
+		main_box->pack_start(*remove_hook_button, false, true);
+		remove_hook_button->signal_clicked().connect([this]{
 			auto selection = hooks_tree_view->get_selection();
 			if (!selection) return;
 			auto iter = selection->get_selected();
 			if (!iter) return;
-			remove_watch(*iter);
+			remove_hook(*iter);
 		});
 
 		create_dispatcher("confirmation", sigc::mem_fun(*this, &ControlModule::confirmation_), (GDestroyNotify)free_confirmation);

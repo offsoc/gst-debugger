@@ -52,26 +52,26 @@ message LogRequest {
 	optional string category = 3;
 }
 
-message QueryWatchRequest {
+message QueryHookRequest {
 	required int32 type = 1;
 }
 
-message BufferWatchRequest {
+message BufferHookRequest {
 	required bool send_data = 1;
 }
 
-message EventWatchRequest {
+message EventHookRequest {
 	required int32 type = 1;
 }
 
-message PadWatchRequest {
+message PadHookRequest {
 	required Action action = 1;
 	optional string pad = 2;
 	
-	oneof pad_watch_type {
-		QueryWatchRequest query = 3;
-		BufferWatchRequest buffer = 4;
-		EventWatchRequest event = 5;
+	oneof pad_hook_type {
+		QueryHookRequest query = 3;
+		BufferHookRequest buffer = 4;
+		EventHookRequest event = 5;
 	}
 }
 
@@ -117,7 +117,7 @@ message Command {
 		bool debug_categories_list = 2;
 		MessageRequest message = 3;
 		LogRequest log = 4;
-		PadWatchRequest pad_watch = 5;
+		PadHookRequest pad_hook = 5;
 		string log_threshold = 6;
 		bool entire_topology = 7;
 		PropertyRequest property = 8;

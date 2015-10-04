@@ -20,23 +20,22 @@
 #ifndef __GST_DEBUGSERVER_BUFFER_H__
 #define __GST_DEBUGSERVER_BUFFER_H__
 
-#include "gstdebugserverwatcher.h"
-
 #include <gst/gst.h>
+#include "gstdebugserverhooks.h"
 
 G_BEGIN_DECLS
 
 typedef struct _GstDebugserverBuffer GstDebugserverBuffer;
 
 struct _GstDebugserverBuffer {
-  GstDebugserverWatcher watcher;
+  GstDebugserverHooks hooks;
 };
 
 GstDebugserverBuffer * gst_debugserver_buffer_new (void);
 
 void gst_debugserver_buffer_free (GstDebugserverBuffer * buf);
 
-gboolean gst_debugserver_buffer_set_watch (GstDebugserverBuffer * buf, gboolean enable,
+gboolean gst_debugserver_buffer_set_hook (GstDebugserverBuffer * buf, gboolean enable,
   gboolean send_data, GstPad * pad, gchar * pad_path, TcpClient * client);
 
 void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,

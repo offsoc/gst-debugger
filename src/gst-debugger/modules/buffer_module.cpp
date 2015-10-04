@@ -83,13 +83,13 @@ BufferControlModule::BufferControlModule()
 	hooks_tree_view->append_column("With data", hooks_model_columns.str2);
 }
 
-void BufferControlModule::add_watch()
+void BufferControlModule::add_hook()
 {
 	controller->send_buffer_request_command(true, controller->get_selected_pad_path(),
 			data_check_button->get_active());
 }
 
-void BufferControlModule::remove_watch(const Gtk::TreeModel::Row& row)
+void BufferControlModule::remove_hook(const Gtk::TreeModel::Row& row)
 {
 	Glib::ustring pad_path = row[hooks_model_columns.str1];
 	controller->send_buffer_request_command(false, pad_path,
@@ -98,10 +98,10 @@ void BufferControlModule::remove_watch(const Gtk::TreeModel::Row& row)
 
 void BufferControlModule::confirmation_received(GstDebugger::Command* cmd)
 {
-	if (!cmd->has_pad_watch() || !cmd->pad_watch().has_buffer())
+	if (!cmd->has_pad_hook() || !cmd->pad_hook().has_buffer())
 		return;
 
-	auto confirmation = cmd->pad_watch();
+	auto confirmation = cmd->pad_hook();
 	if (confirmation.action() == GstDebugger::ADD)
 	{
 		Gtk::TreeModel::Row row = *(hooks_model->append());
@@ -110,6 +110,6 @@ void BufferControlModule::confirmation_received(GstDebugger::Command* cmd)
 	}
 	else
 	{
-		remove_hook(confirmation);
+		remove_confirmation_hook(confirmation);
 	}
 }

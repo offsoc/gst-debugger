@@ -8,7 +8,7 @@ libgstdebugserver_la_SOURCES = \
 	gstdebugservertypes.c gstdebugservertypes.h \
 	gstdebugserverqe.c gstdebugserverqe.h \
 	gstdebugservertopology.c gstdebugservertopology.h \
-	gstdebugserverwatcher.c gstdebugserverwatcher.h \
+	gstdebugserverhooks.c gstdebugserverhooks.h \
 	gstdebugserverbuffer.c gstdebugserverbuffer.h
 #	gstdebugserverfactory.c gstdebugserverfactory.h
 

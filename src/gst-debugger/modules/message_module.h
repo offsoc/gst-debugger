@@ -31,8 +31,8 @@ class MessageControlModule : public ControlModule
 
 	void confirmation_received(GstDebugger::Command* cmd) override;
 
-	void add_watch() override;
-	void remove_watch(const Gtk::TreeModel::Row& row) override;
+	void add_hook() override;
+	void remove_hook(const Gtk::TreeModel::Row& row) override;
 
 	bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) override
 	{
