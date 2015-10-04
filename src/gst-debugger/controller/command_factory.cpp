@@ -20,7 +20,6 @@ void CommandFactory::send_property_request_command(const std::string &element_pa
 	client->send_command(cmd);
 }
 
-
 void CommandFactory::send_request_entire_topology_command()
 {
 	GstDebugger::Command cmd;
@@ -29,57 +28,67 @@ void CommandFactory::send_request_entire_topology_command()
 	client->send_command(cmd);
 }
 
-GstDebugger::PadHookRequest* CommandFactory::create_pad_hook_request(bool enable, const std::string &pad_path)
+GstDebugger::HookRequest* CommandFactory::create_pad_hook_request(bool enable, const std::string &pad_path)
 {
-	auto *request = new GstDebugger::PadHookRequest();
-	request->set_pad(pad_path);
+	auto *pad_request = new GstDebugger::PadHookRequest();
+	pad_request->set_pad(pad_path);
+	auto hook_request = create_hook_request(enable);
+	hook_request->set_allocated_pad_hook(pad_request);
+	return hook_request;
+}
+
+GstDebugger::HookRequest* CommandFactory::create_hook_request(bool enable)
+{
+	auto *request = new GstDebugger::HookRequest();
 	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
 	return request;
 }
 
 void CommandFactory::send_query_request_command(bool enable, const std::string &pad_path, int type)
 {
-	auto request = create_pad_hook_request(enable, pad_path);
-	auto *ev_request = new GstDebugger::QueryHookRequest();
-	ev_request->set_type(type);
-	request->set_allocated_query(ev_request);
+	auto *request = create_pad_hook_request(enable, pad_path);
+	request->mutable_pad_hook()->mutable_query()->set_type(type);
+
 	GstDebugger::Command cmd;
-	cmd.set_allocated_pad_hook(request);
+	cmd.set_allocated_hook_request(request);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_event_request_command(bool enable, const std::string &pad_path, int type)
 {
-	auto request = create_pad_hook_request(enable, pad_path);
-	GstDebugger::EventHookRequest *ev_request = new GstDebugger::EventHookRequest();
-	ev_request->set_type(type);
-	request->set_allocated_event(ev_request);
+	auto *request = create_pad_hook_request(enable, pad_path);
+	request->mutable_pad_hook()->mutable_event()->set_type(type);
+
 	GstDebugger::Command cmd;
-	cmd.set_allocated_pad_hook(request);
+	cmd.set_allocated_hook_request(request);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_buffer_request_command(bool enable, const std::string &pad_path, bool send_data)
 {
-	auto request = create_pad_hook_request(enable, pad_path);
-	auto *buf_request = new GstDebugger::BufferHookRequest();
-	buf_request->set_send_data(send_data);
-	request->set_allocated_buffer(buf_request);
+	auto *request = create_pad_hook_request(enable, pad_path);
+	request->mutable_pad_hook()->mutable_buffer()->set_send_data(send_data);
+
 	GstDebugger::Command cmd;
-	cmd.set_allocated_pad_hook(request);
+	cmd.set_allocated_hook_request(request);
+
+	client->send_command(cmd);
 
 	client->send_command(cmd);
 }
 
 void CommandFactory::send_message_request_command(int message_type, bool enable)
 {
-	GstDebugger::MessageRequest *request = new GstDebugger::MessageRequest();
-	request->set_type(message_type);
-	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
+	auto msg_request = new GstDebugger::MessageRequest();
+	msg_request->set_type(message_type);
+
+	auto hook_request = create_hook_request(enable);
+	hook_request->set_allocated_message(msg_request);
+
 	GstDebugger::Command cmd;
-	cmd.set_allocated_message(request);
+	cmd.set_allocated_hook_request(hook_request);
 
 	client->send_command(cmd);
 }
@@ -94,12 +103,15 @@ void CommandFactory::send_set_threshold_command(const std::string &threshold_lis
 
 void CommandFactory::send_set_log_hook_command(bool enable, const std::string &category, int log_level)
 {
+	auto log_request = new GstDebugger::LogRequest();
+	log_request->set_level(log_level);
+	log_request->set_category(category);
+
+	auto hook_request = create_hook_request(enable);
+	hook_request->set_allocated_log(log_request);
+
 	GstDebugger::Command cmd;
-	GstDebugger::LogRequest *request = new GstDebugger::LogRequest();
-	request->set_level(log_level);
-	request->set_action(enable ? GstDebugger::ADD : GstDebugger::REMOVE);
-	request->set_category(category);
-	cmd.set_allocated_log(request);
+	cmd.set_allocated_hook_request(hook_request);
 
 	client->send_command(cmd);
 }

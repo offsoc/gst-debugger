@@ -55,11 +55,11 @@ void QueryControlModule::remove_hook(const Gtk::TreeModel::Row& row)
 
 void QueryControlModule::confirmation_received(GstDebugger::Command* cmd)
 {
-	if (!cmd->has_pad_hook() || !cmd->pad_hook().has_query())
+	if (!cmd->has_hook_request() || !cmd->hook_request().has_pad_hook() || !cmd->hook_request().pad_hook().has_query())
 		return;
 
-	auto confirmation = cmd->pad_hook();
-	if (confirmation.action() == GstDebugger::ADD)
+	auto confirmation = cmd->hook_request().pad_hook();
+	if (cmd->hook_request().action() == GstDebugger::ADD)
 	{
 		Gtk::TreeModel::Row row = *(hooks_model->append());
 		row[hooks_model_columns.str1] = Gst::Enums::get_name(static_cast<Gst::QueryType>(confirmation.query().type()));

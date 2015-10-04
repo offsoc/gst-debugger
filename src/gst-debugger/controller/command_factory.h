@@ -16,7 +16,8 @@
 
 class CommandFactory : public virtual BaseController
 {
-	static GstDebugger::PadHookRequest* create_pad_hook_request(bool enable, const std::string &pad_path);
+	static GstDebugger::HookRequest* create_pad_hook_request(bool enable, const std::string &pad_path);
+	static GstDebugger::HookRequest* create_hook_request(bool enable);
 
 public:
 	void send_property_request_command(const std::string &element_path, const std::string &property_name);

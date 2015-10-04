@@ -40,7 +40,7 @@ void gst_debugserver_message_free (GstDebugserverMessage * msg);
 void gst_debugserver_message_clean (GstDebugserverMessage * msg);
 
 gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
-  TcpClient * client, GstDebugger__MessageRequest * request);
+  TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request);
 
 void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
   TcpClient * client);

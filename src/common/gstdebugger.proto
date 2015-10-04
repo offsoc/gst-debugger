@@ -33,46 +33,12 @@ message PropertyRequest {
 	required string object = 2;
 }
 
-message MessageRequest {
-	required Action action = 1;
-	required int32 type = 2;
-}
-
 message MessageInfo {
 	required int32 type = 1;
 	required uint64 timestamp = 2;
 	required string source = 3;
 	required uint32 seqnum = 4;
 	required bytes structure_data = 5;
-}
-
-message LogRequest {
-	required Action action = 1;
-	required int32 level = 2;
-	optional string category = 3;
-}
-
-message QueryHookRequest {
-	required int32 type = 1;
-}
-
-message BufferHookRequest {
-	required bool send_data = 1;
-}
-
-message EventHookRequest {
-	required int32 type = 1;
-}
-
-message PadHookRequest {
-	required Action action = 1;
-	optional string pad = 2;
-	
-	oneof pad_hook_type {
-		QueryHookRequest query = 3;
-		BufferHookRequest buffer = 4;
-		EventHookRequest event = 5;
-	}
 }
 
 message EventInfo {
@@ -111,17 +77,56 @@ message TypeDescriptionRequest {
 	required Type type = 2;
 }
 
+message QueryHookRequest {
+	required int32 type = 1;
+}
+
+message BufferHookRequest {
+	required bool send_data = 1;
+}
+
+message EventHookRequest {
+	required int32 type = 1;
+}
+
+message PadHookRequest {
+	optional string pad = 1;
+
+	oneof pad_hook_type {
+		QueryHookRequest query = 2;
+		BufferHookRequest buffer = 3;
+		EventHookRequest event = 4;
+	}
+}
+
+message LogRequest {
+	required int32 level = 1;
+	optional string category = 2;
+}
+
+message MessageRequest {
+	required int32 type = 1;
+}
+
+message HookRequest {
+	required Action action = 1;
+
+	oneof hook_type {
+		MessageRequest message = 2;
+		LogRequest log = 3;
+		PadHookRequest pad_hook = 4;
+	}
+}
+
 message Command {
 	oneof command_type {
 		TypeDescriptionRequest type_description = 1;
 		bool debug_categories_list = 2;
-		MessageRequest message = 3;
-		LogRequest log = 4;
-		PadHookRequest pad_hook = 5;
-		string log_threshold = 6;
-		bool entire_topology = 7;
-		PropertyRequest property = 8;
-		PropertyValue property_set = 9;
+		HookRequest hook_request = 3;
+		string log_threshold = 4;
+		bool entire_topology = 5;
+		PropertyRequest property = 6;
+		PropertyValue property_set = 7;
 	}
 }
 

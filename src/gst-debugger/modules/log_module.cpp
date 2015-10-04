@@ -97,11 +97,11 @@ void LogControlModule::remove_hook(const Gtk::TreeModel::Row& row)
 
 void LogControlModule::confirmation_received(GstDebugger::Command* cmd)
 {
-	if (!cmd->has_log())
+	if (!cmd->has_hook_request() || !cmd->hook_request().has_log())
 		return;
 
-	auto confirmation = cmd->log();
-	if (confirmation.action() == GstDebugger::ADD)
+	auto confirmation = cmd->hook_request().log();
+	if (cmd->hook_request().action() == GstDebugger::ADD)
 	{
 		Gtk::TreeModel::Row row = *(hooks_model->append());
 		row[hooks_model_columns.str1] = gst_debug_level_get_name (static_cast<GstDebugLevel>(confirmation.level()));

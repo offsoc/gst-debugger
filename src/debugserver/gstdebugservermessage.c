@@ -64,9 +64,9 @@ void gst_debugserver_message_clean (GstDebugserverMessage * msg)
 }
 
 gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
-  TcpClient * client, GstDebugger__MessageRequest * request)
+  TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request)
 {
-  if (request->action == GST_DEBUGGER__ACTION__ADD) {
+  if (enable) {
     return gst_debugserver_hooks_add_hook (&msg->hooks, GINT_TO_POINTER (request->type), client);
   } else {
     return gst_debugserver_hooks_remove_hook (&msg->hooks, GINT_TO_POINTER (request->type), client);
