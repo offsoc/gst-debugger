@@ -344,39 +344,38 @@ gst_debugserver_tracer_get_property (GObject * object, guint prop_id,
   }
 }
 
-static void gst_debugserver_process_pad_hook (GstDebugserverTracer * self, GstDebugger__Command * command, TcpClient * client)
+static gboolean gst_debugserver_process_hook_request (GstDebugserverTracer * self, GstDebugger__HookRequest * request, TcpClient * client)
 {
-  GstDebugger__PadHookRequest *request = command->hook_request->pad_hook;
-  GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (self->pipeline), request->pad);
-  gboolean add_hook = command->hook_request->action == GST_DEBUGGER__ACTION__ADD;
+  gboolean add_hook = request->action == GST_DEBUGGER__ACTION__ADD;
 
-  switch (request->pad_hook_type_case)
+  switch (request->hook_type_case) {
+  case GST_DEBUGGER__HOOK_REQUEST__HOOK_TYPE_PAD_HOOK:
   {
-  case GST_DEBUGGER__PAD_HOOK_REQUEST__PAD_HOOK_TYPE_EVENT:
-    if (gst_debugserver_qe_set_hook (self->event, add_hook, request->event->type, pad, request->pad, client)) {
-      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-      data.confirmation = command;
-      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
-      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+    GstDebugger__PadHookRequest *pad_request = request->pad_hook;
+    GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (self->pipeline), pad_request->pad);
+
+    switch (pad_request->pad_hook_type_case)
+    {
+    case GST_DEBUGGER__PAD_HOOK_REQUEST__PAD_HOOK_TYPE_EVENT:
+      return gst_debugserver_qe_set_hook (self->event, add_hook, pad_request->event->type, pad, pad_request->pad, client);
+    case GST_DEBUGGER__PAD_HOOK_REQUEST__PAD_HOOK_TYPE_QUERY:
+      return gst_debugserver_qe_set_hook (self->query, add_hook, pad_request->query->type, pad, pad_request->pad, client);
+    case GST_DEBUGGER__PAD_HOOK_REQUEST__PAD_HOOK_TYPE_BUFFER:
+      return gst_debugserver_buffer_set_hook (self->buffer, add_hook, pad_request->buffer->send_data, pad,
+          pad_request->pad, client);
+    default:
+      break;
     }
-    break;
-  case GST_DEBUGGER__PAD_HOOK_REQUEST__PAD_HOOK_TYPE_QUERY:
-    if (gst_debugserver_qe_set_hook (self->query, add_hook, request->query->type, pad, request->pad, client)) {
-      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-      data.confirmation = command;
-      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
-      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
-    }
-    break;
-  case GST_DEBUGGER__PAD_HOOK_REQUEST__PAD_HOOK_TYPE_BUFFER:
-    if (gst_debugserver_buffer_set_hook (self->buffer, add_hook, request->buffer->send_data, pad,
-        request->pad, client)) {
-      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-      data.confirmation = command;
-      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
-      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
-    }
-    break;
+    return FALSE;
+  }
+  case GST_DEBUGGER__HOOK_REQUEST__HOOK_TYPE_MESSAGE:
+    return gst_debugserver_message_set_hook (self->message, client, add_hook, request->message);
+
+  case GST_DEBUGGER__HOOK_REQUEST__HOOK_TYPE_LOG:
+    return gst_debugserver_log_set_hook (self->log, add_hook, request->log->level, request->log->category, client);
+
+  default:
+    return FALSE;
   }
 }
 
@@ -427,27 +426,11 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
     break;
   case GST_DEBUGGER__COMMAND__COMMAND_TYPE_HOOK_REQUEST:
   {
-    switch (command->hook_request->hook_type_case) {
-    case GST_DEBUGGER__HOOK_REQUEST__HOOK_TYPE_MESSAGE:
-      if (gst_debugserver_message_set_hook (self->message, client, command->hook_request->action == GST_DEBUGGER__ACTION__ADD, command->hook_request->message)) {
-        GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-        data.confirmation = command;
-        data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
-        gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
-      }
-      break;
-    case GST_DEBUGGER__HOOK_REQUEST__HOOK_TYPE_LOG:
-      if (gst_debugserver_log_set_hook (self->log, command->hook_request->action == GST_DEBUGGER__ACTION__ADD,
-            command->hook_request->log->level, command->hook_request->log->category, client)) {
-        GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-        data.confirmation = command;
-        data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
-        gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
-      }
-      break;
-    case GST_DEBUGGER__HOOK_REQUEST__HOOK_TYPE_PAD_HOOK:
-      gst_debugserver_process_pad_hook (self, command, client);
-      break;
+    if (gst_debugserver_process_hook_request (self, command->hook_request, client)) {
+      GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+      data.confirmation = command;
+      data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_CONFIRMATION;
+      gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
     }
     break;
   }
