@@ -10,6 +10,8 @@
 
 #include <glib.h>
 
+#include <boost/optional/optional.hpp>
+
 #include <map>
 #include <vector>
 #include <string>
@@ -28,6 +30,11 @@ public:
 	void add_value(const std::string& name, int value, const std::string &nick)
 	{
 		values[value] = ValueInfo {name, nick};
+	}
+	boost::optional<int> get_value_by_name(const std::string &name)
+	{
+		auto it = std::find_if(values.begin(), values.end(), [name](const decltype(values)::value_type& v) {return v.second.name == name; });
+		return (it != values.end()) ? boost::optional<int>(it->first) : boost::none;
 	}
 	const std::map<int, ValueInfo>& get_values() const { return values; }
 };

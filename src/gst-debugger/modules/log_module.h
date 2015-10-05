@@ -24,7 +24,7 @@ public:
 class LogControlModule : public ControlModule
 {
 	Gtk::CheckButton *overwrite_threshold_check_button;
-	Gtk::Entry *log_level_entry;
+	Gtk::ComboBoxText *log_levels_combobox;
 	Gtk::ComboBoxText *debug_categories_combobox;
 	Gtk::Button *set_threshold_button;
 	Gtk::Entry *threshold_entry;

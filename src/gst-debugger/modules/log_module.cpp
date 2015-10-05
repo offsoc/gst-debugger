@@ -44,9 +44,9 @@ LogControlModule::LogControlModule()
 	main_box->pack_start(*debug_categories_combobox, false, true);
 	main_box->reorder_child(*debug_categories_combobox, 1);
 
-	log_level_entry = Gtk::manage(new Gtk::Entry());
-	main_box->pack_start(*log_level_entry, false, true);
-	main_box->reorder_child(*log_level_entry, 0);
+	log_levels_combobox = Gtk::manage(new Gtk::ComboBoxText());
+	main_box->pack_start(*log_levels_combobox, false, true);
+	main_box->reorder_child(*log_levels_combobox, 0);
 
 	main_box->pack_start(*Gtk::manage(new Gtk::Label("Log threshold:")), false, true);
 
@@ -80,12 +80,35 @@ void LogControlModule::set_controller(const std::shared_ptr<Controller> &control
 		if (!this->controller->get_debug_categories().empty())
 			debug_categories_combobox->set_active(0);
 	});
+
+	controller->on_enum_list_changed.connect([this](const Glib::ustring& type_name, bool add) {
+		if (type_name != "GstDebugLevel")
+			return;
+		log_levels_combobox->remove_all();
+
+		if (add)
+		{
+			auto type = this->controller->get_enum_type("GstDebugLevel");
+			if (!type) return;
+
+			for (auto value : type.get().get_values())
+			{
+				puts (value.second.name.c_str());
+				log_levels_combobox->append(value.second.name);
+			}
+			if (!type.get().get_values().empty())
+				log_levels_combobox->set_active(0);
+		}
+	});
 }
 
 void LogControlModule::add_hook()
 {
-	controller->send_set_log_hook_command(true, debug_categories_combobox->get_active_text(),
-			atoi(log_level_entry->get_text().c_str()));
+	auto type = controller->get_enum_type("GstDebugLevel");
+	if (!type) return;
+	auto value = type->get_value_by_name(log_levels_combobox->get_active_text());
+	if (value)
+		controller->send_set_log_hook_command(true, debug_categories_combobox->get_active_text(), value.get());
 }
 
 void LogControlModule::remove_hook(const Gtk::TreeModel::Row& row)

@@ -28,6 +28,7 @@ Controller::Controller(IMainView *view)
 			send_data_type_request_command("GstMessageType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 			send_data_type_request_command("GstEventType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 			send_data_type_request_command("GstQueryType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
+			send_data_type_request_command("GstDebugLevel", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 			send_request_entire_topology_command();
 			send_request_debug_categories_command();
 		}
