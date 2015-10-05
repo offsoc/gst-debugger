@@ -108,9 +108,14 @@ void GValueFlags::set_sensitive(bool sensitive)
 {
 	for (auto widget : widgets)
 	{
-		auto box = get_internal_box(widget);
-		if (!box) continue;
-		for (auto w : box->get_children())
-			w->set_sensitive(sensitive);
+		if (dynamic_cast<Gtk::ScrolledWindow*>(widget))
+		{
+			auto box = get_internal_box(widget);
+			if (!box) continue;
+			for (auto w : box->get_children())
+				w->set_sensitive(sensitive);
+		}
+		else
+			dynamic_cast<Gtk::Label*>(widget)->set_sensitive(sensitive);
 	}
 }

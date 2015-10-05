@@ -93,7 +93,6 @@ void LogControlModule::set_controller(const std::shared_ptr<Controller> &control
 
 			for (auto value : type.get().get_values())
 			{
-				puts (value.second.name.c_str());
 				log_levels_combobox->append(value.second.name);
 			}
 			if (!type.get().get_values().empty())

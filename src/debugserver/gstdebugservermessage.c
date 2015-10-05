@@ -85,13 +85,14 @@ void gst_debugserver_message_send_message (GstDebugserverMessage * msg, GstDebug
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__MessageInfo msg_info = GST_DEBUGGER__MESSAGE_INFO__INIT;
-  gchar *structure_data = gst_structure_to_string (gst_message_get_structure (gst_msg));
+  const GstStructure *msg_structure = gst_message_get_structure (gst_msg);
+  gchar *structure_data = msg_structure != NULL ? gst_structure_to_string (msg_structure) : NULL;
 
   msg_info.seqnum = gst_msg->seqnum;
   msg_info.timestamp = gst_msg->timestamp;
   msg_info.type = gst_msg->type;
   msg_info.structure_data.data = structure_data;
-  msg_info.structure_data.len = strlen (structure_data);
+  msg_info.structure_data.len = structure_data == NULL ? 0 : strlen (structure_data);
 
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_MESSAGE_INFO;
   gst_data.message_info = &msg_info;
