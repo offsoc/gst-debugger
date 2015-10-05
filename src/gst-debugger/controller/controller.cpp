@@ -29,6 +29,7 @@ Controller::Controller(IMainView *view)
 			send_data_type_request_command("GstEventType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 			send_data_type_request_command("GstQueryType", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 			send_data_type_request_command("GstDebugLevel", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
+			send_data_type_request_command("GstState", GstDebugger::TypeDescriptionRequest_Type_ENUM_FLAGS);
 			send_request_entire_topology_command();
 			send_request_debug_categories_command();
 		}
@@ -85,6 +86,9 @@ void Controller::process_frame(const GstDebugger::GStreamerData &data)
 	case GstDebugger::GStreamerData::kPropertyValue:
 		add_property(data.property_value());
 		on_property_value_received(data.property_value());
+		break;
+	case GstDebugger::GStreamerData::kPadDynamicInfo:
+		update_pad_dynamic_info(data.pad_dynamic_info());
 		break;
 	}
 }
@@ -165,7 +169,7 @@ void Controller::set_selected_object(const std::string &name)
 
 		if (obj && is_pad)
 		{
-		//	send_request_pad_dynamic_info(ElementPathProcessor::get_object_path(obj));
+			send_request_pad_dynamic_info(ElementPathProcessor::get_object_path(obj));
 		}
 	}
 }
@@ -306,8 +310,7 @@ void Controller::log(const std::string &message)
 
 void Controller::client_disconnected()
 {
-
-/*	auto root_model = ElementModel::get_root();
+	auto root_model = ElementModel::get_root();
 	root_model->clean_model();
 	on_model_changed(root_model);
 
@@ -317,23 +320,29 @@ void Controller::client_disconnected()
 	while (enum_container.begin() != enum_container.end())
 	{
 		std::string name = enum_container.begin()->get_name();
-		enum_container.remove_item(name);
+		enum_container.erase(enum_container.begin());
 		on_enum_list_changed(name, false);
 	}
 	while (factory_container.begin() != factory_container.end())
 	{
 		std::string name = factory_container.begin()->get_name();
-		factory_container.remove_item(name);
-		on_factory_list_changed(name);
+		factory_container.erase(factory_container.begin());
+		on_factory_list_changed(name, false);
+	}
+	while (klass_container.begin() != klass_container.end())
+	{
+		std::string name = klass_container.begin()->get_name();
+		klass_container.erase(klass_container.begin());
+		on_klass_list_changed(name, false);
 	}
 
 	debug_categories.clear();
-	on_debug_categories_changed();*/
+	on_debug_categories_changed();
 }
-/*
-void Controller::update_pad_dynamic_info(const PadDynamicInfo &info)
+
+void Controller::update_pad_dynamic_info(const GstDebugger::PadDynamicInfo& info)
 {
-	auto pad = std::dynamic_pointer_cast<PadModel>(ElementPathProcessor(info.pad_path()).get_last_obj());
+	auto pad = std::dynamic_pointer_cast<PadModel>(ElementPathProcessor(info.pad()).get_last_obj());
 
 	if (!pad)
 		return;
@@ -345,5 +354,5 @@ void Controller::update_pad_dynamic_info(const PadDynamicInfo &info)
 	{
 		on_selected_object_changed();
 	}
-}*/
+}
 

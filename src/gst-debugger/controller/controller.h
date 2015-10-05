@@ -41,16 +41,8 @@ private:
 	void update_enum_model(const GstDebugger::EnumFlagsType &enum_type);
 	void update_factory_model(const GstDebugger::FactoryType &factory_info);
 	void update_klass_model(const GstDebugger::ElementKlass &klass_element);
-
+	void update_pad_dynamic_info(const GstDebugger::PadDynamicInfo& info);
 	void add_property(const GstDebugger::PropertyValue &value);
-
-	/*
-
-
-	void append_property(const Property& property);
-
-	void update_pad_dynamic_info(const PadDynamicInfo& info);
-*/
 
 	void client_disconnected();
 
