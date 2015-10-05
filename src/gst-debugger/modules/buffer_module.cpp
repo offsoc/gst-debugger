@@ -112,3 +112,12 @@ void BufferControlModule::confirmation_received(GstDebugger::Command* cmd)
 		remove_confirmation_hook(confirmation);
 	}
 }
+
+void BufferControlModule::set_controller(const std::shared_ptr<Controller> &controller)
+{
+	ControlModule::set_controller(controller);
+
+	controller->on_selected_object_changed.connect([this] {
+		gui_emit("selected-object");
+	});
+}

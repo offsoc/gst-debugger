@@ -46,6 +46,8 @@ class BufferControlModule : public ControlModule
 public:
 	BufferControlModule();
 	virtual ~BufferControlModule() {}
+
+	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };
 
 #endif /* SRC_GST_DEBUGGER_MODULES_BUFFER_MODULE_H_ */
