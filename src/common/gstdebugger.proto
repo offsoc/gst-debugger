@@ -127,6 +127,7 @@ message Command {
 		bool entire_topology = 5;
 		PropertyRequest property = 6;
 		PropertyValue property_set = 7;
+		string pad_dynamic_info = 8;
 	}
 }
 
@@ -214,6 +215,12 @@ message TopologyInfo {
 	}
 }
 
+message PadDynamicInfo {
+	required string allowed_caps = 1;
+	required string current_caps = 2;
+	required string pad = 3;
+}
+
 message GStreamerData {
 	oneof info_type {
 		DebugCategories debug_categories = 1;
@@ -228,5 +235,6 @@ message GStreamerData {
 		PropertyValue property_value = 10;
 		ElementKlass element_klass = 11;
 		BufferInfo buffer_info = 12;
+		PadDynamicInfo pad_dynamic_info = 13;
 	}
 }

@@ -157,12 +157,10 @@ void CommandFactory::send_set_property_command(const std::string &path, const st
 	client->send_command(cmd);
 
 }
-/*
+
 void CommandFactory::send_request_pad_dynamic_info(const std::string &pad_path)
 {
-	Command cmd;
-	cmd.set_command_type(Command_CommandType_PAD_DYNAMIC_INFO);
-	cmd.set_pad_path(pad_path);
+	GstDebugger::Command cmd;
+	cmd.set_pad_dynamic_info(pad_path);
 	client->send_command(cmd);
 }
-*/

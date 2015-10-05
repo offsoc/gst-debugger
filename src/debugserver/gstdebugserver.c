@@ -448,6 +448,30 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
       command->property_set->value->data.data, command->property_set->value->data.len);
     g_object_set_property (G_OBJECT (element), command->property_set->name, &val);
     g_value_unset (&val);
+    break;
+  }
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE_PAD_DYNAMIC_INFO:
+  {
+    GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+    GstDebugger__PadDynamicInfo pad_info = GST_DEBUGGER__PAD_DYNAMIC_INFO__INIT;
+    GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (self->pipeline), command->pad_dynamic_info);
+    GstCaps *allowed_caps = gst_pad_get_allowed_caps (pad);
+    if (pad == NULL) {
+      break;
+    }
+    GstCaps *current_caps = gst_pad_get_current_caps (pad);
+    gchar *allowed_caps_str = gst_caps_to_string (allowed_caps);
+    gchar *current_caps_str = gst_caps_to_string (current_caps);
+    pad_info.pad = command->pad_dynamic_info;
+    pad_info.allowed_caps = allowed_caps_str;
+    pad_info.current_caps = current_caps_str;
+    data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_PAD_DYNAMIC_INFO;
+    data.pad_dynamic_info = &pad_info;
+
+    gst_debugserver_tcp_send_packet (self->tcp_server, client, &data);
+
+    g_free (allowed_caps_str);
+    g_free (current_caps_str);
   }
   }
 }
