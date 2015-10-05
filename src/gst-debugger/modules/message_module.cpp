@@ -46,8 +46,7 @@ MessageControlModule::MessageControlModule()
 	types_combobox->set_model(types_model);
 	types_combobox->pack_start(types_model_columns.type_name);
 
-	main_box->pack_start(*types_combobox, false, true);
-	main_box->reorder_child(*types_combobox, 0);
+	create_description_box("Type: ", types_combobox, 0);
 
 	hooks_tree_view->append_column("Type", hooks_model_columns.str1);
 }

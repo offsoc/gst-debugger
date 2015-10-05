@@ -64,13 +64,12 @@ void BufferModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GS
 BufferControlModule::BufferControlModule()
 : ControlModule()
 {
-	pad_path_label = Gtk::manage(new Gtk::Label());
-	main_box->pack_start(*pad_path_label, false, true);
-	main_box->reorder_child(*pad_path_label, 0);
-
 	data_check_button = Gtk::manage(new Gtk::CheckButton("Send data"));
 	main_box->pack_start(*data_check_button, false, true);
 	main_box->reorder_child(*data_check_button, 1);
+
+	pad_path_label = Gtk::manage(new Gtk::Label());
+	create_description_box("Pad: ", pad_path_label, 0);
 
 	create_dispatcher("selected-object", [this] {
 		auto pad_path = controller->get_selected_pad_path();

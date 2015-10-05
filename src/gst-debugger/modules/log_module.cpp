@@ -36,17 +36,12 @@ void LogModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStre
 LogControlModule::LogControlModule()
 : ControlModule()
 {
-	auto lbl = Gtk::manage(new Gtk::Label("Debug categories"));
-	main_box->pack_start(*lbl, false, true);
-	main_box->reorder_child(*lbl, 0);
-
 	debug_categories_combobox = Gtk::manage(new Gtk::ComboBoxText());
-	main_box->pack_start(*debug_categories_combobox, false, true);
-	main_box->reorder_child(*debug_categories_combobox, 1);
+
+	create_description_box("Debug category: ", debug_categories_combobox, 0);
 
 	log_levels_combobox = Gtk::manage(new Gtk::ComboBoxText());
-	main_box->pack_start(*log_levels_combobox, false, true);
-	main_box->reorder_child(*log_levels_combobox, 0);
+	create_description_box("Log level: ", log_levels_combobox, 0);
 
 	main_box->pack_start(*Gtk::manage(new Gtk::Label("Log threshold:")), false, true);
 

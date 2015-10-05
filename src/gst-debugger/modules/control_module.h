@@ -63,6 +63,15 @@ protected:
 		}
 	}
 
+	void create_description_box(const std::string &description, Gtk::Widget *widget, int pos)
+	{
+		auto box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+		box->pack_start(*Gtk::manage(new Gtk::Label(description)), false, true);
+		box->pack_start(*widget, true, true);
+		main_box->pack_start(*box, false, true);
+		main_box->reorder_child(*box, pos);
+	}
+
 	virtual bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) = 0;
 	virtual void add_hook() {}
 	virtual void remove_hook(const Gtk::TreeModel::Row& row) {}

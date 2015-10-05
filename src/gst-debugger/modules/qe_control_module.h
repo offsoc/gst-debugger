@@ -32,15 +32,14 @@ public:
 	: enum_name(enum_name)
 	{
 		pad_path_label = Gtk::manage(new Gtk::Label());
-		main_box->pack_start(*pad_path_label, false, true);
-		main_box->reorder_child(*pad_path_label, 0);
+		create_description_box("Pad: ", pad_path_label, 0);
 
 		types_combobox = Gtk::manage(new Gtk::ComboBox());
 		types_model = Gtk::ListStore::create(types_model_columns);
 		types_combobox->set_model(types_model);
 		types_combobox->pack_start(types_model_columns.type_name);
-		main_box->pack_start(*types_combobox, false, true);
-		main_box->reorder_child(*types_combobox, 0);
+
+		create_description_box("Type: ", types_combobox, 0);
 
 		hooks_tree_view->append_column("Type", hooks_model_columns.str1);
 		hooks_tree_view->append_column("Pad", hooks_model_columns.str2);
