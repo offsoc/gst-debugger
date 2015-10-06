@@ -21,12 +21,6 @@ protected:
 	Gtk::Label *pad_path_label;
 	Gtk::ComboBox *types_combobox;
 
-	bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) override
-	{
-		auto pad = reinterpret_cast<const GstDebugger::PadHookRequest*>(confirmation);
-		return row[hooks_model_columns.int1] == pad->event().type() && row[hooks_model_columns.str2] == pad->pad();
-	}
-
 public:
 	QEControlModule(const std::string& enum_name)
 	: enum_name(enum_name)

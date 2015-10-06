@@ -29,6 +29,12 @@ class QueryControlModule : virtual public ControlModule, public QEControlModule
 	void add_hook() override;
 	void remove_hook(const Gtk::TreeModel::Row& row) override;
 
+	bool hook_is_the_same(const Gtk::TreeModel::Row& row, gconstpointer confirmation) override
+	{
+		auto pad = reinterpret_cast<const GstDebugger::PadHookRequest*>(confirmation);
+		return row[hooks_model_columns.int1] == pad->query().type() && row[hooks_model_columns.str2] == pad->pad();
+	}
+
 public:
 	QueryControlModule();
 	virtual ~QueryControlModule() {}
