@@ -133,12 +133,21 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
   GstDebugger__EventInfo event_info = GST_DEBUGGER__EVENT_INFO__INIT;
   GstDebugger__QueryInfo query_info = GST_DEBUGGER__QUERY_INFO__INIT;
   gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
+  const GstStructure *structure = NULL;
 
   if (GST_IS_EVENT (obj)) {
     GstEvent *event = GST_EVENT_CAST (obj);
     event_info.type = event->type;
     event_info.seqnum = event->seqnum;
     event_info.timestamp = event->timestamp;
+    structure = gst_event_get_structure (event);
+    if (structure == NULL) {
+      event_info.structure_data.data = NULL;
+      event_info.structure_data.len = 0;
+    } else {
+      event_info.structure_data.data = gst_structure_to_string (structure);
+      event_info.structure_data.len = strlen (event_info.structure_data.data);
+    }
     event_info.pad = pad_path;
     gst_data.event_info = &event_info;
     gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO;
@@ -146,11 +155,25 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
     GstQuery *query = GST_QUERY_CAST (obj);
     query_info.type = query->type;
     query_info.pad = pad_path;
+    structure = gst_query_get_structure (query);
+    if (structure == NULL) {
+      query_info.structure_data.data = NULL;
+      query_info.structure_data.len = 0;
+    } else {
+      query_info.structure_data.data = gst_structure_to_string (structure);
+      query_info.structure_data.len = strlen (query_info.structure_data.data);
+    }
     gst_data.query_info = &query_info;
     gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_QUERY_INFO;
   }
 
   gst_debugserver_hooks_send_data (&qe->hooks, tcp_server, &gst_data);
+
+  if (GST_IS_EVENT (obj)) {
+    g_free (event_info.structure_data.data);
+  } else if (GST_IS_QUERY (obj)) {
+    g_free (query_info.structure_data.data);
+  }
 
   g_free (pad_path);
 }
