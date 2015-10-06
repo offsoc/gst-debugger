@@ -72,14 +72,9 @@ void BaseMainModule::append_details_from_structure(Gst::Structure& structure)
 		*tmp_val = G_VALUE_INIT;
 		g_value_init(tmp_val, value.gobj()->g_type);
 		g_value_copy(value.gobj(), tmp_val);
-		//auto gvalue = GValueBase::build_gvalue(tmp_val);
-		//if (gvalue == nullptr)
-			append_details_row(name, std::string("<unsupported type ") + g_type_name(G_VALUE_TYPE(value.gobj())) + ">");
-		//else
-		//{
-		//	append_details_row(name, gvalue->to_string());
-		//	delete gvalue;
-		//}
+		auto gvalue = GValueBase::build_gvalue(tmp_val);
+		append_details_row(name, gvalue->to_string());
+		delete gvalue;
 		return true;
 	});
 }
