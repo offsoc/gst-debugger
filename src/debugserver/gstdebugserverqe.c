@@ -71,7 +71,7 @@ static gboolean gst_debugserver_qe_ok (GstDebugger__GStreamerData* original, gpo
 
   hook.pad = NULL;
 
-  if (original->event_info != NULL) {
+  if (original->info_type_case == GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO) {
     hook.qe_type = original->event_info->type;
     hook.pad_path = original->event_info->pad;
   } else {
