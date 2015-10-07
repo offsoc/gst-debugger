@@ -27,10 +27,13 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	gst-debugger-resources.c \
 	gst-debugger-resources.h \
 	controller/base_controller.h \
+	controller/connection_controller.h \
 	controller/tcp_client.cpp \
 	controller/tcp_client.h \
 	dialogs/connection_properties_dialog.cpp \
 	dialogs/connection_properties_dialog.h \
+	dialogs/remote_data_dialog.h \
+	modules/control_module.h \
 	modules/base_main_module.cpp \
 	modules/base_main_module.h \
 	modules/log_module.cpp \
@@ -90,7 +93,7 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	gvalue-converter/gvalue_enum.h \
 	gvalue-converter/gvalue_flags.cpp \
 	gvalue-converter/gvalue_flags.h
-	
+
 
 gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
 gst_debugger_@GST_API_VERSION@_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la
