@@ -1,4 +1,14 @@
 ========================
+Version 0.90.0 - October 7, 2015
+========================
+
+ * Review and refactor gst-debugger-common library
+ * Refactor gst-trace plugin, GTK+ application
+ * Add "Klass info" window
+ * Fix many race conditions
+ * Fix minor bugs 
+
+========================
 Version 0.2.0 - September 22, 2015
 ========================
  
