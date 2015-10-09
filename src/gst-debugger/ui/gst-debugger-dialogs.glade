@@ -10,7 +10,7 @@
     <property name="copyright" translatable="yes">Copyright (C) 2015 Marcin Kolny &lt;marcin.kolny@gmail.com&gt;</property>
     <property name="comments" translatable="yes">Remote GStreamer Debugger</property>
     <property name="website">http://www.cookandcommit.eu</property>
-    <property name="website_label" translatable="yes">http://www.cookandcommit.eu</property>
+    <property name="website_label">http://www.cookandcommit.eu</property>
     <property name="authors">Marcin Kolny</property>
     <property name="logo_icon_name">image-missing</property>
     <property name="license_type">lgpl-2-1</property>
@@ -186,7 +186,7 @@
                   <object class="GtkEntry" id="columnsInRowEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="text" translatable="yes">16</property>
+                    <property name="text">16</property>
                     <property name="input_purpose">number</property>
                   </object>
                   <packing>
