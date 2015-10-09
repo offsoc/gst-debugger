@@ -308,7 +308,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="text" translatable="yes">127.0.0.1</property>
+                <property name="text">127.0.0.1</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -320,7 +320,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="text" translatable="yes">8080</property>
+                <property name="text">8080</property>
                 <property name="input_purpose">alpha</property>
               </object>
               <packing>
@@ -337,7 +337,7 @@
         </child>
         <child>
           <object class="GtkButton" id="pingButton">
-            <property name="label" translatable="yes">PING</property>
+            <property name="label">PING</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
