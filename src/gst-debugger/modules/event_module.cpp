@@ -9,8 +9,10 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 EventModule::EventModule()
-: BaseMainModule(GstDebugger::GStreamerData::kEventInfo, "Events")
+: BaseMainModule(GstDebugger::GStreamerData::kEventInfo, _("Events"))
 {
 }
 
@@ -18,14 +20,14 @@ void EventModule::load_details(gpointer data)
 {
 	auto evt_info = (GstDebugger::EventInfo*)data;
 
-	append_details_row("event type", Gst::Enums::get_name((Gst::EventType)evt_info->type()));
+	append_details_row(_("event type"), Gst::Enums::get_name((Gst::EventType)evt_info->type()));
 	{
 		gchar buffer[20];
 		snprintf(buffer, 20, "%" GST_TIME_FORMAT, GST_TIME_ARGS(evt_info->timestamp()));
-		append_details_row("event timestamp", buffer);
+		append_details_row(_("event timestamp"), buffer);
 	}
-	append_details_row("event sequence number", std::to_string(evt_info->seqnum()));
-	append_details_row("sent from pad", evt_info->pad());
+	append_details_row(_("event sequence number"), std::to_string(evt_info->seqnum()));
+	append_details_row(_("sent from pad"), evt_info->pad());
 
 	auto structure = Glib::wrap(gst_structure_from_string(evt_info->structure_data().c_str(), NULL), false);
 	append_details_from_structure(structure);
@@ -33,7 +35,7 @@ void EventModule::load_details(gpointer data)
 
 void EventModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data)
 {
-	row[columns.header] = "Event of type: " + Gst::Enums::get_name((Gst::EventType)data->event_info().type());
+	row[columns.header] = _("Event of type: ") + Gst::Enums::get_name((Gst::EventType)data->event_info().type());
 	row[columns.data] = new GstDebugger::EventInfo(data->event_info());
 }
 

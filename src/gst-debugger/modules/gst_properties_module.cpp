@@ -11,6 +11,8 @@
 #include "controller/element_path_processor.h"
 #include "ui_utils.h"
 
+#include <glibmm/i18n.h>
+
 #include <gst/gst.h>
 
 static void free_properties(GstDebugger::PropertyInfo *property) { delete property; }
@@ -202,8 +204,8 @@ void GstPropertiesModule::show_pad_properties()
 	PadPropertyModelColumns cols;
 	auto model = Gtk::TreeStore::create(cols);
 	Gtk::TreeView *tree = Gtk::manage(new Gtk::TreeView());
-	tree->append_column("Property Name", cols.m_col_name);
-	tree->append_column("Property Value", cols.m_col_value);
+	tree->append_column(_("Property Name"), cols.m_col_name);
+	tree->append_column(_("Property Value"), cols.m_col_value);
 	tree->set_model(model);
 
 #define APPEND_ROW(name, value) \
@@ -216,35 +218,35 @@ void GstPropertiesModule::show_pad_properties()
 	std::string peer_pad = pad->get_peer() ? ElementPathProcessor::get_object_path(pad->get_peer()) : std::string("NO PEER PAD");
 
 	Gtk::TreeModel::Row row;
-	APPEND_ROW("Name", pad->get_name());
+	APPEND_ROW(_("Name"), pad->get_name());
 
 	if (pad->get_template())
 	{
 		display_template_info(pad->get_template(), model, cols.m_col_name, cols.m_col_value);
 	}
 
-	APPEND_ROW("Presence", get_presence_str(pad->get_presence()));
-	APPEND_ROW("Direction", get_direction_str(pad->get_direction()));
-	APPEND_ROW("Peer pad", peer_pad);
+	APPEND_ROW(_("Presence"), get_presence_str(pad->get_presence()));
+	APPEND_ROW(_("Direction"), get_direction_str(pad->get_direction()));
+	APPEND_ROW(_("Peer pad"), peer_pad);
 
 	if (pad->get_current_caps())
 	{
-		APPEND_ROW("Current caps", "");
+		APPEND_ROW(_("Current caps"), "");
 		display_caps(pad->get_current_caps(), model, cols.m_col_name, cols.m_col_value, row);
 	}
 	else
 	{
-		APPEND_ROW("Current caps", "unknown");
+		APPEND_ROW(_("Current caps"), _("unknown"));
 	}
 
 	if (pad->get_allowed_caps())
 	{
-		APPEND_ROW("Allowed caps", "");
+		APPEND_ROW(_("Allowed caps"), "");
 		display_caps(pad->get_allowed_caps(), model, cols.m_col_name, cols.m_col_value, row);
 	}
 	else
 	{
-		APPEND_ROW("Allowed caps", "unknown");
+		APPEND_ROW(_("Allowed caps"), _("unknown"));
 	}
 
 #undef APPEND_ROW

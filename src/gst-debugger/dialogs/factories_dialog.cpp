@@ -10,15 +10,17 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 FactoriesDialog::FactoriesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : RemoteDataDialog(cobject, builder)
 {
 	tree_model = Gtk::TreeStore::create(factories_columns);
 	data_tree_view->set_model(tree_model);
-	data_tree_view->append_column("Property", factories_columns.m_col_name);
-	data_tree_view->append_column("Value", factories_columns.m_col_value);
+	data_tree_view->append_column(_("Property"), factories_columns.m_col_name);
+	data_tree_view->append_column(_("Value"), factories_columns.m_col_value);
 
-	set_title("Remote Factories");
+	set_title(_("Remote Factories"));
 }
 
 void FactoriesDialog::set_controller(const std::shared_ptr<Controller> &controller)
@@ -53,7 +55,7 @@ void FactoriesDialog::reload_list(const Glib::ustring &factory_name, bool add)
 			APPEND_SUB_ROW(meta.first, meta.second, row);
 		}
 
-		auto tpl_row = APPEND_SUB_ROW("Pad templates", "", row);
+		auto tpl_row = APPEND_SUB_ROW(_("Pad templates"), "", row);
 
 		for (auto tpl : factory.get_pad_templates())
 		{

@@ -9,8 +9,10 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 MessageModule::MessageModule()
-: BaseMainModule(GstDebugger::GStreamerData::kMessageInfo, "Messages")
+: BaseMainModule(GstDebugger::GStreamerData::kMessageInfo, _("Messages"))
 {
 }
 
@@ -18,14 +20,14 @@ void MessageModule::load_details(gpointer data)
 {
 	auto msg_info = (GstDebugger::MessageInfo*)data;
 
-	append_details_row("message type", Gst::Enums::get_name((Gst::MessageType)msg_info->type()));
+	append_details_row(_("message type"), Gst::Enums::get_name((Gst::MessageType)msg_info->type()));
 	{
 		gchar buffer[20];
 		snprintf(buffer, 20, "%" GST_TIME_FORMAT, GST_TIME_ARGS(msg_info->timestamp()));
-		append_details_row("message timestamp", buffer);
+		append_details_row(_("message timestamp"), buffer);
 	}
-	append_details_row("message sequence number", std::to_string(msg_info->seqnum()));
-	append_details_row("object", "todo"); // todo
+	append_details_row(_("message sequence number"), std::to_string(msg_info->seqnum()));
+	append_details_row(_("object"), "todo"); // todo
 
 	auto structure = Glib::wrap(gst_structure_from_string(msg_info->structure_data().c_str(), NULL), false);
 	append_details_from_structure(structure);
@@ -33,7 +35,7 @@ void MessageModule::load_details(gpointer data)
 
 void MessageModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data)
 {
-	row[columns.header] = "Message of type: " + Gst::Enums::get_name((Gst::MessageType)data->message_info().type());
+	row[columns.header] = _("Message of type: ") + Gst::Enums::get_name((Gst::MessageType)data->message_info().type());
 	row[columns.data] = new GstDebugger::MessageInfo(data->message_info());
 }
 
@@ -46,9 +48,9 @@ MessageControlModule::MessageControlModule()
 	types_combobox->set_model(types_model);
 	types_combobox->pack_start(types_model_columns.type_name);
 
-	create_description_box("Type: ", types_combobox, 0);
+	create_description_box(_("Type: "), types_combobox, 0);
 
-	hooks_tree_view->append_column("Type", hooks_model_columns.str1);
+	hooks_tree_view->append_column(_("Type"), hooks_model_columns.str1);
 }
 
 void MessageControlModule::add_hook()

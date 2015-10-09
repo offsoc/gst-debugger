@@ -13,8 +13,10 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 BufferModule::BufferModule()
-: BaseMainModule(GstDebugger::GStreamerData::kBufferInfo, "buffers")
+: BaseMainModule(GstDebugger::GStreamerData::kBufferInfo, _("Buffers"))
 {
 	data_dialog = load_dialog<BufferDataDialog>("bufferDataDialog");
 }
@@ -23,18 +25,18 @@ void BufferModule::load_details(gpointer data)
 {
 	auto buffer_info = (GstDebugger::BufferInfo*)data;
 
-	append_details_row("Pts", std::to_string(buffer_info->pts()));
-	append_details_row("Dts", std::to_string(buffer_info->dts()));
-	append_details_row("Duration", std::to_string(buffer_info->duration()));
-	append_details_row("Offset", std::to_string(buffer_info->offset()));
-	append_details_row("Offset End", std::to_string(buffer_info->offset_end()));
-	append_details_row("Data Size", std::to_string(buffer_info->size()));
-	append_details_row("Object path", buffer_info->pad());
+	append_details_row(_("Pts"), std::to_string(buffer_info->pts()));
+	append_details_row(_("Dts"), std::to_string(buffer_info->dts()));
+	append_details_row(_("Duration"), std::to_string(buffer_info->duration()));
+	append_details_row(_("Offset"), std::to_string(buffer_info->offset()));
+	append_details_row(_("Offset End"), std::to_string(buffer_info->offset_end()));
+	append_details_row(_("Data Size"), std::to_string(buffer_info->size()));
+	append_details_row(_("Object path"), buffer_info->pad());
 
 	if (buffer_info->has_data())
 	{
 		buffer = buffer_info->data();
-		append_details_row("Data", buffer_data_to_string(StringDataFormat::HEX, buffer, 1024, 16));
+		append_details_row(_("Data"), buffer_data_to_string(StringDataFormat::HEX, buffer, 1024, 16));
 	}
 }
 
@@ -48,7 +50,7 @@ void BufferModule::details_activated(const Gtk::TreeModel::Path &path)
 	}
 
 	Gtk::TreeModel::Row row = *iter;
-	if (row[detail_columns.name] == "Data")
+	if (row[detail_columns.name] == _("Data"))
 	{
 		data_dialog->set_data(buffer);
 		data_dialog->show();
@@ -57,14 +59,14 @@ void BufferModule::details_activated(const Gtk::TreeModel::Path &path)
 
 void BufferModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data)
 {
-	row[columns.header] = "Buffer of size " + std::to_string(data->buffer_info().size());
+	row[columns.header] = _("Buffer of size ") + std::to_string(data->buffer_info().size());
 	row[columns.data] = new GstDebugger::BufferInfo(data->buffer_info());
 }
 
 BufferControlModule::BufferControlModule()
 : ControlModule()
 {
-	data_check_button = Gtk::manage(new Gtk::CheckButton("Send data"));
+	data_check_button = Gtk::manage(new Gtk::CheckButton(_("Send data")));
 	main_box->pack_start(*data_check_button, false, true);
 	main_box->reorder_child(*data_check_button, 1);
 
@@ -74,7 +76,7 @@ BufferControlModule::BufferControlModule()
 	create_dispatcher("selected-object", [this] {
 		auto pad_path = controller->get_selected_pad_path();
 		if (pad_path.empty())
-			pad_path = "none (any path)";
+			pad_path = _("none (any path)");
 		pad_path_label->set_text(pad_path);
 	}, nullptr);
 
@@ -105,7 +107,7 @@ void BufferControlModule::confirmation_received(GstDebugger::Command* cmd)
 	{
 		Gtk::TreeModel::Row row = *(hooks_model->append());
 		row[hooks_model_columns.str1] = confirmation.pad();
-		row[hooks_model_columns.str2] = confirmation.buffer().send_data() ? "yes" : "no";
+		row[hooks_model_columns.str2] = confirmation.buffer().send_data() ? _("yes") : _("no");
 	}
 	else
 	{

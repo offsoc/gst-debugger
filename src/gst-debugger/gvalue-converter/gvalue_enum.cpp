@@ -7,8 +7,10 @@
 
 #include "gvalue_enum.h"
 
-#include <glibmm.h>
 #include "../../common/gst-utils.h"
+
+#include <glibmm.h>
+#include <glibmm/i18n.h>
 
 GValueEnum::GValueEnum(GValue *gobj)
 : GValueBase(gobj)
@@ -24,7 +26,7 @@ std::string GValueEnum::to_string() const
 	gint value = get_value();
 	if (!type)
 	{
-		return std::to_string(value) + " (press 'refresh' button)";
+		return std::to_string(value) + _(" (press 'refresh' button)"); // todo move somewhere else
 	}
 	try
 	{

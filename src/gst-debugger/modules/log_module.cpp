@@ -9,8 +9,10 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 LogModule::LogModule()
-: BaseMainModule(GstDebugger::GStreamerData::kLogInfo, "logs")
+: BaseMainModule(GstDebugger::GStreamerData::kLogInfo, _("Debug logs"))
 {
 }
 
@@ -18,13 +20,13 @@ void LogModule::load_details(gpointer data)
 {
 	auto log_info = (GstDebugger::LogInfo*)data;
 
-	append_details_row("Level", std::to_string(log_info->level()));
-	append_details_row("Category name", log_info->category());
-	append_details_row("File", log_info->file());
-	append_details_row("Function", log_info->function());
-	append_details_row("Line", std::to_string(log_info->line()));
-	append_details_row("Object path", log_info->object());
-	append_details_row("Message", log_info->message());
+	append_details_row(_("Level"), std::to_string(log_info->level()));
+	append_details_row(_("Category name"), log_info->category());
+	append_details_row(_("File"), log_info->file());
+	append_details_row(_("Function"), log_info->function());
+	append_details_row(_("Line"), std::to_string(log_info->line()));
+	append_details_row(_("Object path"), log_info->object());
+	append_details_row(_("Message"), log_info->message());
 }
 
 void LogModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data)
@@ -38,28 +40,28 @@ LogControlModule::LogControlModule()
 {
 	debug_categories_combobox = Gtk::manage(new Gtk::ComboBoxText());
 
-	create_description_box("Debug category: ", debug_categories_combobox, 0);
+	create_description_box(_("Debug category: "), debug_categories_combobox, 0);
 
 	log_levels_combobox = Gtk::manage(new Gtk::ComboBoxText());
-	create_description_box("Log level: ", log_levels_combobox, 0);
+	create_description_box(_("Log level: "), log_levels_combobox, 0);
 
-	main_box->pack_start(*Gtk::manage(new Gtk::Label("Log threshold:")), false, true);
+	main_box->pack_start(*Gtk::manage(new Gtk::Label(_("Log threshold:"))), false, true);
 
 	threshold_entry = Gtk::manage(new Gtk::Entry());
 	main_box->pack_start(*threshold_entry, false, true);
 
-	overwrite_threshold_check_button = Gtk::manage(new Gtk::CheckButton("Overwrite current threshold"));
+	overwrite_threshold_check_button = Gtk::manage(new Gtk::CheckButton(_("Overwrite current threshold")));
 	main_box->pack_start(*overwrite_threshold_check_button, false, true);
 
-	set_threshold_button = Gtk::manage(new Gtk::Button("Set threshold"));
+	set_threshold_button = Gtk::manage(new Gtk::Button(_("Set threshold")));
 	set_threshold_button->signal_clicked().connect([this] {
 		controller->send_set_threshold_command(threshold_entry->get_text(),
 			overwrite_threshold_check_button->get_active());
 	});
 	main_box->pack_start(*set_threshold_button, false, true);
 
-	hooks_tree_view->append_column("Level", hooks_model_columns.str1);
-	hooks_tree_view->append_column("Category", hooks_model_columns.str2);
+	hooks_tree_view->append_column(_("Level"), hooks_model_columns.str1);
+	hooks_tree_view->append_column(_("Category"), hooks_model_columns.str2);
 }
 
 void LogControlModule::set_controller(const std::shared_ptr<Controller> &controller)

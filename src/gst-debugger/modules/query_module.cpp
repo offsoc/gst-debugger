@@ -9,8 +9,10 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 QueryModule::QueryModule()
-: BaseMainModule(GstDebugger::GStreamerData::kQueryInfo, "Queries")
+: BaseMainModule(GstDebugger::GStreamerData::kQueryInfo, _("Queries"))
 {
 }
 
@@ -18,8 +20,8 @@ void QueryModule::load_details(gpointer data)
 {
 	auto query_info = (GstDebugger::QueryInfo*)data;
 
-	append_details_row("query type", Gst::Enums::get_name((Gst::QueryType)query_info->type()));
-	append_details_row("sent from pad", query_info->pad());
+	append_details_row(_("query type"), Gst::Enums::get_name((Gst::QueryType)query_info->type()));
+	append_details_row(_("sent from pad"), query_info->pad());
 
 	auto structure = Glib::wrap(gst_structure_from_string(query_info->structure_data().c_str(), NULL), false);
 	append_details_from_structure(structure);
@@ -27,7 +29,7 @@ void QueryModule::load_details(gpointer data)
 
 void QueryModule::data_received(const Gtk::TreeModel::Row& row, GstDebugger::GStreamerData *data)
 {
-	row[columns.header] = "Query of type: " + Gst::Enums::get_name((Gst::QueryType)data->query_info().type());
+	row[columns.header] = _("Query of type: ") + Gst::Enums::get_name((Gst::QueryType)data->query_info().type());
 	row[columns.data] = new GstDebugger::QueryInfo(data->query_info());
 }
 

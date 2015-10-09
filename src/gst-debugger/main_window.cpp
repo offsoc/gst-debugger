@@ -14,6 +14,8 @@
 
 #include "controller/controller.h"
 
+#include <glib/gi18n.h>
+
 MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : IMainView(cobject),
   builder(builder),
@@ -115,12 +117,12 @@ void MainWindow::connection_status_changed(bool connected)
 	auto id = main_statusbar->get_context_id("connection-status");
 	if (connected)
 	{
-		main_statusbar->push("Connected", id);
-		((Gtk::Label*)connect_menu_item->get_child())->set_text("Disconnect");
+		main_statusbar->push(_("Connected"), id);
+		((Gtk::Label*)connect_menu_item->get_child())->set_text(_("Disconnect"));
 	}
 	else
 	{
-		main_statusbar->push("Disconnected", id);
-		((Gtk::Label*)connect_menu_item->get_child())->set_text("Connect");
+		main_statusbar->push(_("Disconnected"), id);
+		((Gtk::Label*)connect_menu_item->get_child())->set_text(_("Connect"));
 	}
 }

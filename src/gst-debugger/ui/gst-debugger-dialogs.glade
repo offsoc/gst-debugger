@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
   <object class="GtkAboutDialog" id="aboutDialog">
@@ -97,10 +97,11 @@
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="binFormatRadioButton">
-                    <property name="label" translatable="yes">BIN</property>
+                    <property name="label">BIN</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <property name="group">hexFormatRadioButton</property>
                   </object>
@@ -112,10 +113,11 @@
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="octFormatRadioButton">
-                    <property name="label" translatable="yes">OCT</property>
+                    <property name="label">OCT</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <property name="group">hexFormatRadioButton</property>
                   </object>
@@ -127,10 +129,11 @@
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="decFormatRadioButton">
-                    <property name="label" translatable="yes">DEC</property>
+                    <property name="label">DEC</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                     <property name="group">hexFormatRadioButton</property>
                   </object>
@@ -142,10 +145,11 @@
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="hexFormatRadioButton">
-                    <property name="label" translatable="yes">HEX</property>
+                    <property name="label">HEX</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="xalign">0.5</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                   </object>

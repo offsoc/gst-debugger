@@ -11,6 +11,8 @@
 
 #include "graphviz-plugin/graphviz-gstdebugger.h"
 
+#include <glibmm/i18n.h>
+
 #include <boost/algorithm/string.hpp>
 #include "../../common/gst-utils.h"
 
@@ -168,12 +170,12 @@ void GraphModule::jump_to_selected_model()
 
 	if (selected_element.empty())
 	{
-		controller->log("cannot jump to element. element is not selected.");
+		controller->log(_("Can't get into the element. Element is not selected."));
 		return;
 	}
 	else if (selected_element.find(':') != std::string::npos)
 	{
-		controller->log("cannot jump into element. selected element is a pad.");
+		controller->log(_("Can't get into the element. Selected element is a pad."));
 		return;
 	}
 

@@ -4,7 +4,7 @@ AC_INIT([gst-debugger], [0.90.0],
 
 AC_PREREQ([2.59])
 
-AC_CONFIG_MACRO_DIR([build])]
+AC_CONFIG_MACRO_DIR([build])
 AC_SUBST(ACLOCAL_AMFLAGS, "-I build -I common/m4")
 AC_CONFIG_HEADERS([src/config.h])
 
@@ -49,6 +49,7 @@ AG_GST_SET_PLUGINDIR
 
 AC_CONFIG_FILES([
 	Makefile 
+	po/Makefile.in
 	src/Makefile
 	src/debugserver/Makefile
 	src/gst-debugger/Makefile
@@ -61,6 +62,17 @@ AC_PROG_INSTALL
 
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
+
+IT_PROG_INTLTOOL([0.35.0])
+
+GETTEXT_PACKAGE=gst-debugger
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
+                   [The domain to use with gettext])
+AM_GLIB_GNU_GETTEXT
+
+GST_DEBUGGER_LOCALEDIR=[${datadir}/locale]
+AC_SUBST(GST_DEBUGGER_LOCALEDIR)
 
 AC_CHECK_PROG([PROTOC], [protoc], [protoc])
 AS_IF([test "x${PROTOC}" == "x"],

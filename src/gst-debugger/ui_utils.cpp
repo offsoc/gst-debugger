@@ -8,6 +8,8 @@
 #include "ui_utils.h"
 #include "gst-debugger-resources.h"
 
+#include <glib/gi18n.h>
+
 #include <iomanip>
 #include <bitset>
 
@@ -19,7 +21,7 @@ std::string get_presence_str(Gst::PadPresence p)
 	case Gst::PAD_ALWAYS: presence = "ALWAYS"; break;
 	case Gst::PAD_SOMETIMES: presence = "SOMETIMES"; break;
 	case Gst::PAD_REQUEST: presence = "REQUEST"; break;
-	default: presence = "UNKNOWN";
+	default: presence = _("UNKNOWN");
 	}
 	return presence;
 }
@@ -31,7 +33,7 @@ std::string get_direction_str(Gst::PadDirection d)
 	{
 	case Gst::PAD_SINK: direction = "SINK"; break;
 	case Gst::PAD_SRC: direction = "SRC"; break;
-	default: direction = "UNKNOWN";
+	default: direction = _("UNKNOWN");
 	}
 	return direction;
 }
@@ -51,16 +53,16 @@ void display_template_info(const Glib::RefPtr<Gst::PadTemplate> &tpl,
 	Gtk::TreeRow row;
 	if (parent_row)
 	{
-		row = APPEND_SUB_ROW("Template", tpl->get_name_template(), parent_row.get());
+		row = APPEND_SUB_ROW(_("Template"), tpl->get_name_template(), parent_row.get());
 	}
 	else
 	{
 		row = *(model->append());
-		row[col_name] = "Template";
+		row[col_name] = _("Template");
 		row[col_value] = tpl->get_name_template();
 	}
-	APPEND_SUB_ROW("Presence", get_presence_str(tpl->get_presence()), row);
-	APPEND_SUB_ROW("Direction", get_direction_str(tpl->get_direction()), row);
+	APPEND_SUB_ROW(_("Presence"), get_presence_str(tpl->get_presence()), row);
+	APPEND_SUB_ROW(_("Direction"), get_direction_str(tpl->get_direction()), row);
 	row = APPEND_SUB_ROW("Caps", "", row);
 	display_caps(tpl->get_caps(), model, col_name, col_value, row);
 }
@@ -72,7 +74,7 @@ void display_caps(const Glib::RefPtr<Gst::Caps> &caps,
 	std::string caps_str;
 
 	if (!caps)
-		caps_str = "UNKNOWN";
+		caps_str = _("UNKNOWN");
 	else if (caps->is_any() || caps->empty())
 		caps_str = caps->to_string();
 
@@ -140,7 +142,7 @@ std::string buffer_data_to_string(StringDataFormat format, const std::string &bu
 
 	if (display_size < buffer.length())
 	{
-		ss << std::endl << "more...";
+		ss << std::endl << _("more...");
 	}
 
 	return ss.str();

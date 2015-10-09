@@ -1,0 +1,22 @@
+src/gst-debugger/main.cpp
+src/gst-debugger/main_window.cpp
+src/gst-debugger/ui_utils.cpp
+src/gst-debugger/dialogs/klasses_dialog.cpp
+src/gst-debugger/dialogs/factories_dialog.cpp
+src/gst-debugger/dialogs/enums_dialog.cpp
+src/gst-debugger/modules/base_main_module.cpp
+src/gst-debugger/dialogs/buffer_data_dialog.cpp
+src/gst-debugger/modules/gst_properties_module.cpp
+src/gst-debugger/dialogs/connection_properties_dialog.cpp
+src/gst-debugger/modules/event_module.cpp
+src/gst-debugger/modules/query_module.cpp
+src/gst-debugger/modules/buffer_module.cpp
+src/gst-debugger/modules/message_module.cpp
+src/gst-debugger/modules/log_module.cpp
+src/gst-debugger/controller/tcp_client.cpp
+src/gst-debugger/pipeline-drawer/graph_module.cpp
+src/gst-debugger/gvalue-converter/gvalue_flags.cpp
+src/gst-debugger/gvalue-converter/gvalue_enum.cpp
+src/gst-debugger/gvalue-converter/gvalue_unknown.cpp
+[type: gettext/glade]src/gst-debugger/ui/gst-debugger.glade
+[type: gettext/glade]src/gst-debugger/ui/gst-debugger-dialogs.glade

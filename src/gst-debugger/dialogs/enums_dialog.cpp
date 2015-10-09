@@ -11,16 +11,18 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 EnumsDialog::EnumsDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : RemoteDataDialog(cobject, builder)
 {
 	tree_model = Gtk::TreeStore::create(enums_columns);
 	data_tree_view->set_model(tree_model);
-	data_tree_view->append_column("Name", enums_columns.m_col_name);
-	data_tree_view->append_column("Value", enums_columns.m_col_value);
-	data_tree_view->append_column("Description", enums_columns.m_col_description);
+	data_tree_view->append_column(_("Name"), enums_columns.m_col_name);
+	data_tree_view->append_column(_("Value"), enums_columns.m_col_value);
+	data_tree_view->append_column(_("Description"), enums_columns.m_col_description);
 
-	set_title("Remote Enum Types");
+	set_title(_("Remote Enum Types"));
 }
 
 void EnumsDialog::set_controller(const std::shared_ptr<Controller> &controller)

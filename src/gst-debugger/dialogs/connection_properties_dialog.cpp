@@ -7,6 +7,7 @@
 
 #include "connection_properties_dialog.h"
 
+#include <glibmm/i18n.h>
 #include <giomm.h>
 
 #include <string>
@@ -32,8 +33,8 @@ void ConnectionPropertiesDialog::pingButton_click_cb()
 		auto connection = client->connect_to_host(get_ip_address(), get_port());
 		if (connection->is_connected())
 		{
-			Gtk::MessageDialog dialog("Info");
-			dialog.set_secondary_text("PING OK!");
+			Gtk::MessageDialog dialog(_("Info"));
+			dialog.set_secondary_text(_("PING OK!"));
 			dialog.run();
 			connection->close();
 		}
@@ -43,7 +44,7 @@ void ConnectionPropertiesDialog::pingButton_click_cb()
 	catch(const Gio::Error&)
 	{
 		Gtk::MessageDialog dialog("Info", false, Gtk::MESSAGE_ERROR);
-		dialog.set_secondary_text("Server doesn't response");
+		dialog.set_secondary_text(_("Server doesn't response"));
 		dialog.run();
 	}
 }

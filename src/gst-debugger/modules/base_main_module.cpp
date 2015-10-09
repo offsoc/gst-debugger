@@ -9,6 +9,8 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 DetailsModelColumns BaseMainModule::detail_columns;
 
 inline void free_data(GstDebugger::GStreamerData* data) { delete data; }
@@ -51,8 +53,8 @@ void BaseMainModule::load_details(Gtk::TreeView *view, const Gtk::TreeModel::Pat
 void BaseMainModule::configure_details_view(Gtk::TreeView *view)
 {
 	view->remove_all_columns();
-	view->append_column("Name", detail_columns.name);
-	view->append_column("Value", detail_columns.value);
+	view->append_column(_("Name"), detail_columns.name);
+	view->append_column(_("Value"), detail_columns.value);
 }
 
 void BaseMainModule::append_details_row(const std::string &name, const std::string &value)

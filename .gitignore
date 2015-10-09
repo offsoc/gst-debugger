@@ -54,3 +54,13 @@ Makefile
 /src/common/gstdebugger.pb.cc
 /src/common/gstdebugger.pb.h
 /src/common/libgst-debugger-common-0.1.pc
+
+# intltool/gettext
+*.gmo
+/build/glib-gettext.m4
+/build/nls.m4
+/build/pkg.m4
+/intltool-*.in
+/po/Makefile.in.in
+/po/stamp-it
+/po/POTFILES

@@ -10,6 +10,8 @@
 
 #include "controller/controller.h"
 
+#include <glibmm/i18n.h>
+
 #include <map>
 
 KlassesDialog::KlassesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
@@ -17,8 +19,8 @@ KlassesDialog::KlassesDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
 {
 	tree_model = Gtk::TreeStore::create(klasses_columns);
 	data_tree_view->set_model(tree_model);
-	data_tree_view->append_column("Property", klasses_columns.m_col_name);
-	data_tree_view->append_column("Value", klasses_columns.m_col_value);
+	data_tree_view->append_column(_("Property"), klasses_columns.m_col_name);
+	data_tree_view->append_column(_("Value"), klasses_columns.m_col_value);
 
 	set_title("Remote Factories");
 }
@@ -58,7 +60,7 @@ std::string KlassesDialog::g_param_flags_to_string(GParamFlags v)
 
 	std::string str;
 	bool first = false;
-	if (values.empty()) str = "none";
+	if (values.empty()) str = _("none");
 	for (auto value : values)
 	{
 		if (value.first & v)
@@ -85,7 +87,7 @@ void KlassesDialog::reload_list(const Glib::ustring &klass_name, bool add)
 		row[klasses_columns.m_col_value] = "";
 
 		auto childrow = *(tree_model->append(row.children()));
-		childrow[klasses_columns.m_col_name] = "Properties";
+		childrow[klasses_columns.m_col_name] = _("Properties");
 
 		for (auto property : klass.get_properties())
 		{
@@ -93,10 +95,10 @@ void KlassesDialog::reload_list(const Glib::ustring &klass_name, bool add)
 
 			cr[klasses_columns.m_col_name] = property.get_name();
 
-			APPEND_SUB_ROW(cr, "Nick", property.get_nick());
-			APPEND_SUB_ROW(cr, "Blurb", property.get_blurb());
-			APPEND_SUB_ROW(cr, "Flags", g_param_flags_to_string(property.get_flags()));
-			APPEND_SUB_ROW(cr, "Default value", property.get_default_value()->to_string());
+			APPEND_SUB_ROW(cr, _("Nick"), property.get_nick());
+			APPEND_SUB_ROW(cr, _("Blurb"), property.get_blurb());
+			APPEND_SUB_ROW(cr, _("Flags"), g_param_flags_to_string(property.get_flags()));
+			APPEND_SUB_ROW(cr, _("Default value"), property.get_default_value()->to_string());
 		}
 	}
 }

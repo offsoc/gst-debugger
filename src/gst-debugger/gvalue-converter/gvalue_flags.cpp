@@ -8,8 +8,10 @@
 #include "gvalue_flags.h"
 #include "ui_utils.h"
 
-#include <glibmm.h>
 #include "../../common/gst-utils.h"
+
+#include <glibmm/i18n.h>
+#include <glibmm.h>
 
 GValueFlags::GValueFlags(GValue *gobj)
 : GValueBase(gobj)
@@ -25,7 +27,7 @@ std::string GValueFlags::to_string() const
 	gint value = get_value();
 	if (!type)
 	{
-		return flags_value_to_string(value) + " (press 'refresh' button)";
+		return flags_value_to_string(value) + _(" (press 'refresh' button)"); // todo move somewhere else
 	}
 	try
 	{

@@ -37,7 +37,8 @@ fi
 
 set -x
 
-#intltoolize --force --copy --automake || exit 1 todo
+aclocal --install || exit 1
+intltoolize --force --copy --automake || exit 1
 autoreconf --verbose --force --install -Wno-portability || exit 1
 automake --add-missing --copy >/dev/null 2>&1
 
