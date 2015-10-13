@@ -153,7 +153,7 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
 }
 
 static void
-do_pad_query_pre (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query)
+do_pad_query_post (GstTracer * self, guint64 ts, GstPad * pad, gboolean result, GstQuery * query)
 {
   GstDebugserverTracer *tracer = GST_DEBUGSERVER_TRACER (self);
 
@@ -271,8 +271,8 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
       G_CALLBACK (do_element_new));
   gst_tracing_register_hook (tracer, "pad-push-event-pre",
       G_CALLBACK (do_push_event_pre));
-  gst_tracing_register_hook (tracer, "pad-query-pre",
-      G_CALLBACK (do_pad_query_pre));
+  gst_tracing_register_hook (tracer, "pad-query-post",
+      G_CALLBACK (do_pad_query_post));
   gst_tracing_register_hook (tracer, "pad-push-pre",
       G_CALLBACK (do_pad_push_pre));
   gst_tracing_register_hook (tracer, "element-add-pad",
