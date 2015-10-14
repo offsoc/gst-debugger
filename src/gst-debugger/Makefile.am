@@ -30,6 +30,8 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	controller/connection_controller.h \
 	controller/tcp_client.cpp \
 	controller/tcp_client.h \
+	controller/addins_controller.cpp \
+	controller/addins_controller.h \
 	dialogs/connection_properties_dialog.cpp \
 	dialogs/connection_properties_dialog.h \
 	dialogs/remote_data_dialog.h \
@@ -92,10 +94,12 @@ gst_debugger_@GST_API_VERSION@_SOURCES = 		\
 	gvalue-converter/gvalue_enum.cpp \
 	gvalue-converter/gvalue_enum.h \
 	gvalue-converter/gvalue_flags.cpp \
-	gvalue-converter/gvalue_flags.h
+	gvalue-converter/gvalue_flags.h \
+	addins/addins-interface.h \
+	addins/addins-notifier.h
 
 
-gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11
+gst_debugger_@GST_API_VERSION@_LDFLAGS = $(GTKMM_LIBS) $(GSTMM_LIBS) $(GVC_LIBS) $(PROTOBUF_LIBS) -lX11 $(BOOST_SYSTEM_LIBS) $(BOOST_FILESYSTEM_LIBS)
 gst_debugger_@GST_API_VERSION@_LDADD = ../common/libgst-debugger-common-cpp-@GST_DEBUGGER_API_VERSION@.la
 gst_debugger_@GST_API_VERSION@_CXXFLAGS = $(GTKMM_CFLAGS) $(GSTMM_CFLAGS) $(GVC_CFLAGS) -DGST_DEBUGGER_LOCALEDIR=\"${GST_DEBUGGER_LOCALEDIR}\"
 gst_debugger_@GST_API_VERSION@_CPPFLAGS = $(GVC_CFLAGS) -I$(top_srcdir)/src/

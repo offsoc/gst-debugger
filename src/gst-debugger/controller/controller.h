@@ -12,6 +12,7 @@
 #include "connection_controller.h"
 #include "command_factory.h"
 #include "topology_controller.h"
+#include "addins_controller.h"
 
 #include "models/gst_enum_model.h"
 #include "models/gst_factory_model.h"
@@ -23,7 +24,8 @@ class Controller :
 		public std::enable_shared_from_this<Controller>,
 		public ConnectionController,
 		public CommandFactory,
-		public TopologyController
+		public TopologyController,
+		public AddinsController
 {
 private:
 	IMainView *view;
@@ -73,7 +75,6 @@ public:
 	void log(const std::string &message);
 
 	sigc::signal<void> on_debug_categories_changed;
-	sigc::signal<void, const GstDebugger::GStreamerData&> on_frame_received;
 	sigc::signal<void, const GstDebugger::Command&> on_confirmation_received;
 	sigc::signal<void, const Glib::ustring&, bool> on_enum_list_changed; /* enum name, true - add, false - remove */
 	sigc::signal<void, const Glib::ustring&, bool> on_factory_list_changed;
@@ -81,6 +82,7 @@ public:
 	sigc::signal<void, std::shared_ptr<ElementModel>> on_model_changed;
 	sigc::signal<void, const GstDebugger::PropertyValue&> on_property_value_received;
 	sigc::signal<void> on_selected_object_changed;
+	sigc::signal<void, const GstDebugger::GStreamerData&> on_frame_received;
 };
 
 #endif /* SRC_GST_DEBUGGER_CONTROLLER_CONTROLLER_H_ */

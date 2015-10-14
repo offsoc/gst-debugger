@@ -36,6 +36,12 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	builder->get_widget("remoteKlassesMenuitem", remote_klasses);
 	remote_klasses->signal_activate().connect([this] { klasses_dialog->show(); });
 
+	builder->get_widget("addinsMenuItem", addins_menu_item);
+
+	Gtk::MenuItem *reload_addins_menu_item;
+	builder->get_widget("reloadAddinsMenuItem", reload_addins_menu_item);
+	reload_addins_menu_item->signal_activate().connect([this] { controller->reload_addins(); });
+
 	builder->get_widget("connectMenuItem", connect_menu_item);
 	connect_menu_item->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::connectMenuItem_activate_cb));
 
@@ -79,6 +85,9 @@ void MainWindow::set_controller(const std::shared_ptr<Controller> &controller)
 	this->controller = controller;
 
 	controller->on_connection_status_changed(sigc::mem_fun(*this, &MainWindow::connection_status_changed));
+	controller->on_addins_reloaded.connect(sigc::mem_fun(*this, &MainWindow::addins_reloaded));
+
+	controller->reload_addins();
 
 	main_module->set_controller(controller);
 	graph_module->set_controller(controller);
@@ -125,4 +134,32 @@ void MainWindow::connection_status_changed(bool connected)
 		main_statusbar->push(_("Disconnected"), id);
 		((Gtk::Label*)connect_menu_item->get_child())->set_text(_("Connect"));
 	}
+}
+
+void MainWindow::addins_reloaded()
+{
+	static int plugin_val = 31337;
+	Gtk::Menu *sub_menu = addins_menu_item->get_submenu();
+
+	for (auto m : sub_menu->get_children())
+		if (GPOINTER_TO_INT(m->get_data("plugin-menu-item")) == plugin_val)
+			sub_menu->remove(*m);
+
+	addins_menu_item->set_submenu(*sub_menu);
+
+	for (auto addin : this->controller->get_addins())
+	{
+		auto v = Gtk::manage(new Gtk::MenuItem(addin->get_name(), true));
+		v->set_data("plugin-menu-item", GINT_TO_POINTER(plugin_val));
+		v->signal_activate().connect([addin] {
+			if (addin->get_widget()->is_visible()) return;
+			Gtk::Window *wnd = new Gtk::Window();
+			wnd->add(*addin->get_widget());
+			wnd->set_title(addin->get_name());
+			wnd->signal_delete_event().connect([wnd](GdkEventAny *){ delete wnd; return true; });
+			wnd->show_all();
+		});
+		sub_menu->prepend(*v);
+	}
+	sub_menu->show_all();
 }

@@ -90,6 +90,21 @@ void Controller::process_frame(const GstDebugger::GStreamerData &data)
 	case GstDebugger::GStreamerData::kPadDynamicInfo:
 		update_pad_dynamic_info(data.pad_dynamic_info());
 		break;
+	case GstDebugger::GStreamerData::kQueryInfo:
+		on_query_received(data.query_info());
+		break;
+	case GstDebugger::GStreamerData::kEventInfo:
+		on_event_received(data.event_info());
+		break;
+	case GstDebugger::GStreamerData::kMessageInfo:
+		on_message_received(data.message_info());
+		break;
+	case GstDebugger::GStreamerData::kBufferInfo:
+		on_buffer_received(data.buffer_info());
+		break;
+	case GstDebugger::GStreamerData::kLogInfo:
+		on_log_received(data.log_info());
+		break;
 	}
 }
 

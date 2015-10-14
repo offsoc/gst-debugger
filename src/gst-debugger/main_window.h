@@ -27,6 +27,7 @@ class MainWindow : public IMainView
 	void connectionPropertiesMenuItem_activate_cb();
 	void connectMenuItem_activate_cb();
 	void connection_status_changed(bool connected);
+	void addins_reloaded();
 
 	Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::MenuItem *connection_properties;
@@ -36,6 +37,7 @@ class MainWindow : public IMainView
 	Gtk::MenuItem *connect_menu_item;
 	Gtk::MenuItem *about_menu_item;
 	Gtk::MenuItem *quit_menu_item;
+	Gtk::MenuItem *addins_menu_item;
 
 	Gtk::AboutDialog *about_dialog;
 	Gtk::Statusbar *main_statusbar;
