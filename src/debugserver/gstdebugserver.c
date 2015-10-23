@@ -33,6 +33,9 @@
 #include "gstdebugserver.h"
 
 #include "gstdebugservertopology.h"
+#include "gstdebugservertypes.h"
+#include "gstdebugserverlog.h"
+#include "gstdebugserverhooks.h"
 
 #include "../common/gst-utils.h"
 #include "common/serializer.h"

@@ -53,7 +53,7 @@ GstDebugserverMessage * gst_debugserver_message_new (void)
 
 void gst_debugserver_message_free (GstDebugserverMessage * msg)
 {
-  gst_debugserver_log_clean (msg);
+  gst_debugserver_message_clean (msg);
   gst_debugserver_hooks_deinit (&msg->hooks);
   g_free (msg);
 }

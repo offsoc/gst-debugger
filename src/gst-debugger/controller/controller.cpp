@@ -17,6 +17,8 @@
 
 #include <gtkmm.h>
 
+#include <iostream>
+
 Controller::Controller(IMainView *view)
  : view(view)
 {
