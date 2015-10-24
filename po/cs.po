@@ -1,0 +1,469 @@
+# Czech translation for gst-debugger.
+# Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+# Marek Černocký <marek@manet.cz>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"debugger&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2015-10-18 09:47+0000\n"
+"PO-Revision-Date: 2015-10-24 19:02+0200\n"
+"Last-Translator: Marek Černocký <marek@manet.cz>\n"
+"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Gtranslator 2.91.7\n"
+
+#: ../src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "Připojeno"
+
+#: ../src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "Odpojit"
+
+#: ../src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "Odpojeno"
+
+#: ../src/gst-debugger/main_window.cpp:135
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:7
+msgid "Connect"
+msgstr "Připojit"
+
+#: ../src/gst-debugger/ui_utils.cpp:24 ../src/gst-debugger/ui_utils.cpp:36
+#: ../src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "NEZNÁMÝ"
+
+#: ../src/gst-debugger/ui_utils.cpp:56 ../src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "Šablona"
+
+#: ../src/gst-debugger/ui_utils.cpp:64
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "Výskyt"
+
+#: ../src/gst-debugger/ui_utils.cpp:65
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "Směr"
+
+#: ../src/gst-debugger/ui_utils.cpp:145
+msgid "more..."
+msgstr "další…"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "Vlastnost"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: ../src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "Hodnota"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "žádná"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "Přezdívka"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr "Propagační popis"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "Příznaky"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "Výchozí hodnota"
+
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr "Vzdálené generátory"
+
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr "Šablony přípojek"
+
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: ../src/gst-debugger/modules/base_main_module.cpp:56
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "Název"
+
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "Popis"
+
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr "Vzdálené výčtové typy"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "Název vlastnosti"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "Hodnota vlastnosti"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr "Příslušející přípojka"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:234
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr "Aktuální schopnosti"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:239
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "žádné"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:244
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr "Dovolené schopnosti"
+
+#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "Informace"
+
+#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "Pinknutí se zdařilo!"
+
+#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't response"
+msgstr "Server neodpovídá"
+
+#: ../src/gst-debugger/modules/event_module.cpp:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
+msgid "Events"
+msgstr "Události"
+
+#: ../src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "typ události"
+
+#: ../src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "časové razítko události"
+
+#: ../src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "pořadové číslo události"
+
+#: ../src/gst-debugger/modules/event_module.cpp:30
+#: ../src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr "posláno z přípojky"
+
+#: ../src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "Událost typu:"
+
+#: ../src/gst-debugger/modules/query_module.cpp:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
+msgid "Queries"
+msgstr "Fronty"
+
+#: ../src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "typ fronty"
+
+#: ../src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "Fronta typu:"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:19
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
+msgid "Buffers"
+msgstr "Vyrovnávací paměti"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "Čas prezentace"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "Čas dekódování"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "Délka"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "Posun"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "Konec posunu"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "Velikost dat"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:34
+#: ../src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "Cesta k objektu"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:39
+#: ../src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "Data"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "Vyrovnávací pamět o velikosti "
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "Odeslat data"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "žádná (libovolná cesta)"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "ano"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "ne"
+
+#: ../src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "Zprávy"
+
+#: ../src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "typ zprávy"
+
+#: ../src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "časové razítko zprávy"
+
+#: ../src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "pořadové číslo zprávy"
+
+#: ../src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "objekt"
+
+#: ../src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "Zpráva typu:"
+
+#: ../src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "Typ: "
+
+#: ../src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "Typ"
+
+#: ../src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "Záznamy ladění"
+
+#: ../src/gst-debugger/modules/log_module.cpp:23
+#: ../src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "Úroveň"
+
+#: ../src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "Název kategorie"
+
+#: ../src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "Soubor"
+
+#: ../src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "Funkce"
+
+#: ../src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "Řádek"
+
+#: ../src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "Zpráva"
+
+#: ../src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "Kategorie ladění: "
+
+#: ../src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "Úroveň záznamu: "
+
+#: ../src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "Práh záznamů:"
+
+#: ../src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "Přebít aktuální práh"
+
+#: ../src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "Nastavit práh"
+
+#: ../src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "Kategorie"
+
+#: ../src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "Klient není připojen k serveru!"
+
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+msgid "Can't get into the element. Element is not selected."
+msgstr "Nelze se dostat do prvku. Prvek není vybrán."
+
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+msgid "Can't get into the element. Selected element is a pad."
+msgstr "Nelze se dostat do prvku. Vybraný prvek je přípojka."
+
+#: ../src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: ../src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr " (zmáčkněte tlačítko „aktualizovat“)"
+
+#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
+msgid "unsupported type: "
+msgstr "nepodporovaný typ: "
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:1
+msgid "GStreamer Debugger"
+msgstr "Ladicí program pro GStreamer"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:2
+msgid "_File"
+msgstr "_Soubor"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:3
+msgid "Quit"
+msgstr "Ukončit"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:4
+msgid "_Edit"
+msgstr "_Upravit"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:5
+msgid "Preferences..."
+msgstr "Předvolby…"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:6
+msgid "_Server"
+msgstr "_Server"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:8
+msgid "Remote Enum Types..."
+msgstr "Vzdálené výčtové typy…"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:9
+msgid "Remote Factories..."
+msgstr "Vzdálené generátory…"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:10
+msgid "Remote Klasses..."
+msgstr "Vzdálené třídy…"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
+msgid "Addins"
+msgstr "Doplňky"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
+msgid "Reload"
+msgstr "Znovu načíst"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
+msgid "_Help"
+msgstr "Nápo_věda"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
+msgid "About..."
+msgstr "O aplikaci…"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
+msgid "Log messages"
+msgstr "Zprávy ze záznamu"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
+msgid "Bus messages"
+msgstr "Zprávy ze sběrnice"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
+msgid "Clear"
+msgstr "Vymazat"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
+msgid "Selected element:"
+msgstr "Vybraný prvek:"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
+msgid "Current bin: "
+msgstr "Aktuální zásobník: "
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:1
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "Copyright © 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:2
+msgid "Remote GStreamer Debugger"
+msgstr "GStreamer – vzdálené ladění"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:3
+msgid "Close"
+msgstr "Zavřít"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:4
+msgid "Display format: "
+msgstr "Formát zobrazení: "
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:5
+msgid "Columns in row: "
+msgstr "Sloupců v řádku: "
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:6
+msgid "SET"
+msgstr "Nastavit"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:7
+msgid "IP Address:"
+msgstr "Adresa IP:"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:8
+msgid "Port:"
+msgstr "Port:"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:9
+msgid "Remote Data"
+msgstr "Vzdálená data"
