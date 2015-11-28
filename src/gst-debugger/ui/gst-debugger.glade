@@ -101,7 +101,7 @@
                       <object class="GtkMenuItem" id="remoteKlassesMenuitem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Remote Klasses...</property>
+                        <property name="label" translatable="yes" comments="&quot;Klass&quot; is used widely in GStreamer framework, probably because &quot;class&quot; is a keyword in C++. For consistency, I use &quot;klass&quot; in this project as well, but in terms of translations, you it can be translated like &quot;Class&quot;.">Remote Klasses...</property>
                         <property name="use_underline">True</property>
                       </object>
                     </child>
