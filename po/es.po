@@ -1,15 +1,15 @@
 # Spanish translation for gst-debugger.
 # Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2015.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-12-02 23:20+0000\n"
-"PO-Revision-Date: 2015-12-04 09:53+0100\n"
+"POT-Creation-Date: 2015-12-04 13:31+0000\n"
+"PO-Revision-Date: 2016-01-07 15:42+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -115,7 +115,7 @@ msgstr "Descripción"
 
 #: ../src/gst-debugger/dialogs/enums_dialog.cpp:25
 msgid "Remote Enum Types"
-msgstr ""
+msgstr "Tipos enumerados remotos"
 
 #: ../src/gst-debugger/modules/gst_properties_module.cpp:207
 msgid "Property Name"
@@ -123,7 +123,7 @@ msgstr "Nombre de la propiedad"
 
 #: ../src/gst-debugger/modules/gst_properties_module.cpp:208
 msgid "Property Value"
-msgstr ""
+msgstr "Valor de la propiedad"
 
 #: ../src/gst-debugger/modules/gst_properties_module.cpp:230
 msgid "Peer pad"
@@ -167,11 +167,11 @@ msgstr "tipo de evento"
 
 #: ../src/gst-debugger/modules/event_module.cpp:27
 msgid "event timestamp"
-msgstr ""
+msgstr "marca de tiempo del evento"
 
 #: ../src/gst-debugger/modules/event_module.cpp:29
 msgid "event sequence number"
-msgstr ""
+msgstr "secuencia numérica del evento"
 
 #: ../src/gst-debugger/modules/event_module.cpp:30
 #: ../src/gst-debugger/modules/query_module.cpp:24
@@ -198,15 +198,15 @@ msgstr "Consulta de tipo: "
 #: ../src/gst-debugger/modules/buffer_module.cpp:19
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:19
 msgid "Buffers"
-msgstr ""
+msgstr "Búferes"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:28
 msgid "Pts"
-msgstr ""
+msgstr "Pts"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:29
 msgid "Dts"
-msgstr ""
+msgstr "Dts"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:30
 msgid "Duration"
@@ -236,15 +236,15 @@ msgstr "Datos"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:62
 msgid "Buffer of size "
-msgstr ""
+msgstr "Búfer del tamaño "
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:69
 msgid "Send data"
-msgstr ""
+msgstr "Enviar datos"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:79
 msgid "none (any path)"
-msgstr ""
+msgstr "ninguno (cualquier ruta)"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:110
 msgid "yes"
@@ -264,11 +264,11 @@ msgstr "tipo de mensaje"
 
 #: ../src/gst-debugger/modules/message_module.cpp:27
 msgid "message timestamp"
-msgstr ""
+msgstr "marca de tiempo del mensaje"
 
 #: ../src/gst-debugger/modules/message_module.cpp:29
 msgid "message sequence number"
-msgstr ""
+msgstr "secuencia numérica del mensaje"
 
 #: ../src/gst-debugger/modules/message_module.cpp:30
 msgid "object"
@@ -288,7 +288,7 @@ msgstr "Tipo"
 
 #: ../src/gst-debugger/modules/log_module.cpp:15
 msgid "Debug logs"
-msgstr ""
+msgstr "Registros de depuración"
 
 #: ../src/gst-debugger/modules/log_module.cpp:23
 #: ../src/gst-debugger/modules/log_module.cpp:63
@@ -317,23 +317,23 @@ msgstr "Mensaje"
 
 #: ../src/gst-debugger/modules/log_module.cpp:43
 msgid "Debug category: "
-msgstr ""
+msgstr "Categoría de depuración: "
 
 #: ../src/gst-debugger/modules/log_module.cpp:46
 msgid "Log level: "
-msgstr ""
+msgstr "Nivel de registro:"
 
 #: ../src/gst-debugger/modules/log_module.cpp:48
 msgid "Log threshold:"
-msgstr ""
+msgstr "Umbral del registro:"
 
 #: ../src/gst-debugger/modules/log_module.cpp:53
 msgid "Overwrite current threshold"
-msgstr ""
+msgstr "Sobrescribir el umbral actual"
 
 #: ../src/gst-debugger/modules/log_module.cpp:56
 msgid "Set threshold"
-msgstr ""
+msgstr "Establecer umbral"
 
 #: ../src/gst-debugger/modules/log_module.cpp:64
 msgid "Category"
@@ -354,7 +354,7 @@ msgstr ""
 #: ../src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
 #: ../src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
 msgid " (press 'refresh' button)"
-msgstr ""
+msgstr " (pulse el botón «actualizar»)"
 
 #: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
 msgid "unsupported type: "
@@ -386,7 +386,7 @@ msgstr "_Servidor"
 
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:8
 msgid "Remote Enum Types..."
-msgstr ""
+msgstr "Tipos enumerados remotos…"
 
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:9
 msgid "Remote Factories..."
@@ -395,7 +395,7 @@ msgstr ""
 #. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:11
 msgid "Remote Klasses..."
-msgstr ""
+msgstr "Clases remotas…"
 
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:12
 msgid "Addins"
@@ -451,7 +451,7 @@ msgstr ""
 
 #: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:5
 msgid "Columns in row: "
-msgstr ""
+msgstr "Columnas en la fila: "
 
 #: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:6
 msgid "SET"
