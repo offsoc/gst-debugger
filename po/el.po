@@ -1,0 +1,470 @@
+# Greek translation for gst-debugger.
+# Copyright (C) 2016 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+#
+# Γιάννης Κουτσούκος <giankoyt@gmail.com>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"debugger&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-03-02 11:27+0000\n"
+"PO-Revision-Date: 2016-03-02 22:18+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
+"Language-Team: Greek <team@gnome.gr>\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.7\n"
+
+#: ../src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "Συνδεδεμένο"
+
+#: ../src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "Αποσύνδεση"
+
+#: ../src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "Aποσυνδεδεμένο"
+
+#: ../src/gst-debugger/main_window.cpp:135
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:7
+msgid "Connect"
+msgstr "Σύνδεση"
+
+#: ../src/gst-debugger/ui_utils.cpp:24 ../src/gst-debugger/ui_utils.cpp:36
+#: ../src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "ΑΓΝΩΣΤΟ"
+
+#: ../src/gst-debugger/ui_utils.cpp:56 ../src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "Πρότυπο"
+
+#: ../src/gst-debugger/ui_utils.cpp:64
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "Διαθεσιμότητα"
+
+#: ../src/gst-debugger/ui_utils.cpp:65
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "Κατεύθυνση"
+
+#: ../src/gst-debugger/ui_utils.cpp:145
+msgid "more..."
+msgstr "περισσότερα..."
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "Ιδιότητα"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: ../src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "Τιμή"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "κανένα"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "Ιδιότητες"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "Ψευδώνυμο"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr ""
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "Σημαίες"
+
+#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "Προεπιλεγμένη τιμή"
+
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr ""
+
+#: ../src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr ""
+
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: ../src/gst-debugger/modules/base_main_module.cpp:56
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "Όνομα"
+
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: ../src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr ""
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "Όνομα ιδιότητας"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "Τιμή ιδιότητας"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr ""
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:234
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr ""
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:239
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "άγνωστο"
+
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:244
+#: ../src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr ""
+
+#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "Πληροφορίες"
+
+#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "PING OK!"
+
+#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't response"
+msgstr "O διακομιστής δεν αποκρίνεται"
+
+#: ../src/gst-debugger/modules/event_module.cpp:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
+msgid "Events"
+msgstr "Συμβάντα"
+
+#: ../src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "τύπος συμβάντος"
+
+#: ../src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "χρονική σήμανση συμβάντος"
+
+#: ../src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "αύξων αριθμός συμβάντος"
+
+#: ../src/gst-debugger/modules/event_module.cpp:30
+#: ../src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr ""
+
+#: ../src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "Τύπος συμβάντος: "
+
+#: ../src/gst-debugger/modules/query_module.cpp:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
+msgid "Queries"
+msgstr "Ερωτήματα"
+
+#: ../src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "τύπος ερωτήματος"
+
+#: ../src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "Τύπος ερωτήματος: "
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:19
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
+msgid "Buffers"
+msgstr "Eνδιάμεσες μνήμες"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "Pts"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "Dts"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "Διάρκεια"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "Μετατόπιση"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "Τέλος μετατόπισης"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "Μέγεθος δεδομένων"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:34
+#: ../src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "Διαδρομή αντικειμένου"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:39
+#: ../src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "Δεδομένα"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "Μέγεθος ενδιάμεσης μνήμης "
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "Αποστολή δεδομένων"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "κανένα (οποιαδήποτε διαδρομή)"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "ναι"
+
+#: ../src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "όχι"
+
+#: ../src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "Μηνύματα"
+
+#: ../src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "τύπος μηνύματος"
+
+#: ../src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "χρονική σήμανση μηνύματος"
+
+#: ../src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "αύξων αριθμός μηνύματος"
+
+#: ../src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "αντικείμενο"
+
+#: ../src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "Τύπος μηνύματος: "
+
+#: ../src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "Τύπος: "
+
+#: ../src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "Τύπος"
+
+#: ../src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "Aρχείo καταγραφής αποσφαλμάτωσης"
+
+#: ../src/gst-debugger/modules/log_module.cpp:23
+#: ../src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "Επίπεδο"
+
+#: ../src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "Όνομα κατηγορίας"
+
+#: ../src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "Αρχείο"
+
+#: ../src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "Συνάρτηση"
+
+#: ../src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "Γραμμή"
+
+#: ../src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "Μήνυμα"
+
+#: ../src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "Κατηγορία αποσφαλμάτωσης: "
+
+#: ../src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "Επίδεδο καταγραφής: "
+
+#: ../src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "Όριο καταγραφής:"
+
+#: ../src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "Αντικατάσταση του ορίου"
+
+#: ../src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "Ορισμός ορίου"
+
+#: ../src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "Κατηγορία"
+
+#: ../src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "O πελάτης δεν είναι συνδεδεμένος με τον διακομιστή!"
+
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+msgid "Can't get into the element. Element is not selected."
+msgstr "Δεν μπορεί να μπει στο στοιχείο. Το στοιχείο δεν είναι επιλεγμένο."
+
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+msgid "Can't get into the element. Selected element is a pad."
+msgstr ""
+
+#: ../src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: ../src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr "(Πατήστε το κουμπί «ανανέωση»)"
+
+#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
+msgid "unsupported type: "
+msgstr "μη υποστηριζόμενος τύπος: "
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:1
+msgid "GStreamer Debugger"
+msgstr "Αποσφαλματωτής του GStreamer"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:2
+msgid "_File"
+msgstr "_Aρχείο"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:3
+msgid "Quit"
+msgstr "Έξοδος"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:4
+msgid "_Edit"
+msgstr "_Eπεξεργασία"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:5
+msgid "Preferences..."
+msgstr "Προτιμήσεις..."
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:6
+msgid "_Server"
+msgstr "_Διακομιστής"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:8
+msgid "Remote Enum Types..."
+msgstr ""
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:9
+msgid "Remote Factories..."
+msgstr ""
+
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
+msgid "Remote Klasses..."
+msgstr "Απομακρυσμένες κλάσεις..."
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
+msgid "Addins"
+msgstr ""
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
+msgid "Reload"
+msgstr "Ανανέωση"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
+msgid "_Help"
+msgstr "_Bοήθεια "
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
+msgid "About..."
+msgstr "Περί..."
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
+msgid "Log messages"
+msgstr "Kαταγραφή μηνυμάτων"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
+msgid "Bus messages"
+msgstr "Μηνύματα διαύλου"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
+msgid "Clear"
+msgstr "Εκκαθάριση"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
+msgid "Selected element:"
+msgstr "Επιλεγμένο στοιχείο:"
+
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:23
+msgid "Current bin: "
+msgstr ""
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:1
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "Πνευματικά δικαιώματα (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:2
+msgid "Remote GStreamer Debugger"
+msgstr "Απομακρυσμένος αποσφαλματωτής GStreamer"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:3
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:4
+msgid "Display format: "
+msgstr "Εμφάνιση μορφοποίησης: "
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:5
+msgid "Columns in row: "
+msgstr "Στήλες σε σειρά: "
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:6
+msgid "SET"
+msgstr "SET"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:7
+msgid "IP Address:"
+msgstr "Διεύθυνση IP:"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:8
+msgid "Port:"
+msgstr "Θύρα:"
+
+#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:9
+msgid "Remote Data"
+msgstr "Απομακρυσμένα δεδομένα"
