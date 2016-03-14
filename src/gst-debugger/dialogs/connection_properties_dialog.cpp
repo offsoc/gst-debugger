@@ -44,7 +44,7 @@ void ConnectionPropertiesDialog::pingButton_click_cb()
 	catch(const Gio::Error&)
 	{
 		Gtk::MessageDialog dialog("Info", false, Gtk::MESSAGE_ERROR);
-		dialog.set_secondary_text(_("Server doesn't response"));
+		dialog.set_secondary_text(_("Server doesn't respond"));
 		dialog.run();
 	}
 }
