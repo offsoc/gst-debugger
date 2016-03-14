@@ -4,14 +4,14 @@
 # pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
 # gnomepl@aviary.pl
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Piotr Drąg <piotrdrag@gmail.com>, 2015.
-# Aviary.pl <gnomepl@aviary.pl>, 2015.
+# Piotr Drąg <piotrdrag@gmail.com>, 2015-2016.
+# Aviary.pl <gnomepl@aviary.pl>, 2015-2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-23 20:59+0200\n"
-"PO-Revision-Date: 2015-10-23 21:00+0200\n"
+"POT-Creation-Date: 2016-03-15 00:02+0100\n"
+"PO-Revision-Date: 2016-03-15 00:03+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -157,11 +157,11 @@ msgid "PING OK!"
 msgstr "PING JEST OK!"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
-msgid "Server doesn't response"
-msgstr "Serwer nie odpowiedział"
+msgid "Server doesn't respond"
+msgstr "Serwer nie odpowiada"
 
 #: ../src/gst-debugger/modules/event_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
 msgid "Events"
 msgstr "Zdarzenia"
 
@@ -187,7 +187,7 @@ msgid "Event of type: "
 msgstr "Wydarzenie typu: "
 
 #: ../src/gst-debugger/modules/query_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
 msgid "Queries"
 msgstr "Zapytania"
 
@@ -200,7 +200,7 @@ msgid "Query of type: "
 msgstr "Zapytanie typu: "
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:19
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
 msgid "Buffers"
 msgstr "Bufory"
 
@@ -396,43 +396,44 @@ msgstr "Zdalne typy wyliczeniowe…"
 msgid "Remote Factories..."
 msgstr "Zdalne fabryki…"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:10
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
 msgid "Remote Klasses..."
 msgstr "Zdalne klasy…"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
 msgid "Addins"
 msgstr "Dodatki"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
 msgid "Reload"
 msgstr "Wczytaj ponownie"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
 msgid "_Help"
 msgstr "Pomo_c"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
 msgid "About..."
 msgstr "O programie…"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
 msgid "Log messages"
 msgstr "Komunikaty dziennika"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
 msgid "Bus messages"
 msgstr "Komunikaty magistrali"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
 msgid "Clear"
 msgstr "Wyczyść"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
 msgid "Selected element:"
 msgstr "Zaznaczony element:"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:23
 msgid "Current bin: "
 msgstr "Bieżący kontener: "
 
