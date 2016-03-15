@@ -1,15 +1,15 @@
 # Czech translation for gst-debugger.
 # Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
-# Marek Černocký <marek@manet.cz>, 2015.
+# Marek Černocký <marek@manet.cz>, 2015, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-10-18 09:47+0000\n"
-"PO-Revision-Date: 2015-10-24 19:02+0200\n"
+"POT-Creation-Date: 2016-03-14 20:59+0000\n"
+"PO-Revision-Date: 2016-03-15 11:12+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -153,11 +153,11 @@ msgid "PING OK!"
 msgstr "Pinknutí se zdařilo!"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
-msgid "Server doesn't response"
+msgid "Server doesn't respond"
 msgstr "Server neodpovídá"
 
 #: ../src/gst-debugger/modules/event_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
 msgid "Events"
 msgstr "Události"
 
@@ -183,7 +183,7 @@ msgid "Event of type: "
 msgstr "Událost typu:"
 
 #: ../src/gst-debugger/modules/query_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
 msgid "Queries"
 msgstr "Fronty"
 
@@ -196,7 +196,7 @@ msgid "Query of type: "
 msgstr "Fronta typu:"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:19
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
 msgid "Buffers"
 msgstr "Vyrovnávací paměti"
 
@@ -392,43 +392,44 @@ msgstr "Vzdálené výčtové typy…"
 msgid "Remote Factories..."
 msgstr "Vzdálené generátory…"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:10
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
 msgid "Remote Klasses..."
 msgstr "Vzdálené třídy…"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
 msgid "Addins"
 msgstr "Doplňky"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
 msgid "Reload"
 msgstr "Znovu načíst"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
 msgid "_Help"
 msgstr "Nápo_věda"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
 msgid "About..."
 msgstr "O aplikaci…"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
 msgid "Log messages"
 msgstr "Zprávy ze záznamu"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
 msgid "Bus messages"
 msgstr "Zprávy ze sběrnice"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
 msgid "Clear"
 msgstr "Vymazat"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
 msgid "Selected element:"
 msgstr "Vybraný prvek:"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:23
 msgid "Current bin: "
 msgstr "Aktuální zásobník: "
 
