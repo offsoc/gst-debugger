@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-11-28 20:06+0000\n"
-"PO-Revision-Date: 2016-03-07 06:05-0300\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>\n"
+"POT-Creation-Date: 2016-03-14 20:59+0000\n"
+"PO-Revision-Date: 2016-03-18 03:46-0300\n"
+"Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -153,7 +153,7 @@ msgid "PING OK!"
 msgstr "PING OK!"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
-msgid "Server doesn't response"
+msgid "Server doesn't respond"
 msgstr "Servidor não responde"
 
 #: ../src/gst-debugger/modules/event_module.cpp:15
