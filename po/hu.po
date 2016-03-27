@@ -1,14 +1,14 @@
 # Hungarian translation for gst-debugger.
 # Copyright (C) 2016. Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-debugger package.
-# Balázs Meskó <meskobalazs at gmail dot com>, 2016.
 #
+# Balázs Meskó <meskobalazs at gmail dot com>, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-26 23:42+0000\n"
+"POT-Creation-Date: 2016-03-27 20:17+0000\n"
 "PO-Revision-Date: 2016-03-27 12:05+0200\n"
 "Last-Translator: Balázs Meskó <meskobalazs at gmail dot com\n"
 "Language-Team: Hungarian <gnome-hu-list@gnome.org>\n"
@@ -57,7 +57,7 @@ msgstr "Irány"
 
 #: ../src/gst-debugger/ui_utils.cpp:145
 msgid "more..."
-msgstr "bővebben"
+msgstr "bővebben…"
 
 #: ../src/gst-debugger/dialogs/klasses_dialog.cpp:22
 #: ../src/gst-debugger/dialogs/factories_dialog.cpp:20
@@ -146,7 +146,7 @@ msgstr "Engedélyezett képességek"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
 msgid "Info"
-msgstr "Infó"
+msgstr "Információ"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
 msgid "PING OK!"
@@ -354,7 +354,7 @@ msgstr "Nem lehet belépni az elembe. A kiválasztott elem egy foglalat."
 #: ../src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
 #: ../src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
 msgid " (press 'refresh' button)"
-msgstr " (nyomja meg a „frissítés” gombot"
+msgstr " (nyomja meg a „frissítés” gombot)"
 
 #: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
 msgid "unsupported type: "
@@ -386,7 +386,7 @@ msgstr "_Kiszolgáló"
 
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:8
 msgid "Remote Enum Types..."
-msgstr "Távoli felsorolás típusok…"
+msgstr "Távoli felsorolástípusok…"
 
 #: ../src/gst-debugger/ui/gst-debugger.glade.h:9
 msgid "Remote Factories..."
