@@ -18,7 +18,7 @@
 class GstPropertiesModule : public IBaseView
 {
 private:
-	Gtk::Button *show_propetries_button;
+	Gtk::Button *show_properties_button;
 	Gtk::Box *properties_box;
 
 	void showPropertiesButton_clicked_cb();

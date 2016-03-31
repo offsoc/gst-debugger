@@ -19,8 +19,8 @@ static void free_properties(GstDebugger::PropertyInfo *property) { delete proper
 
 GstPropertiesModule::GstPropertiesModule(const Glib::RefPtr<Gtk::Builder>& builder)
 {
-	builder->get_widget("showPropertiesButton", show_propetries_button);
-	show_propetries_button->signal_clicked().connect(sigc::mem_fun(*this, &GstPropertiesModule::showPropertiesButton_clicked_cb));
+	builder->get_widget("showPropertiesButton", show_properties_button);
+	show_properties_button->signal_clicked().connect(sigc::mem_fun(*this, &GstPropertiesModule::showPropertiesButton_clicked_cb));
 
 	builder->get_widget("propertiesBox", properties_box);
 
