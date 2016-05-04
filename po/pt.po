@@ -2,14 +2,16 @@
 # Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
+# Tiago Santos <tiagofsantos81@sapo.pt>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-10-30 23:19+0000\n"
-"PO-Revision-Date: 2015-10-31 06:52+0000\n"
-"Last-Translator: <>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"debugger&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-03-14 20:59+0000\n"
+"PO-Revision-Date: 2016-05-04 20:15+0100\n"
+"Last-Translator: Tiago Santos <tiagofsantos81@sapo.pt>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../src/gst-debugger/main_window.cpp:129
 msgid "Connected"
@@ -154,11 +157,12 @@ msgid "PING OK!"
 msgstr "PING correto!"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
-msgid "Server doesn't response"
+#| msgid "Server doesn't response"
+msgid "Server doesn't respond"
 msgstr "O servidor não responde"
 
 #: ../src/gst-debugger/modules/event_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
 msgid "Events"
 msgstr "Eventos"
 
@@ -184,7 +188,7 @@ msgid "Event of type: "
 msgstr "Evento de tipo: "
 
 #: ../src/gst-debugger/modules/query_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
 msgid "Queries"
 msgstr "Consultas"
 
@@ -197,7 +201,7 @@ msgid "Query of type: "
 msgstr "Consulta de tipo: "
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:19
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
 msgid "Buffers"
 msgstr "Buffers"
 
@@ -393,43 +397,44 @@ msgstr "Tipos Enum remotos..."
 msgid "Remote Factories..."
 msgstr "Fábricas remotas..."
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:10
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
 msgid "Remote Klasses..."
 msgstr "Klasses remotas..."
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
 msgid "Addins"
 msgstr "Extensões"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
 msgid "Reload"
 msgstr "Recarregar"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
 msgid "_Help"
 msgstr "A_Juda"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
 msgid "About..."
 msgstr "Sobre..."
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
 msgid "Log messages"
 msgstr "Mensagens de diário"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
 msgid "Bus messages"
 msgstr "Mensagens de bus"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
 msgid "Clear"
 msgstr "Limpar"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
 msgid "Selected element:"
 msgstr "Elemento selecionado:"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
+#: ../src/gst-debugger/ui/gst-debugger.glade.h:23
 msgid "Current bin: "
 msgstr "Binário atual: "
 
