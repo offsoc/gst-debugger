@@ -156,7 +156,7 @@ do_push_event_pre (GstTracer * self, guint64 ts, GstPad * pad, GstEvent * event)
 }
 
 static void
-do_pad_query_post (GstTracer * self, guint64 ts, GstPad * pad, gboolean result, GstQuery * query)
+do_pad_query_post (GstTracer * self, guint64 ts, GstPad * pad, GstQuery * query, gboolean result)
 {
   GstDebugserverTracer *tracer = GST_DEBUGSERVER_TRACER (self);
 
