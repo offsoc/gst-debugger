@@ -8,7 +8,7 @@
 #ifndef SRC_GST_DEBUGGER_ADDINS_ADDINS_NOTIFIER_H_
 #define SRC_GST_DEBUGGER_ADDINS_ADDINS_NOTIFIER_H_
 
-#include <common/gstdebugger.pb.h>
+#include "gstdebugger.pb.h"
 
 #include <gstreamermm.h>
 

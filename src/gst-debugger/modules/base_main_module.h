@@ -12,7 +12,7 @@
 
 #include "controller/iview.h"
 
-#include "common/gstdebugger.pb.h"
+#include "gstdebugger.pb.h"
 
 #include <gtkmm/liststore.h>
 #include <gtkmm/treeview.h>
