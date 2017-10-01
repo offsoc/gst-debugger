@@ -25,19 +25,42 @@ gstdebugger_common_headers = [
     'serializer.h']
 
 gstdebugger_common_deps = [
-    gio_dep,
     gst_dep,
+    gio_dep,
     libprotobuf_c_dep]
 
-gstdebugger_common_lib = static_library(
-    'gstdebugger-common',
+gstdebugger_common_lib = shared_library(
+    'gstdebugger-common-@0@'.format(apiversion),
     gstdebugger_common_sources,
     generate_c_proto,
     protoc_c_gen_src,
     dependencies : gstdebugger_common_deps,
     install : true)
 
-install_headers(gstdebugger_common_headers, subdir : 'gstreamer-1.0/gst/debugger')
+pkgconf = configuration_data()
+
+pkgconf.set('prefix', get_option('prefix'))
+pkgconf.set('exec_prefix', '${prefix}')
+pkgconf.set('libdir', '${prefix}/@0@'.format(get_option('libdir')))
+pkgconf.set('includedir', '${prefix}/@0@'.format(get_option('includedir')))
+pkgconf.set('GST_API_VERSION', gst_apiversion)
+pkgconf.set('GSTREAMER_VERSION', gstreamer_version)
+pkgconf.set('PROTOBUF_C_VERSION', protobuf_c_version)
+pkgconf.set('GIO_VERSION', glib_version)
+pkgconf.set('API_VERSION', apiversion)
+pkgconf.set('VERSION', meson.project_version())
+
+pkg_install_dir = '@0@/pkgconfig'.format(get_option('libdir'))
+
+configure_file(
+    input : 'libgstdebugger-common.pc.in',
+    output : 'libgstdebugger-common-@0@.pc'.format(apiversion),
+    configuration : pkgconf,
+    install_dir : pkg_install_dir)
+
+install_headers(
+    gstdebugger_common_headers,
+    subdir : 'gstdebugger-@0@/gst/debugger'.format(apiversion))
 
 gstdebugger_common_dep = declare_dependency(
     link_with : gstdebugger_common_lib,

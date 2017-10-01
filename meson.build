@@ -15,16 +15,18 @@ gst_apiversion = '1.0'
 gnome = import('gnome')
 
 # Dependencies
-glib_version = '>=2.41.1'
-gio_dep = dependency('gio-2.0', version : glib_version)
-gmoduledep = dependency('gmodule-2.0', version : glib_version)
-gobjectdep = dependency('gobject-2.0', version : glib_version)
-gst_dep = dependency('gstreamer-1.0', version : '>=1.8.0')
+glib_version = '2.41.1'
+protobuf_c_version = '1.1.1'
+gstreamer_version = '1.8.0'
+glib_dep_version = '>=@0@'.format(glib_version)
+gmoduledep = dependency('gmodule-2.0', version : glib_dep_version)
+gio_dep = dependency('gio-2.0', version : glib_dep_version)
+gst_dep = dependency('gstreamer-1.0', version : '>=@0@'.format(gstreamer_version))
 gstmm_dep = dependency('gstreamermm-1.0')
 gtkmm_dep = dependency('gtkmm-3.0', version : '>=3.14.0')
 x11_dep = dependency('x11')
 gvc_dep = dependency('libgvc', version : '>=2.38')
-libprotobuf_c_dep = dependency('libprotobuf-c', version : '>=1.1.1')
+libprotobuf_c_dep = dependency('libprotobuf-c', version : '>=@0@'.format(protobuf_c_version))
 protobuf_dep = dependency('protobuf', version : '>=2.6.1')
 boost_dep = dependency('boost', modules : ['filesystem', 'system'], version : '>=1.55')
 thread_dep = dependency('threads')

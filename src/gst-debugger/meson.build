@@ -93,7 +93,7 @@ gst_debugger_sources = [
     'addins/addins-interface.h',
     'addins/addins-notifier.h']
 
-exe_name = '@0@-@1@'.format('gst-debugger', apiversion)
+exe_name = '@0@-@1@'.format('gst-debugger', gst_apiversion)
 executable(
     exe_name,
     gst_debugger_sources,
