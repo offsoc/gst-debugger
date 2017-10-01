@@ -17,6 +17,13 @@ gstdebugger_common_sources = [
     'protocol-utils.c',
     'serializer.c']
 
+gstdebugger_common_headers = [
+    'common.h',
+    'gstdebugger.pb-c.h',
+    'gst-utils.h',
+    'protocol-utils.h',
+    'serializer.h']
+
 gstdebugger_common_deps = [
     gio_dep,
     gst_dep,
@@ -29,6 +36,8 @@ gstdebugger_common_lib = static_library(
     protoc_c_gen_src,
     dependencies : gstdebugger_common_deps,
     install : true)
+
+install_headers(gstdebugger_common_headers, subdir : 'gstreamer-1.0/gst/debugger')
 
 gstdebugger_common_dep = declare_dependency(
     link_with : gstdebugger_common_lib,

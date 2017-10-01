@@ -93,12 +93,13 @@ gst_debugger_sources = [
     'addins/addins-interface.h',
     'addins/addins-notifier.h']
 
-
+exe_name = '@0@-@1@'.format('gst-debugger', apiversion)
 executable(
-    'gst-debugger',
+    exe_name,
     gst_debugger_sources,
     protoc_gen_src,
     include_directories : config_inc_dir,
+    install : true,
     dependencies : [
         gtkmm_dep,
         gstmm_dep,

@@ -8,6 +8,9 @@ project('gst-debugger', 'c', 'cpp',
   ],
 )
 
+apiversion = '0.90'
+gst_apiversion = '1.0'
+
 # Modules
 gnome = import('gnome')
 

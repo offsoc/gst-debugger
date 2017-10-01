@@ -13,4 +13,5 @@ gstdebugger = shared_library(
     'gstdebugserver',
     gstdebugger_sources,
     dependencies : gstdebugger_common_dep,
-    install : true)
+    install : true,
+    install_dir : '@0@/gstreamer-@1@'.format(get_option('libdir'), gst_apiversion))
