@@ -107,6 +107,9 @@ void Controller::process_frame(const GstDebugger::GStreamerData &data)
 	case GstDebugger::GStreamerData::kLogInfo:
 		on_log_received(data.log_info());
 		break;
+    case GstDebugger::GStreamerData::INFO_TYPE_NOT_SET:
+        // TODO: error
+        break;
 	}
 }
 

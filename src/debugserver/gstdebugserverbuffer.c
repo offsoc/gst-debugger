@@ -117,7 +117,7 @@ void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
   gchar *pad_path = gst_utils_get_object_path (GST_OBJECT_CAST (pad));
   GSList *list = NULL;
   BufferHook hook = { FALSE, pad, pad_path };
-  gchar *buff_data = NULL;
+  guchar *buff_data = NULL;
 
   buffer_info.dts = GST_BUFFER_DTS (gst_buffer);
   buffer_info.pts = GST_BUFFER_PTS (gst_buffer);
@@ -127,7 +127,7 @@ void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
   buffer_info.pad = pad_path;
   buffer_info.size = gst_buffer_get_size (gst_buffer);
 
-  buff_data = (gchar*) g_malloc (sizeof (gchar) * buffer_info.size);
+  buff_data = (guchar*) g_malloc (sizeof (guchar) * buffer_info.size);
   gst_buffer_extract (gst_buffer, 0, buff_data, buffer_info.size);
 
   buffer_info.data.data = buff_data;

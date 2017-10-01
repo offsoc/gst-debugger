@@ -91,7 +91,7 @@ void gst_debugserver_message_send_message (GstDebugserverMessage * msg, GstDebug
   msg_info.seqnum = gst_msg->seqnum;
   msg_info.timestamp = gst_msg->timestamp;
   msg_info.type = gst_msg->type;
-  msg_info.structure_data.data = structure_data;
+  msg_info.structure_data.data = (guchar*) structure_data;
   msg_info.structure_data.len = structure_data == NULL ? 0 : strlen (structure_data);
 
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_MESSAGE_INFO;

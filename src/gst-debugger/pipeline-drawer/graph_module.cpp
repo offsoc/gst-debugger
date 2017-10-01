@@ -81,7 +81,6 @@ bool GraphModule::graphDrawingArea_button_press_event_cb(GdkEventButton  *event)
 	pointf pointer;
 	Agraphinfo_t *g_info;
 	Agnodeinfo_t *n_info;
-	Agedgeinfo_t *e_info;
 
 	job = (GVJ_t *)g_object_get_data(G_OBJECT(graph_drawing_area->gobj()),"job");
 	pointer.x = event->x;

@@ -145,8 +145,8 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
       event_info.structure_data.data = NULL;
       event_info.structure_data.len = 0;
     } else {
-      event_info.structure_data.data = gst_structure_to_string (structure);
-      event_info.structure_data.len = strlen (event_info.structure_data.data);
+      event_info.structure_data.data = (guchar*) gst_structure_to_string (structure);
+      event_info.structure_data.len = strlen ((gchar*) event_info.structure_data.data);
     }
     event_info.pad = pad_path;
     gst_data.event_info = &event_info;
@@ -160,8 +160,8 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
       query_info.structure_data.data = NULL;
       query_info.structure_data.len = 0;
     } else {
-      query_info.structure_data.data = gst_structure_to_string (structure);
-      query_info.structure_data.len = strlen (query_info.structure_data.data);
+      query_info.structure_data.data = (guchar*) gst_structure_to_string (structure);
+      query_info.structure_data.len = strlen ((gchar*) query_info.structure_data.data);
     }
     gst_data.query_info = &query_info;
     gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_QUERY_INFO;

@@ -213,10 +213,9 @@ gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
   GstDebugger__GStreamerData * gst_data)
 {
   GError *err = NULL;
-  gchar size_buffer[4];
   GOutputStream *ostream;
-  gchar buff[1024];
-  gchar *m_buff = buff;
+  guchar buff[1024];
+  guchar *m_buff = buff;
   gint size;
 
   if (client == NULL) {
@@ -243,7 +242,7 @@ gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
   }
 
   if (size > 1024) {
-    m_buff = (char*) g_malloc (size * sizeof (char));
+    m_buff = (guchar*) g_malloc (size * sizeof (guchar));
   }
 
   gst_debugger__gstreamer_data__pack (gst_data, m_buff);

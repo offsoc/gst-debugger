@@ -26,6 +26,8 @@
  * A tracing module that communicates with user via tcp/ip.
  */
 
+#define GST_USE_UNSTABLE_API
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -223,7 +225,7 @@ gst_debugserver_tracer_send_property (GstDebugserverTcp * tcp_server, TcpClient 
 
   serialized_data = g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
 
-  value.data.data = serialized_data;
+  value.data.data = (guchar*) serialized_data;
   value.data.len = serialized_data == NULL ? 0 : strlen (serialized_data);
   value.gtype = out_gtype;
   value.type_name = (gchar*) g_type_name (spec->value_type);
@@ -393,7 +395,7 @@ static void gst_debugserver_process_property_request (GstDebugserverTracer * sel
   GstDebugger__PropertyRequest * request)
 {
   GstElement * element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (self->pipeline), request->object);
-  gint n_properties, i;
+  guint n_properties, i;
   GParamSpec **spec;
 
   if (element == NULL) {
@@ -448,7 +450,7 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
     GValue val = G_VALUE_INIT;
     GstElement *element = gst_utils_get_element_from_path (GST_ELEMENT_CAST (self->pipeline), command->property_set->object);
     g_value_deserialize (&val, command->property_set->value->gtype, command->property_set->value->internal_type,
-      command->property_set->value->data.data, command->property_set->value->data.len);
+      (gchar*) command->property_set->value->data.data, command->property_set->value->data.len);
     g_object_set_property (G_OBJECT (element), command->property_set->name, &val);
     g_value_unset (&val);
     break;
@@ -476,6 +478,9 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
     g_free (allowed_caps_str);
     g_free (current_caps_str);
   }
+  case GST_DEBUGGER__COMMAND__COMMAND_TYPE__NOT_SET:
+      // TODO: error
+      break;
   }
 }
 

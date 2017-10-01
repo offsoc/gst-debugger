@@ -43,8 +43,6 @@ send_object (GstObject *object, GstDebugger__Action action, GstDebugserverTcp * 
 {
   GstDebugger__GStreamerData info = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__TopologyInfo topology = GST_DEBUGGER__TOPOLOGY_INFO__INIT;
-  gint size;
-  gchar buffer[1024];
   GstDebugger__TopologyElement element_tp = GST_DEBUGGER__TOPOLOGY_ELEMENT__INIT;
   GstDebugger__TopologyPad pad_tp = GST_DEBUGGER__TOPOLOGY_PAD__INIT;
   GstDebugger__PadTemplate template = GST_DEBUGGER__PAD_TEMPLATE__INIT;
@@ -89,8 +87,6 @@ send_link (GstPad *src_pad, GstPad *sink_pad, GstDebugger__Action action, GstDeb
 {
   GstDebugger__GStreamerData info = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__TopologyInfo topology = GST_DEBUGGER__TOPOLOGY_INFO__INIT;
-  gint size;
-  gchar buffer[1024];
   GstDebugger__TopologyLink link_tp = GST_DEBUGGER__TOPOLOGY_LINK__INIT;
 
   if (!gst_utils_check_pad_has_element_parent (src_pad) || !gst_utils_check_pad_has_element_parent (sink_pad)) {

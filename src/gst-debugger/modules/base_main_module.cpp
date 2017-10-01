@@ -17,9 +17,9 @@ inline void free_data(GstDebugger::GStreamerData* data) { delete data; }
 
 BaseMainModule::BaseMainModule(GstDebugger::GStreamerData::InfoTypeCase info_type, const std::string &module_name)
 : supported_info_type(info_type),
+  module_name(module_name),
   model(Gtk::ListStore::create(columns)),
-  details_model(Gtk::ListStore::create(detail_columns)),
-  module_name(module_name)
+  details_model(Gtk::ListStore::create(detail_columns))
 {
 	create_dispatcher("new-data", sigc::mem_fun(*this, &BaseMainModule::data_received_), (GDestroyNotify)free_data);
 

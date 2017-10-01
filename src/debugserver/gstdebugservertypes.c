@@ -160,8 +160,7 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
   GstDebugger__PropertyInfo **properties_info = NULL;
   GParamSpec **specs;
   GValue gvalue = G_VALUE_INIT;
-  gint n_specs, i;
-  GstElement *element = NULL;
+  guint n_specs, i;
   GType out_gtype;
   InternalGType out_internal_type;
   GstDebugger__Value *value = NULL;
@@ -191,7 +190,7 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
     gst_debugger__value__init (value);
     value->type_name = (gchar*) g_type_name (specs[i]->value_type);
     value->data.data = (uint8_t*) g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
-    value->data.len = value->data.data == NULL ? 0 : strlen (value->data.data);
+    value->data.len = value->data.data == NULL ? 0 : strlen ((gchar*) value->data.data);
     value->gtype = out_gtype;
 
     if (out_gtype == specs[i]->value_type) {
@@ -231,5 +230,7 @@ void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *
   case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__KLASS:
     gst_debugserver_types_send_klass (tcp_server, client, request->name);
     break;
+  default:
+      break;
   }
 }
