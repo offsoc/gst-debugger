@@ -87,6 +87,41 @@ gst_debugserver_log_handler (GstDebugCategory *category, GstDebugLevel level,
 }
 
 static void
+set_params (GstDebugserverTracer *self)
+{
+    gchar *params = NULL, *tmp;
+    GstStructure *params_struct;
+
+    g_object_get (self, "params", &params, NULL);
+
+    if (params == NULL) {
+        self->port = DEFAULT_PORT;
+    } else {
+        tmp = g_strdup_printf ("debugserver,%s", params);
+        params_struct = gst_structure_from_string (tmp, NULL);
+        g_free (tmp);
+
+        if (params_struct) {
+            if (!gst_structure_get_int (params_struct, "port", &self->port)) {
+                self->port = DEFAULT_PORT;
+            }
+            gst_structure_free (params_struct);
+        }
+    }
+    g_free (params);
+}
+
+static void
+gst_debugserver_tracer_constructed (GObject * object)
+{
+    GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (object);
+
+    set_params (self);
+
+    gst_debugserver_tcp_start_server (self->tcp_server, self->port);
+}
+
+static void
 message_broadcaster (GstBus * bus, GstMessage * message, gpointer user_data)
 {
   GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (user_data);
@@ -194,6 +229,7 @@ gst_debugserver_tracer_class_init (GstDebugserverTracerClass * klass)
   gobject_class = G_OBJECT_CLASS (klass);
   gobject_class->set_property = gst_debugserver_tracer_set_property;
   gobject_class->get_property = gst_debugserver_tracer_get_property;
+  gobject_class->constructed = gst_debugserver_tracer_constructed;
   gobject_class->finalize = gst_debugserver_tracer_finalize;
 
   g_object_class_install_property (gobject_class, PROP_PORT,
@@ -262,7 +298,6 @@ gst_debugserver_tracer_init (GstDebugserverTracer * self)
   self->tcp_server->command_handler = gst_debugserver_command_handler;
   self->tcp_server->client_disconnected_handler = gst_debugserver_tracer_client_disconnected;
   self->tcp_server->owner = self;
-  gst_debugserver_tcp_start_server (self->tcp_server, self->port);
 
   self->message = gst_debugserver_message_new ();
 
