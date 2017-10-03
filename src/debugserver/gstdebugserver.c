@@ -60,11 +60,6 @@ enum
   PROP_PORT
 };
 
-static void gst_debugserver_tracer_set_property (GObject * object,
-    guint prop_id, const GValue * value, GParamSpec * pspec);
-static void gst_debugserver_tracer_get_property (GObject * object,
-    guint prop_id, GValue * value, GParamSpec * pspec);
-
 static void gst_debugserver_command_handler (GstDebugger__Command * command,
     gpointer debugtracer, TcpClient * client);
 
@@ -227,14 +222,8 @@ gst_debugserver_tracer_class_init (GstDebugserverTracerClass * klass)
   GObjectClass *gobject_class;
 
   gobject_class = G_OBJECT_CLASS (klass);
-  gobject_class->set_property = gst_debugserver_tracer_set_property;
-  gobject_class->get_property = gst_debugserver_tracer_get_property;
   gobject_class->constructed = gst_debugserver_tracer_constructed;
   gobject_class->finalize = gst_debugserver_tracer_finalize;
-
-  g_object_class_install_property (gobject_class, PROP_PORT,
-      g_param_spec_int ("port", "Port", "Server port",
-          0, 65535, DEFAULT_PORT, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -342,46 +331,6 @@ gst_debugserver_tracer_finalize (GObject * obj)
   gst_debugserver_qe_free (self->event);
   gst_debugserver_qe_free (self->query);
   gst_debugserver_buffer_free (self->buffer);
-}
-
-static void
-gst_debugserver_tracer_set_property (GObject * object, guint prop_id,
-    const GValue * value, GParamSpec * pspec)
-{
-  GstDebugserverTracer *self = GST_DEBUGSERVER_TRACER (object);
-  gint tmp_port;
-
-  switch (prop_id) {
-    case PROP_PORT:
-      tmp_port = g_value_get_int (value);
-      if (tmp_port != self->port) {
-        self->port = g_value_get_int (value);
-        gst_debugserver_tcp_stop_server (self->tcp_server);
-        gst_debugserver_tcp_start_server (self->tcp_server, self->port);
-      }
-      break;
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
-}
-
-static void
-gst_debugserver_tracer_get_property (GObject * object, guint prop_id,
-    GValue * value, GParamSpec * pspec)
-{
-  GstDebugserverTracer *debugserver;
-
-  debugserver = GST_DEBUGSERVER_TRACER (object);
-
-  switch (prop_id) {
-    case PROP_PORT:
-      g_value_set_int (value, debugserver->port);
-      break;
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-      break;
-  }
 }
 
 static gboolean gst_debugserver_process_hook_request (GstDebugserverTracer * self, GstDebugger__HookRequest * request, TcpClient * client)
