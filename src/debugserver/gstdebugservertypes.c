@@ -211,11 +211,13 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
   gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
 
   for (i = 0; i < (gint) n_specs; i++) {
+    g_free (properties_info[i]->default_value->data.data);
     g_free (properties_info[i]->default_value);
     g_free (properties_info[i]);
   }
 
   g_free (properties_info);
+  g_free (specs);
 }
 
 void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *client, const GstDebugger__TypeDescriptionRequest *request)
