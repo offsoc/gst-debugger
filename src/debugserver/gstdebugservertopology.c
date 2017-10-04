@@ -79,7 +79,8 @@ send_object (GstObject *object, GstDebugger__Action action, GstDebugserverTcp * 
 
   gst_debugserver_tcp_send_packet (server, client, &info);
   g_free (template.caps);
-
+  g_free (pad_tp.path);
+  g_free (element_tp.path);
 }
 
 static void
@@ -119,6 +120,9 @@ send_link (GstPad *src_pad, GstPad *sink_pad, GstDebugger__Action action, GstDeb
   info.topology_info = &topology;
 
   gst_debugserver_tcp_send_packet (server, client, &info);
+
+  g_free (link_tp.src_pad);
+  g_free (link_tp.sink_pad);
 }
 
 static void

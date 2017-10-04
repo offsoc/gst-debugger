@@ -444,10 +444,10 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
     GstDebugger__GStreamerData data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
     GstDebugger__PadDynamicInfo pad_info = GST_DEBUGGER__PAD_DYNAMIC_INFO__INIT;
     GstPad *pad = gst_utils_get_pad_from_path (GST_ELEMENT_CAST (self->pipeline), command->pad_dynamic_info);
-    GstCaps *allowed_caps = gst_pad_get_allowed_caps (pad);
     if (pad == NULL) {
       break;
     }
+    GstCaps *allowed_caps = gst_pad_get_allowed_caps (pad);
     GstCaps *current_caps = gst_pad_get_current_caps (pad);
     gchar *allowed_caps_str = gst_caps_to_string (allowed_caps);
     gchar *current_caps_str = gst_caps_to_string (current_caps);
@@ -461,6 +461,13 @@ static void gst_debugserver_command_handler (GstDebugger__Command * command,
 
     g_free (allowed_caps_str);
     g_free (current_caps_str);
+
+    if (current_caps) {
+      gst_caps_unref (current_caps);
+    }
+    if (allowed_caps) {
+      gst_caps_unref (allowed_caps);
+    }
   }
   case GST_DEBUGGER__COMMAND__COMMAND_TYPE__NOT_SET:
       // TODO: error
