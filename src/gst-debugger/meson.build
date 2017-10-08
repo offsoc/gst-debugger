@@ -1,10 +1,3 @@
-proto_src_path = join_paths(meson.current_source_dir(), '..', 'common')
-protoc_gen = generator(find_program('protoc'),
-    output    : ['@BASENAME@.pb.cc', '@BASENAME@.pb.h'],
-    arguments : ['--proto_path=' + proto_src_path, '--cpp_out=@BUILD_DIR@', join_paths(proto_src_path, 'gstdebugger.proto')])
-
-protoc_gen_src = protoc_gen.process(join_paths(proto_src_path, 'gstdebugger.proto'))
-
 gstd_resources = gnome.compile_resources(
     'gst-debugger-resources', 'gst-debugger-resources.xml',
     source_dir : '.',
@@ -14,6 +7,8 @@ gst_debugger_sources = [
     'main.cpp',
     'main_window.cpp',
     'main_window.h',
+    'gstdebugger.pb.cc',
+    'gstdebugger.pb.h',
     'controller/controller.cpp',
     'controller/controller.h',
     'controller/command_factory.cpp',
@@ -97,7 +92,6 @@ exe_name = '@0@-@1@'.format('gst-debugger', gst_apiversion)
 executable(
     exe_name,
     gst_debugger_sources,
-    protoc_gen_src,
     include_directories : config_inc_dir,
     install : true,
     dependencies : [

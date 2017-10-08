@@ -49,10 +49,6 @@ Makefile
 /src/gst-debugger/gst-debugger-resources.h
 
 # /src/common
-/src/common/gstdebugger.pb-c.c
-/src/common/gstdebugger.pb-c.h
-/src/common/gstdebugger.pb.cc
-/src/common/gstdebugger.pb.h
 /src/common/libgst-debugger-common-0.1.pc
 
 # intltool/gettext
