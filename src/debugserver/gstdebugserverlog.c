@@ -79,14 +79,8 @@ GstDebugserverLog * gst_debugserver_log_new (void)
 
 void gst_debugserver_log_free (GstDebugserverLog * log)
 {
-  gst_debugserver_log_clean (log);
   gst_debugserver_hooks_deinit (&log->hooks);
   g_free (log);
-}
-
-void gst_debugserver_log_clean (GstDebugserverLog * log)
-{
-  gst_debugserver_hooks_clean (&log->hooks);
 }
 
 static gboolean gst_debugserver_log_add_hook (GstDebugserverLog * log, gint level,

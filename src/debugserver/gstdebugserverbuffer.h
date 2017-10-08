@@ -41,8 +41,6 @@ gboolean gst_debugserver_buffer_set_hook (GstDebugserverBuffer * buf, gboolean e
 void gst_debugserver_buffer_send_buffer (GstDebugserverBuffer * buffer,
   GstDebugserverTcp * tcp_server, GstPad * pad, GstBuffer * gst_buffer);
 
-void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf);
-
 void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf,
   TcpClient * client);
 

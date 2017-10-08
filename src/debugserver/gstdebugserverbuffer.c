@@ -72,7 +72,6 @@ GstDebugserverBuffer * gst_debugserver_buffer_new (void)
 
 void gst_debugserver_buffer_free (GstDebugserverBuffer * buf)
 {
-  gst_debugserver_buffer_clean (buf);
   gst_debugserver_hooks_deinit (&buf->hooks);
   g_free (buf);
 }
@@ -156,7 +155,3 @@ void gst_debugserver_buffer_remove_client (GstDebugserverBuffer * buf, TcpClient
   gst_debugserver_hooks_remove_client (&buf->hooks, client);
 }
 
-void gst_debugserver_buffer_clean (GstDebugserverBuffer * buf)
-{
-  gst_debugserver_hooks_clean (&buf->hooks);
-}

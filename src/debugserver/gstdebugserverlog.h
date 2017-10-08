@@ -46,8 +46,6 @@ void gst_debugserver_log_send_debug_categories (GstDebugserverTcp *tcp_server, T
 
 void gst_debugserver_log_set_threshold (const gchar * threshold);
 
-void gst_debugserver_log_clean (GstDebugserverLog * log);
-
 void gst_debugserver_log_remove_client (GstDebugserverLog * log,
   TcpClient * client);
 

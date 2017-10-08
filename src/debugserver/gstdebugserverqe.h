@@ -40,8 +40,6 @@ gboolean gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
 
 void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj);
 
-void gst_debugserver_qe_clean (GstDebugserverQE * qe);
-
 void gst_debugserver_qe_remove_client (GstDebugserverQE * evt, TcpClient * client);
 
 G_END_DECLS

@@ -39,8 +39,6 @@ void gst_debugserver_hooks_init (GstDebugserverHooks * hooks, OkFunction ok_func
 
 void gst_debugserver_hooks_deinit (GstDebugserverHooks * hooks);
 
-void gst_debugserver_hooks_clean (GstDebugserverHooks * hooks);
-
 gboolean gst_debugserver_hooks_add_hook (GstDebugserverHooks * hooks,
   gpointer data, TcpClient * client);
 

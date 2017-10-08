@@ -53,14 +53,8 @@ GstDebugserverMessage * gst_debugserver_message_new (void)
 
 void gst_debugserver_message_free (GstDebugserverMessage * msg)
 {
-  gst_debugserver_message_clean (msg);
   gst_debugserver_hooks_deinit (&msg->hooks);
   g_free (msg);
-}
-
-void gst_debugserver_message_clean (GstDebugserverMessage * msg)
-{
-  gst_debugserver_hooks_clean (&msg->hooks);
 }
 
 gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,

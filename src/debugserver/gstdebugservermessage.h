@@ -37,8 +37,6 @@ GstDebugserverMessage * gst_debugserver_message_new (void);
 
 void gst_debugserver_message_free (GstDebugserverMessage * msg);
 
-void gst_debugserver_message_clean (GstDebugserverMessage * msg);
-
 gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
   TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request);
 

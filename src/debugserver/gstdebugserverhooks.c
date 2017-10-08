@@ -33,13 +33,7 @@ void gst_debugserver_hooks_deinit (GstDebugserverHooks * hooks)
   g_mutex_lock (&hooks->mutex);
   g_hash_table_destroy (hooks->clients);
   g_mutex_unlock (&hooks->mutex);
-}
-
-void gst_debugserver_hooks_clean (GstDebugserverHooks * hooks)
-{
-  g_mutex_lock (&hooks->mutex);
-  g_hash_table_remove_all (hooks->clients);
-  g_mutex_unlock (&hooks->mutex);
+  g_mutex_clear (&hooks->mutex);
 }
 
 void gst_debugserver_hooks_send_data (GstDebugserverHooks * hooks, GstDebugserverTcp * tcp_server, GstDebugger__GStreamerData * gst_data)

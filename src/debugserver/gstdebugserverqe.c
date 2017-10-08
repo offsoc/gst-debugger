@@ -92,7 +92,6 @@ GstDebugserverQE * gst_debugserver_qe_new (void)
 
 void gst_debugserver_qe_free (GstDebugserverQE * qe)
 {
-  gst_debugserver_qe_clean (qe);
   gst_debugserver_hooks_deinit (&qe->hooks);
   g_free (qe);
 }
@@ -176,11 +175,6 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
   }
 
   g_free (pad_path);
-}
-
-void gst_debugserver_qe_clean (GstDebugserverQE * qe)
-{
-  gst_debugserver_hooks_clean (&qe->hooks);
 }
 
 void gst_debugserver_qe_remove_client (GstDebugserverQE * qe, TcpClient * client)
