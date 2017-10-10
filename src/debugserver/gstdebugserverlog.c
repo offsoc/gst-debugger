@@ -125,7 +125,13 @@ void gst_debugserver_log_send_log (GstDebugserverLog * log, GstDebugserverTcp * 
   log_info.file = (gchar*) file;
   log_info.function = (gchar*) function;
   log_info.line = line;
-  log_info.object = "todo";
+
+  if (GST_IS_OBJECT (object)) {
+    log_info.object = GST_OBJECT_NAME (object);
+  } else {
+    log_info.object = (gchar*) G_OBJECT_TYPE_NAME (object);
+  }
+
   log_info.message = (gchar*) gst_debug_message_get (message);
 
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_LOG_INFO;
