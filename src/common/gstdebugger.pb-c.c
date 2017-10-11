@@ -1297,6 +1297,49 @@ void   gst_debugger__pad_dynamic_info__free_unpacked
   assert(message->base.descriptor == &gst_debugger__pad_dynamic_info__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   gst_debugger__server_error__init
+                     (GstDebugger__ServerError         *message)
+{
+  static GstDebugger__ServerError init_value = GST_DEBUGGER__SERVER_ERROR__INIT;
+  *message = init_value;
+}
+size_t gst_debugger__server_error__get_packed_size
+                     (const GstDebugger__ServerError *message)
+{
+  assert(message->base.descriptor == &gst_debugger__server_error__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t gst_debugger__server_error__pack
+                     (const GstDebugger__ServerError *message,
+                      uint8_t       *out)
+{
+  assert(message->base.descriptor == &gst_debugger__server_error__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t gst_debugger__server_error__pack_to_buffer
+                     (const GstDebugger__ServerError *message,
+                      ProtobufCBuffer *buffer)
+{
+  assert(message->base.descriptor == &gst_debugger__server_error__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+GstDebugger__ServerError *
+       gst_debugger__server_error__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (GstDebugger__ServerError *)
+     protobuf_c_message_unpack (&gst_debugger__server_error__descriptor,
+                                allocator, len, data);
+}
+void   gst_debugger__server_error__free_unpacked
+                     (GstDebugger__ServerError *message,
+                      ProtobufCAllocator *allocator)
+{
+  assert(message->base.descriptor == &gst_debugger__server_error__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   gst_debugger__gstreamer_data__init
                      (GstDebugger__GStreamerData         *message)
 {
@@ -3474,7 +3517,45 @@ const ProtobufCMessageDescriptor gst_debugger__pad_dynamic_info__descriptor =
   (ProtobufCMessageInit) gst_debugger__pad_dynamic_info__init,
   NULL,NULL,NULL    /* reserved[123] */
 };
-static const ProtobufCFieldDescriptor gst_debugger__gstreamer_data__field_descriptors[13] =
+static const ProtobufCFieldDescriptor gst_debugger__server_error__field_descriptors[1] =
+{
+  {
+    "error_message",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_STRING,
+    0,   /* quantifier_offset */
+    offsetof(GstDebugger__ServerError, error_message),
+    NULL,
+    NULL,
+    0,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
+};
+static const unsigned gst_debugger__server_error__field_indices_by_name[] = {
+  0,   /* field[0] = error_message */
+};
+static const ProtobufCIntRange gst_debugger__server_error__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor gst_debugger__server_error__descriptor =
+{
+  PROTOBUF_C__MESSAGE_DESCRIPTOR_MAGIC,
+  "GstDebugger.ServerError",
+  "ServerError",
+  "GstDebugger__ServerError",
+  "GstDebugger",
+  sizeof(GstDebugger__ServerError),
+  1,
+  gst_debugger__server_error__field_descriptors,
+  gst_debugger__server_error__field_indices_by_name,
+  1,  gst_debugger__server_error__number_ranges,
+  (ProtobufCMessageInit) gst_debugger__server_error__init,
+  NULL,NULL,NULL    /* reserved[123] */
+};
+static const ProtobufCFieldDescriptor gst_debugger__gstreamer_data__field_descriptors[14] =
 {
   {
     "debug_categories",
@@ -3632,6 +3713,18 @@ static const ProtobufCFieldDescriptor gst_debugger__gstreamer_data__field_descri
     0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
     0,NULL,NULL    /* reserved1,reserved2, etc */
   },
+  {
+    "server_error",
+    14,
+    PROTOBUF_C_LABEL_OPTIONAL,
+    PROTOBUF_C_TYPE_MESSAGE,
+    offsetof(GstDebugger__GStreamerData, info_type_case),
+    offsetof(GstDebugger__GStreamerData, server_error),
+    &gst_debugger__server_error__descriptor,
+    NULL,
+    0 | PROTOBUF_C_FIELD_FLAG_ONEOF,             /* flags */
+    0,NULL,NULL    /* reserved1,reserved2, etc */
+  },
 };
 static const unsigned gst_debugger__gstreamer_data__field_indices_by_name[] = {
   11,   /* field[11] = buffer_info */
@@ -3646,12 +3739,13 @@ static const unsigned gst_debugger__gstreamer_data__field_indices_by_name[] = {
   12,   /* field[12] = pad_dynamic_info */
   9,   /* field[9] = property_value */
   8,   /* field[8] = query_info */
+  13,   /* field[13] = server_error */
   7,   /* field[7] = topology_info */
 };
 static const ProtobufCIntRange gst_debugger__gstreamer_data__number_ranges[1 + 1] =
 {
   { 1, 0 },
-  { 0, 13 }
+  { 0, 14 }
 };
 const ProtobufCMessageDescriptor gst_debugger__gstreamer_data__descriptor =
 {
@@ -3661,7 +3755,7 @@ const ProtobufCMessageDescriptor gst_debugger__gstreamer_data__descriptor =
   "GstDebugger__GStreamerData",
   "GstDebugger",
   sizeof(GstDebugger__GStreamerData),
-  13,
+  14,
   gst_debugger__gstreamer_data__field_descriptors,
   gst_debugger__gstreamer_data__field_indices_by_name,
   1,  gst_debugger__gstreamer_data__number_ranges,

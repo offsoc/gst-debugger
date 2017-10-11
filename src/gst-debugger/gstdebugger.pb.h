@@ -106,6 +106,9 @@ extern QueryHookRequestDefaultTypeInternal _QueryHookRequest_default_instance_;
 class QueryInfo;
 class QueryInfoDefaultTypeInternal;
 extern QueryInfoDefaultTypeInternal _QueryInfo_default_instance_;
+class ServerError;
+class ServerErrorDefaultTypeInternal;
+extern ServerErrorDefaultTypeInternal _ServerError_default_instance_;
 class TopologyElement;
 class TopologyElementDefaultTypeInternal;
 extern TopologyElementDefaultTypeInternal _TopologyElement_default_instance_;
@@ -4341,6 +4344,109 @@ class PadDynamicInfo : public ::google::protobuf::Message /* @@protoc_insertion_
 };
 // -------------------------------------------------------------------
 
+class ServerError : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:GstDebugger.ServerError) */ {
+ public:
+  ServerError();
+  virtual ~ServerError();
+
+  ServerError(const ServerError& from);
+
+  inline ServerError& operator=(const ServerError& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ServerError& default_instance();
+
+  static inline const ServerError* internal_default_instance() {
+    return reinterpret_cast<const ServerError*>(
+               &_ServerError_default_instance_);
+  }
+
+  void Swap(ServerError* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ServerError* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  ServerError* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CopyFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void MergeFrom(const ::google::protobuf::Message& from) PROTOBUF_FINAL;
+  void CopyFrom(const ServerError& from);
+  void MergeFrom(const ServerError& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const PROTOBUF_FINAL;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output)
+      const PROTOBUF_FINAL {
+    return InternalSerializeWithCachedSizesToArray(
+        ::google::protobuf::io::CodedOutputStream::IsDefaultSerializationDeterministic(), output);
+  }
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const PROTOBUF_FINAL;
+  void InternalSwap(ServerError* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string error_message = 1;
+  bool has_error_message() const;
+  void clear_error_message();
+  static const int kErrorMessageFieldNumber = 1;
+  const ::std::string& error_message() const;
+  void set_error_message(const ::std::string& value);
+  #if LANG_CXX11
+  void set_error_message(::std::string&& value);
+  #endif
+  void set_error_message(const char* value);
+  void set_error_message(const char* value, size_t size);
+  ::std::string* mutable_error_message();
+  ::std::string* release_error_message();
+  void set_allocated_error_message(::std::string* error_message);
+
+  // @@protoc_insertion_point(class_scope:GstDebugger.ServerError)
+ private:
+  void set_has_error_message();
+  void clear_has_error_message();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::HasBits<1> _has_bits_;
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr error_message_;
+  friend struct  protobuf_gstdebugger_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class GStreamerData : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:GstDebugger.GStreamerData) */ {
  public:
   GStreamerData();
@@ -4378,6 +4484,7 @@ class GStreamerData : public ::google::protobuf::Message /* @@protoc_insertion_p
     kElementKlass = 11,
     kBufferInfo = 12,
     kPadDynamicInfo = 13,
+    kServerError = 14,
     INFO_TYPE_NOT_SET = 0,
   };
 
@@ -4550,6 +4657,15 @@ class GStreamerData : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::GstDebugger::PadDynamicInfo* release_pad_dynamic_info();
   void set_allocated_pad_dynamic_info(::GstDebugger::PadDynamicInfo* pad_dynamic_info);
 
+  // optional .GstDebugger.ServerError server_error = 14;
+  bool has_server_error() const;
+  void clear_server_error();
+  static const int kServerErrorFieldNumber = 14;
+  const ::GstDebugger::ServerError& server_error() const;
+  ::GstDebugger::ServerError* mutable_server_error();
+  ::GstDebugger::ServerError* release_server_error();
+  void set_allocated_server_error(::GstDebugger::ServerError* server_error);
+
   InfoTypeCase info_type_case() const;
   // @@protoc_insertion_point(class_scope:GstDebugger.GStreamerData)
  private:
@@ -4566,6 +4682,7 @@ class GStreamerData : public ::google::protobuf::Message /* @@protoc_insertion_p
   void set_has_element_klass();
   void set_has_buffer_info();
   void set_has_pad_dynamic_info();
+  void set_has_server_error();
 
   inline bool has_info_type() const;
   void clear_info_type();
@@ -4589,6 +4706,7 @@ class GStreamerData : public ::google::protobuf::Message /* @@protoc_insertion_p
     ::GstDebugger::ElementKlass* element_klass_;
     ::GstDebugger::BufferInfo* buffer_info_;
     ::GstDebugger::PadDynamicInfo* pad_dynamic_info_;
+    ::GstDebugger::ServerError* server_error_;
   } info_type_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -9422,6 +9540,72 @@ inline void PadDynamicInfo::set_allocated_pad(::std::string* pad) {
 
 // -------------------------------------------------------------------
 
+// ServerError
+
+// required string error_message = 1;
+inline bool ServerError::has_error_message() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void ServerError::set_has_error_message() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void ServerError::clear_has_error_message() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void ServerError::clear_error_message() {
+  error_message_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_error_message();
+}
+inline const ::std::string& ServerError::error_message() const {
+  // @@protoc_insertion_point(field_get:GstDebugger.ServerError.error_message)
+  return error_message_.GetNoArena();
+}
+inline void ServerError::set_error_message(const ::std::string& value) {
+  set_has_error_message();
+  error_message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:GstDebugger.ServerError.error_message)
+}
+#if LANG_CXX11
+inline void ServerError::set_error_message(::std::string&& value) {
+  set_has_error_message();
+  error_message_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:GstDebugger.ServerError.error_message)
+}
+#endif
+inline void ServerError::set_error_message(const char* value) {
+  set_has_error_message();
+  error_message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:GstDebugger.ServerError.error_message)
+}
+inline void ServerError::set_error_message(const char* value, size_t size) {
+  set_has_error_message();
+  error_message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:GstDebugger.ServerError.error_message)
+}
+inline ::std::string* ServerError::mutable_error_message() {
+  set_has_error_message();
+  // @@protoc_insertion_point(field_mutable:GstDebugger.ServerError.error_message)
+  return error_message_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ServerError::release_error_message() {
+  // @@protoc_insertion_point(field_release:GstDebugger.ServerError.error_message)
+  clear_has_error_message();
+  return error_message_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ServerError::set_allocated_error_message(::std::string* error_message) {
+  if (error_message != NULL) {
+    set_has_error_message();
+  } else {
+    clear_has_error_message();
+  }
+  error_message_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error_message);
+  // @@protoc_insertion_point(field_set_allocated:GstDebugger.ServerError.error_message)
+}
+
+// -------------------------------------------------------------------
+
 // GStreamerData
 
 // optional .GstDebugger.DebugCategories debug_categories = 1;
@@ -10048,6 +10232,54 @@ inline void GStreamerData::set_allocated_pad_dynamic_info(::GstDebugger::PadDyna
   // @@protoc_insertion_point(field_set_allocated:GstDebugger.GStreamerData.pad_dynamic_info)
 }
 
+// optional .GstDebugger.ServerError server_error = 14;
+inline bool GStreamerData::has_server_error() const {
+  return info_type_case() == kServerError;
+}
+inline void GStreamerData::set_has_server_error() {
+  _oneof_case_[0] = kServerError;
+}
+inline void GStreamerData::clear_server_error() {
+  if (has_server_error()) {
+    delete info_type_.server_error_;
+    clear_has_info_type();
+  }
+}
+inline  const ::GstDebugger::ServerError& GStreamerData::server_error() const {
+  // @@protoc_insertion_point(field_get:GstDebugger.GStreamerData.server_error)
+  return has_server_error()
+      ? *info_type_.server_error_
+      : ::GstDebugger::ServerError::default_instance();
+}
+inline ::GstDebugger::ServerError* GStreamerData::mutable_server_error() {
+  if (!has_server_error()) {
+    clear_info_type();
+    set_has_server_error();
+    info_type_.server_error_ = new ::GstDebugger::ServerError;
+  }
+  // @@protoc_insertion_point(field_mutable:GstDebugger.GStreamerData.server_error)
+  return info_type_.server_error_;
+}
+inline ::GstDebugger::ServerError* GStreamerData::release_server_error() {
+  // @@protoc_insertion_point(field_release:GstDebugger.GStreamerData.server_error)
+  if (has_server_error()) {
+    clear_has_info_type();
+    ::GstDebugger::ServerError* temp = info_type_.server_error_;
+    info_type_.server_error_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void GStreamerData::set_allocated_server_error(::GstDebugger::ServerError* server_error) {
+  clear_info_type();
+  if (server_error) {
+    set_has_server_error();
+    info_type_.server_error_ = server_error;
+  }
+  // @@protoc_insertion_point(field_set_allocated:GstDebugger.GStreamerData.server_error)
+}
+
 inline bool GStreamerData::has_info_type() const {
   return info_type_case() != INFO_TYPE_NOT_SET;
 }
@@ -10058,6 +10290,8 @@ inline GStreamerData::InfoTypeCase GStreamerData::info_type_case() const {
   return GStreamerData::InfoTypeCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

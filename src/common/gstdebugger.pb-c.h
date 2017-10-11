@@ -45,6 +45,7 @@ typedef struct _GstDebugger__TopologyElement GstDebugger__TopologyElement;
 typedef struct _GstDebugger__TopologyPad GstDebugger__TopologyPad;
 typedef struct _GstDebugger__TopologyInfo GstDebugger__TopologyInfo;
 typedef struct _GstDebugger__PadDynamicInfo GstDebugger__PadDynamicInfo;
+typedef struct _GstDebugger__ServerError GstDebugger__ServerError;
 typedef struct _GstDebugger__GStreamerData GstDebugger__GStreamerData;
 
 
@@ -493,6 +494,16 @@ struct  _GstDebugger__PadDynamicInfo
     , NULL, NULL, NULL }
 
 
+struct  _GstDebugger__ServerError
+{
+  ProtobufCMessage base;
+  char *error_message;
+};
+#define GST_DEBUGGER__SERVER_ERROR__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&gst_debugger__server_error__descriptor) \
+    , NULL }
+
+
 typedef enum {
   GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE__NOT_SET = 0,
   GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_DEBUG_CATEGORIES = 1,
@@ -508,6 +519,7 @@ typedef enum {
   GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_ELEMENT_KLASS = 11,
   GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_BUFFER_INFO = 12,
   GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_PAD_DYNAMIC_INFO = 13,
+  GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_SERVER_ERROR = 14,
 } GstDebugger__GStreamerData__InfoTypeCase;
 
 struct  _GstDebugger__GStreamerData
@@ -528,6 +540,7 @@ struct  _GstDebugger__GStreamerData
     GstDebugger__ElementKlass *element_klass;
     GstDebugger__BufferInfo *buffer_info;
     GstDebugger__PadDynamicInfo *pad_dynamic_info;
+    GstDebugger__ServerError *server_error;
   };
 };
 #define GST_DEBUGGER__GSTREAMER_DATA__INIT \
@@ -1105,6 +1118,25 @@ GstDebugger__PadDynamicInfo *
 void   gst_debugger__pad_dynamic_info__free_unpacked
                      (GstDebugger__PadDynamicInfo *message,
                       ProtobufCAllocator *allocator);
+/* GstDebugger__ServerError methods */
+void   gst_debugger__server_error__init
+                     (GstDebugger__ServerError         *message);
+size_t gst_debugger__server_error__get_packed_size
+                     (const GstDebugger__ServerError   *message);
+size_t gst_debugger__server_error__pack
+                     (const GstDebugger__ServerError   *message,
+                      uint8_t             *out);
+size_t gst_debugger__server_error__pack_to_buffer
+                     (const GstDebugger__ServerError   *message,
+                      ProtobufCBuffer     *buffer);
+GstDebugger__ServerError *
+       gst_debugger__server_error__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   gst_debugger__server_error__free_unpacked
+                     (GstDebugger__ServerError *message,
+                      ProtobufCAllocator *allocator);
 /* GstDebugger__GStreamerData methods */
 void   gst_debugger__gstreamer_data__init
                      (GstDebugger__GStreamerData         *message);
@@ -1216,6 +1248,9 @@ typedef void (*GstDebugger__TopologyInfo_Closure)
 typedef void (*GstDebugger__PadDynamicInfo_Closure)
                  (const GstDebugger__PadDynamicInfo *message,
                   void *closure_data);
+typedef void (*GstDebugger__ServerError_Closure)
+                 (const GstDebugger__ServerError *message,
+                  void *closure_data);
 typedef void (*GstDebugger__GStreamerData_Closure)
                  (const GstDebugger__GStreamerData *message,
                   void *closure_data);
@@ -1258,6 +1293,7 @@ extern const ProtobufCMessageDescriptor gst_debugger__topology_element__descript
 extern const ProtobufCMessageDescriptor gst_debugger__topology_pad__descriptor;
 extern const ProtobufCMessageDescriptor gst_debugger__topology_info__descriptor;
 extern const ProtobufCMessageDescriptor gst_debugger__pad_dynamic_info__descriptor;
+extern const ProtobufCMessageDescriptor gst_debugger__server_error__descriptor;
 extern const ProtobufCMessageDescriptor gst_debugger__gstreamer_data__descriptor;
 
 PROTOBUF_C__END_DECLS

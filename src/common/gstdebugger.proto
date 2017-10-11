@@ -221,6 +221,11 @@ message PadDynamicInfo {
 	required string pad = 3;
 }
 
+message ServerError
+{
+	required string error_message = 1;
+}
+
 message GStreamerData {
 	oneof info_type {
 		DebugCategories debug_categories = 1;
@@ -236,5 +241,6 @@ message GStreamerData {
 		ElementKlass element_klass = 11;
 		BufferInfo buffer_info = 12;
 		PadDynamicInfo pad_dynamic_info = 13;
+		ServerError server_error = 14;
 	}
 }
