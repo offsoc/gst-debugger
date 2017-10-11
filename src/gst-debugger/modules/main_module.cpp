@@ -17,6 +17,8 @@
 #include "controller/controller.h"
 #include "controller/element_path_processor.h"
 
+#include <glibmm/i18n.h>
+
 MainModule::MainModule(const Glib::RefPtr<Gtk::Builder> &builder)
 {
 	builder->get_widget("mainListTreeView", list_tree_view);
@@ -77,6 +79,15 @@ void MainModule::set_controller(const std::shared_ptr<Controller> &controller)
 		m.second.display_module->set_controller(controller);
 		m.second.control_module->set_controller(controller);
 	}
+
+    controller->on_frame_received.connect([] (const GstDebugger::GStreamerData& data) {
+        if (data.info_type_case() == GstDebugger::GStreamerData::kServerError)
+        {
+            Gtk::MessageDialog dialog(_("Error"));
+            dialog.set_secondary_text(data.server_error().error_message());
+            dialog.run();
+        }
+    });
 }
 
 void MainModule::update_module(const MainModuleInfo &module_info)

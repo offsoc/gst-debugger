@@ -107,6 +107,8 @@ void Controller::process_frame(const GstDebugger::GStreamerData &data)
 	case GstDebugger::GStreamerData::kLogInfo:
 		on_log_received(data.log_info());
 		break;
+    case GstDebugger::GStreamerData::kServerError:
+        on_error_received(data.server_error());
     case GstDebugger::GStreamerData::INFO_TYPE_NOT_SET:
         // TODO: error
         break;
