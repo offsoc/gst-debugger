@@ -11,6 +11,7 @@ src/gst-debugger/dialogs/connection_properties_dialog.cpp
 src/gst-debugger/modules/event_module.cpp
 src/gst-debugger/modules/query_module.cpp
 src/gst-debugger/modules/buffer_module.cpp
+src/gst-debugger/modules/main_module.cpp
 src/gst-debugger/modules/message_module.cpp
 src/gst-debugger/modules/log_module.cpp
 src/gst-debugger/controller/tcp_client.cpp
