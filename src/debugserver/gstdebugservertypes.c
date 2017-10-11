@@ -29,7 +29,22 @@
 
 #include <string.h>
 
-#define SERIALIZE_ENUM_FLAGS \
+static void
+send_type_doesnt_exist_error (const gchar * type_name, GstDebugserverTcp * tcp_server, TcpClient * client)
+{
+  GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
+  GstDebugger__ServerError server_error = GST_DEBUGGER__SERVER_ERROR__INIT;
+  gchar buff[128];
+
+  g_snprintf (buff, 128, "Type '%s' doesn't exist.", type_name);
+
+  gst_data.server_error->error_message = buff;
+  gst_data.server_error = &server_error;
+
+  gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
+}
+
+#define SERIALIZE_ENUM_FLAGS(klass) \
   do { \
     n_values = klass->n_values; \
     values = g_malloc (sizeof (GstDebugger__EnumFlagsValue*) * n_values); \
@@ -57,15 +72,13 @@ static void gst_debugserver_types_send_enum_flags (GstDebugserverTcp *tcp_server
   gint i = 0, n_values = 0;
 
   if (G_TYPE_IS_ENUM (type)) {
-    GEnumClass * klass = g_type_class_peek (type);
-    SERIALIZE_ENUM_FLAGS;
+    SERIALIZE_ENUM_FLAGS (G_ENUM_CLASS (g_type_class_peek (type)));
     data_type.kind = GST_DEBUGGER__ENUM_FLAGS_TYPE__ENUM_FLAGS_KIND__ENUM;
   } else if (G_TYPE_IS_FLAGS (type)) {
-    GFlagsClass * klass = g_type_class_peek (type);
-    SERIALIZE_ENUM_FLAGS;
+    SERIALIZE_ENUM_FLAGS (G_FLAGS_CLASS (g_type_class_peek (type)));
     data_type.kind = GST_DEBUGGER__ENUM_FLAGS_TYPE__ENUM_FLAGS_KIND__FLAGS;
   } else {
-    // todo
+    send_type_doesnt_exist_error (name, tcp_server, client);
   }
 
   gst_data.enum_flags_type = &data_type;
@@ -90,7 +103,7 @@ static void gst_debugserver_types_send_factory (GstDebugserverTcp *tcp_server, T
   gint i = 0;
 
   if (factory == NULL) {
-    // todo
+    send_type_doesnt_exist_error (name, tcp_server, client);
     return;
   }
 
@@ -166,7 +179,7 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
   GstDebugger__Value *value = NULL;
 
   if (element_klass == NULL) {
-    // todo
+    send_type_doesnt_exist_error (name, tcp_server, client);
     return;
   }
 
