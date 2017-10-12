@@ -1,23 +1,24 @@
 # Swedish translation for gst-debugger.
-# Copyright © 2016 gst-debugger's COPYRIGHT HOLDER
+# Copyright © 2016, 2017 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
 # Sebastian Rasmussen <sebras@gmail.com>, 2016.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-14 20:59+0000\n"
-"PO-Revision-Date: 2016-03-28 18:28+0200\n"
-"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
+"POT-Creation-Date: 2017-10-11 22:23+0000\n"
+"PO-Revision-Date: 2017-10-12 13:14+0200\n"
+"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: ../src/gst-debugger/main_window.cpp:129
 msgid "Connected"
@@ -254,6 +255,10 @@ msgstr "ja"
 msgid "no"
 msgstr "nej"
 
+#: ../src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Fel"
+
 #: ../src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
 msgstr "Meddelanden"
@@ -343,11 +348,11 @@ msgstr "Kategori"
 msgid "Client isn't connected to a server!"
 msgstr "Klient är inte ansluten till en server!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr "Kan inte gå in i elementet. Element är inte valt."
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr "Kan inte gå in i elementet. Valt element är en kontakt."
 
