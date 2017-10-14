@@ -2,15 +2,15 @@
 # Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
 # Christian Kirbach <Christian.Kirbach@gmail.com>, 2015.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2015.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2015, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2015-12-25 11:21+0000\n"
-"PO-Revision-Date: 2015-12-25 20:25+0100\n"
+"POT-Creation-Date: 2017-10-11 22:23+0000\n"
+"PO-Revision-Date: 2017-10-14 15:31+0200\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #: ../src/gst-debugger/main_window.cpp:129
 msgid "Connected"
@@ -157,7 +157,7 @@ msgid "PING OK!"
 msgstr "PING OK!"
 
 #: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
-msgid "Server doesn't response"
+msgid "Server doesn't respond"
 msgstr "Server antwortet nicht"
 
 #: ../src/gst-debugger/modules/event_module.cpp:15
@@ -217,9 +217,8 @@ msgid "Duration"
 msgstr "Dauer"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:31
-#, fuzzy
 msgid "Offset"
-msgstr "Versatz"
+msgstr "Position"
 
 #: ../src/gst-debugger/modules/buffer_module.cpp:32
 msgid "Offset End"
@@ -258,6 +257,10 @@ msgstr "ja"
 #: ../src/gst-debugger/modules/buffer_module.cpp:110
 msgid "no"
 msgstr "nein"
+
+#: ../src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Fehler"
 
 #: ../src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
@@ -313,9 +316,8 @@ msgid "Function"
 msgstr "Funktion"
 
 #: ../src/gst-debugger/modules/log_module.cpp:27
-#, fuzzy
 msgid "Line"
-msgstr "Durchgezogen"
+msgstr "Zeile"
 
 #: ../src/gst-debugger/modules/log_module.cpp:29
 msgid "Message"
@@ -349,11 +351,11 @@ msgstr "Kategorie"
 msgid "Client isn't connected to a server!"
 msgstr "Client ist nicht mit einem Server verbunden!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr ""
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr ""
 
