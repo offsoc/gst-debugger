@@ -13,7 +13,6 @@
 
 #include <glibmm/i18n.h>
 #include <gtkmm.h>
-#include <gstreamermm.h>
 
 int main(int argc, char** argv)
 {

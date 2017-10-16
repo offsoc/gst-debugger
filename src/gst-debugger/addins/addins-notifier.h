@@ -10,7 +10,7 @@
 
 #include "gstdebugger.pb.h"
 
-#include <gstreamermm.h>
+#include <sigc++/sigc++.h>
 
 namespace GstDebugger {
 
