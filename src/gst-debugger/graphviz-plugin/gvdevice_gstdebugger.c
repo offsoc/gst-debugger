@@ -12,8 +12,16 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-GtkWidget* drawing_area;
+static GtkWidget* drawing_area;
 GMainLoop *graphviz_gstdebugger_plugin_main_loop = NULL;
+
+struct DisplayRef
+{
+    Display *dpy;
+    int refcount;
+};
+
+static struct DisplayRef dpy_ref = { NULL, 0 };
 
 void graphviz_gstdebugger_set_drawing_area(GtkWidget *area)
 {
@@ -27,19 +35,22 @@ void graphviz_gstdebugger_set_main_loop(GMainLoop *loop)
 
 static void gstdebugger_initialize(GVJ_t *firstjob)
 {
-	Display *dpy;
 	const char *display_name = NULL;
 	int scr;
 	gtk_init (NULL, NULL);
-	dpy = XOpenDisplay(display_name);
-	if (dpy == NULL) {
+    if (dpy_ref.dpy == NULL)
+    {
+        dpy_ref.dpy = XOpenDisplay(display_name);
+    }
+    if (dpy_ref.dpy == NULL) {
 		fprintf(stderr, "Failed to open XLIB display: %s\n",
 				XDisplayName(NULL));
 		return;
 	}
-	scr = DefaultScreen(dpy);
-	firstjob->device_dpi.x = DisplayWidth(dpy, scr) * 25.4 / DisplayWidthMM(dpy, scr);
-	firstjob->device_dpi.y = DisplayHeight(dpy, scr) * 25.4 / DisplayHeightMM(dpy, scr);
+    dpy_ref.refcount++;
+    scr = DefaultScreen(dpy_ref.dpy);
+    firstjob->device_dpi.x = DisplayWidth(dpy_ref.dpy, scr) * 25.4 / DisplayWidthMM(dpy_ref.dpy, scr);
+    firstjob->device_dpi.y = DisplayHeight(dpy_ref.dpy, scr) * 25.4 / DisplayHeightMM(dpy_ref.dpy, scr);
 	firstjob->device_sets_dpi = TRUE;
 }
 
@@ -54,6 +65,16 @@ static void gstdebugger_finalize(GVJ_t *firstjob)
 	}
 
 	g_main_loop_run (graphviz_gstdebugger_plugin_main_loop);
+
+    if (dpy_ref.refcount > 0)
+    {
+        dpy_ref.refcount--;
+        if (dpy_ref.refcount == 0 && dpy_ref.dpy != NULL)
+        {
+            XCloseDisplay(dpy_ref.dpy);
+            dpy_ref.dpy = NULL;
+        }
+    }
 }
 
 static gvdevice_features_t device_features_gstdebugger = {

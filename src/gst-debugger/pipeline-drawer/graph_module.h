@@ -23,9 +23,6 @@ protected:
 
 	GstBinToDotConverter dot_converter;
 
-	Agraph_t *g = nullptr;
-	GVC_t * gvc = nullptr;
-
 	Gtk::DrawingArea *graph_drawing_area;
 	Gtk::Button *up_graph_button;
 	Gtk::Entry *selected_element_entry;
@@ -54,7 +51,7 @@ public:
 
 	void update_model_();
 	void update_model(std::shared_ptr<ElementModel> new_model);
-	void free_graph();
+    void free_graph(GVC_t *gvc, Agraph_t *g);
 
 	void set_controller(const std::shared_ptr<Controller> &controller) override;
 };

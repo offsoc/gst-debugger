@@ -63,7 +63,7 @@ void TcpClient::read_data()
 		data.ParseFromArray(m_buff, size);
 		if (m_buff != buffer)
 		{
-			delete m_buff;
+            delete [] m_buff;
 		}
 		signal_frame_received(data);
 	}
@@ -92,6 +92,16 @@ void TcpClient::send_command(const GstDebugger::Command &cmd)
 	if (!is_connected())
 		throw Gio::Error(Gio::Error::FAILED, _("Client isn't connected to a server!"));
 
-	gst_debugger_protocol_write_header(connection->get_output_stream()->gobj(), cmd.ByteSize());
-	cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
+    GError *err = gst_debugger_protocol_write_header(connection->get_output_stream()->gobj(), cmd.ByteSize());
+
+    if (err)
+    {
+        // TODO: emt error
+        g_print ("cannot send size of data: %s\n", err->message);
+        g_error_free (err);
+    }
+    else
+    {
+        cmd.SerializeToFileDescriptor(connection->get_socket()->get_fd());
+    }
 }

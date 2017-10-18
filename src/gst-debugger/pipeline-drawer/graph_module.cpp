@@ -18,7 +18,7 @@
 
 static void ptr_free(std::shared_ptr<ElementModel>* ptr)
 {
-	delete ptr;
+    delete ptr;
 }
 
 extern gvplugin_library_t gvplugin_gstdebugger_LTX_library;
@@ -54,7 +54,7 @@ GraphModule::GraphModule(const Glib::RefPtr<Gtk::Builder>& builder)
 
 GraphModule::~GraphModule()
 {
-	g_main_loop_unref(graphviz_plugin_loop);
+    g_main_loop_unref(graphviz_plugin_loop);
 }
 
 void GraphModule::set_controller(const std::shared_ptr<Controller> &controller)
@@ -143,7 +143,7 @@ void GraphModule::update_model(std::shared_ptr<ElementModel> new_model)
 
 void GraphModule::update_selected_object()
 {
-	gui_emit("update-selected-object");
+    gui_emit("update-selected-object");
 }
 
 void GraphModule::update_selected_object_()
@@ -242,21 +242,21 @@ bool GraphModule::graphDrawingArea_draw_cb(const Cairo::RefPtr<Cairo::Context>& 
 	return false;
 }
 
-void GraphModule::free_graph()
+void GraphModule::free_graph(GVC_t *gvc, Agraph_t *g)
 {
-	if (gvc != nullptr)
-	{
-		gvFreeContext (gvc);
-		gvFinalize (gvc);
-
-		gvc = nullptr;
-	}
-	if (g != nullptr)
-	{
-		agclose (g);
-		g = nullptr;
-	}
-	g_main_loop_quit(graphviz_plugin_loop);
+    if (gvc != nullptr)
+    {
+        gvFreeLayout(gvc, g);
+        gvFinalize(gvc);
+        gvFreeContext(gvc);
+        gvc = nullptr;
+    }
+    if (g != nullptr)
+    {
+        agclose(g);
+        g = nullptr;
+    }
+    g_main_loop_quit(graphviz_plugin_loop);
 }
 
 void GraphModule::update_model_()
@@ -290,15 +290,15 @@ void GraphModule::update_model_()
 		{ 0, 0 }
 	};
 
-	gvc = gvContextPlugins(lt_preloaded_symbols, 1);
-	g = agmemread (model_str.c_str());
-	gvLayout (gvc, g, "dot");
-	graph_drawing_area->hide();
-	gvRender (gvc, g, "gstdebugger", NULL);
-	free_graph();
+    GVC_t *gvc = gvContextPlugins(lt_preloaded_symbols, 1);
+    Agraph_t *g = agmemread (model_str.c_str());
+    gvLayout (gvc, g, "dot");
+    graph_drawing_area->hide();
+    gvRender (gvc, g, "gstdebugger", NULL);
+    free_graph(gvc, g);
 }
 
 void GraphModule::refreshGraphButton_clicked_cb()
 {
-	controller->send_request_entire_topology_command();
+    controller->send_request_entire_topology_command();
 }

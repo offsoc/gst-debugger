@@ -93,7 +93,9 @@ void display_caps(const Glib::RefPtr<Gst::Caps> &caps,
 			Glib::ValueBase base;
 
 			structure.get_field(field_name, base);
-			APPEND_SUB_ROW (field_name, gst_value_serialize(base.gobj()), row);
+            gchar* value = gst_value_serialize(base.gobj());
+            APPEND_SUB_ROW (field_name, value, row);
+            g_free(value);
 		}
 	}
 }
