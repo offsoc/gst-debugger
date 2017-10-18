@@ -1,17 +1,17 @@
 # Czech translation for gst-debugger.
 # Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
-# Marek Černocký <marek@manet.cz>, 2015, 2016.
+# Marek Černocký <marek@manet.cz>, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-14 20:59+0000\n"
-"PO-Revision-Date: 2016-03-15 11:12+0100\n"
+"POT-Creation-Date: 2017-10-14 16:55+0000\n"
+"PO-Revision-Date: 2017-10-18 08:38+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
-"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -254,6 +254,10 @@ msgstr "ano"
 msgid "no"
 msgstr "ne"
 
+#: ../src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Chyba"
+
 #: ../src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
 msgstr "Zprávy"
@@ -343,11 +347,11 @@ msgstr "Kategorie"
 msgid "Client isn't connected to a server!"
 msgstr "Klient není připojen k serveru!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr "Nelze se dostat do prvku. Prvek není vybrán."
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr "Nelze se dostat do prvku. Vybraný prvek je přípojka."
 
