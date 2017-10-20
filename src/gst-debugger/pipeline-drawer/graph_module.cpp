@@ -246,7 +246,9 @@ void GraphModule::free_graph(GVC_t *gvc, Agraph_t *g)
 {
     if (gvc != nullptr)
     {
-        gvFreeLayout(gvc, g);
+        //TODO sometimes this line is crashing
+        // but commenting it causes memory leaks
+        // gvFreeLayout(gvc, g);
         gvFinalize(gvc);
         gvFreeContext(gvc);
         gvc = nullptr;
