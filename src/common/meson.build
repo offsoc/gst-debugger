@@ -1,9 +1,25 @@
 install_headers_dir = join_paths('gstdebugger-@0@'.format(apiversion), 'gst', 'debugger')
 
+protoc_c_gen = generator(protoc_c,
+    output    : ['@BASENAME@.pb-c.c', '@BASENAME@.pb-c.h'],
+    arguments : ['--proto_path=@CURRENT_SOURCE_DIR@', '--c_out=@BUILD_DIR@', '@INPUT@'])
+protoc_c_gen_src = protoc_c_gen.process('gstdebugger.proto')
+
+generate_c_proto = custom_target('generate_proto',
+   output : ['gstdebugger.pb-c.h'],
+    input : 'gstdebugger.proto',
+    command : [
+        protoc_c,
+        '--proto_path=' + meson.current_source_dir(),
+        '--c_out=' + meson.current_build_dir(),
+        '--c_out=' + meson.current_source_dir(),
+        join_paths(meson.current_source_dir(), 'gstdebugger.proto')],
+    install : true,
+    install_dir : [join_paths(get_option('prefix'), get_option('includedir'), install_headers_dir)])
+
 gstdebugger_common_sources = [
     'gst-utils.c',
     'protocol-utils.c',
-    'gstdebugger.pb-c.c',
     'serializer.c']
 
 gstdebugger_common_headers = [
@@ -20,6 +36,8 @@ gstdebugger_common_deps = [
 gstdebugger_common_lib = shared_library(
     'gstdebugger-common-@0@'.format(apiversion),
     gstdebugger_common_sources,
+    generate_c_proto,
+    protoc_c_gen_src,
     dependencies : gstdebugger_common_deps,
     install : true)
 
