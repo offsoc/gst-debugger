@@ -17,8 +17,19 @@ GValueUnknown::GValueUnknown(GValue *gobj)
 
 std::string GValueUnknown::to_string() const
 {
-	GstUnknownType *unknown_type = (GstUnknownType*)g_value_get_boxed(g_value);
-	return _("unsupported type: ") + std::string(unknown_type->type_name);
+    std::string type_name;
+    if (!G_VALUE_HOLDS_BOXED(g_value))
+    {
+        type_name = "INVALID";
+        g_warning("GValueUnknown should hold boxed type!");
+    }
+    else
+    {
+        GstUnknownType *unknown_type = (GstUnknownType*)g_value_get_boxed(g_value);
+        type_name = unknown_type->type_name;
+    }
+
+    return _("unsupported type: ") + type_name;
 }
 
 Gtk::Widget* GValueUnknown::create_widget()

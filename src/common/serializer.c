@@ -13,7 +13,7 @@ gchar * g_value_serialize (GValue * value, GType * type, InternalGType * interna
 {
   GValue tmp = G_VALUE_INIT;
 
-  if (G_TYPE_IS_FUNDAMENTAL (value->g_type)) {
+  if (G_TYPE_IS_FUNDAMENTAL (value->g_type) && value->g_type < G_TYPE_RESERVED_USER_FIRST) {
     *type = value->g_type;
     *internal_type = INTERNAL_GTYPE_FUNDAMENTAL;
     return gst_value_serialize (value);
