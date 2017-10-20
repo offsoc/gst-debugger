@@ -75,7 +75,7 @@ MainWindow::MainWindow(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>
 	});
 
 	signal_delete_event().connect([this](GdkEventAny*){
-		// TODO graph_module->free_graph(); - do we need this?
+        graph_module->free_graph(nullptr, nullptr); // TODO we only have to quit main loop
 		return false;
 	});
 }
