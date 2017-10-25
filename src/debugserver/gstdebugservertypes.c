@@ -30,7 +30,8 @@
 #include <string.h>
 
 static void
-send_type_doesnt_exist_error (const gchar * type_name, GstDebugserverTcp * tcp_server, TcpClient * client)
+send_type_doesnt_exist_error (const gchar * type_name,
+    GstDebugserverTcp * tcp_server, TcpClient * client)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__ServerError server_error = GST_DEBUGGER__SERVER_ERROR__INIT;
@@ -63,7 +64,9 @@ send_type_doesnt_exist_error (const gchar * type_name, GstDebugserverTcp * tcp_s
     gst_data.enum_flags_type = &data_type; \
   } while (FALSE)
 
-static void gst_debugserver_types_send_enum_flags (GstDebugserverTcp *tcp_server, TcpClient *client, const gchar * name)
+static void
+gst_debugserver_types_send_enum_flags (GstDebugserverTcp * tcp_server,
+    TcpClient * client, const gchar * name)
 {
   GType type = g_type_from_name (name);
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
@@ -82,7 +85,8 @@ static void gst_debugserver_types_send_enum_flags (GstDebugserverTcp *tcp_server
   }
 
   gst_data.enum_flags_type = &data_type;
-  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_ENUM_FLAGS_TYPE;
+  gst_data.info_type_case =
+      GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_ENUM_FLAGS_TYPE;
 
   gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
 
@@ -92,7 +96,9 @@ static void gst_debugserver_types_send_enum_flags (GstDebugserverTcp *tcp_server
   g_free (values);
 }
 
-static void gst_debugserver_types_send_factory (GstDebugserverTcp *tcp_server, TcpClient *client, const gchar * name)
+static void
+gst_debugserver_types_send_factory (GstDebugserverTcp * tcp_server,
+    TcpClient * client, const gchar * name)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__FactoryType factory_type = GST_DEBUGGER__FACTORY_TYPE__INIT;
@@ -108,20 +114,23 @@ static void gst_debugserver_types_send_factory (GstDebugserverTcp *tcp_server, T
   }
 
   factory_type.name = gst_plugin_feature_get_name (factory);
-  factory_type.n_templates = gst_element_factory_get_num_pad_templates (factory);
+  factory_type.n_templates =
+      gst_element_factory_get_num_pad_templates (factory);
   if (factory_type.n_templates != 0) {
-    templates = g_malloc (factory_type.n_templates * sizeof (GstDebugger__PadTemplate*));
-    tpls = (GList*)gst_element_factory_get_static_pad_templates (factory);
+    templates =
+        g_malloc (factory_type.n_templates *
+        sizeof (GstDebugger__PadTemplate *));
+    tpls = (GList *) gst_element_factory_get_static_pad_templates (factory);
 
     while (tpls) {
-      static_template = (GstStaticPadTemplate*) tpls->data;
+      static_template = (GstStaticPadTemplate *) tpls->data;
       tpls = g_list_next (tpls);
       templates[i] = g_malloc (sizeof (GstDebugger__PadTemplate));
       gst_debugger__pad_template__init (templates[i]);
-      templates[i]->caps = (gchar*) static_template->static_caps.string;
+      templates[i]->caps = (gchar *) static_template->static_caps.string;
       templates[i]->direction = static_template->direction;
       templates[i]->presence = static_template->presence;
-      templates[i]->name_template = (gchar*) static_template->name_template;
+      templates[i]->name_template = (gchar *) static_template->name_template;
       i++;
     }
   }
@@ -133,13 +142,16 @@ static void gst_debugserver_types_send_factory (GstDebugserverTcp *tcp_server, T
   GstDebugger__FactoryMeta **entries = NULL;
   keys = gst_element_factory_get_metadata_keys (factory);
   if (keys != NULL) {
-    for (k = keys; *k != NULL; ++k) { meta_cnt++; }
-    entries = g_malloc (sizeof (GstDebugger__FactoryMeta*) * meta_cnt);
+    for (k = keys; *k != NULL; ++k) {
+      meta_cnt++;
+    }
+    entries = g_malloc (sizeof (GstDebugger__FactoryMeta *) * meta_cnt);
     for (k = keys; *k != NULL; ++k) {
       entries[i] = g_malloc (sizeof (GstDebugger__FactoryMeta));
       gst_debugger__factory_meta__init (entries[i]);
       entries[i]->key = *k;
-      entries[i]->value = (gchar*) gst_element_factory_get_metadata (factory, *k);
+      entries[i]->value =
+          (gchar *) gst_element_factory_get_metadata (factory, *k);
       i++;
     }
   }
@@ -163,7 +175,9 @@ static void gst_debugserver_types_send_factory (GstDebugserverTcp *tcp_server, T
   g_strfreev (keys);
 }
 
-static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, TcpClient *client, const gchar * name)
+static void
+gst_debugserver_types_send_klass (GstDebugserverTcp * tcp_server,
+    TcpClient * client, const gchar * name)
 {
   GType type = g_type_from_name (name);
   GObjectClass *obj_klass = G_OBJECT_CLASS (g_type_class_peek (type));
@@ -183,27 +197,29 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
     return;
   }
 
-  klass.name = (gchar*) name;
+  klass.name = (gchar *) name;
   specs = g_object_class_list_properties (obj_klass, &n_specs);
   klass.n_property_info = n_specs;
 
-  properties_info = g_malloc (sizeof (GstDebugger__PropertyInfo*) * n_specs);
+  properties_info = g_malloc (sizeof (GstDebugger__PropertyInfo *) * n_specs);
 
   for (i = 0; i < n_specs; i++) {
     properties_info[i] = g_malloc (sizeof (GstDebugger__PropertyInfo));
     gst_debugger__property_info__init (properties_info[i]);
-    properties_info[i]->blurb = (gchar*) g_param_spec_get_blurb (specs[i]);
+    properties_info[i]->blurb = (gchar *) g_param_spec_get_blurb (specs[i]);
     properties_info[i]->flags = specs[i]->flags;
-    properties_info[i]->name = (gchar*) g_param_spec_get_name (specs[i]);
-    properties_info[i]->nick = (gchar*) g_param_spec_get_nick (specs[i]);
+    properties_info[i]->name = (gchar *) g_param_spec_get_name (specs[i]);
+    properties_info[i]->nick = (gchar *) g_param_spec_get_nick (specs[i]);
 
     g_value_init (&gvalue, specs[i]->value_type);
     g_param_value_set_default (specs[i], &gvalue);
-    value = (GstDebugger__Value*) g_malloc (sizeof (GstDebugger__Value));
+    value = (GstDebugger__Value *) g_malloc (sizeof (GstDebugger__Value));
     gst_debugger__value__init (value);
-    value->type_name = (gchar*) g_type_name (specs[i]->value_type);
-    value->data.data = (uint8_t*) g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
-    value->data.len = value->data.data == NULL ? 0 : strlen ((gchar*) value->data.data);
+    value->type_name = (gchar *) g_type_name (specs[i]->value_type);
+    value->data.data =
+        (uint8_t *) g_value_serialize (&gvalue, &out_gtype, &out_internal_type);
+    value->data.len =
+        value->data.data == NULL ? 0 : strlen ((gchar *) value->data.data);
     value->gtype = out_gtype;
 
     if (out_gtype == specs[i]->value_type) {
@@ -219,7 +235,8 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
 
   klass.property_info = properties_info;
   gst_data.element_klass = &klass;
-  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_ELEMENT_KLASS;
+  gst_data.info_type_case =
+      GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_ELEMENT_KLASS;
 
   gst_debugserver_tcp_send_packet (tcp_server, client, &gst_data);
 
@@ -233,19 +250,21 @@ static void gst_debugserver_types_send_klass (GstDebugserverTcp *tcp_server, Tcp
   g_free (specs);
 }
 
-void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *client, const GstDebugger__TypeDescriptionRequest *request)
+void
+gst_debugserver_types_send_type (GstDebugserverTcp * tcp_server,
+    TcpClient * client, const GstDebugger__TypeDescriptionRequest * request)
 {
   switch (request->type) {
-  case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__FACTORY:
-    gst_debugserver_types_send_factory (tcp_server, client, request->name);
-    break;
-  case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__ENUM_FLAGS:
-    gst_debugserver_types_send_enum_flags (tcp_server, client, request->name);
-    break;
-  case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__KLASS:
-    gst_debugserver_types_send_klass (tcp_server, client, request->name);
-    break;
-  default:
+    case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__FACTORY:
+      gst_debugserver_types_send_factory (tcp_server, client, request->name);
+      break;
+    case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__ENUM_FLAGS:
+      gst_debugserver_types_send_enum_flags (tcp_server, client, request->name);
+      break;
+    case GST_DEBUGGER__TYPE_DESCRIPTION_REQUEST__TYPE__KLASS:
+      gst_debugserver_types_send_klass (tcp_server, client, request->name);
+      break;
+    default:
       break;
   }
 }

@@ -37,19 +37,20 @@ G_DEFINE_TYPE_WITH_CODE (GstDebugserverTcp, gst_debugserver_tcp,
 
 static gboolean
 gst_debugserver_tcp_run (GThreadedSocketService * service,
-    GSocketConnection * connection, GObject * source_object, gpointer user_data);
+    GSocketConnection * connection, GObject * source_object,
+    gpointer user_data);
 
-static TcpClient*
-gst_debugserver_tcp_add_client (GstDebugserverTcp * tcp, GSocketConnection * connection);
+static TcpClient *gst_debugserver_tcp_add_client (GstDebugserverTcp * tcp,
+    GSocketConnection * connection);
 
 static gboolean
-gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp * tcp, GstDebugger__GStreamerData * gst_data);
-
+gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp *
+    tcp, GstDebugger__GStreamerData * gst_data);
 
 static void
 gst_debugserver_tcp_finalize (GObject * obj)
 {
-  GstDebugserverTcp * tcp = GST_DEBUGSERVER_TCP (obj);
+  GstDebugserverTcp *tcp = GST_DEBUGSERVER_TCP (obj);
 
   if (tcp->service == NULL) {
     return;
@@ -59,10 +60,11 @@ gst_debugserver_tcp_finalize (GObject * obj)
 
   g_mutex_lock (&tcp->clients_mutex);
   while (tcp->clients) {
-    TcpClient* client = tcp->clients->data;
+    TcpClient *client = tcp->clients->data;
     g_cancellable_cancel (client->cancel);
     gint64 end_time = g_get_monotonic_time () + 5 * G_TIME_SPAN_MILLISECOND;
-    g_cond_wait_until (&tcp->client_removed_cond, &tcp->clients_mutex, end_time);
+    g_cond_wait_until (&tcp->client_removed_cond, &tcp->clients_mutex,
+        end_time);
   }
 
   g_mutex_unlock (&tcp->clients_mutex);
@@ -94,15 +96,17 @@ gst_debugserver_tcp_init (GstDebugserverTcp * self)
   g_cond_init (&self->client_removed_cond);
 }
 
-GstDebugserverTcp * gst_debugserver_tcp_new (void)
+GstDebugserverTcp *
+gst_debugserver_tcp_new (void)
 {
-  GstDebugserverTcp * tcp = g_object_new (GST_TYPE_DEBUGSERVER_TCP, NULL);
+  GstDebugserverTcp *tcp = g_object_new (GST_TYPE_DEBUGSERVER_TCP, NULL);
 
   return tcp;
 }
 
 gboolean
-gst_debugserver_tcp_start_server (GstDebugserverTcp * tcp, guint port, gint max_connections)
+gst_debugserver_tcp_start_server (GstDebugserverTcp * tcp, guint port,
+    gint max_connections)
 {
   GError *error = NULL;
 
@@ -136,15 +140,19 @@ gst_debugserver_tcp_run (GThreadedSocketService * service,
   gint size;
   GstDebugger__Command *command;
 
-  GInputStream *istream = g_io_stream_get_input_stream (G_IO_STREAM (client->connection));
+  GInputStream *istream =
+      g_io_stream_get_input_stream (G_IO_STREAM (client->connection));
 
   GST_DEBUG_OBJECT (self, "Received connection from client!\n");
 
-  while ((size = gst_debugger_protocol_utils_read_header (istream, client->cancel)) > 0) {
-    assert (size <= 1024); // todo max message size in global file
+  while ((size =
+          gst_debugger_protocol_utils_read_header (istream,
+              client->cancel)) > 0) {
+    assert (size <= 1024);      // todo max message size in global file
     GST_DEBUG_OBJECT (self, "Received message of size: %d\n", size);
-    gst_debugger_protocol_utils_read_requested_size (istream, size, buffer, NULL);
-    command = gst_debugger__command__unpack (NULL, size, (uint8_t*) buffer);
+    gst_debugger_protocol_utils_read_requested_size (istream, size, buffer,
+        NULL);
+    command = gst_debugger__command__unpack (NULL, size, (uint8_t *) buffer);
     if (command == NULL) {
       g_print ("error unpacking incoming message\n");
       continue;
@@ -176,44 +184,46 @@ gst_debugserver_tcp_run (GThreadedSocketService * service,
   return FALSE;
 }
 
-static TcpClient*
-gst_debugserver_tcp_add_client (GstDebugserverTcp * tcp, GSocketConnection * connection)
+static TcpClient *
+gst_debugserver_tcp_add_client (GstDebugserverTcp * tcp,
+    GSocketConnection * connection)
 {
-  TcpClient *client = (TcpClient*) g_malloc (sizeof (TcpClient));
+  TcpClient *client = (TcpClient *) g_malloc (sizeof (TcpClient));
 
   g_mutex_init (&client->mutex);
   client->connection = connection;
   client->cancel = g_cancellable_new ();
 
-  g_mutex_lock(&tcp->clients_mutex);
+  g_mutex_lock (&tcp->clients_mutex);
   tcp->clients = g_slist_append (tcp->clients, client);
-  g_mutex_unlock(&tcp->clients_mutex);
+  g_mutex_unlock (&tcp->clients_mutex);
 
   return client;
 }
 
-TcpClient*
-gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp, GSocketConnection * connection)
+TcpClient *
+gst_debugserver_tcp_find_client (GstDebugserverTcp * tcp,
+    GSocketConnection * connection)
 {
-  g_mutex_lock(&tcp->clients_mutex);
+  g_mutex_lock (&tcp->clients_mutex);
   GSList *client_list = tcp->clients;
   TcpClient *client;
 
   while (client_list != NULL) {
-    client = (TcpClient*) client_list->data;
+    client = (TcpClient *) client_list->data;
     if (client->connection == connection) {
-      g_mutex_unlock(&tcp->clients_mutex);
+      g_mutex_unlock (&tcp->clients_mutex);
       return client;
     }
     client_list = g_slist_next (client_list);
   }
-  g_mutex_unlock(&tcp->clients_mutex);
- return NULL;
+  g_mutex_unlock (&tcp->clients_mutex);
+  return NULL;
 }
 
 gboolean
 gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
-  GstDebugger__GStreamerData * gst_data)
+    GstDebugger__GStreamerData * gst_data)
 {
   GError *err = NULL;
   GOutputStream *ostream;
@@ -245,12 +255,12 @@ gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
   }
 
   if (size > 1024) {
-    m_buff = (guchar*) g_malloc (size * sizeof (guchar));
+    m_buff = (guchar *) g_malloc (size * sizeof (guchar));
   }
 
   gst_debugger__gstreamer_data__pack (gst_data, m_buff);
 
-  g_output_stream_write (ostream, (gchar*)m_buff, size, NULL, &err);
+  g_output_stream_write (ostream, (gchar *) m_buff, size, NULL, &err);
 
   if (m_buff != buff) {
     g_free (m_buff);
@@ -268,7 +278,8 @@ gst_debugserver_tcp_send_packet (GstDebugserverTcp * tcp, TcpClient * client,
 }
 
 static gboolean
-gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp * tcp, GstDebugger__GStreamerData * gst_data)
+gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp * tcp,
+    GstDebugger__GStreamerData * gst_data)
 {
   TcpClient *client;
   gboolean ret = TRUE;
@@ -276,7 +287,7 @@ gst_debugserver_tcp_send_packet_to_all_clients (GstDebugserverTcp * tcp, GstDebu
   g_mutex_lock (&tcp->clients_mutex);
   GSList *clients = tcp->clients;
   while (clients != NULL) {
-    client = (TcpClient*)clients->data;
+    client = (TcpClient *) clients->data;
     ret = ret && gst_debugserver_tcp_send_packet (tcp, client, gst_data);
     clients = clients->next;
   }

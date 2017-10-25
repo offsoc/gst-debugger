@@ -22,14 +22,16 @@
 
 #include <string.h>
 
-typedef struct {
+typedef struct
+{
   GstDebugLevel level;
-  gchar * category;
+  gchar *category;
 } DebugHook;
 
-static DebugHook * debug_hook_new (GstDebugLevel level, const gchar * category)
+static DebugHook *
+debug_hook_new (GstDebugLevel level, const gchar * category)
 {
-  DebugHook * hook = (DebugHook *) g_malloc (sizeof (DebugHook));
+  DebugHook *hook = (DebugHook *) g_malloc (sizeof (DebugHook));
 
   hook->level = level;
   hook->category = g_strdup (category);
@@ -37,54 +39,63 @@ static DebugHook * debug_hook_new (GstDebugLevel level, const gchar * category)
   return hook;
 }
 
-static void debug_hook_free (DebugHook * hook)
+static void
+debug_hook_free (DebugHook * hook)
 {
   g_free (hook->category);
   g_free (hook);
 }
 
-static void debug_hook_list_free (gpointer ptr)
+static void
+debug_hook_list_free (gpointer ptr)
 {
   g_slist_free_full (ptr, (GDestroyNotify) debug_hook_free);
 }
 
-static gint debug_hook_compare (gconstpointer p1, gconstpointer p2)
+static gint
+debug_hook_compare (gconstpointer p1, gconstpointer p2)
 {
   const DebugHook *w1 = p1, *w2 = p2;
 
   if (w1->level >= w2->level && (w1->category == NULL ||
-      g_strcmp0 (w1->category, w2->category) == 0)) {
+          g_strcmp0 (w1->category, w2->category) == 0)) {
     return 0;
   } else {
     return 1;
   }
 }
 
-static gboolean gst_debugserver_log_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
+static gboolean
+gst_debugserver_log_ok (GstDebugger__GStreamerData * original, gpointer new_ptr)
 {
-  GstDebugger__LogInfo* info = original->log_info;
+  GstDebugger__LogInfo *info = original->log_info;
   GSList *list = new_ptr;
   DebugHook hook = { info->level, info->category };
 
   return g_slist_find_custom (list, &hook, debug_hook_compare) != NULL;
 }
 
-GstDebugserverLog * gst_debugserver_log_new (void)
+GstDebugserverLog *
+gst_debugserver_log_new (void)
 {
-  GstDebugserverLog *log = (GstDebugserverLog*)g_malloc (sizeof(GstDebugserverLog));
-  gst_debugserver_hooks_init (&log->hooks, gst_debugserver_log_ok, (GDestroyNotify) debug_hook_list_free, debug_hook_compare);
+  GstDebugserverLog *log =
+      (GstDebugserverLog *) g_malloc (sizeof (GstDebugserverLog));
+  gst_debugserver_hooks_init (&log->hooks, gst_debugserver_log_ok,
+      (GDestroyNotify) debug_hook_list_free, debug_hook_compare);
 
   return log;
 }
 
-void gst_debugserver_log_free (GstDebugserverLog * log)
+void
+gst_debugserver_log_free (GstDebugserverLog * log)
 {
   gst_debugserver_hooks_deinit (&log->hooks);
   g_free (log);
 }
 
-static gboolean gst_debugserver_log_add_hook (GstDebugserverLog * log, gint level,
-  const gchar * category, TcpClient * client)
+static gboolean
+gst_debugserver_log_add_hook (GstDebugserverLog * log, gint level,
+    const gchar * category, TcpClient * client)
 {
   DebugHook *w = debug_hook_new (level, category);
   if (gst_debugserver_hooks_add_hook (&log->hooks, w, client) == TRUE) {
@@ -95,16 +106,18 @@ static gboolean gst_debugserver_log_add_hook (GstDebugserverLog * log, gint leve
   }
 }
 
-static gboolean gst_debugserver_log_remove_hook (GstDebugserverLog * log,
-  gint level, const gchar * category, TcpClient * client)
+static gboolean
+gst_debugserver_log_remove_hook (GstDebugserverLog * log,
+    gint level, const gchar * category, TcpClient * client)
 {
-  DebugHook w = { level, (gchar*)category };
+  DebugHook w = { level, (gchar *) category };
 
   return gst_debugserver_hooks_remove_hook (&log->hooks, &w, client);
 }
 
-gboolean gst_debugserver_log_set_hook (GstDebugserverLog * log, gboolean enable,
-  gint level, const gchar * category, TcpClient * client)
+gboolean
+gst_debugserver_log_set_hook (GstDebugserverLog * log, gboolean enable,
+    gint level, const gchar * category, TcpClient * client)
 {
   if (enable) {
     return gst_debugserver_log_add_hook (log, level, category, client);
@@ -113,26 +126,28 @@ gboolean gst_debugserver_log_set_hook (GstDebugserverLog * log, gboolean enable,
   }
 }
 
-void gst_debugserver_log_send_log (GstDebugserverLog * log, GstDebugserverTcp * tcp_server,
-  GstDebugCategory * category, GstDebugLevel level, const gchar * file, const gchar * function,
-  gint line, GObject * object, GstDebugMessage * message)
+void
+gst_debugserver_log_send_log (GstDebugserverLog * log,
+    GstDebugserverTcp * tcp_server, GstDebugCategory * category,
+    GstDebugLevel level, const gchar * file, const gchar * function, gint line,
+    GObject * object, GstDebugMessage * message)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__LogInfo log_info = GST_DEBUGGER__LOG_INFO__INIT;
 
-  log_info.level = (gint)level;
-  log_info.category = (gchar*) gst_debug_category_get_name (category);
-  log_info.file = (gchar*) file;
-  log_info.function = (gchar*) function;
+  log_info.level = (gint) level;
+  log_info.category = (gchar *) gst_debug_category_get_name (category);
+  log_info.file = (gchar *) file;
+  log_info.function = (gchar *) function;
   log_info.line = line;
 
   if (GST_IS_OBJECT (object)) {
     log_info.object = GST_OBJECT_NAME (object);
   } else {
-    log_info.object = (gchar*) G_OBJECT_TYPE_NAME (object);
+    log_info.object = (gchar *) G_OBJECT_TYPE_NAME (object);
   }
 
-  log_info.message = (gchar*) gst_debug_message_get (message);
+  log_info.message = (gchar *) gst_debug_message_get (message);
 
   gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_LOG_INFO;
   gst_data.log_info = &log_info;
@@ -147,13 +162,17 @@ sort_by_category_name (gconstpointer a, gconstpointer b)
       gst_debug_category_get_name ((GstDebugCategory *) b));
 }
 
-void gst_debugserver_log_send_debug_categories (GstDebugserverTcp *tcp_server, TcpClient *client)
+void
+gst_debugserver_log_send_debug_categories (GstDebugserverTcp * tcp_server,
+    TcpClient * client)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
-  GstDebugger__DebugCategories debug_categories = GST_DEBUGGER__DEBUG_CATEGORIES__INIT;
+  GstDebugger__DebugCategories debug_categories =
+      GST_DEBUGGER__DEBUG_CATEGORIES__INIT;
   gint categories_count, i = 0;
 
-  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_DEBUG_CATEGORIES;
+  gst_data.info_type_case =
+      GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_DEBUG_CATEGORIES;
 
   GSList *tmp, *all_categories = gst_debug_get_all_categories ();
 
@@ -161,7 +180,8 @@ void gst_debugserver_log_send_debug_categories (GstDebugserverTcp *tcp_server, T
   categories_count = g_slist_length (all_categories);
 
   debug_categories.n_category = categories_count;
-  debug_categories.category = (char **) g_malloc (sizeof (char*) * categories_count);
+  debug_categories.category =
+      (char **) g_malloc (sizeof (char *) * categories_count);
 
   while (tmp) {
     GstDebugCategory *cat = (GstDebugCategory *) tmp->data;
@@ -177,13 +197,14 @@ void gst_debugserver_log_send_debug_categories (GstDebugserverTcp *tcp_server, T
   g_free (debug_categories.category);
 }
 
-void gst_debugserver_log_set_threshold (const gchar * threshold)
+void
+gst_debugserver_log_set_threshold (const gchar * threshold)
 {
   gst_debug_set_threshold_from_string (threshold, TRUE);
 }
 
-void gst_debugserver_log_remove_client (GstDebugserverLog * log,
-  TcpClient * client)
+void
+gst_debugserver_log_remove_client (GstDebugserverLog * log, TcpClient * client)
 {
   gst_debugserver_hooks_remove_client (&log->hooks, client);
 }

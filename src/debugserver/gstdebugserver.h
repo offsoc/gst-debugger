@@ -41,12 +41,14 @@ G_BEGIN_DECLS
  *
  * Opaque #GstDebugserverTracer data structure
  */
-G_DECLARE_FINAL_TYPE(GstDebugserverTracer, gst_debugserver_tracer, GST, DEBUGSERVER_TRACER, GstTracer)
+G_DECLARE_FINAL_TYPE (GstDebugserverTracer, gst_debugserver_tracer, GST,
+    DEBUGSERVER_TRACER, GstTracer)
 
-struct _GstDebugserverTracer {
-  GstTracer 	 parent;
+struct _GstDebugserverTracer
+{
+  GstTracer parent;
 
-  /*< private >*/
+  /*< private > */
   GstPipeline *pipeline;
   gint port;
   gint max_connections;
@@ -57,7 +59,6 @@ struct _GstDebugserverTracer {
   GstDebugserverQE *query;
   GstDebugserverBuffer *buffer;
 };
-
 
 G_END_DECLS
 

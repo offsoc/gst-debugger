@@ -5,19 +5,21 @@
 
 G_BEGIN_DECLS
 
-typedef struct {
+typedef struct
+{
   gchar *type_name;
 } GstUnknownType;
 
-GType gst_unknown_type_get_type(void);
+GType gst_unknown_type_get_type (void);
 
-GstUnknownType *gst_unknown_type_new (const gchar *type_name);
+GstUnknownType *gst_unknown_type_new (const gchar * type_name);
 
-GstElement* gst_utils_get_element_from_path (GstElement * root, const gchar * path);
+GstElement *gst_utils_get_element_from_path (GstElement * root,
+    const gchar * path);
 
-GstPad* gst_utils_get_pad_from_path (GstElement * root, const gchar * pad_path);
+GstPad *gst_utils_get_pad_from_path (GstElement * root, const gchar * pad_path);
 
-gchar* gst_utils_get_object_path (GstObject *obj);
+gchar *gst_utils_get_object_path (GstObject * obj);
 
 gboolean gst_utils_check_pad_has_element_parent (GstPad * pad);
 

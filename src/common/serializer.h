@@ -14,10 +14,11 @@
 
 G_BEGIN_DECLS
 
-gchar * g_value_serialize (GValue * value, GType * type, InternalGType * internal_type);
+gchar * g_value_serialize (GValue * value, GType * type,
+    InternalGType * internal_type);
 
-void g_value_deserialize (GValue * value, GType type, InternalGType internal_type,
-  const gchar * data, gint len);
+void g_value_deserialize (GValue * value, GType type,
+    InternalGType internal_type, const gchar * data, gint len);
 
 G_END_DECLS
 

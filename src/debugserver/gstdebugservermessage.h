@@ -29,22 +29,23 @@ G_BEGIN_DECLS
 
 typedef struct _GstDebugserverMessage GstDebugserverMessage;
 
-struct _GstDebugserverMessage {
+struct _GstDebugserverMessage
+{
   GstDebugserverHooks hooks;
 };
 
-GstDebugserverMessage * gst_debugserver_message_new (void);
+GstDebugserverMessage *gst_debugserver_message_new (void);
 
 void gst_debugserver_message_free (GstDebugserverMessage * msg);
 
 gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
-  TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request);
+    TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request);
 
 void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
-  TcpClient * client);
+    TcpClient * client);
 
 void gst_debugserver_message_send_message (GstDebugserverMessage * msg,
-  GstDebugserverTcp * tcp_server, GstMessage * gst_msg);
+    GstDebugserverTcp * tcp_server, GstMessage * gst_msg);
 
 G_END_DECLS
 

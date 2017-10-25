@@ -27,20 +27,23 @@ G_BEGIN_DECLS
 
 typedef struct _GstDebugserverQE GstDebugserverQE;
 
-struct _GstDebugserverQE {
+struct _GstDebugserverQE
+{
   GstDebugserverHooks hooks;
 };
 
-GstDebugserverQE * gst_debugserver_qe_new (void);
+GstDebugserverQE *gst_debugserver_qe_new (void);
 
 void gst_debugserver_qe_free (GstDebugserverQE * qe);
 
 gboolean gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
-  gint qe_type, GstPad * pad, gchar * pad_path, TcpClient * client);
+    gint qe_type, GstPad * pad, gchar * pad_path, TcpClient * client);
 
-void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj);
+void gst_debugserver_qe_send_qe (GstDebugserverQE * qe,
+    GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj);
 
-void gst_debugserver_qe_remove_client (GstDebugserverQE * evt, TcpClient * client);
+void gst_debugserver_qe_remove_client (GstDebugserverQE * evt,
+    TcpClient * client);
 
 G_END_DECLS
 

@@ -24,15 +24,17 @@
 #include <string.h>
 #include "../common/gst-utils.h"
 
-typedef struct _QEHook {
+typedef struct _QEHook
+{
   gint qe_type;
-  GstPad * pad;
-  gchar * pad_path;
+  GstPad *pad;
+  gchar *pad_path;
 } QEHook;
 
-static QEHook * qe_hook_new (gint type, GstPad * pad, gchar * pad_path)
+static QEHook *
+qe_hook_new (gint type, GstPad * pad, gchar * pad_path)
 {
-  QEHook * hook = (QEHook *) g_malloc (sizeof (QEHook));
+  QEHook *hook = (QEHook *) g_malloc (sizeof (QEHook));
 
   hook->qe_type = type;
   hook->pad = pad;
@@ -41,37 +43,43 @@ static QEHook * qe_hook_new (gint type, GstPad * pad, gchar * pad_path)
   return hook;
 }
 
-static void qe_hook_free (QEHook * hook)
+static void
+qe_hook_free (QEHook * hook)
 {
   g_free (hook->pad_path);
   g_free (hook);
 }
 
-static void qe_hook_list_free (gpointer ptr)
+static void
+qe_hook_list_free (gpointer ptr)
 {
   g_slist_free_full (ptr, (GDestroyNotify) qe_hook_free);
 }
 
-static gint qe_hook_compare (gconstpointer a, gconstpointer b)
+static gint
+qe_hook_compare (gconstpointer a, gconstpointer b)
 {
-  QEHook *a1 = (QEHook*) a;
-  QEHook *b1 = (QEHook*) b;
+  QEHook *a1 = (QEHook *) a;
+  QEHook *b1 = (QEHook *) b;
 
-  if (a1->qe_type == b1->qe_type && (g_strcmp0 (a1->pad_path, b1->pad_path) == 0 || a1->pad == NULL)) {
+  if (a1->qe_type == b1->qe_type && (g_strcmp0 (a1->pad_path, b1->pad_path) == 0
+          || a1->pad == NULL)) {
     return 0;
   } else {
     return 1;
   }
 }
 
-static gboolean gst_debugserver_qe_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
+static gboolean
+gst_debugserver_qe_ok (GstDebugger__GStreamerData * original, gpointer new_ptr)
 {
   GSList *list = new_ptr;
   QEHook hook;
 
   hook.pad = NULL;
 
-  if (original->info_type_case == GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO) {
+  if (original->info_type_case ==
+      GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO) {
     hook.qe_type = original->event_info->type;
     hook.pad_path = original->event_info->pad;
   } else {
@@ -82,22 +90,27 @@ static gboolean gst_debugserver_qe_ok (GstDebugger__GStreamerData* original, gpo
   return g_slist_find_custom (list, &hook, qe_hook_compare) != NULL;
 }
 
-GstDebugserverQE * gst_debugserver_qe_new (void)
+GstDebugserverQE *
+gst_debugserver_qe_new (void)
 {
-  GstDebugserverQE *qe = (GstDebugserverQE*)g_malloc (sizeof(GstDebugserverQE));
-  gst_debugserver_hooks_init (&qe->hooks, gst_debugserver_qe_ok, (GDestroyNotify) qe_hook_list_free, qe_hook_compare);
+  GstDebugserverQE *qe =
+      (GstDebugserverQE *) g_malloc (sizeof (GstDebugserverQE));
+  gst_debugserver_hooks_init (&qe->hooks, gst_debugserver_qe_ok,
+      (GDestroyNotify) qe_hook_list_free, qe_hook_compare);
 
   return qe;
 }
 
-void gst_debugserver_qe_free (GstDebugserverQE * qe)
+void
+gst_debugserver_qe_free (GstDebugserverQE * qe)
 {
   gst_debugserver_hooks_deinit (&qe->hooks);
   g_free (qe);
 }
 
-static gboolean gst_debugserver_qe_add_hook (GstDebugserverQE * qe, gint type,
-  GstPad * pad, gchar * pad_path, TcpClient * client)
+static gboolean
+gst_debugserver_qe_add_hook (GstDebugserverQE * qe, gint type,
+    GstPad * pad, gchar * pad_path, TcpClient * client)
 {
   QEHook *w = qe_hook_new (type, pad, pad_path);
   if (gst_debugserver_hooks_add_hook (&qe->hooks, w, client) == TRUE) {
@@ -108,16 +121,18 @@ static gboolean gst_debugserver_qe_add_hook (GstDebugserverQE * qe, gint type,
   }
 }
 
-static gboolean gst_debugserver_qe_remove_hook (GstDebugserverQE * qe,
-  gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
+static gboolean
+gst_debugserver_qe_remove_hook (GstDebugserverQE * qe,
+    gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
   QEHook w = { type, pad, pad_path };
 
   return gst_debugserver_hooks_remove_hook (&qe->hooks, &w, client);
 }
 
-gboolean gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
-  gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
+gboolean
+gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
+    gint type, GstPad * pad, gchar * pad_path, TcpClient * client)
 {
   if (enable) {
     return gst_debugserver_qe_add_hook (qe, type, pad, pad_path, client);
@@ -126,7 +141,9 @@ gboolean gst_debugserver_qe_set_hook (GstDebugserverQE * qe, gboolean enable,
   }
 }
 
-void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj)
+void
+gst_debugserver_qe_send_qe (GstDebugserverQE * qe,
+    GstDebugserverTcp * tcp_server, GstPad * pad, GstMiniObject * obj)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__EventInfo event_info = GST_DEBUGGER__EVENT_INFO__INIT;
@@ -144,12 +161,15 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
       event_info.structure_data.data = NULL;
       event_info.structure_data.len = 0;
     } else {
-      event_info.structure_data.data = (guchar*) gst_structure_to_string (structure);
-      event_info.structure_data.len = strlen ((gchar*) event_info.structure_data.data);
+      event_info.structure_data.data =
+          (guchar *) gst_structure_to_string (structure);
+      event_info.structure_data.len =
+          strlen ((gchar *) event_info.structure_data.data);
     }
     event_info.pad = pad_path;
     gst_data.event_info = &event_info;
-    gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO;
+    gst_data.info_type_case =
+        GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_EVENT_INFO;
   } else if (GST_IS_QUERY (obj)) {
     GstQuery *query = GST_QUERY_CAST (obj);
     query_info.type = query->type;
@@ -159,11 +179,14 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
       query_info.structure_data.data = NULL;
       query_info.structure_data.len = 0;
     } else {
-      query_info.structure_data.data = (guchar*) gst_structure_to_string (structure);
-      query_info.structure_data.len = strlen ((gchar*) query_info.structure_data.data);
+      query_info.structure_data.data =
+          (guchar *) gst_structure_to_string (structure);
+      query_info.structure_data.len =
+          strlen ((gchar *) query_info.structure_data.data);
     }
     gst_data.query_info = &query_info;
-    gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_QUERY_INFO;
+    gst_data.info_type_case =
+        GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_QUERY_INFO;
   }
 
   gst_debugserver_hooks_send_data (&qe->hooks, tcp_server, &gst_data);
@@ -177,7 +200,8 @@ void gst_debugserver_qe_send_qe (GstDebugserverQE * qe, GstDebugserverTcp * tcp_
   g_free (pad_path);
 }
 
-void gst_debugserver_qe_remove_client (GstDebugserverQE * qe, TcpClient * client)
+void
+gst_debugserver_qe_remove_client (GstDebugserverQE * qe, TcpClient * client)
 {
   gst_debugserver_hooks_remove_client (&qe->hooks, client);
 }

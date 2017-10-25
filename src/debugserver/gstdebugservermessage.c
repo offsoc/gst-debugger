@@ -22,18 +22,22 @@
 #include <string.h>
 #include <assert.h>
 
-static gint g_int_cmp (gconstpointer v1, gconstpointer v2)
+static gint
+g_int_cmp (gconstpointer v1, gconstpointer v2)
 {
   return GPOINTER_TO_INT (v1) != GPOINTER_TO_INT (v2);
 }
 
-static gboolean gst_debugserver_message_ok (GstDebugger__GStreamerData* original, gpointer new_ptr)
+static gboolean
+gst_debugserver_message_ok (GstDebugger__GStreamerData * original,
+    gpointer new_ptr)
 {
   GSList *list = new_ptr;
   GstDebugger__MessageInfo *msg = original->message_info;
 
   while (list) {
-    if (msg->type == GPOINTER_TO_INT (list->data) || GPOINTER_TO_INT (list->data) == GST_MESSAGE_ANY) {
+    if (msg->type == GPOINTER_TO_INT (list->data)
+        || GPOINTER_TO_INT (list->data) == GST_MESSAGE_ANY) {
       return TRUE;
     }
     list = g_slist_next (list);
@@ -42,53 +46,65 @@ static gboolean gst_debugserver_message_ok (GstDebugger__GStreamerData* original
   return FALSE;
 }
 
-GstDebugserverMessage * gst_debugserver_message_new (void)
+GstDebugserverMessage *
+gst_debugserver_message_new (void)
 {
-  GstDebugserverMessage *msg = (GstDebugserverMessage*)g_malloc (sizeof(GstDebugserverMessage));
+  GstDebugserverMessage *msg =
+      (GstDebugserverMessage *) g_malloc (sizeof (GstDebugserverMessage));
 
-  gst_debugserver_hooks_init (&msg->hooks, gst_debugserver_message_ok, (GDestroyNotify) g_slist_free, g_int_cmp);
+  gst_debugserver_hooks_init (&msg->hooks, gst_debugserver_message_ok,
+      (GDestroyNotify) g_slist_free, g_int_cmp);
 
   return msg;
 }
 
-void gst_debugserver_message_free (GstDebugserverMessage * msg)
+void
+gst_debugserver_message_free (GstDebugserverMessage * msg)
 {
   gst_debugserver_hooks_deinit (&msg->hooks);
   g_free (msg);
 }
 
-gboolean gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
-  TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request)
+gboolean
+gst_debugserver_message_set_hook (GstDebugserverMessage * msg,
+    TcpClient * client, gboolean enable, GstDebugger__MessageRequest * request)
 {
   if (enable) {
-    return gst_debugserver_hooks_add_hook (&msg->hooks, GINT_TO_POINTER (request->type), client);
+    return gst_debugserver_hooks_add_hook (&msg->hooks,
+        GINT_TO_POINTER (request->type), client);
   } else {
-    return gst_debugserver_hooks_remove_hook (&msg->hooks, GINT_TO_POINTER (request->type), client);
+    return gst_debugserver_hooks_remove_hook (&msg->hooks,
+        GINT_TO_POINTER (request->type), client);
   }
 }
 
-void gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
-  TcpClient * client)
+void
+gst_debugserver_message_remove_client (GstDebugserverMessage * msg,
+    TcpClient * client)
 {
   gst_debugserver_hooks_remove_client (&msg->hooks, client);
 }
 
 
-void gst_debugserver_message_send_message (GstDebugserverMessage * msg, GstDebugserverTcp * tcp_server,
-  GstMessage * gst_msg)
+void
+gst_debugserver_message_send_message (GstDebugserverMessage * msg,
+    GstDebugserverTcp * tcp_server, GstMessage * gst_msg)
 {
   GstDebugger__GStreamerData gst_data = GST_DEBUGGER__GSTREAMER_DATA__INIT;
   GstDebugger__MessageInfo msg_info = GST_DEBUGGER__MESSAGE_INFO__INIT;
   const GstStructure *msg_structure = gst_message_get_structure (gst_msg);
-  gchar *structure_data = msg_structure != NULL ? gst_structure_to_string (msg_structure) : NULL;
+  gchar *structure_data =
+      msg_structure != NULL ? gst_structure_to_string (msg_structure) : NULL;
 
   msg_info.seqnum = gst_msg->seqnum;
   msg_info.timestamp = gst_msg->timestamp;
   msg_info.type = gst_msg->type;
-  msg_info.structure_data.data = (guchar*) structure_data;
-  msg_info.structure_data.len = structure_data == NULL ? 0 : strlen (structure_data);
+  msg_info.structure_data.data = (guchar *) structure_data;
+  msg_info.structure_data.len =
+      structure_data == NULL ? 0 : strlen (structure_data);
 
-  gst_data.info_type_case = GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_MESSAGE_INFO;
+  gst_data.info_type_case =
+      GST_DEBUGGER__GSTREAMER_DATA__INFO_TYPE_MESSAGE_INFO;
   gst_data.message_info = &msg_info;
 
   gst_debugserver_hooks_send_data (&msg->hooks, tcp_server, &gst_data);

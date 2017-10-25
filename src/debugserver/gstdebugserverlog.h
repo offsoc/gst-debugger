@@ -27,27 +27,30 @@ G_BEGIN_DECLS
 
 typedef struct _GstDebugserverLog GstDebugserverLog;
 
-struct _GstDebugserverLog {
+struct _GstDebugserverLog
+{
   GstDebugserverHooks hooks;
 };
 
-GstDebugserverLog * gst_debugserver_log_new (void);
+GstDebugserverLog *gst_debugserver_log_new (void);
 
 void gst_debugserver_log_free (GstDebugserverLog * log);
 
-void gst_debugserver_log_send_log (GstDebugserverLog * log, GstDebugserverTcp * tcp_server,
-  GstDebugCategory * category, GstDebugLevel level, const gchar * file, const gchar * function,
-  gint line, GObject * object, GstDebugMessage * message);
+void gst_debugserver_log_send_log (GstDebugserverLog * log,
+    GstDebugserverTcp * tcp_server, GstDebugCategory * category,
+    GstDebugLevel level, const gchar * file, const gchar * function, gint line,
+    GObject * object, GstDebugMessage * message);
 
-gboolean gst_debugserver_log_set_hook (GstDebugserverLog * log, gboolean enable, gint level,
-  const gchar * category, TcpClient * client);
+gboolean gst_debugserver_log_set_hook (GstDebugserverLog * log, gboolean enable,
+    gint level, const gchar * category, TcpClient * client);
 
-void gst_debugserver_log_send_debug_categories (GstDebugserverTcp *tcp_server, TcpClient *client);
+void gst_debugserver_log_send_debug_categories (GstDebugserverTcp * tcp_server,
+    TcpClient * client);
 
 void gst_debugserver_log_set_threshold (const gchar * threshold);
 
 void gst_debugserver_log_remove_client (GstDebugserverLog * log,
-  TcpClient * client);
+    TcpClient * client);
 
 G_END_DECLS
 

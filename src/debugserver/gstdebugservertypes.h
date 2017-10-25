@@ -25,8 +25,8 @@
 
 #include "gstdebugservertcp.h"
 
-void gst_debugserver_types_send_type (GstDebugserverTcp *tcp_server, TcpClient *client,
-    const GstDebugger__TypeDescriptionRequest *request);
+void gst_debugserver_types_send_type (GstDebugserverTcp * tcp_server,
+    TcpClient * client, const GstDebugger__TypeDescriptionRequest * request);
 
 
 #endif /* __GST_DEBUGSERVER_ENUM_H__ */

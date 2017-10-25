@@ -26,28 +26,32 @@
 
 G_BEGIN_DECLS
 
-typedef gboolean (*OkFunction)(GstDebugger__GStreamerData*, gpointer);
+typedef gboolean (*OkFunction) (GstDebugger__GStreamerData *, gpointer);
 
-typedef struct {
+typedef struct
+{
   GHashTable *clients;
   GMutex mutex;
   OkFunction ok_function;
   GCompareFunc cmp_function;
 } GstDebugserverHooks;
 
-void gst_debugserver_hooks_init (GstDebugserverHooks * hooks, OkFunction ok_function, GDestroyNotify hash_destroy, GCompareFunc cmp_func);
+void gst_debugserver_hooks_init (GstDebugserverHooks * hooks,
+    OkFunction ok_function, GDestroyNotify hash_destroy, GCompareFunc cmp_func);
 
 void gst_debugserver_hooks_deinit (GstDebugserverHooks * hooks);
 
 gboolean gst_debugserver_hooks_add_hook (GstDebugserverHooks * hooks,
-  gpointer data, TcpClient * client);
+    gpointer data, TcpClient * client);
 
 gboolean gst_debugserver_hooks_remove_hook (GstDebugserverHooks * hooks,
-  gpointer data, TcpClient * client);
+    gpointer data, TcpClient * client);
 
-void gst_debugserver_hooks_remove_client (GstDebugserverHooks * hooks, TcpClient * client);
+void gst_debugserver_hooks_remove_client (GstDebugserverHooks * hooks,
+    TcpClient * client);
 
-void gst_debugserver_hooks_send_data (GstDebugserverHooks * hooks, GstDebugserverTcp * tcp_server, GstDebugger__GStreamerData * gst_data);
+void gst_debugserver_hooks_send_data (GstDebugserverHooks * hooks,
+    GstDebugserverTcp * tcp_server, GstDebugger__GStreamerData * gst_data);
 
 G_END_DECLS
 
