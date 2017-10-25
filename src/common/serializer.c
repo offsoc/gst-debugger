@@ -13,6 +13,7 @@ gchar *
 g_value_serialize (GValue * value, GType * type, InternalGType * internal_type)
 {
   GValue tmp = G_VALUE_INIT;
+  gchar *serialized_value = NULL;
 
   if (G_TYPE_IS_FUNDAMENTAL (value->g_type)
       && value->g_type < G_TYPE_RESERVED_USER_FIRST) {
@@ -34,7 +35,7 @@ g_value_serialize (GValue * value, GType * type, InternalGType * internal_type)
   } else if (value->g_type == GST_TYPE_CAPS) {
     g_value_init (&tmp, G_TYPE_STRING);
     *type = G_TYPE_STRING;
-    g_value_set_string (&tmp, gst_caps_to_string (gst_value_get_caps (value)));
+    g_value_take_string (&tmp, gst_caps_to_string (gst_value_get_caps (value)));
     *internal_type = INTERNAL_GTYPE_CAPS;
   } else if (value->g_type == GST_TYPE_OBJECT) {
     g_value_init (&tmp, G_TYPE_STRING);
@@ -48,7 +49,7 @@ g_value_serialize (GValue * value, GType * type, InternalGType * internal_type)
     }
     snprintf (buffer, 128, "(GstObject:name) %s", name);
     *type = G_TYPE_STRING;
-    g_value_set_string (&tmp, g_strdup (buffer));
+    g_value_set_string (&tmp, buffer);
     *internal_type = INTERNAL_GTYPE_GST_OBJECT;
   } else {
     g_value_init (&tmp, G_TYPE_STRING);
@@ -56,10 +57,13 @@ g_value_serialize (GValue * value, GType * type, InternalGType * internal_type)
     snprintf (buffer, 128, "%s", g_type_name (value->g_type));
     *type = G_TYPE_STRING;
     *internal_type = INTERNAL_GTYPE_UNKNOWN;
-    g_value_set_string (&tmp, g_strdup (buffer));
+    g_value_set_string (&tmp, buffer);
   }
 
-  return gst_value_serialize (&tmp);
+  serialized_value = gst_value_serialize (&tmp);
+  g_value_unset (&tmp);
+
+  return serialized_value;
 }
 
 
@@ -113,6 +117,7 @@ g_value_deserialize (GValue * value, GType type, InternalGType internal_type,
       g_value_unset (value);
       g_value_init (value, GST_TYPE_CAPS);
       gst_value_set_caps (value, caps);
+      gst_caps_unref (caps);
       break;
     }
   }

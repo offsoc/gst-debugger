@@ -428,13 +428,15 @@ gst_debugserver_process_property_request (GstDebugserverTracer * self,
 
   if (request->name == NULL || request->name[0] == '\0') {
     spec =
-        g_object_class_list_properties (G_OBJECT_CLASS (GST_ELEMENT_GET_CLASS
-            (element)), &n_properties);
+        g_object_class_list_properties (G_OBJECT_GET_CLASS
+            (element), &n_properties);
 
     for (i = 0; i < n_properties; i++) {
       gst_debugserver_send_single_property (self, client, element,
           spec[i]->name);
     }
+
+    g_free (spec);
   } else {
     gst_debugserver_send_single_property (self, client, element, request->name);
   }
