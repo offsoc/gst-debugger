@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-04-13 20:16+0000\n"
-"PO-Revision-Date: 2017-05-23 11:39+0700\n"
+"POT-Creation-Date: 2017-10-20 18:16+0000\n"
+"PO-Revision-Date: 2017-11-30 13:19+0700\n"
+"Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <gnome-l10n-id@googlegroups.com>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: ../src/gst-debugger/main_window.cpp:129
 msgid "Connected"
@@ -54,7 +54,7 @@ msgstr "Kehadiran"
 msgid "Direction"
 msgstr "Arah"
 
-#: ../src/gst-debugger/ui_utils.cpp:145
+#: ../src/gst-debugger/ui_utils.cpp:147
 msgid "more..."
 msgstr "lainnya..."
 
@@ -253,6 +253,10 @@ msgstr "ya"
 msgid "no"
 msgstr "tidak"
 
+#: ../src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Galat"
+
 #: ../src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
 msgstr "Pesan"
@@ -342,11 +346,11 @@ msgstr "Kategori"
 msgid "Client isn't connected to a server!"
 msgstr "Klien tidak terhubung ke server!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr "Tidak bisa masuk ke elemen. Elemen tidak dipilih."
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr "Tidak bisa masuk ke elemen. Elemen yang dipilih adalah pad."
 
@@ -355,7 +359,7 @@ msgstr "Tidak bisa masuk ke elemen. Elemen yang dipilih adalah pad."
 msgid " (press 'refresh' button)"
 msgstr " (tekan tombol 'segarkan')"
 
-#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
+#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
 msgid "unsupported type: "
 msgstr "tipe yang tidak didukung: "
 
