@@ -1,15 +1,14 @@
 # Brazilian Portuguese translation for gst-debugger.
-# Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
+# Copyright (C) 2018 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2015.
-#
+# Rafael Fontenelle <rafaelff@gnome.org>, 2015, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-14 20:59+0000\n"
-"PO-Revision-Date: 2016-03-18 03:46-0300\n"
+"POT-Creation-Date: 2017-10-20 18:16+0000\n"
+"PO-Revision-Date: 2018-01-13 08:48-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -17,7 +16,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Virtaal 1.0.0-beta1\n"
+"X-Project-Style: gnome\n"
 
 #: ../src/gst-debugger/main_window.cpp:129
 msgid "Connected"
@@ -55,7 +55,7 @@ msgstr "Presença"
 msgid "Direction"
 msgstr "Direção"
 
-#: ../src/gst-debugger/ui_utils.cpp:145
+#: ../src/gst-debugger/ui_utils.cpp:147
 msgid "more..."
 msgstr "mais..."
 
@@ -254,6 +254,10 @@ msgstr "sim"
 msgid "no"
 msgstr "não"
 
+#: ../src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Erro"
+
 #: ../src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
 msgstr "Mensagens"
@@ -343,12 +347,12 @@ msgstr "Categoria"
 msgid "Client isn't connected to a server!"
 msgstr "O cliente não está conectado a um servidor!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr "Não foi possível entrar no elemento. Elemento não estiver selecionado."
 
 # https://gstreamer.freedesktop.org/data/doc/gstreamer/head/manual/html/chapter-pads.html
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr "Não foi possível entrar no elemento. Elemento selecionado é um pad."
 
@@ -357,7 +361,7 @@ msgstr "Não foi possível entrar no elemento. Elemento selecionado é um pad."
 msgid " (press 'refresh' button)"
 msgstr " (pressione o botão 'atualizar')"
 
-#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
+#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
 msgid "unsupported type: "
 msgstr "Sem suporte ao tipo: "
 
