@@ -1,24 +1,25 @@
 # Hungarian translation for gst-debugger.
-# Copyright (C) 2016. Free Software Foundation, Inc.
+# Copyright (C) 2016, 2018 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gst-debugger package.
 #
 # Balázs Meskó <meskobalazs at gmail dot com>, 2016.
 # Gabor Kelemen <kelemeng at ubuntu dot com>, 2016.
+# Balázs Úr <urbalazs at gmail dot com>, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
 "debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-03-27 20:17+0000\n"
-"PO-Revision-Date: 2016-03-28 22:00+0200\n"
-"Last-Translator: Gabor Kelemen <kelemeng at ubuntu dot com>\n"
+"POT-Creation-Date: 2017-10-20 18:16+0000\n"
+"PO-Revision-Date: 2018-03-04 22:23+0100\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <gnome-hu-list@gnome.org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 1.2\n"
 
 #: ../src/gst-debugger/main_window.cpp:129
 msgid "Connected"
@@ -56,7 +57,7 @@ msgstr "Jelenlét"
 msgid "Direction"
 msgstr "Irány"
 
-#: ../src/gst-debugger/ui_utils.cpp:145
+#: ../src/gst-debugger/ui_utils.cpp:147
 msgid "more..."
 msgstr "bővebben…"
 
@@ -255,6 +256,10 @@ msgstr "igen"
 msgid "no"
 msgstr "nem"
 
+#: ../src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Hiba"
+
 #: ../src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
 msgstr "Üzenetek"
@@ -344,11 +349,11 @@ msgstr "Kategória"
 msgid "Client isn't connected to a server!"
 msgstr "Az ügyfél nem kapcsolódik a kiszolgálóhoz!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:173
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr "Nem lehet belépni az elembe. Az elem nincs kiválasztva."
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:178
+#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr "Nem lehet belépni az elembe. A kiválasztott elem egy foglalat."
 
@@ -357,7 +362,7 @@ msgstr "Nem lehet belépni az elembe. A kiválasztott elem egy foglalat."
 msgid " (press 'refresh' button)"
 msgstr " (nyomja meg a „frissítés” gombot)"
 
-#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
+#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
 msgid "unsupported type: "
 msgstr "nem támogatott típus: "
 
