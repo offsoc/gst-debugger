@@ -1,3 +1,6 @@
 subdir('common')
 subdir('debugserver')
-subdir('gst-debugger')
+
+if not get_option('disable_gst_debugger')
+   subdir('gst-debugger')
+endif
