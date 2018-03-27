@@ -545,6 +545,6 @@ plugin_init (GstPlugin * plugin)
 
 #define PACKAGE "gst-debugger"
 
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, debugtracers,
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR, debugserver,
     "GStreamer core tracers", plugin_init, "1.0", "LGPL",
     "gst-debugger", "http://github.com/loganek")
