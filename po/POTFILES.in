@@ -19,5 +19,5 @@ src/gst-debugger/pipeline-drawer/graph_module.cpp
 src/gst-debugger/gvalue-converter/gvalue_flags.cpp
 src/gst-debugger/gvalue-converter/gvalue_enum.cpp
 src/gst-debugger/gvalue-converter/gvalue_unknown.cpp
-[type: gettext/glade]src/gst-debugger/ui/gst-debugger.glade
-[type: gettext/glade]src/gst-debugger/ui/gst-debugger-dialogs.glade
+src/gst-debugger/ui/gst-debugger.glade
+src/gst-debugger/ui/gst-debugger-dialogs.glade
