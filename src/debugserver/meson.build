@@ -10,7 +10,7 @@ gstdebugger_sources = [
     'gstdebugserverbuffer.c']
 
 gstdebugger = shared_library(
-    'gstdebugserver-@0@'.format(gst_apiversion),
+    'gstdebugserver',
     gstdebugger_sources,
     dependencies : gstdebugger_common_dep,
     install : true,
