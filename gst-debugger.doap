@@ -10,7 +10,7 @@
   <mailing-list rdf:resource="mailto:gstreamer-devel@lists.freedesktop.org" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#apps" />
   <programming-language>C, C++</programming-language>
-  <bug-database rdf:resource="http://bugzilla.gnome.org/buglist.cgi?product=gst-debugger" />
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/gst-debugger/issues/" />
   <download-page rdf:resource="http://download.gnome.org/sources/gst-debugger/" />
 
   <maintainer>
