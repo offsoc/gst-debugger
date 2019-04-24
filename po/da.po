@@ -1,0 +1,473 @@
+# Danish translation for gst-debugger.
+# Copyright (C) 2019 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+# scootergrisen, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
+"POT-Creation-Date: 2018-12-14 00:58+0000\n"
+"PO-Revision-Date: 2019-04-24 00:00+0200\n"
+"Last-Translator: scootergrisen\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "Forbundet"
+
+#: src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "Afbryd forbindelsen"
+
+#: src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "Forbindelsen er afbrudt"
+
+#: src/gst-debugger/main_window.cpp:135
+#: src/gst-debugger/ui/gst-debugger.glade:74
+msgid "Connect"
+msgstr "Opret forbindelse"
+
+#: src/gst-debugger/ui_utils.cpp:24 src/gst-debugger/ui_utils.cpp:36
+#: src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "UKENDT"
+
+#: src/gst-debugger/ui_utils.cpp:56 src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "Skabelon"
+
+#: src/gst-debugger/ui_utils.cpp:64
+#: src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "Tilstedeværelse"
+
+#: src/gst-debugger/ui_utils.cpp:65
+#: src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "Retning"
+
+#: src/gst-debugger/ui_utils.cpp:147
+msgid "more..."
+msgstr "mere …"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "Egenskab"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "Værdi"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "ingen"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "Egenskaber"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "Kaldenavn"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr "Blurb"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "Flag"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "Standardværdi"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr "Fjernfabrikker"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr "Padskabeloner"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: src/gst-debugger/modules/base_main_module.cpp:56
+#: src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "Navn"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr "Fjern-enum-typer"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "Egenskabens navn"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "Egenskabens værdi"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr "Peer pad"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:234
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr "Nuværende caps"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "ukendt"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:244
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr "Tilladte caps"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "Information"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "PING OK!"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't respond"
+msgstr "Serveren svarer ikke"
+
+#: src/gst-debugger/modules/event_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:232
+msgid "Events"
+msgstr "Hændelser"
+
+#: src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "hændelsens type"
+
+#: src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "hændelsens tidsstempel"
+
+#: src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "hændelsens sekvensnummer"
+
+#: src/gst-debugger/modules/event_module.cpp:30
+#: src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr "sendt fra pad"
+
+#: src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "Hændelse af type: "
+
+#: src/gst-debugger/modules/query_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:190
+msgid "Queries"
+msgstr "Forespørgsler"
+
+#: src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "forespørgslens type"
+
+#: src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "Forespørgsel af type: "
+
+#: src/gst-debugger/modules/buffer_module.cpp:19
+#: src/gst-debugger/ui/gst-debugger.glade:218
+msgid "Buffers"
+msgstr "Buffere"
+
+#: src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "Pts"
+
+#: src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "Dts"
+
+#: src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "Varighed"
+
+#: src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "Forskydning"
+
+#: src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "Forskydningens slutning"
+
+#: src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "Datastørrelse"
+
+#: src/gst-debugger/modules/buffer_module.cpp:34
+#: src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "Objektets sti"
+
+#: src/gst-debugger/modules/buffer_module.cpp:39
+#: src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "Data"
+
+#: src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "Buffer af størrelse "
+
+#: src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "Send data"
+
+#: src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "ingen (alle stier)"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "ja"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "nej"
+
+#: src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Fejl"
+
+#: src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "Meddelelser"
+
+#: src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "meddelelsens type"
+
+#: src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "meddelelsens tidsstempel"
+
+#: src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "meddelelsens sekvensnummer"
+
+#: src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "objekt"
+
+#: src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "Meddelelse af type: "
+
+#: src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "Type: "
+
+#: src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "Type"
+
+#: src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "Fejlsøgningslogge"
+
+#: src/gst-debugger/modules/log_module.cpp:23
+#: src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "Niveau"
+
+#: src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "Kategorinavn"
+
+#: src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "Fil"
+
+#: src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "Funktion"
+
+#: src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "Linje"
+
+#: src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "Meddelelse"
+
+#: src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "Fejlsøgningskategori: "
+
+#: src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "Logniveau: "
+
+#: src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "Logtærskel:"
+
+#: src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "Overskriv nuværende tærskel"
+
+#: src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "Indstil tærskel"
+
+#: src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "Kategori"
+
+#: src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "Klienten er ikke forbundet til en server!"
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
+msgid "Can't get into the element. Element is not selected."
+msgstr "Kan ikke gå ind i elementet. Elementet er ikke valgt."
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
+msgid "Can't get into the element. Selected element is a pad."
+msgstr "Kan ikke gå ind i elementet. Det valgte element er en pad."
+
+#: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr " (tryk på “opdater”-knappen)"
+
+#: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
+msgid "unsupported type: "
+msgstr "ikke-understøttet type: "
+
+#: src/gst-debugger/ui/gst-debugger.glade:7
+msgid "GStreamer Debugger"
+msgstr "GStreamer-fejlsøger"
+
+#: src/gst-debugger/ui/gst-debugger.glade:22
+msgid "_File"
+msgstr "_Fil"
+
+#: src/gst-debugger/ui/gst-debugger.glade:32
+msgid "Quit"
+msgstr "Afslut"
+
+#: src/gst-debugger/ui/gst-debugger.glade:43
+msgid "_Edit"
+msgstr "_Rediger"
+
+#: src/gst-debugger/ui/gst-debugger.glade:53
+msgid "Preferences..."
+msgstr "Indstillinger …"
+
+#: src/gst-debugger/ui/gst-debugger.glade:64
+msgid "_Server"
+msgstr "_Server"
+
+#: src/gst-debugger/ui/gst-debugger.glade:88
+msgid "Remote Enum Types..."
+msgstr "Fjern-enum-typer …"
+
+#: src/gst-debugger/ui/gst-debugger.glade:96
+msgid "Remote Factories..."
+msgstr "Fjernfabrikker …"
+
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: src/gst-debugger/ui/gst-debugger.glade:104
+msgid "Remote Klasses..."
+msgstr "Fjernklasser …"
+
+#: src/gst-debugger/ui/gst-debugger.glade:116
+msgid "Addins"
+msgstr "Tilføjelser"
+
+#: src/gst-debugger/ui/gst-debugger.glade:132
+msgid "Reload"
+msgstr "Genindlæs"
+
+#: src/gst-debugger/ui/gst-debugger.glade:144
+msgid "_Help"
+msgstr "_Hjælp"
+
+#: src/gst-debugger/ui/gst-debugger.glade:154
+msgid "About..."
+msgstr "Om …"
+
+#: src/gst-debugger/ui/gst-debugger.glade:177
+msgid "Log messages"
+msgstr "Logmeddelelser"
+
+#: src/gst-debugger/ui/gst-debugger.glade:204
+msgid "Bus messages"
+msgstr "Busmeddelelser"
+
+#: src/gst-debugger/ui/gst-debugger.glade:320
+msgid "Clear"
+msgstr "Ryd"
+
+#: src/gst-debugger/ui/gst-debugger.glade:377
+msgid "Selected element:"
+msgstr "Valgte element:"
+
+#: src/gst-debugger/ui/gst-debugger.glade:401
+msgid "Current bin: "
+msgstr "Nuværende bin: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "Ophavsret (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
+msgid "Remote GStreamer Debugger"
+msgstr "Fjern-GStreamer-fejlsøger"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
+msgid "Close"
+msgstr "Luk"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
+msgid "Display format: "
+msgstr "Visningsformat: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
+msgid "Columns in row: "
+msgstr "Kolonner i række: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
+msgid "SET"
+msgstr "INDSTIL"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
+msgid "IP Address:"
+msgstr "IP-adresse:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
+msgid "Port:"
+msgstr "Port:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
+msgid "Remote Data"
+msgstr "Fjerndata"
