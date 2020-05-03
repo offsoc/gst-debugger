@@ -1,0 +1,476 @@
+# Ukrainian translation for gst-debugger.
+# Copyright (C) 2020 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
+"POT-Creation-Date: 2019-09-16 06:21+0000\n"
+"PO-Revision-Date: 2020-04-05 16:54+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Lokalize 20.07.70\n"
+
+#: src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "З'єднано"
+
+#: src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "Від’єднатися"
+
+#: src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "Роз'єднано"
+
+#: src/gst-debugger/main_window.cpp:135
+#: src/gst-debugger/ui/gst-debugger.glade:74
+msgid "Connect"
+msgstr "З'єднатися"
+
+#: src/gst-debugger/ui_utils.cpp:24 src/gst-debugger/ui_utils.cpp:36
+#: src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "НЕВІДОМО"
+
+#: src/gst-debugger/ui_utils.cpp:56 src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "Шаблон"
+
+#: src/gst-debugger/ui_utils.cpp:64
+#: src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "Присутній"
+
+#: src/gst-debugger/ui_utils.cpp:65
+#: src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "Напрямок"
+
+#: src/gst-debugger/ui_utils.cpp:147
+msgid "more..."
+msgstr "ще…"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "Властивість"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "Значення"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "немає"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "Властивості"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "Псевдонім"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr "Анотація"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "Прапорці"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "Типове значення"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr "Віддалені обробники"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr "Шаблони площинок (pad)"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: src/gst-debugger/modules/base_main_module.cpp:56
+#: src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "Назва"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "Опис"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr "Віддалені типи переліків"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "Назва властивості"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "Значення властивості"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr "Площинка (pad) вузла"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:234
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr "Поточні можливості"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "невідомо"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:244
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr "Дозволені можливості"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "Інформація"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "ПІНГ ПРОЙШОВ!"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't respond"
+msgstr "Сервер не відповідає"
+
+#: src/gst-debugger/modules/event_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:232
+msgid "Events"
+msgstr "Події"
+
+#: src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "тип події"
+
+#: src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "часова позначка події"
+
+#: src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "номер події у послідовності"
+
+#: src/gst-debugger/modules/event_module.cpp:30
+#: src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr "надіслано з площинки (pad)"
+
+#: src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "Подія типу: "
+
+#: src/gst-debugger/modules/query_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:190
+msgid "Queries"
+msgstr "Запити"
+
+#: src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "тип запиту"
+
+#: src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "Тип запиту: "
+
+#: src/gst-debugger/modules/buffer_module.cpp:19
+#: src/gst-debugger/ui/gst-debugger.glade:218
+msgid "Buffers"
+msgstr "Буфери"
+
+#: src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "PTS"
+
+#: src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "DTS"
+
+#: src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "Тривалість"
+
+#: src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "Зсув"
+
+#: src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "Кінець зсуву"
+
+#: src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "Розмір даних"
+
+#: src/gst-debugger/modules/buffer_module.cpp:34
+#: src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "Шлях до об'єкта"
+
+#: src/gst-debugger/modules/buffer_module.cpp:39
+#: src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "Дані"
+
+#: src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "Розмір буфера"
+
+#: src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "Надіслати дані"
+
+#: src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "немає (будь-який шлях)"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "так"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "ні"
+
+#: src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Помилка"
+
+#: src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "Повідомлення"
+
+#: src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "Тип повідомлення"
+
+#: src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "часова позначка повідомлення"
+
+#: src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "номер повідомлення у послідовності"
+
+#: src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "об'єкт"
+
+#: src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "Повідомлення типу: "
+
+#: src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "Тип: "
+
+#: src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "Тип"
+
+#: src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "Журнал діагностики"
+
+#: src/gst-debugger/modules/log_module.cpp:23
+#: src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "Рівень"
+
+#: src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "Назва категорії"
+
+#: src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "Файл"
+
+#: src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "Функція"
+
+#: src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "Рядок"
+
+#: src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "Повідомлення"
+
+#: src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "Категорія діагностики: "
+
+#: src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "Рівень журналювання: "
+
+#: src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "Поріг журналювання:"
+
+#: src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "Перезаписати поточний поріг"
+
+#: src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "Встановити поріг"
+
+#: src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "Категорія"
+
+#: src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "Клієнт не з'єднано із сервером!"
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
+msgid "Can't get into the element. Element is not selected."
+msgstr "Не вдалося увійти до елемента. Елемент не вибрано."
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
+msgid "Can't get into the element. Selected element is a pad."
+msgstr "Не вдалося увійти до елемента. Вибраний елемент є площинкою (pad)."
+
+#: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr " (натисніть кнопку «Освіжити»)"
+
+#: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
+msgid "unsupported type: "
+msgstr "непідтримуваний тип: "
+
+#: src/gst-debugger/ui/gst-debugger.glade:7
+msgid "GStreamer Debugger"
+msgstr "Засіб діагностики GStreamer"
+
+#: src/gst-debugger/ui/gst-debugger.glade:22
+msgid "_File"
+msgstr "_Файл"
+
+#: src/gst-debugger/ui/gst-debugger.glade:32
+msgid "Quit"
+msgstr "Вийти"
+
+#: src/gst-debugger/ui/gst-debugger.glade:43
+msgid "_Edit"
+msgstr "З_міни"
+
+#: src/gst-debugger/ui/gst-debugger.glade:53
+msgid "Preferences..."
+msgstr "Налаштування…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:64
+msgid "_Server"
+msgstr "_Сервер"
+
+#: src/gst-debugger/ui/gst-debugger.glade:88
+msgid "Remote Enum Types..."
+msgstr "Віддалені типи переліків…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:96
+msgid "Remote Factories..."
+msgstr "Віддалені обробники…"
+
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: src/gst-debugger/ui/gst-debugger.glade:104
+msgid "Remote Klasses..."
+msgstr "Віддалені Klass-и…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:116
+msgid "Addins"
+msgstr "Додатки"
+
+#: src/gst-debugger/ui/gst-debugger.glade:132
+msgid "Reload"
+msgstr "Перезавантажити"
+
+#: src/gst-debugger/ui/gst-debugger.glade:144
+msgid "_Help"
+msgstr "_Довідка"
+
+#: src/gst-debugger/ui/gst-debugger.glade:154
+msgid "About..."
+msgstr "Про програму…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:177
+msgid "Log messages"
+msgstr "Повідомлення журналу"
+
+#: src/gst-debugger/ui/gst-debugger.glade:204
+msgid "Bus messages"
+msgstr "Повідомлення шини"
+
+#: src/gst-debugger/ui/gst-debugger.glade:320
+msgid "Clear"
+msgstr "Спорожнити"
+
+#: src/gst-debugger/ui/gst-debugger.glade:377
+msgid "Selected element:"
+msgstr "Вибраний елемент:"
+
+#: src/gst-debugger/ui/gst-debugger.glade:401
+msgid "Current bin: "
+msgstr "Поточна позиція: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "© Marcin Kolny <marcin.kolny@gmail.com>, 2015"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
+msgid "Remote GStreamer Debugger"
+msgstr "Засіб віддаленої діагностики GStreamer"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
+msgid "Close"
+msgstr "Закрити"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
+msgid "Display format: "
+msgstr "Формат показу:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
+msgid "Columns in row: "
+msgstr "Стовпчиків у рядку: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
+msgid "SET"
+msgstr "ВСТАНОВЛЕНО"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
+msgid "IP Address:"
+msgstr "Адреса IP:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
+msgid "Port:"
+msgstr "Порт:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
+msgid "Remote Data"
+msgstr "Віддалені дані"
