@@ -1,0 +1,475 @@
+# Romanian translation for gst-debugger.
+# Copyright (C) 2020 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+# Florentina Mușat <florentina.musat.28@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
+"POT-Creation-Date: 2019-09-16 06:21+0000\n"
+"PO-Revision-Date: 2020-07-23 15:51+0300\n"
+"Language-Team: Romanian <gnomero-list@lists.sourceforge.net>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);;\n"
+"Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
+"X-Generator: Poedit 2.4\n"
+
+#: src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "Conectat"
+
+#: src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "Deconectează"
+
+#: src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "Deconectat"
+
+#: src/gst-debugger/main_window.cpp:135
+#: src/gst-debugger/ui/gst-debugger.glade:74
+msgid "Connect"
+msgstr "Conectează"
+
+#: src/gst-debugger/ui_utils.cpp:24 src/gst-debugger/ui_utils.cpp:36
+#: src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "NECUNOSCUT"
+
+#: src/gst-debugger/ui_utils.cpp:56 src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "Șablon"
+
+#: src/gst-debugger/ui_utils.cpp:64
+#: src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "Prezență"
+
+#: src/gst-debugger/ui_utils.cpp:65
+#: src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "Direcție"
+
+#: src/gst-debugger/ui_utils.cpp:147
+msgid "more..."
+msgstr "mai multe..."
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "Proprietate"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "Valoare"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "nimic"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "Proprietăți"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "Pseudonim"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr "Descriere"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "Fanioane"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "Valoare implicită"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr "Fabrici de la distanță"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr "Șabloane suport"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: src/gst-debugger/modules/base_main_module.cpp:56
+#: src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "Nume"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "Descriere"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr "Tipuri de enumerare de la distanță"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "Nume proprietate"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "Valoare proprietate"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr "Suport partener"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:234
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr "Majuscule curente"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "necunoscut"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:244
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr "Majuscule permise"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "Informații"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "PING OK!"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't respond"
+msgstr "Serverul nu răspunde"
+
+#: src/gst-debugger/modules/event_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:232
+msgid "Events"
+msgstr "Evenimente"
+
+#: src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "tip de eveniment"
+
+#: src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "datare eveniment"
+
+#: src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "număr de secvență de eveniment"
+
+#: src/gst-debugger/modules/event_module.cpp:30
+#: src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr "trimis de la suport"
+
+#: src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "Eveniment de tipul: "
+
+#: src/gst-debugger/modules/query_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:190
+msgid "Queries"
+msgstr "Interogări"
+
+#: src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "tip de interogare"
+
+#: src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "Tip de interogare: "
+
+#: src/gst-debugger/modules/buffer_module.cpp:19
+#: src/gst-debugger/ui/gst-debugger.glade:218
+msgid "Buffers"
+msgstr "Preîncărcări"
+
+#: src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "Pts"
+
+#: src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "Dts"
+
+#: src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "Durată"
+
+#: src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "Decalaj"
+
+#: src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "Sfârșit decalaj"
+
+#: src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "Dimensiune date"
+
+#: src/gst-debugger/modules/buffer_module.cpp:34
+#: src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "Calea obiectului"
+
+#: src/gst-debugger/modules/buffer_module.cpp:39
+#: src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "Date"
+
+#: src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "Preîncărcare de dimensiunea "
+
+#: src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "Trimite datele"
+
+#: src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "nimic (orice cale)"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "da"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "nu"
+
+#: src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Eroare"
+
+#: src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "Mesaje"
+
+#: src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "tip de mesaj"
+
+#: src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "datare de mesaj"
+
+#: src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "număr de secvență de mesaj"
+
+#: src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "obiect"
+
+#: src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "Mesaj de tipul: "
+
+#: src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "Tip: "
+
+#: src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "Tip"
+
+#: src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "Înregistrări de depanare"
+
+#: src/gst-debugger/modules/log_module.cpp:23
+#: src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "Nivel"
+
+#: src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "Nume categorie"
+
+#: src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "Fișier"
+
+#: src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "Funcție"
+
+#: src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "Linie"
+
+#: src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "Mesaj"
+
+#: src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "Categorie de depanare: "
+
+#: src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "Nivel de înregistrare: "
+
+#: src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "Prag de înregistrare:"
+
+#: src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "Suprascrie pragul curent"
+
+#: src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "Stabilește pragul"
+
+#: src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "Categorie"
+
+#: src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "Clientul nu este conectat la un server!"
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
+msgid "Can't get into the element. Element is not selected."
+msgstr "Nu se poate intra în element. Elementul nu este selectat."
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
+msgid "Can't get into the element. Selected element is a pad."
+msgstr "Nu se poate intra în element. Elementul selectat este un suport."
+
+#: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr " (apăsați butonul de „împrospătare”)"
+
+#: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
+msgid "unsupported type: "
+msgstr "tip nesuportat: "
+
+#: src/gst-debugger/ui/gst-debugger.glade:7
+msgid "GStreamer Debugger"
+msgstr "Depanator GStreamer"
+
+#: src/gst-debugger/ui/gst-debugger.glade:22
+msgid "_File"
+msgstr "_Fișier"
+
+#: src/gst-debugger/ui/gst-debugger.glade:32
+msgid "Quit"
+msgstr "Ieșire"
+
+#: src/gst-debugger/ui/gst-debugger.glade:43
+msgid "_Edit"
+msgstr "_Editare"
+
+#: src/gst-debugger/ui/gst-debugger.glade:53
+msgid "Preferences..."
+msgstr "Preferințe..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:64
+msgid "_Server"
+msgstr "_Server"
+
+#: src/gst-debugger/ui/gst-debugger.glade:88
+msgid "Remote Enum Types..."
+msgstr "Tipuri de enumerare de la distanță..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:96
+msgid "Remote Factories..."
+msgstr "Fabrici de la distanță..."
+
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: src/gst-debugger/ui/gst-debugger.glade:104
+msgid "Remote Klasses..."
+msgstr "Clase de la distanță..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:116
+msgid "Addins"
+msgstr "Adăugări"
+
+#: src/gst-debugger/ui/gst-debugger.glade:132
+msgid "Reload"
+msgstr "Reîncarcă"
+
+#: src/gst-debugger/ui/gst-debugger.glade:144
+msgid "_Help"
+msgstr "_Ajutor"
+
+#: src/gst-debugger/ui/gst-debugger.glade:154
+msgid "About..."
+msgstr "Despre..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:177
+msgid "Log messages"
+msgstr "Mesaje de înregistrare"
+
+#: src/gst-debugger/ui/gst-debugger.glade:204
+msgid "Bus messages"
+msgstr "Mesaje de magistrală"
+
+#: src/gst-debugger/ui/gst-debugger.glade:320
+msgid "Clear"
+msgstr "Șterge"
+
+#: src/gst-debugger/ui/gst-debugger.glade:377
+msgid "Selected element:"
+msgstr "Elementul selectat:"
+
+#: src/gst-debugger/ui/gst-debugger.glade:401
+msgid "Current bin: "
+msgstr "Bin-ul curent: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "Drepturi de autor (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
+msgid "Remote GStreamer Debugger"
+msgstr "Depanator GStreamer de la distanță"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
+msgid "Close"
+msgstr "Închide"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
+msgid "Display format: "
+msgstr "Format de afișaj: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
+msgid "Columns in row: "
+msgstr "Coloane în rând: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
+msgid "SET"
+msgstr "STABILEȘTE"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
+msgid "IP Address:"
+msgstr "Adresă IP:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
+msgid "Port:"
+msgstr "Port:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
+msgid "Remote Data"
+msgstr "Date de la distanță"
