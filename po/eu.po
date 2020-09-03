@@ -6,8 +6,8 @@
 msgid ""
 msgstr "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
-"POT-Creation-Date: 2019-09-16 06:21+0000\n"
-"PO-Revision-Date: 2020-06-07 17:00+0100\n"
+"POT-Creation-Date: 2020-08-11 14:38+0000\n"
+"PO-Revision-Date: 2020-09-03 17:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -93,11 +93,11 @@ msgstr "Balio lehenetsia"
 
 #: src/gst-debugger/dialogs/factories_dialog.cpp:23
 msgid "Remote Factories"
-msgstr ""
+msgstr "Urruneko fabrikak"
 
 #: src/gst-debugger/dialogs/factories_dialog.cpp:58
 msgid "Pad templates"
-msgstr ""
+msgstr "Esteka-puntuetarako txantiloiak"
 
 #: src/gst-debugger/dialogs/enums_dialog.cpp:21
 #: src/gst-debugger/modules/base_main_module.cpp:56
@@ -111,19 +111,19 @@ msgstr "Deskribapena"
 
 #: src/gst-debugger/dialogs/enums_dialog.cpp:25
 msgid "Remote Enum Types"
-msgstr ""
+msgstr "Urruneko enum motak"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:207
 msgid "Property Name"
-msgstr ""
+msgstr "Propietatearen izena"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:208
 msgid "Property Value"
-msgstr ""
+msgstr "Propietatearen balioa"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:230
 msgid "Peer pad"
-msgstr ""
+msgstr "Parekoaren esteka-puntua"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:234
 #: src/gst-debugger/modules/gst_properties_module.cpp:239
@@ -133,7 +133,7 @@ msgstr ""
 #: src/gst-debugger/modules/gst_properties_module.cpp:239
 #: src/gst-debugger/modules/gst_properties_module.cpp:249
 msgid "unknown"
-msgstr ""
+msgstr "ezezaguna"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:244
 #: src/gst-debugger/modules/gst_properties_module.cpp:249
@@ -142,63 +142,63 @@ msgstr ""
 
 #: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
 msgid "Info"
-msgstr ""
+msgstr "Informazioa"
 
 #: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
 msgid "PING OK!"
-msgstr ""
+msgstr "PING OK!"
 
 #: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
 msgid "Server doesn't respond"
-msgstr ""
+msgstr "Zerbitzariak ez du erantzuten"
 
 #: src/gst-debugger/modules/event_module.cpp:15
 #: src/gst-debugger/ui/gst-debugger.glade:232
 msgid "Events"
-msgstr ""
+msgstr "Gertaerak"
 
 #: src/gst-debugger/modules/event_module.cpp:23
 msgid "event type"
-msgstr ""
+msgstr "gertaera mota"
 
 #: src/gst-debugger/modules/event_module.cpp:27
 msgid "event timestamp"
-msgstr ""
+msgstr "gertaeraren denbora-zigilua"
 
 #: src/gst-debugger/modules/event_module.cpp:29
 msgid "event sequence number"
-msgstr ""
+msgstr "gertaeraren sekuentzia-zenbakia"
 
 #: src/gst-debugger/modules/event_module.cpp:30
 #: src/gst-debugger/modules/query_module.cpp:24
 msgid "sent from pad"
-msgstr ""
+msgstr "esteka-puntutik bidalia"
 
 #: src/gst-debugger/modules/event_module.cpp:38
 msgid "Event of type: "
-msgstr ""
+msgstr "Gertaera mota: "
 
 #: src/gst-debugger/modules/query_module.cpp:15
 #: src/gst-debugger/ui/gst-debugger.glade:190
 msgid "Queries"
-msgstr ""
+msgstr "Kontsultak"
 
 #: src/gst-debugger/modules/query_module.cpp:23
 msgid "query type"
-msgstr ""
+msgstr "kontsulta mota"
 
 #: src/gst-debugger/modules/query_module.cpp:32
 msgid "Query of type: "
-msgstr ""
+msgstr "Kontsulta mota: "
 
 #: src/gst-debugger/modules/buffer_module.cpp:19
 #: src/gst-debugger/ui/gst-debugger.glade:218
 msgid "Buffers"
-msgstr ""
+msgstr "Bufferrak"
 
 #: src/gst-debugger/modules/buffer_module.cpp:28
 msgid "Pts"
-msgstr ""
+msgstr "Puntuak"
 
 #: src/gst-debugger/modules/buffer_module.cpp:29
 msgid "Dts"
@@ -206,228 +206,228 @@ msgstr ""
 
 #: src/gst-debugger/modules/buffer_module.cpp:30
 msgid "Duration"
-msgstr ""
+msgstr "Iraupena"
 
 #: src/gst-debugger/modules/buffer_module.cpp:31
 msgid "Offset"
-msgstr ""
+msgstr "Desplazamendua"
 
 #: src/gst-debugger/modules/buffer_module.cpp:32
 msgid "Offset End"
-msgstr ""
+msgstr "Amaierako desplazamendua"
 
 #: src/gst-debugger/modules/buffer_module.cpp:33
 msgid "Data Size"
-msgstr ""
+msgstr "Data-tamaina"
 
 #: src/gst-debugger/modules/buffer_module.cpp:34
 #: src/gst-debugger/modules/log_module.cpp:28
 msgid "Object path"
-msgstr ""
+msgstr "Objektuaren bide-izena"
 
 #: src/gst-debugger/modules/buffer_module.cpp:39
 #: src/gst-debugger/modules/buffer_module.cpp:53
 msgid "Data"
-msgstr ""
+msgstr "Datuak"
 
 #: src/gst-debugger/modules/buffer_module.cpp:62
 msgid "Buffer of size "
-msgstr ""
+msgstr "Bufferraren tamaina "
 
 #: src/gst-debugger/modules/buffer_module.cpp:69
 msgid "Send data"
-msgstr ""
+msgstr "Bidali datuak"
 
 #: src/gst-debugger/modules/buffer_module.cpp:79
 msgid "none (any path)"
-msgstr ""
+msgstr "bat ere ez (edozein bide-izen)"
 
 #: src/gst-debugger/modules/buffer_module.cpp:110
 msgid "yes"
-msgstr ""
+msgstr "bai"
 
 #: src/gst-debugger/modules/buffer_module.cpp:110
 msgid "no"
-msgstr ""
+msgstr "ez"
 
 #: src/gst-debugger/modules/main_module.cpp:86
 msgid "Error"
-msgstr ""
+msgstr "Errorea"
 
 #: src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
-msgstr ""
+msgstr "Mezuak"
 
 #: src/gst-debugger/modules/message_module.cpp:23
 msgid "message type"
-msgstr ""
+msgstr "mezu mota"
 
 #: src/gst-debugger/modules/message_module.cpp:27
 msgid "message timestamp"
-msgstr ""
+msgstr "mezuaren denbora-zigilua"
 
 #: src/gst-debugger/modules/message_module.cpp:29
 msgid "message sequence number"
-msgstr ""
+msgstr "mezuaren sekuentzia-zenbakia"
 
 #: src/gst-debugger/modules/message_module.cpp:30
 msgid "object"
-msgstr ""
+msgstr "objektua"
 
 #: src/gst-debugger/modules/message_module.cpp:38
 msgid "Message of type: "
-msgstr ""
+msgstr "Mezu-mota: "
 
 #: src/gst-debugger/modules/message_module.cpp:51
 msgid "Type: "
-msgstr ""
+msgstr "Mota: "
 
 #: src/gst-debugger/modules/message_module.cpp:53
 msgid "Type"
-msgstr ""
+msgstr "Mota"
 
 #: src/gst-debugger/modules/log_module.cpp:15
 msgid "Debug logs"
-msgstr ""
+msgstr "Arazketa-egunkariak"
 
 #: src/gst-debugger/modules/log_module.cpp:23
 #: src/gst-debugger/modules/log_module.cpp:63
 msgid "Level"
-msgstr ""
+msgstr "Maila"
 
 #: src/gst-debugger/modules/log_module.cpp:24
 msgid "Category name"
-msgstr ""
+msgstr "Kategoriaren izena"
 
 #: src/gst-debugger/modules/log_module.cpp:25
 msgid "File"
-msgstr ""
+msgstr "Fitxategia"
 
 #: src/gst-debugger/modules/log_module.cpp:26
 msgid "Function"
-msgstr ""
+msgstr "Funtzioa"
 
 #: src/gst-debugger/modules/log_module.cpp:27
 msgid "Line"
-msgstr ""
+msgstr "Lerroa"
 
 #: src/gst-debugger/modules/log_module.cpp:29
 msgid "Message"
-msgstr ""
+msgstr "Mezua"
 
 #: src/gst-debugger/modules/log_module.cpp:43
 msgid "Debug category: "
-msgstr ""
+msgstr "Arazketa-kategoria: "
 
 #: src/gst-debugger/modules/log_module.cpp:46
 msgid "Log level: "
-msgstr ""
+msgstr "Egunkari-maila: "
 
 #: src/gst-debugger/modules/log_module.cpp:48
 msgid "Log threshold:"
-msgstr ""
+msgstr "Egunkari-atalasea:"
 
 #: src/gst-debugger/modules/log_module.cpp:53
 msgid "Overwrite current threshold"
-msgstr ""
+msgstr "Gainidatzi uneko atalasea"
 
 #: src/gst-debugger/modules/log_module.cpp:56
 msgid "Set threshold"
-msgstr ""
+msgstr "Ezarri atalasea"
 
 #: src/gst-debugger/modules/log_module.cpp:64
 msgid "Category"
-msgstr ""
+msgstr "Kategoria"
 
 #: src/gst-debugger/controller/tcp_client.cpp:93
 msgid "Client isn't connected to a server!"
-msgstr ""
+msgstr "Bezeroa ez dago zerbitzari batekin konektatuta"
 
 #: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
-msgstr ""
+msgstr "Ezin da elementua aztertu. Elementua ez dago hautatuta."
 
 #: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
-msgstr ""
+msgstr "Ezin da elementua aztertu. Hautatutako elementua esteka-puntu bat da."
 
 #: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
 #: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
 msgid " (press 'refresh' button)"
-msgstr ""
+msgstr " (sakatu 'freskatu' botoia)"
 
 #: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
 msgid "unsupported type: "
-msgstr ""
+msgstr "onartzen ez de mota: "
 
 #: src/gst-debugger/ui/gst-debugger.glade:7
 msgid "GStreamer Debugger"
-msgstr ""
+msgstr "GStreamer araztailea"
 
 #: src/gst-debugger/ui/gst-debugger.glade:22
 msgid "_File"
-msgstr ""
+msgstr "_Fitxategia"
 
 #: src/gst-debugger/ui/gst-debugger.glade:32
 msgid "Quit"
-msgstr ""
+msgstr "Irten"
 
 #: src/gst-debugger/ui/gst-debugger.glade:43
 msgid "_Edit"
-msgstr ""
+msgstr "_Editatu"
 
 #: src/gst-debugger/ui/gst-debugger.glade:53
 msgid "Preferences..."
-msgstr ""
+msgstr "Hobespenak…"
 
 #: src/gst-debugger/ui/gst-debugger.glade:64
 msgid "_Server"
-msgstr ""
+msgstr "_Zerbitzaria"
 
 #: src/gst-debugger/ui/gst-debugger.glade:88
 msgid "Remote Enum Types..."
-msgstr ""
+msgstr "Urruneko enum motak..."
 
 #: src/gst-debugger/ui/gst-debugger.glade:96
 msgid "Remote Factories..."
-msgstr ""
+msgstr "Urruneko fabrikak..."
 
 #. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
 #: src/gst-debugger/ui/gst-debugger.glade:104
 msgid "Remote Klasses..."
-msgstr ""
+msgstr "Urruneko klaseak..."
 
 #: src/gst-debugger/ui/gst-debugger.glade:116
 msgid "Addins"
-msgstr ""
+msgstr "Gehigarriak"
 
 #: src/gst-debugger/ui/gst-debugger.glade:132
 msgid "Reload"
-msgstr ""
+msgstr "Birkargatu"
 
 #: src/gst-debugger/ui/gst-debugger.glade:144
 msgid "_Help"
-msgstr ""
+msgstr "_Laguntza"
 
 #: src/gst-debugger/ui/gst-debugger.glade:154
 msgid "About..."
-msgstr ""
+msgstr "Honi buruz..."
 
 #: src/gst-debugger/ui/gst-debugger.glade:177
 msgid "Log messages"
-msgstr ""
+msgstr "Egunkariko mezuak"
 
 #: src/gst-debugger/ui/gst-debugger.glade:204
 msgid "Bus messages"
-msgstr ""
+msgstr "Bus mezuak"
 
 #: src/gst-debugger/ui/gst-debugger.glade:320
 msgid "Clear"
-msgstr ""
+msgstr "Garbitu"
 
 #: src/gst-debugger/ui/gst-debugger.glade:377
 msgid "Selected element:"
-msgstr ""
+msgstr "Hautatutako elementua:"
 
 #: src/gst-debugger/ui/gst-debugger.glade:401
 msgid "Current bin: "
@@ -435,38 +435,38 @@ msgstr ""
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
 msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
-msgstr ""
+msgstr "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
 msgid "Remote GStreamer Debugger"
-msgstr ""
+msgstr "Urruneko GStreamer araztailea"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
 msgid "Close"
-msgstr ""
+msgstr "Itxi"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
 msgid "Display format: "
-msgstr ""
+msgstr "Bistaratze-formatua: "
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
 msgid "Columns in row: "
-msgstr ""
+msgstr "Zutabeak errenkadan: "
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
 msgid "SET"
-msgstr ""
+msgstr "SET"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
 msgid "IP Address:"
-msgstr ""
+msgstr "IP helbidea:"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
 msgid "Port:"
-msgstr ""
+msgstr "Ataka:"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
 msgid "Remote Data"
-msgstr ""
+msgstr "Urruneko datuak"
