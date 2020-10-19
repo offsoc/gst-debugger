@@ -1,0 +1,477 @@
+# Chinese (China) translation for gst-debugger.
+# Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+# liushuyu <liushuyu_011@126.com>, 2015.
+# Dingzhong Chen <wsxy162@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
+"POT-Creation-Date: 2018-03-27 18:57+0000\n"
+"PO-Revision-Date: 2020-10-19 23:54+0800\n"
+"Last-Translator: Dingzhong Chen <wsxy162@gmail.com>\n"
+"Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Gtranslator 3.36.0\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "已连接"
+
+#: src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "断开连接"
+
+#: src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "已断开"
+
+#: src/gst-debugger/main_window.cpp:135
+#: src/gst-debugger/ui/gst-debugger.glade:74
+msgid "Connect"
+msgstr "连接"
+
+#: src/gst-debugger/ui_utils.cpp:24 src/gst-debugger/ui_utils.cpp:36
+#: src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "未知"
+
+#: src/gst-debugger/ui_utils.cpp:56 src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "模板"
+
+#: src/gst-debugger/ui_utils.cpp:64
+#: src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "状态"
+
+#: src/gst-debugger/ui_utils.cpp:65
+#: src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "方向"
+
+#: src/gst-debugger/ui_utils.cpp:147
+msgid "more..."
+msgstr "更多…"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "属性"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "值"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "无"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "属性"
+
+# https://developer.gnome.org/gobject/stable/gobject-GParamSpec.html#g-param-spec-internal
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "昵称"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr "简介"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "标志"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "默认值"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr "远程工厂"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr "Pad 模板"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: src/gst-debugger/modules/base_main_module.cpp:56
+#: src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "名称"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "描述"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr "远程枚举类型"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "属性名称"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "属性值"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr "对等 Pad"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:234
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr "当前功能"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "未知"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:244
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr "允许功能"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "信息"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "PING 成功！"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't respond"
+msgstr "服务器无响应"
+
+#: src/gst-debugger/modules/event_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:232
+msgid "Events"
+msgstr "事件"
+
+#: src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "事件类型"
+
+#: src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "事件时间戳"
+
+#: src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "事件序列号"
+
+#: src/gst-debugger/modules/event_module.cpp:30
+#: src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr "发送自 Pad"
+
+#: src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "事件类型："
+
+#: src/gst-debugger/modules/query_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:190
+msgid "Queries"
+msgstr "查询"
+
+#: src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "查询类型"
+
+#: src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "查询类型："
+
+#: src/gst-debugger/modules/buffer_module.cpp:19
+#: src/gst-debugger/ui/gst-debugger.glade:218
+msgid "Buffers"
+msgstr "缓冲区"
+
+#: src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "Pts"
+
+#: src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "Dts"
+
+#: src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "持续时间"
+
+#: src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "偏移量"
+
+#: src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "偏移末端"
+
+#: src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "数据大小"
+
+#: src/gst-debugger/modules/buffer_module.cpp:34
+#: src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "对象路径"
+
+#: src/gst-debugger/modules/buffer_module.cpp:39
+#: src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "数据"
+
+#: src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "缓冲区大小"
+
+#: src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "已发送数据"
+
+#: src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "无（任何路径）"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "是"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "否"
+
+#: src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "错误"
+
+#: src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "消息"
+
+#: src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "消息类型"
+
+#: src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "消息时间戳"
+
+#: src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "消息序列号"
+
+#: src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "对象"
+
+#: src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "消息类型："
+
+#: src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "类型："
+
+#: src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "类型"
+
+#: src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "调试日志"
+
+#: src/gst-debugger/modules/log_module.cpp:23
+#: src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "级别"
+
+#: src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "类别名称"
+
+#: src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "文件"
+
+#: src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "功能"
+
+#: src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "行"
+
+#: src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "消息"
+
+#: src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "调试类别："
+
+#: src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "日志级别："
+
+#: src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "日志阈值："
+
+#: src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "覆盖当前阈值"
+
+#: src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "设置阈值"
+
+#: src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "类别"
+
+#: src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "客户端未连接到服务器！"
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
+msgid "Can't get into the element. Element is not selected."
+msgstr "不能进入元素。未选中元素。"
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
+msgid "Can't get into the element. Selected element is a pad."
+msgstr "不能进入该元素。选定的元素是 Pad。"
+
+#: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr "（按“刷新”按钮）"
+
+#: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
+msgid "unsupported type: "
+msgstr "不支持的类型："
+
+#: src/gst-debugger/ui/gst-debugger.glade:7
+msgid "GStreamer Debugger"
+msgstr "GStreamer 调试器"
+
+#: src/gst-debugger/ui/gst-debugger.glade:22
+msgid "_File"
+msgstr "文件(_F)"
+
+#: src/gst-debugger/ui/gst-debugger.glade:32
+msgid "Quit"
+msgstr "退出"
+
+#: src/gst-debugger/ui/gst-debugger.glade:43
+msgid "_Edit"
+msgstr "编辑(_E)"
+
+#: src/gst-debugger/ui/gst-debugger.glade:53
+msgid "Preferences..."
+msgstr "首选项…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:64
+msgid "_Server"
+msgstr "服务器(_S)"
+
+#: src/gst-debugger/ui/gst-debugger.glade:88
+msgid "Remote Enum Types..."
+msgstr "远程枚举类型…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:96
+msgid "Remote Factories..."
+msgstr "远程工厂…"
+
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: src/gst-debugger/ui/gst-debugger.glade:104
+msgid "Remote Klasses..."
+msgstr "远程 Klasses…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:116
+msgid "Addins"
+msgstr "外接程序"
+
+#: src/gst-debugger/ui/gst-debugger.glade:132
+msgid "Reload"
+msgstr "重新加载"
+
+#: src/gst-debugger/ui/gst-debugger.glade:144
+msgid "_Help"
+msgstr "帮助(_H)"
+
+#: src/gst-debugger/ui/gst-debugger.glade:154
+msgid "About..."
+msgstr "关于…"
+
+#: src/gst-debugger/ui/gst-debugger.glade:177
+msgid "Log messages"
+msgstr "日志消息"
+
+#: src/gst-debugger/ui/gst-debugger.glade:204
+msgid "Bus messages"
+msgstr "总线消息"
+
+#: src/gst-debugger/ui/gst-debugger.glade:320
+msgid "Clear"
+msgstr "清除"
+
+#: src/gst-debugger/ui/gst-debugger.glade:377
+msgid "Selected element:"
+msgstr "选定的元素："
+
+#: src/gst-debugger/ui/gst-debugger.glade:401
+msgid "Current bin: "
+msgstr "当前二进制："
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "版权所有 (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
+msgid "Remote GStreamer Debugger"
+msgstr "GStreamer 远程调试器"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
+msgid "Close"
+msgstr "关闭"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
+msgid "Display format: "
+msgstr "显示格式："
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
+msgid "Columns in row: "
+msgstr "行中的列："
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
+msgid "SET"
+msgstr "设置"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
+msgid "IP Address:"
+msgstr "IP 地址："
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
+msgid "Port:"
+msgstr "端口："
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
+msgid "Remote Data"
+msgstr "远程数据"
