@@ -1,478 +1,479 @@
 # German translation for gst-debugger.
 # Copyright (C) 2015 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
+#
 # Christian Kirbach <Christian.Kirbach@gmail.com>, 2015.
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2015, 2017.
+# Philipp Kiemle <philipp.kiemle@gmail.com>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gst-debugger master\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=gst-"
-"debugger&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-10-11 22:23+0000\n"
-"PO-Revision-Date: 2017-10-14 15:31+0200\n"
-"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
+"POT-Creation-Date: 2020-07-24 14:48+0000\n"
+"PO-Revision-Date: 2021-03-17 18:33+0100\n"
+"Last-Translator: Philipp Kiemle <philipp.kiemle@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.4.1\n"
 
-#: ../src/gst-debugger/main_window.cpp:129
+#: src/gst-debugger/main_window.cpp:129
 msgid "Connected"
 msgstr "Verbunden"
 
-#: ../src/gst-debugger/main_window.cpp:130
+#: src/gst-debugger/main_window.cpp:130
 msgid "Disconnect"
 msgstr "Verbindung trennen"
 
-#: ../src/gst-debugger/main_window.cpp:134
+#: src/gst-debugger/main_window.cpp:134
 msgid "Disconnected"
 msgstr "Verbindung getrennt"
 
-#: ../src/gst-debugger/main_window.cpp:135
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:7
+#: src/gst-debugger/main_window.cpp:135
+#: src/gst-debugger/ui/gst-debugger.glade:74
 msgid "Connect"
 msgstr "Verbinden"
 
-#: ../src/gst-debugger/ui_utils.cpp:24 ../src/gst-debugger/ui_utils.cpp:36
-#: ../src/gst-debugger/ui_utils.cpp:77
+#: src/gst-debugger/ui_utils.cpp:24 src/gst-debugger/ui_utils.cpp:36
+#: src/gst-debugger/ui_utils.cpp:77
 msgid "UNKNOWN"
 msgstr "UNBEKANNT"
 
-#: ../src/gst-debugger/ui_utils.cpp:56 ../src/gst-debugger/ui_utils.cpp:61
+#: src/gst-debugger/ui_utils.cpp:56 src/gst-debugger/ui_utils.cpp:61
 msgid "Template"
 msgstr "Vorlage"
 
-#: ../src/gst-debugger/ui_utils.cpp:64
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:228
-#, fuzzy
+#: src/gst-debugger/ui_utils.cpp:64
+#: src/gst-debugger/modules/gst_properties_module.cpp:228
 msgid "Presence"
 msgstr "Anwesenheit"
 
-#: ../src/gst-debugger/ui_utils.cpp:65
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:229
+#: src/gst-debugger/ui_utils.cpp:65
+#: src/gst-debugger/modules/gst_properties_module.cpp:229
 msgid "Direction"
 msgstr "Richtung"
 
-#: ../src/gst-debugger/ui_utils.cpp:145
+#: src/gst-debugger/ui_utils.cpp:147
 msgid "more..."
 msgstr "mehr …"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:22
-#: ../src/gst-debugger/dialogs/factories_dialog.cpp:20
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: src/gst-debugger/dialogs/factories_dialog.cpp:20
 msgid "Property"
 msgstr "Eigenschaft"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:23
-#: ../src/gst-debugger/dialogs/factories_dialog.cpp:21
-#: ../src/gst-debugger/dialogs/enums_dialog.cpp:22
-#: ../src/gst-debugger/modules/base_main_module.cpp:57
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: src/gst-debugger/modules/base_main_module.cpp:57
 msgid "Value"
 msgstr "Wert"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:63
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:63
 msgid "none"
 msgstr "keine"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:90
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:90
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:98
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:98
 msgid "Nick"
 msgstr "Spitzname"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:99
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:99
 #, fuzzy
 msgid "Blurb"
 msgstr "Werbetext"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:100
-#, fuzzy
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:100
 msgid "Flags"
 msgstr "Optionen"
 
-#: ../src/gst-debugger/dialogs/klasses_dialog.cpp:101
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:101
 msgid "Default value"
 msgstr "Vorgabewert"
 
-#: ../src/gst-debugger/dialogs/factories_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:23
 msgid "Remote Factories"
 msgstr ""
 
-#: ../src/gst-debugger/dialogs/factories_dialog.cpp:58
+#: src/gst-debugger/dialogs/factories_dialog.cpp:58
 msgid "Pad templates"
 msgstr ""
 
-#: ../src/gst-debugger/dialogs/enums_dialog.cpp:21
-#: ../src/gst-debugger/modules/base_main_module.cpp:56
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:221
+#: src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: src/gst-debugger/modules/base_main_module.cpp:56
+#: src/gst-debugger/modules/gst_properties_module.cpp:221
 msgid "Name"
 msgstr "Name"
 
-#: ../src/gst-debugger/dialogs/enums_dialog.cpp:23
+#: src/gst-debugger/dialogs/enums_dialog.cpp:23
 msgid "Description"
 msgstr "Beschreibung"
 
-#: ../src/gst-debugger/dialogs/enums_dialog.cpp:25
+#: src/gst-debugger/dialogs/enums_dialog.cpp:25
 msgid "Remote Enum Types"
 msgstr ""
 
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:207
+#: src/gst-debugger/modules/gst_properties_module.cpp:207
 msgid "Property Name"
 msgstr "Name der Eigenschaft"
 
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:208
+#: src/gst-debugger/modules/gst_properties_module.cpp:208
 msgid "Property Value"
 msgstr "Eigenschaftswert"
 
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:230
+#: src/gst-debugger/modules/gst_properties_module.cpp:230
 msgid "Peer pad"
 msgstr ""
 
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:234
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:234
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
 msgid "Current caps"
 msgstr ""
 
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:239
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:249
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
 msgid "unknown"
 msgstr "unbekannt"
 
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:244
-#: ../src/gst-debugger/modules/gst_properties_module.cpp:249
+#: src/gst-debugger/modules/gst_properties_module.cpp:244
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
 msgid "Allowed caps"
 msgstr ""
 
-#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
 msgid "Info"
 msgstr "Info"
 
-#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
 msgid "PING OK!"
 msgstr "PING OK!"
 
-#: ../src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
 msgid "Server doesn't respond"
 msgstr "Server antwortet nicht"
 
-#: ../src/gst-debugger/modules/event_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:20
+#: src/gst-debugger/modules/event_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:232
 msgid "Events"
 msgstr "Ereignisse"
 
-#: ../src/gst-debugger/modules/event_module.cpp:23
+#: src/gst-debugger/modules/event_module.cpp:23
 msgid "event type"
 msgstr "Ereignistyp"
 
-#: ../src/gst-debugger/modules/event_module.cpp:27
+#: src/gst-debugger/modules/event_module.cpp:27
 msgid "event timestamp"
 msgstr "Zeitstempel des Ereignisses"
 
-#: ../src/gst-debugger/modules/event_module.cpp:29
+#: src/gst-debugger/modules/event_module.cpp:29
 msgid "event sequence number"
 msgstr "Sequenznummer des Ereignisses"
 
-#: ../src/gst-debugger/modules/event_module.cpp:30
-#: ../src/gst-debugger/modules/query_module.cpp:24
+#: src/gst-debugger/modules/event_module.cpp:30
+#: src/gst-debugger/modules/query_module.cpp:24
 msgid "sent from pad"
 msgstr ""
 
-#: ../src/gst-debugger/modules/event_module.cpp:38
+#: src/gst-debugger/modules/event_module.cpp:38
 msgid "Event of type: "
 msgstr "Ereignis des Typs: "
 
-#: ../src/gst-debugger/modules/query_module.cpp:15
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:17
+#: src/gst-debugger/modules/query_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:190
 msgid "Queries"
 msgstr "Anfragen"
 
-#: ../src/gst-debugger/modules/query_module.cpp:23
+#: src/gst-debugger/modules/query_module.cpp:23
 msgid "query type"
 msgstr "Anfragetyp"
 
-#: ../src/gst-debugger/modules/query_module.cpp:32
+#: src/gst-debugger/modules/query_module.cpp:32
 msgid "Query of type: "
 msgstr "Anfrage des Typs: "
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:19
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:19
+#: src/gst-debugger/modules/buffer_module.cpp:19
+#: src/gst-debugger/ui/gst-debugger.glade:218
 msgid "Buffers"
 msgstr "Puffer"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:28
+#: src/gst-debugger/modules/buffer_module.cpp:28
 msgid "Pts"
 msgstr ""
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:29
+#: src/gst-debugger/modules/buffer_module.cpp:29
 msgid "Dts"
 msgstr ""
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:30
+#: src/gst-debugger/modules/buffer_module.cpp:30
 msgid "Duration"
 msgstr "Dauer"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:31
+#: src/gst-debugger/modules/buffer_module.cpp:31
 msgid "Offset"
 msgstr "Position"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:32
+#: src/gst-debugger/modules/buffer_module.cpp:32
 msgid "Offset End"
 msgstr ""
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:33
+#: src/gst-debugger/modules/buffer_module.cpp:33
 msgid "Data Size"
 msgstr "Datengröße"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:34
-#: ../src/gst-debugger/modules/log_module.cpp:28
+#: src/gst-debugger/modules/buffer_module.cpp:34
+#: src/gst-debugger/modules/log_module.cpp:28
 msgid "Object path"
 msgstr "Objektpfad"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:39
-#: ../src/gst-debugger/modules/buffer_module.cpp:53
+#: src/gst-debugger/modules/buffer_module.cpp:39
+#: src/gst-debugger/modules/buffer_module.cpp:53
 msgid "Data"
 msgstr "Daten"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:62
+#: src/gst-debugger/modules/buffer_module.cpp:62
 msgid "Buffer of size "
-msgstr "Puffergröße"
+msgstr "Puffer der Größe "
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:69
+#: src/gst-debugger/modules/buffer_module.cpp:69
 msgid "Send data"
 msgstr "Daten senden"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:79
+#: src/gst-debugger/modules/buffer_module.cpp:79
 msgid "none (any path)"
 msgstr ""
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:110
+#: src/gst-debugger/modules/buffer_module.cpp:110
 msgid "yes"
 msgstr "ja"
 
-#: ../src/gst-debugger/modules/buffer_module.cpp:110
+#: src/gst-debugger/modules/buffer_module.cpp:110
 msgid "no"
 msgstr "nein"
 
-#: ../src/gst-debugger/modules/main_module.cpp:86
+#: src/gst-debugger/modules/main_module.cpp:86
 msgid "Error"
 msgstr "Fehler"
 
-#: ../src/gst-debugger/modules/message_module.cpp:15
+#: src/gst-debugger/modules/message_module.cpp:15
 msgid "Messages"
 msgstr "Nachrichten"
 
-#: ../src/gst-debugger/modules/message_module.cpp:23
+#: src/gst-debugger/modules/message_module.cpp:23
 msgid "message type"
 msgstr "Nachrichtentyp"
 
-#: ../src/gst-debugger/modules/message_module.cpp:27
+#: src/gst-debugger/modules/message_module.cpp:27
 msgid "message timestamp"
 msgstr "Nachrichten-Zeitstempel"
 
-#: ../src/gst-debugger/modules/message_module.cpp:29
+#: src/gst-debugger/modules/message_module.cpp:29
 msgid "message sequence number"
 msgstr "Nachrichten-Sequenznummer"
 
-#: ../src/gst-debugger/modules/message_module.cpp:30
+#: src/gst-debugger/modules/message_module.cpp:30
 msgid "object"
 msgstr "Objekt"
 
-#: ../src/gst-debugger/modules/message_module.cpp:38
+#: src/gst-debugger/modules/message_module.cpp:38
 msgid "Message of type: "
 msgstr "Nachricht des Typs: "
 
-#: ../src/gst-debugger/modules/message_module.cpp:51
+#: src/gst-debugger/modules/message_module.cpp:51
 msgid "Type: "
 msgstr "Typ: "
 
-#: ../src/gst-debugger/modules/message_module.cpp:53
+#: src/gst-debugger/modules/message_module.cpp:53
 msgid "Type"
 msgstr "Typ"
 
-#: ../src/gst-debugger/modules/log_module.cpp:15
+#: src/gst-debugger/modules/log_module.cpp:15
 msgid "Debug logs"
 msgstr "Diagnoseprotokolle"
 
-#: ../src/gst-debugger/modules/log_module.cpp:23
-#: ../src/gst-debugger/modules/log_module.cpp:63
+#: src/gst-debugger/modules/log_module.cpp:23
+#: src/gst-debugger/modules/log_module.cpp:63
 msgid "Level"
 msgstr "Stufe"
 
-#: ../src/gst-debugger/modules/log_module.cpp:24
+#: src/gst-debugger/modules/log_module.cpp:24
 msgid "Category name"
 msgstr "Kategoriename"
 
-#: ../src/gst-debugger/modules/log_module.cpp:25
+#: src/gst-debugger/modules/log_module.cpp:25
 msgid "File"
 msgstr "Datei"
 
-#: ../src/gst-debugger/modules/log_module.cpp:26
+#: src/gst-debugger/modules/log_module.cpp:26
 msgid "Function"
 msgstr "Funktion"
 
-#: ../src/gst-debugger/modules/log_module.cpp:27
+#: src/gst-debugger/modules/log_module.cpp:27
 msgid "Line"
 msgstr "Zeile"
 
-#: ../src/gst-debugger/modules/log_module.cpp:29
+#: src/gst-debugger/modules/log_module.cpp:29
 msgid "Message"
 msgstr "Nachricht"
 
-#: ../src/gst-debugger/modules/log_module.cpp:43
+#: src/gst-debugger/modules/log_module.cpp:43
 msgid "Debug category: "
 msgstr ""
 
-#: ../src/gst-debugger/modules/log_module.cpp:46
+#: src/gst-debugger/modules/log_module.cpp:46
 msgid "Log level: "
 msgstr "Protokollierstufe: "
 
-#: ../src/gst-debugger/modules/log_module.cpp:48
+#: src/gst-debugger/modules/log_module.cpp:48
 msgid "Log threshold:"
 msgstr "Protokoll-Schwellenwert:"
 
-#: ../src/gst-debugger/modules/log_module.cpp:53
+#: src/gst-debugger/modules/log_module.cpp:53
 msgid "Overwrite current threshold"
 msgstr "Aktuellen Schwellenwert überschreiben"
 
-#: ../src/gst-debugger/modules/log_module.cpp:56
+#: src/gst-debugger/modules/log_module.cpp:56
 msgid "Set threshold"
 msgstr "Schwellenwert festlegen"
 
-#: ../src/gst-debugger/modules/log_module.cpp:64
+#: src/gst-debugger/modules/log_module.cpp:64
 msgid "Category"
 msgstr "Kategorie"
 
-#: ../src/gst-debugger/controller/tcp_client.cpp:93
+#: src/gst-debugger/controller/tcp_client.cpp:93
 msgid "Client isn't connected to a server!"
 msgstr "Client ist nicht mit einem Server verbunden!"
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:172
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
 msgid "Can't get into the element. Element is not selected."
 msgstr ""
 
-#: ../src/gst-debugger/pipeline-drawer/graph_module.cpp:177
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
 msgid "Can't get into the element. Selected element is a pad."
 msgstr ""
 
-#: ../src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
-#: ../src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+#: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
 msgid " (press 'refresh' button)"
-msgstr ""
+msgstr " (Auf »Aktualisieren«-Knopf drücken)"
 
-#: ../src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:21
+#: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
 msgid "unsupported type: "
 msgstr "Nicht unterstützter Typ: "
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:1
+#: src/gst-debugger/ui/gst-debugger.glade:7
 msgid "GStreamer Debugger"
 msgstr "GStreamer Fehlerdiagnose"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:2
+#: src/gst-debugger/ui/gst-debugger.glade:22
 msgid "_File"
 msgstr "_Datei"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:3
+#: src/gst-debugger/ui/gst-debugger.glade:32
 msgid "Quit"
 msgstr "Beenden"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:4
+#: src/gst-debugger/ui/gst-debugger.glade:43
 msgid "_Edit"
 msgstr "_Bearbeiten"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:5
+#: src/gst-debugger/ui/gst-debugger.glade:53
 msgid "Preferences..."
 msgstr "Einstellungen …"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:6
+#: src/gst-debugger/ui/gst-debugger.glade:64
 msgid "_Server"
 msgstr "_Server"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:8
+#: src/gst-debugger/ui/gst-debugger.glade:88
 msgid "Remote Enum Types..."
 msgstr ""
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:9
+#: src/gst-debugger/ui/gst-debugger.glade:96
 msgid "Remote Factories..."
 msgstr ""
 
 #. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:11
+#: src/gst-debugger/ui/gst-debugger.glade:104
 msgid "Remote Klasses..."
 msgstr ""
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:12
+#: src/gst-debugger/ui/gst-debugger.glade:116
 msgid "Addins"
 msgstr ""
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:13
+#: src/gst-debugger/ui/gst-debugger.glade:132
 msgid "Reload"
 msgstr "Neu laden"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:14
+#: src/gst-debugger/ui/gst-debugger.glade:144
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:15
+#: src/gst-debugger/ui/gst-debugger.glade:154
 msgid "About..."
 msgstr "Info …"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:16
+#: src/gst-debugger/ui/gst-debugger.glade:177
 msgid "Log messages"
 msgstr "Protokollmeldungen"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:18
+#: src/gst-debugger/ui/gst-debugger.glade:204
 msgid "Bus messages"
 msgstr "Bus-Meldungen"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:21
+#: src/gst-debugger/ui/gst-debugger.glade:320
 msgid "Clear"
 msgstr "Löschen"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:22
+#: src/gst-debugger/ui/gst-debugger.glade:377
 msgid "Selected element:"
 msgstr "Ausgewähltes Element:"
 
-#: ../src/gst-debugger/ui/gst-debugger.glade.h:23
+#: src/gst-debugger/ui/gst-debugger.glade:401
 msgid "Current bin: "
 msgstr ""
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:1
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
 msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
 msgstr "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:2
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
 msgid "Remote GStreamer Debugger"
-msgstr ""
+msgstr "Entfernter GStreamer-Debugger"
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:3
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
 msgid "Close"
 msgstr "Schließen"
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:4
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
 msgid "Display format: "
 msgstr "Anzeigeformat: "
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:5
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
 msgid "Columns in row: "
 msgstr "Spalten in Zeile: "
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:6
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
 msgid "SET"
 msgstr ""
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:7
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
 msgid "IP Address:"
 msgstr "IP-Adresse:"
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:8
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
 msgid "Port:"
 msgstr "Port:"
 
-#: ../src/gst-debugger/ui/gst-debugger-dialogs.glade.h:9
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
 msgid "Remote Data"
 msgstr "Entfernte Daten"
