@@ -1,13 +1,13 @@
 # Basque translation for gst-debugger.
 # Copyright (C) 2020 gst-debugger's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gst-debugger package.
-# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2020.
+# Asier Sarasua Garmendia <asiersarasua@ni.eus>, 2020, 2022.
 #
 msgid ""
 msgstr "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
-"POT-Creation-Date: 2020-08-11 14:38+0000\n"
-"PO-Revision-Date: 2020-09-03 17:00+0100\n"
+"POT-Creation-Date: 2020-09-03 10:12+0000\n"
+"PO-Revision-Date: 2022-04-18 17:00+0100\n"
 "Last-Translator: Asier Sarasua Garmendia <asiersarasua@ni.eus>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
@@ -128,7 +128,7 @@ msgstr "Parekoaren esteka-puntua"
 #: src/gst-debugger/modules/gst_properties_module.cpp:234
 #: src/gst-debugger/modules/gst_properties_module.cpp:239
 msgid "Current caps"
-msgstr ""
+msgstr "Uneko kapazitateak"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:239
 #: src/gst-debugger/modules/gst_properties_module.cpp:249
@@ -138,7 +138,7 @@ msgstr "ezezaguna"
 #: src/gst-debugger/modules/gst_properties_module.cpp:244
 #: src/gst-debugger/modules/gst_properties_module.cpp:249
 msgid "Allowed caps"
-msgstr ""
+msgstr "Onartutako kapazitateak"
 
 #: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
 msgid "Info"
@@ -202,7 +202,7 @@ msgstr "Puntuak"
 
 #: src/gst-debugger/modules/buffer_module.cpp:29
 msgid "Dts"
-msgstr ""
+msgstr "Dts"
 
 #: src/gst-debugger/modules/buffer_module.cpp:30
 msgid "Duration"
@@ -431,7 +431,7 @@ msgstr "Hautatutako elementua:"
 
 #: src/gst-debugger/ui/gst-debugger.glade:401
 msgid "Current bin: "
-msgstr ""
+msgstr "Uneko edukiontzia: "
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
 msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
