@@ -1,0 +1,475 @@
+# Croatian translation for gst-debugger.
+# Copyright (C) 2022 gst-debugger's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gst-debugger package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gst-debugger master\n"
+"Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues\n"
+"POT-Creation-Date: 2022-04-18 19:39+0000\n"
+"PO-Revision-Date: 2022-08-31 14:28+0200\n"
+"Last-Translator: \n"
+"Language-Team: Croatian <hr@li.org>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.1.1\n"
+
+#: src/gst-debugger/main_window.cpp:129
+msgid "Connected"
+msgstr "Povezan"
+
+#: src/gst-debugger/main_window.cpp:130
+msgid "Disconnect"
+msgstr "Prekini povezivanje"
+
+#: src/gst-debugger/main_window.cpp:134
+msgid "Disconnected"
+msgstr "Povezivanje prekinuto"
+
+#: src/gst-debugger/main_window.cpp:135
+#: src/gst-debugger/ui/gst-debugger.glade:74
+msgid "Connect"
+msgstr "Poveži"
+
+#: src/gst-debugger/ui_utils.cpp:24 src/gst-debugger/ui_utils.cpp:36
+#: src/gst-debugger/ui_utils.cpp:77
+msgid "UNKNOWN"
+msgstr "NEPOZNATO"
+
+#: src/gst-debugger/ui_utils.cpp:56 src/gst-debugger/ui_utils.cpp:61
+msgid "Template"
+msgstr "Predložak"
+
+#: src/gst-debugger/ui_utils.cpp:64
+#: src/gst-debugger/modules/gst_properties_module.cpp:228
+msgid "Presence"
+msgstr "Prisutnost"
+
+#: src/gst-debugger/ui_utils.cpp:65
+#: src/gst-debugger/modules/gst_properties_module.cpp:229
+msgid "Direction"
+msgstr "Smjer"
+
+#: src/gst-debugger/ui_utils.cpp:147
+msgid "more..."
+msgstr "više…"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:22
+#: src/gst-debugger/dialogs/factories_dialog.cpp:20
+msgid "Property"
+msgstr "Svojstvo"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:23
+#: src/gst-debugger/dialogs/factories_dialog.cpp:21
+#: src/gst-debugger/dialogs/enums_dialog.cpp:22
+#: src/gst-debugger/modules/base_main_module.cpp:57
+msgid "Value"
+msgstr "Vrijednost"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:63
+msgid "none"
+msgstr "nIjedao"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:90
+msgid "Properties"
+msgstr "Svojstva"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:98
+msgid "Nick"
+msgstr "Nadimak"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:99
+msgid "Blurb"
+msgstr "Upozorenje"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:100
+msgid "Flags"
+msgstr "Oznake"
+
+#: src/gst-debugger/dialogs/klasses_dialog.cpp:101
+msgid "Default value"
+msgstr "Zadana vrijednost"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:23
+msgid "Remote Factories"
+msgstr "Udaljene tvornice"
+
+#: src/gst-debugger/dialogs/factories_dialog.cpp:58
+msgid "Pad templates"
+msgstr "Predlošci podloga"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:21
+#: src/gst-debugger/modules/base_main_module.cpp:56
+#: src/gst-debugger/modules/gst_properties_module.cpp:221
+msgid "Name"
+msgstr "Naziv"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:23
+msgid "Description"
+msgstr "Opis"
+
+#: src/gst-debugger/dialogs/enums_dialog.cpp:25
+msgid "Remote Enum Types"
+msgstr "Udaljene nabrojene vrste"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:207
+msgid "Property Name"
+msgstr "Naziv svojstva"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:208
+msgid "Property Value"
+msgstr "Vrijednost svojstva"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:230
+msgid "Peer pad"
+msgstr "Predložak točke"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:234
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+msgid "Current caps"
+msgstr "Trenutna ograničenja"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:239
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "unknown"
+msgstr "nepoznato"
+
+#: src/gst-debugger/modules/gst_properties_module.cpp:244
+#: src/gst-debugger/modules/gst_properties_module.cpp:249
+msgid "Allowed caps"
+msgstr "Dopuštena ograničenja"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:36
+msgid "Info"
+msgstr "Informacije"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:37
+msgid "PING OK!"
+msgstr "PING JE UREDU!"
+
+#: src/gst-debugger/dialogs/connection_properties_dialog.cpp:47
+msgid "Server doesn't respond"
+msgstr "Poslužitelj ne odgovara"
+
+#: src/gst-debugger/modules/event_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:232
+msgid "Events"
+msgstr "Događaji"
+
+#: src/gst-debugger/modules/event_module.cpp:23
+msgid "event type"
+msgstr "vrsta događaja"
+
+#: src/gst-debugger/modules/event_module.cpp:27
+msgid "event timestamp"
+msgstr "vrijeme događaja"
+
+#: src/gst-debugger/modules/event_module.cpp:29
+msgid "event sequence number"
+msgstr "broj redoslijeda događaja"
+
+#: src/gst-debugger/modules/event_module.cpp:30
+#: src/gst-debugger/modules/query_module.cpp:24
+msgid "sent from pad"
+msgstr "poslano iz predloška"
+
+#: src/gst-debugger/modules/event_module.cpp:38
+msgid "Event of type: "
+msgstr "Vrsta događaja: "
+
+#: src/gst-debugger/modules/query_module.cpp:15
+#: src/gst-debugger/ui/gst-debugger.glade:190
+msgid "Queries"
+msgstr "Upiti"
+
+#: src/gst-debugger/modules/query_module.cpp:23
+msgid "query type"
+msgstr "vrsta upita"
+
+#: src/gst-debugger/modules/query_module.cpp:32
+msgid "Query of type: "
+msgstr "Vrsta događaja: "
+
+#: src/gst-debugger/modules/buffer_module.cpp:19
+#: src/gst-debugger/ui/gst-debugger.glade:218
+msgid "Buffers"
+msgstr "Međuspremnici"
+
+#: src/gst-debugger/modules/buffer_module.cpp:28
+msgid "Pts"
+msgstr "Bod."
+
+#: src/gst-debugger/modules/buffer_module.cpp:29
+msgid "Dts"
+msgstr "Toč."
+
+#: src/gst-debugger/modules/buffer_module.cpp:30
+msgid "Duration"
+msgstr "Trajanje"
+
+#: src/gst-debugger/modules/buffer_module.cpp:31
+msgid "Offset"
+msgstr "Pomak"
+
+#: src/gst-debugger/modules/buffer_module.cpp:32
+msgid "Offset End"
+msgstr "Završetak pomaka"
+
+#: src/gst-debugger/modules/buffer_module.cpp:33
+msgid "Data Size"
+msgstr "Veličina podataka"
+
+#: src/gst-debugger/modules/buffer_module.cpp:34
+#: src/gst-debugger/modules/log_module.cpp:28
+msgid "Object path"
+msgstr "Putanja objekta"
+
+#: src/gst-debugger/modules/buffer_module.cpp:39
+#: src/gst-debugger/modules/buffer_module.cpp:53
+msgid "Data"
+msgstr "Podaci"
+
+#: src/gst-debugger/modules/buffer_module.cpp:62
+msgid "Buffer of size "
+msgstr "Veličina međuspremnika "
+
+#: src/gst-debugger/modules/buffer_module.cpp:69
+msgid "Send data"
+msgstr "Pošalji podatke"
+
+#: src/gst-debugger/modules/buffer_module.cpp:79
+msgid "none (any path)"
+msgstr "nijedno (bilo kakva putanja)"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "yes"
+msgstr "da"
+
+#: src/gst-debugger/modules/buffer_module.cpp:110
+msgid "no"
+msgstr "ne"
+
+#: src/gst-debugger/modules/main_module.cpp:86
+msgid "Error"
+msgstr "Greška"
+
+#: src/gst-debugger/modules/message_module.cpp:15
+msgid "Messages"
+msgstr "Poruke"
+
+#: src/gst-debugger/modules/message_module.cpp:23
+msgid "message type"
+msgstr "vrsta poruke"
+
+#: src/gst-debugger/modules/message_module.cpp:27
+msgid "message timestamp"
+msgstr "vrijeme poruke"
+
+#: src/gst-debugger/modules/message_module.cpp:29
+msgid "message sequence number"
+msgstr "broj redoslijeda poruke"
+
+#: src/gst-debugger/modules/message_module.cpp:30
+msgid "object"
+msgstr "objekt"
+
+#: src/gst-debugger/modules/message_module.cpp:38
+msgid "Message of type: "
+msgstr "Vrsta poruke: "
+
+#: src/gst-debugger/modules/message_module.cpp:51
+msgid "Type: "
+msgstr "Vrsta: "
+
+#: src/gst-debugger/modules/message_module.cpp:53
+msgid "Type"
+msgstr "Vrsta"
+
+#: src/gst-debugger/modules/log_module.cpp:15
+msgid "Debug logs"
+msgstr "Zapisi otklanjanja greške"
+
+#: src/gst-debugger/modules/log_module.cpp:23
+#: src/gst-debugger/modules/log_module.cpp:63
+msgid "Level"
+msgstr "Razina"
+
+#: src/gst-debugger/modules/log_module.cpp:24
+msgid "Category name"
+msgstr "Naziv kategorije"
+
+#: src/gst-debugger/modules/log_module.cpp:25
+msgid "File"
+msgstr "Datoteka"
+
+#: src/gst-debugger/modules/log_module.cpp:26
+msgid "Function"
+msgstr "Funkcija"
+
+#: src/gst-debugger/modules/log_module.cpp:27
+msgid "Line"
+msgstr "Redak"
+
+#: src/gst-debugger/modules/log_module.cpp:29
+msgid "Message"
+msgstr "Poruka"
+
+#: src/gst-debugger/modules/log_module.cpp:43
+msgid "Debug category: "
+msgstr "Kategorija otklanjanja grešaka: "
+
+#: src/gst-debugger/modules/log_module.cpp:46
+msgid "Log level: "
+msgstr "Razina zapisivanja: "
+
+#: src/gst-debugger/modules/log_module.cpp:48
+msgid "Log threshold:"
+msgstr "Prag zapisivanja:"
+
+#: src/gst-debugger/modules/log_module.cpp:53
+msgid "Overwrite current threshold"
+msgstr "Prebriši trenutni prag"
+
+#: src/gst-debugger/modules/log_module.cpp:56
+msgid "Set threshold"
+msgstr "Postavi prag"
+
+#: src/gst-debugger/modules/log_module.cpp:64
+msgid "Category"
+msgstr "Kategorija"
+
+#: src/gst-debugger/controller/tcp_client.cpp:93
+msgid "Client isn't connected to a server!"
+msgstr "Klijent nije povezan s poslužiteljem!"
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:172
+msgid "Can't get into the element. Element is not selected."
+msgstr "Nemoguć ulaz element. Element nije odabran."
+
+#: src/gst-debugger/pipeline-drawer/graph_module.cpp:177
+msgid "Can't get into the element. Selected element is a pad."
+msgstr "Nemoguć ulaz element. Odabrani element je predložak."
+
+#: src/gst-debugger/gvalue-converter/gvalue_flags.cpp:30
+#: src/gst-debugger/gvalue-converter/gvalue_enum.cpp:29
+msgid " (press 'refresh' button)"
+msgstr " (pritisni 'osvježi' tipku)"
+
+#: src/gst-debugger/gvalue-converter/gvalue_unknown.cpp:32
+msgid "unsupported type: "
+msgstr "nepodržana vrsta: "
+
+#: src/gst-debugger/ui/gst-debugger.glade:7
+msgid "GStreamer Debugger"
+msgstr "GStreamer otklanjatelj grešaka"
+
+#: src/gst-debugger/ui/gst-debugger.glade:22
+msgid "_File"
+msgstr "_Datoteka"
+
+#: src/gst-debugger/ui/gst-debugger.glade:32
+msgid "Quit"
+msgstr "Zatvori"
+
+#: src/gst-debugger/ui/gst-debugger.glade:43
+msgid "_Edit"
+msgstr "_Uredi"
+
+#: src/gst-debugger/ui/gst-debugger.glade:53
+msgid "Preferences..."
+msgstr "_Osobitosti..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:64
+msgid "_Server"
+msgstr "_Poslužitelj"
+
+#: src/gst-debugger/ui/gst-debugger.glade:88
+msgid "Remote Enum Types..."
+msgstr "Udaljene nabrojene vrste..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:96
+msgid "Remote Factories..."
+msgstr "Udaljene tvornice..."
+
+#. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
+#: src/gst-debugger/ui/gst-debugger.glade:104
+msgid "Remote Klasses..."
+msgstr "Udaljene klase..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:116
+msgid "Addins"
+msgstr "Dodaci"
+
+#: src/gst-debugger/ui/gst-debugger.glade:132
+msgid "Reload"
+msgstr "Ponovno učitaj"
+
+#: src/gst-debugger/ui/gst-debugger.glade:144
+msgid "_Help"
+msgstr "_Priručnik"
+
+#: src/gst-debugger/ui/gst-debugger.glade:154
+msgid "About..."
+msgstr "O programu..."
+
+#: src/gst-debugger/ui/gst-debugger.glade:177
+msgid "Log messages"
+msgstr "Zapis poruka"
+
+#: src/gst-debugger/ui/gst-debugger.glade:204
+msgid "Bus messages"
+msgstr "Sabirnica poruka"
+
+#: src/gst-debugger/ui/gst-debugger.glade:320
+msgid "Clear"
+msgstr "Ukloni"
+
+#: src/gst-debugger/ui/gst-debugger.glade:377
+msgid "Selected element:"
+msgstr "Odabrani element:"
+
+#: src/gst-debugger/ui/gst-debugger.glade:401
+msgid "Current bin: "
+msgstr "Trenutna košara: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
+msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+msgstr "Autorsko pravo (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:11
+msgid "Remote GStreamer Debugger"
+msgstr "Udaljeni GStreamer otklanjatelj grešaka"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:59
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:261
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:372
+msgid "Close"
+msgstr "Zatvori"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:90
+msgid "Display format: "
+msgstr "Format prikaza: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:177
+msgid "Columns in row: "
+msgstr "Stupaca u redku: "
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:200
+msgid "SET"
+msgstr "POSTAVI"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:288
+msgid "IP Address:"
+msgstr "IP adresa:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:299
+msgid "Port:"
+msgstr "Ulaz:"
+
+#: src/gst-debugger/ui/gst-debugger-dialogs.glade:358
+msgid "Remote Data"
+msgstr "Udaljeni podaci"
