@@ -7,10 +7,10 @@ gst-debugger toolset allows to introspect gst-pipeline remotely. It provides gra
 
   a) latest git-master version:
    ```shell
-   $ git clone git://git.gnome.org.com/gst-debugger
+   $ git clone git@ssh.gitlab.gnome.org:GNOME/gst-debugger.git
    $ cd gst-debugger
    ```
-  b) latest release: [sources](https://ftp.gnome.org/pub/gnome/sources/gst-debugger/) 
+  b) latest release: [sources](https://download.gnome.org/sources/gst-debugger/)
 
 2. Compile the project
 ```shell
