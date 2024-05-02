@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gst-debugger master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/gst-debugger/issues/\n"
 "POT-Creation-Date: 2024-04-07 15:41+0000\n"
-"PO-Revision-Date: 2024-05-02 14:54+0200\n"
+"PO-Revision-Date: 2024-05-02 23:13+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups."
 "com>\n"
@@ -103,8 +103,9 @@ msgid "Remote Factories"
 msgstr "Oddaljene tovarne"
 
 #: src/gst-debugger/dialogs/factories_dialog.cpp:58
+#, fuzzy
 msgid "Pad templates"
-msgstr ""
+msgstr "Predloge pad"
 
 #: src/gst-debugger/dialogs/enums_dialog.cpp:21
 #: src/gst-debugger/modules/base_main_module.cpp:56
@@ -117,8 +118,9 @@ msgid "Description"
 msgstr "Opis"
 
 #: src/gst-debugger/dialogs/enums_dialog.cpp:25
+#, fuzzy
 msgid "Remote Enum Types"
-msgstr ""
+msgstr "Oddaljene vrste števcev (Enum)"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:207
 msgid "Property Name"
@@ -129,8 +131,9 @@ msgid "Property Value"
 msgstr "Vrednost lastnosti"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:230
+#, fuzzy
 msgid "Peer pad"
-msgstr ""
+msgstr "Pad soležnika"
 
 #: src/gst-debugger/modules/gst_properties_module.cpp:234
 #: src/gst-debugger/modules/gst_properties_module.cpp:239
@@ -207,12 +210,14 @@ msgid "Buffers"
 msgstr "Medpomnilniki"
 
 #: src/gst-debugger/modules/buffer_module.cpp:28
+#, fuzzy
 msgid "Pts"
-msgstr ""
+msgstr "Pts/Točke"
 
 #: src/gst-debugger/modules/buffer_module.cpp:29
+#, fuzzy
 msgid "Dts"
-msgstr ""
+msgstr "Dts"
 
 #: src/gst-debugger/modules/buffer_module.cpp:30
 msgid "Duration"
@@ -224,7 +229,7 @@ msgstr "Odmik"
 
 #: src/gst-debugger/modules/buffer_module.cpp:32
 msgid "Offset End"
-msgstr ""
+msgstr "Konec odmika"
 
 #: src/gst-debugger/modules/buffer_module.cpp:33
 msgid "Data Size"
@@ -396,8 +401,9 @@ msgid "_Server"
 msgstr "_Strežnik"
 
 #: src/gst-debugger/ui/gst-debugger.glade:88
+#, fuzzy
 msgid "Remote Enum Types..."
-msgstr ""
+msgstr "Oddaljene vrste števcev …"
 
 #: src/gst-debugger/ui/gst-debugger.glade:96
 msgid "Remote Factories..."
@@ -405,8 +411,9 @@ msgstr "Oddaljene tovarne ..."
 
 #. "Klass" is used widely in GStreamer framework, probably because "class" is a keyword in C++. For consistency, I use "klass" in this project as well, but in terms of translations, you it can be translated like "Class".
 #: src/gst-debugger/ui/gst-debugger.glade:104
+#, fuzzy
 msgid "Remote Klasses..."
-msgstr ""
+msgstr "Oddaljeni razredi …"
 
 #: src/gst-debugger/ui/gst-debugger.glade:116
 msgid "Addins"
@@ -441,8 +448,9 @@ msgid "Selected element:"
 msgstr "Izbrani element:"
 
 #: src/gst-debugger/ui/gst-debugger.glade:401
+#, fuzzy
 msgid "Current bin: "
-msgstr ""
+msgstr "Trenutni koš:"
 
 #: src/gst-debugger/ui/gst-debugger-dialogs.glade:10
 msgid "Copyright (C) 2015 Marcin Kolny <marcin.kolny@gmail.com>"
